@@ -3,7 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Menu from '../components/Menu';
 
-function PaginaInicio() {
+function PaginaInicioPage() {
   return (
     <Container>
       <Row>
@@ -20,4 +20,4 @@ function PaginaInicio() {
   );
 }
 
-export default PaginaInicio;
+export default PaginaInicioPage;

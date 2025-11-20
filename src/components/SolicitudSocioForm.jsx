@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import logo from "../assets/images/logo.png";
+
 
 const SolicitudSocioForm = () => {
   const [formData, setFormData] = useState({
@@ -39,7 +40,22 @@ const SolicitudSocioForm = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+
+    <div>
+
+      <div className="text-center mb-4">
+        <img
+          src={logo}
+          alt="Logo"
+          style={{ width: "120px", marginBottom: "10px" }}
+        />
+        <h2 className="fw-bold" style={{ color: "var(--color-primary)" }}>
+          Solicitud para ser socio
+        </h2>
+        <p style={{ color: "#555" }}>Completa todos los campos obligatorios *</p>
+      </div>
+
+      <Form onSubmit={handleSubmit}>
 
         <Form.Group className="mb-3">
           <Form.Label className="text-start w-100">Nombre completo *</Form.Label>
@@ -155,7 +171,8 @@ const SolicitudSocioForm = () => {
           </Button>
         </div>
 
-    </Form>
+      </Form>
+    </div>
   );
 };
 

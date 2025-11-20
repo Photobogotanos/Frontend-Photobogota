@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import FormularioCreacion from '../components/CreacionDeCuentaForm';
 
 
-export default function ContenedorEjemplo() {
+export default function CreacionDeCuentaPage() {
   return (
     <Container fluid>
       <Row>
