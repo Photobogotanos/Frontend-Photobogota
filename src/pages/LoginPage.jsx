@@ -2,14 +2,15 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import LoginForm from "../components/LoginForm";
-import "../pages/Login.css";
+import "../pages/LoginPage.css";
 
 export default function Login() {
   return (
     <div className="login">
-    <Container fluid>
+    <Container fluid className='cajon'>
       <Row>
         <Col>
+        
           <LoginForm/>
         </Col>
       </Row>
