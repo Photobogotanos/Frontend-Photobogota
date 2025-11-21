@@ -1,18 +1,15 @@
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import FormularioCreacion from '../components/CreacionDeCuentaForm';
+import  "./CreacionDeCuentaPage.css"
 
-
-export default function CreacionDeCuentaPage() {
+function CreacionDeCuentaPage() {
   return (
-    <Container fluid>
-      <Row>
-        <Col>
+    <div className="creacion-cuenta">
+    <Container >
         <FormularioCreacion></FormularioCreacion>
-        </Col>
-      </Row>
     </Container>
+    </div>
   );
 }
 
+export default CreacionDeCuentaPage;

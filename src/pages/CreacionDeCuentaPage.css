@@ -1,0 +1,10 @@
+.creacion-cuenta {
+  background-color: var(--color-bg);
+  display: flex;
+  align-items: center;
+}
+
+.creacion-cuenta .container {
+  max-width: 500px;
+  width: 100%;
+}
