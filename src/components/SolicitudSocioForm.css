@@ -1,27 +1,63 @@
 .solicitud-form-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
 }
 
 .solicitud-form-logo {
-  width: 120px;
-  margin-bottom: 10px;
+    width: 120px;
+    margin-bottom: 10px;
 }
 
 .solicitud-form-title {
-  font-weight: bold;
-  color: var(--color-primary);
+    font-weight: bold;
+    color: #23214D;
 }
 
 .solicitud-form-subtitle {
-  color: #555;
+    color: #555;
 }
 
 .solicitud-form-label {
-  text-align: start;
-  width: 100%;
+    text-align: start;
+    width: 100%;
+    font-weight: bold;
 }
 
 .solicitud-form-submit {
-  text-align: center;
+    text-align: center;
+}
+
+.solicitud-form-button {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.25s ease;
+}
+
+.solicitud-form-button:hover {
+    background-color: var(--color-primary-hover, #6a58ac);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.solicitud-form-button:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+
+.solicitud-form-label span {
+    color: red;
+    cursor: pointer;
+}
+
+.form-control-no-focus:focus {
+    box-shadow: none !important;
+    border-color: #d9d9d9 !important;
+    outline: none !important;
 }
