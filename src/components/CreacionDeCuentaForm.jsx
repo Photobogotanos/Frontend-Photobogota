@@ -1,6 +1,5 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
 
 function FormularioCreacion() {
   return (
@@ -9,24 +8,38 @@ function FormularioCreacion() {
         <h3>Registro en Photo Bogota</h3>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label className="text-start w-100">Email*</Form.Label>
-          <Form.Control type="email" placeholder="" />
+          <Form.Label className="creacion-formulario-label"> Email* </Form.Label>
+          <Form.Control type="email" placeholder=""className="rounded-pill" />
           <Form.Text className="text-muted">
           </Form.Text>
         </Form.Group>
 
+        <Form.Group className="mb-3">
+          <Form.Label className="creacion-formulario-label">Nombre de usuario *</Form.Label>
+          <Form.Control className="rounded-pill" name="user" />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label className="creacion-formulario-label">Nombre de usuario *</Form.Label>
+          <Form.Control className="rounded-pill" name="user" />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label className="creacion-formulario-label">Fecha de nacimiento *</Form.Label>
+          <Form.Control className="rounded-pill" name="fecha" type="date" />
+        </Form.Group>
+
         <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Label className="creacion-formulario-label" >Password</Form.Label>
+          <Form.Control type="password" placeholder="" className="rounded-pill" />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-          <Form.Check type="checkbox" label="Check me out" />
+        <Form.Group className="mb-3" controlId="formBasicPassword2">
+          <Form.Label className="creacion-formulario-label" >Confirmacion de la password</Form.Label>
+          <Form.Control type="password" placeholder="" className="rounded-pill" />
         </Form.Group>
 
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
+        <button className="creacion-formulario-button rounded-pill text-center"> Guardar </button>
     </Form>
   );
 }
