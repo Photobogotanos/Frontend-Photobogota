@@ -61,3 +61,26 @@
     border-color: #d9d9d9 !important;
     outline: none !important;
 }
+
+.react-select-container {
+  border-radius: 50px;
+}
+
+.react-select__control {
+  border-radius: 50px !important;
+  padding-left: 10px;
+}
+
+.react-select__control--is-focused {
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  border-color: #80bdff;
+}
+
+.react-select__placeholder {
+  color: #6c757d;
+}
+
+.react-select__menu {
+  border-radius: 12px;
+}
+

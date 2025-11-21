@@ -4,6 +4,10 @@ import logo from "../assets/images/logo.png";
 import './SolicitudSocioForm.css';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+import { Spanish } from "flatpickr/dist/l10n/es.js";
+import Select from "react-select";
 
 
 const SolicitudSocioForm = () => {
@@ -27,6 +31,12 @@ const SolicitudSocioForm = () => {
     "Empresa",
     "Otro"
   ];
+
+  const categoriaOptions = categorias.map(cat => ({
+    value: cat,
+    label: cat
+  }));
+
 
   const handleChange = (e) => {
     setFormData({
@@ -71,11 +81,28 @@ const SolicitudSocioForm = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label className="solicitud-form-label">Fecha de nacimiento
+          <Form.Label className="solicitud-form-label">
+            Fecha de nacimiento
             <OverlayTrigger placement="right" overlay={<Tooltip>Campo obligatorio</Tooltip>}><span> *</span></OverlayTrigger>
           </Form.Label>
-          <Form.Control type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} className="form-control-no-focus rounded-pill" required />
+
+          <Flatpickr
+            options={{
+              dateFormat: "Y-m-d",
+              maxDate: "today",
+              locale: Spanish,
+              allowInput: true,
+            }}
+            className="form-control form-control-no-focus rounded-pill"
+            value={formData.fechaNacimiento}
+            onChange={(date) =>
+              handleChange({
+                target: { name: "fechaNacimiento", value: date[0] },
+              })
+            }
+          />
         </Form.Group>
+
 
         <Form.Group className="mb-3">
           <Form.Label className="solicitud-form-label">Razón Social
@@ -113,15 +140,29 @@ const SolicitudSocioForm = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label className="solicitud-form-label">Categoría
-            <OverlayTrigger placement="right" overlay={<Tooltip>Campo obligatorio</Tooltip>}><span> *</span></OverlayTrigger>
+          <Form.Label className="solicitud-form-label">
+            Categoría{" "}
+            <OverlayTrigger
+              placement="right"
+              overlay={<Tooltip>Campo obligatorio</Tooltip>}
+            >
+              <span> *</span>
+            </OverlayTrigger>
           </Form.Label>
-          <Form.Select name="categoria" value={formData.categoria} onChange={handleChange} className="form-control-no-focus rounded-pill" required>
-            <option value="">Seleccione una categoría</option>
-            {categorias.map((cat, index) => (
-              <option key={index} value={cat}>{cat}</option>
-            ))}
-          </Form.Select>
+
+          <Select
+            options={categoriaOptions}
+            value={categoriaOptions.find(o => o.value === formData.categoria) || null}
+            onChange={(selected) =>
+              handleChange({
+                target: { name: "categoria", value: selected?.value || "" }
+              })
+            }
+            menuPlacement="top"
+            placeholder="Seleccione una categoría"
+            classNamePrefix="react-select"
+            className="react-select-container"
+          />
         </Form.Group>
 
         <div className="solicitud-form-submit mt-5">
@@ -129,7 +170,7 @@ const SolicitudSocioForm = () => {
         </div>
       </Form>
     </div>
-  );F
+  );
 };
 
 export default SolicitudSocioForm;
