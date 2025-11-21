@@ -1,0 +1,9 @@
+.menu-inicio-logo{
+    padding-right: 80px;
+}
+.menu-container{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color:  var(--color-light);
+}
