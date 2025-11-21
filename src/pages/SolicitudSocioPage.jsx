@@ -1,17 +1,11 @@
 import SolicitudSocioForm from "../components/SolicitudSocioForm";
 import Container from 'react-bootstrap/Container';
+import './SolicitudSocioPage.css';
 
 const SolicitudSocioPage = () => {
   return (
-    <div style={{ 
-      minHeight: "100vh", 
-      backgroundColor: "var(--color-bg)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "2rem 1rem"
-    }}>
-      <Container style={{ maxWidth: "600px" }}>
+    <div className="solicitud-socio-page">
+      <Container>
         <SolicitudSocioForm />
       </Container>
     </div>

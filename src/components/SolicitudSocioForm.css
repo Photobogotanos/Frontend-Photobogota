@@ -1,0 +1,27 @@
+.solicitud-form-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.solicitud-form-logo {
+  width: 120px;
+  margin-bottom: 10px;
+}
+
+.solicitud-form-title {
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.solicitud-form-subtitle {
+  color: #555;
+}
+
+.solicitud-form-label {
+  text-align: start;
+  width: 100%;
+}
+
+.solicitud-form-submit {
+  text-align: center;
+}
