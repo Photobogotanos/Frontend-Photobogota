@@ -1,4 +1,19 @@
-.creacion-formulario-label{
- 
+.creacion-logo{
+    width: 120px;
+}
+.creacion-formulario-button{
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.25s ease;
 
+}
+.creacion-form-submit{
+    text-align: center;
 }
