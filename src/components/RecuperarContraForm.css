@@ -13,7 +13,6 @@
   color: #212529;
 }
 
-
 .login-form-label {
   text-align: start;
   width: 100%;
@@ -22,10 +21,10 @@
 }
 
 .grupitos {
-    padding: 30px;
+  padding: 30px;
 }
 
-.solicitud-form-submit button    {
+.solicitud-form-submit button {
   text-align: center;
   background-color: var(--color-primary);
   color: white;
@@ -35,26 +34,9 @@
   cursor: pointer;
 }
 
-.registro-texto {
-    text-align: center;
-  font-weight: bold;
-  font-size: 18px;
-  margin-top: 10px;
-}
-
-.registro-texto a {
-  color: #007bff;
-  text-decoration: underline;
-  font-weight: normal;
-}
-
-.registro-texto a:hover {
-  color: #0056b3;
-}
-
 .recuperar-contra {
   text-align: center;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 .recuperar-contra a {
