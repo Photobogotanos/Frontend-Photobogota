@@ -57,12 +57,17 @@ export default function LoginForm() {
       </Form.Group>
 
       <div className="solicitud-form-submit mt-5">
-          <button className="rounded-pill" type="submit">Enviar solicitud</button>
+          <button className="rounded-pill" type="submit">Ingresar</button>
         </div>
+
+      <p className="recuperar-contra">
+        <a href="/recuperar-contrasena">¿Olvidaste tu contraseña?</a>
+      </p>
+
 
       <p className="registro-texto">
   ¿Eres nuevo en Photo Bogotá?
-  <a href="/register"> Crea tu cuenta</a>
+  <a href="/creacion-cuenta"> Crea tu cuenta</a>
 </p>
 
     </Form>
