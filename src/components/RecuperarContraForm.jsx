@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 import logo from "../assets/images/logo.png";
 import "./RecuperarContraForm.css";
+import { Link } from "react-router-dom";
 
 export default function RecuperarContraForm() {
   const [email, setEmail] = useState("");
@@ -44,11 +45,13 @@ export default function RecuperarContraForm() {
       </Form.Group>
 
       <div className="solicitud-form-submit mt-4">
-        <button className="rounded-pill" type="submit">Enviar Código</button>
+        <button className="rounded-pill" type="submit">
+          Enviar Código
+        </button>
       </div>
 
       <p className="recuperar-contra">
-        <a href="/login">Volver al inicio de sesión</a>
+        <Link to="/login">Volver al inicio de sesión</Link>
       </p>
     </Form>
   );

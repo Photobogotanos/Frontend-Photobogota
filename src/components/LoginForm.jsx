@@ -1,14 +1,14 @@
-    import { useState } from "react";
+import { useState } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
 import logo from "../assets/images/logo.png";
-import './LoginForm.css';
+import "./LoginForm.css";
+import { Link } from "react-router-dom";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -27,17 +27,18 @@ export default function LoginForm() {
     <Form onSubmit={handleSubmit}>
       {error && <Alert variant="danger">{error}</Alert>}
 
-
       <div className="login-form-header">
-              <img src={logo} alt="Logo" className="login-form-logo" />
-              <h2 className="login-form-title">Ingresa a Photo Bogotá</h2>
-            </div>
-            <br />
+        <img src={logo} alt="Logo" className="login-form-logo" />
+        <h2 className="login-form-title">Ingresa a Photo Bogotá</h2>
+      </div>
+      <br />
 
       <Form.Group className="mb-4">
-        <Form.Label className="login-form-label mb-2">Nombre de Usuario *</Form.Label>
+        <Form.Label className="login-form-label mb-2">
+          Nombre de Usuario *
+        </Form.Label>
         <Form.Control
-        className="grupitos rounded-pill"
+          className="grupitos rounded-pill"
           type="email"
           placeholder="Ingresa el correo"
           value={email}
@@ -48,7 +49,7 @@ export default function LoginForm() {
       <Form.Group className="mb-4">
         <Form.Label className="login-form-label mb-2">Contraseña *</Form.Label>
         <Form.Control
-        className="grupitos rounded-pill"
+          className="grupitos rounded-pill"
           type="contraseña"
           placeholder="Ingresa tu contraseña"
           value={password}
@@ -57,20 +58,19 @@ export default function LoginForm() {
       </Form.Group>
 
       <div className="solicitud-form-submit mt-5">
-          <button className="rounded-pill" type="submit">Ingresar</button>
-        </div>
+        <button className="rounded-pill" type="submit">
+          Ingresar
+        </button>
+      </div>
 
       <p className="recuperar-contra">
-        <a href="/recuperar-contrasena">¿Olvidaste tu contraseña?</a>
+        <Link to="/recuperar-contrasena">¿Olvidaste tu contraseña?</Link>
       </p>
 
-
       <p className="registro-texto">
-  ¿Eres nuevo en Photo Bogotá?
-  <a href="/creacion-cuenta"> Crea tu cuenta</a>
-</p>
-
+        ¿Eres nuevo en Photo Bogotá?
+        <Link to="/creacion-cuenta"> Crea tu cuenta</Link>
+      </p>
     </Form>
   );
-
 }
