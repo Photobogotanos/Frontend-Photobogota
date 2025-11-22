@@ -4,8 +4,8 @@ import './SolicitudSocioPage.css';
 
 const SolicitudSocioPage = () => {
   return (
-    <div className="solicitud-socio-page">
-      <Container>
+    <div className="solicitud-socio-page mt-5">
+      <Container className="mt-3">
         <SolicitudSocioForm />
       </Container>
     </div>

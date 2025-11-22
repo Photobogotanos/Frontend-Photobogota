@@ -209,3 +209,18 @@
 .terms-btn-accept:active {
   transform: translateY(0);
 }
+
+.terminos-label {
+  font-size: 0.95rem;
+  color: var(--color-dark);
+}
+
+.terminos-link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.terminos-link:hover {
+  color: #0056b3;
+}

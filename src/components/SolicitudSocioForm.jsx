@@ -4,7 +4,6 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import logo from "../assets/images/logo.png";
 import "./SolicitudSocioForm.css";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
@@ -188,7 +187,6 @@ const SolicitudSocioForm = () => {
   return (
     <div>
       <div className="solicitud-form-header">
-        <img src={logo} alt="Logo" className="solicitud-form-logo" />
         <h2 className="solicitud-form-title">Solicitud para ser socio</h2>
         <p className="solicitud-form-subtitle">
           Completa todos los campos obligatorios *
@@ -504,14 +502,10 @@ const SolicitudSocioForm = () => {
                 }
                 required
                 label={
-                  <span>
+                  <span className="terminos-label">
                     Acepto los{" "}
                     <span
-                      style={{
-                        color: "#007bff",
-                        cursor: "pointer",
-                        textDecoration: "underline",
-                      }}
+                      className="terminos-link"
                       onClick={() => setShowModal(true)}
                     >
                       términos y condiciones
