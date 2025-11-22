@@ -1,23 +1,30 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import Image from 'react-bootstrap/Image';
 import './MenuSuperior.css';
+import logo from '../assets/images/logo.png';
 
-export default function MenuSuperior(){
-    return( 
-        <Navbar expand="lg" className="bg-body-tertiary" fill="true">
-      <Container className="menu-container">
-        <Navbar.Brand href="#home" className="menu-inicio-logo">Photo Bogotá</Navbar.Brand>
+export default function MenuSuperior() {
+  return (
+    <Navbar expand="lg" fixed="top" className="navbar-custom shadow-sm py-2">
+      <Container fluid className="menu-container px-4">
+        
+        <Navbar.Brand href="/" className="brand-wrapper d-flex align-items-center">
+          <Image src={logo} alt="Logo PhotoBogotá" className="brand-logo" />
+          <span className="brand-title ms-2">Photo Bogotá</span>
+        </Navbar.Brand>
+
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link href="#home">¿Quieres ser socio?</Nav.Link>
-            <Nav.Link href="#link">Quienes somos</Nav.Link>
-            <Nav.Link href="#login" className='inicio-sesion'>Iniciar Sesión</Nav.Link>
+          <Nav className="ms-auto menu-links">
+            <Nav.Link href="/solicitud-socio">¿Quieres ser socio?</Nav.Link>
+            <Nav.Link href="/">Quiénes somos</Nav.Link>
+            <Nav.Link href="/login" className="inicio-sesion">Iniciar Sesión</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
-    ) 
+  );
 }

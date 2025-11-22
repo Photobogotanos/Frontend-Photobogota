@@ -1,9 +1,54 @@
-.menu-inicio-logo{
-    padding-right: 80px;
+.navbar-custom {
+  background-color: var(--color-light);
+  width: 100%;
+  border-bottom: 1px solid #eee;
 }
-.menu-container{
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    background-color:  var(--color-light);
+
+.menu-container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.brand-title {
+  font-family: "SF Pro", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-dark);
+  letter-spacing: -0.5px;
+}
+
+.menu-links .nav-link {
+  font-family: "SF Pro", sans-serif;
+  font-weight: 500;
+  color: var(--color-dark);
+  margin-left: 1rem;
+}
+
+.menu-links .nav-link:hover {
+  color: var(--color-primary);
+}
+
+.inicio-sesion {
+  padding: 6px 14px !important;
+  border-radius: 50px;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary) !important;
+  font-weight: 600;
+}
+
+.inicio-sesion:hover {
+  background-color: var(--color-primary);
+  color: #fff !important;
 }
