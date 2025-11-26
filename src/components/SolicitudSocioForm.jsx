@@ -30,7 +30,8 @@ import Swal from "sweetalert2";
 
 const SolicitudSocioForm = () => {
   const [formData, setFormData] = useState({
-    nombre: "",
+    nombres: "",
+    apellidos: "",
     email: "",
     telefono: "",
     fechaNacimiento: "",
@@ -71,8 +72,12 @@ const SolicitudSocioForm = () => {
     e.preventDefault();
 
     // Validaciones
-    if (!formData.nombre.trim()) {
+    if (!formData.nombres.trim()) {
       return Swal.fire("Advertencia", "El nombre es obligatorio", "warning");
+    }
+
+    if (!formData.apellidos.trim()) {
+      return Swal.fire("Advertencia", "Los apellidos son obligatorios", "warning");
     }
 
     if (!formData.email.trim()) {
@@ -198,8 +203,8 @@ const SolicitudSocioForm = () => {
           {/* Columna 1 */}
           <Col md={6}>
             <Form.Group className="mb-3">
-              <Form.Label className="solicitud-form-label" htmlFor="nombre">
-                Nombre completo <MdDriveFileRenameOutline />
+              <Form.Label className="solicitud-form-label" htmlFor="nombres">
+                Nombres <MdDriveFileRenameOutline />
                 <OverlayTrigger
                   placement="right"
                   overlay={<Tooltip>Campo obligatorio</Tooltip>}
@@ -208,9 +213,9 @@ const SolicitudSocioForm = () => {
                 </OverlayTrigger>
               </Form.Label>
               <Form.Control
-                id="nombre"
-                name="nombre"
-                value={formData.nombre}
+                id="nombres"
+                name="nombres"
+                value={formData.nombres}
                 onChange={handleChange}
                 className="form-control-no-focus rounded-pill"
                 required
@@ -259,6 +264,11 @@ const SolicitudSocioForm = () => {
                   if (!/^\d+$/.test(e.data)) {
                     e.preventDefault();
                   }
+
+                  if (e.target.value.length >= 10) {
+                    e.preventDefault();
+                  }
+
                 }}
                 //Evitar pegar texto no numérico
                 onPaste={(e) => {
@@ -348,6 +358,27 @@ const SolicitudSocioForm = () => {
 
           {/* Columna 2 */}
           <Col md={6}>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="solicitud-form-label" htmlFor="apellidos">
+                Apellidos <MdDriveFileRenameOutline />
+                <OverlayTrigger
+                  placement="right"
+                  overlay={<Tooltip>Campo obligatorio</Tooltip>}
+                >
+                  <span> *</span>
+                </OverlayTrigger>
+              </Form.Label>
+              <Form.Control
+                id="apellidos"
+                name="apellidos"
+                value={formData.apellidos}
+                onChange={handleChange}
+                className="form-control-no-focus rounded-pill"
+                required
+              />
+            </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label className="solicitud-form-label" htmlFor="direccion">
                 Dirección <FaStreetView />
@@ -517,7 +548,7 @@ const SolicitudSocioForm = () => {
           </Col>
         </Row>
 
-        <div className="solicitud-form-submit mt-5">
+        <div className="solicitud-form-submit mt-3">
           <button
             className="solicitud-form-button rounded-pill"
             type="submit"
