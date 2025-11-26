@@ -17,3 +17,18 @@
 .creacion-form-submit{
     text-align: center;
 }
+
+.register-form-cuenta{
+    font-weight: bold;
+}
+
+.creacion-formulario-label{
+      text-align: start;
+    width: 100%;
+  font-weight: bold;
+}
+
+span{
+    color: red;
+    cursor: pointer;
+}

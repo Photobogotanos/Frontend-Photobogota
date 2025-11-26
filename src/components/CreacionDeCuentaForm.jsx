@@ -2,41 +2,64 @@ import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 import Form from 'react-bootstrap/Form';
-import logo from "../assets/images/logo.png";
 import './CreacionDeCuentaForm.css';
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+import { MdDriveFileRenameOutline } from "react-icons/md";
+import { MdOutlineEmail } from "react-icons/md";
+import { MdDateRange } from "react-icons/md";
+
 
 function FormularioCreacion() {
   return (
     <Form>
-
-      <div className="text-center mb-4">
-        <img 
-          src={logo} 
-          alt="Logo Photo Bogota" 
-          className="creacion-logo"
-         
-        />
-      </div>
-
-      <h3 className="text-center">Registro en Photo Bogota</h3>
+      <h3 className="text-center mt-5 register-form-cuenta">Registro en Photo Bogota</h3>
 
       <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label className="creacion-formulario-label"> Email* </Form.Label>
+        <Form.Label className="creacion-formulario-label">Email  <MdOutlineEmail/>
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip>Campo obligatorio</Tooltip>}
+        >
+          <span> *</span>
+        </OverlayTrigger>
+        </Form.Label>
         <Form.Control type="email" placeholder="" className="rounded-pill" />
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label className="creacion-formulario-label">Nombre de usuario *</Form.Label>
-        <Form.Control className="rounded-pill" name="user" />
+        <Form.Label className="creacion-formulario-label">Nombres <MdDriveFileRenameOutline/>
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip>Campo obligatorio</Tooltip>}
+        >
+          <span> *</span>
+        </OverlayTrigger>
+        </Form.Label>
+        <Form.Control className="rounded-pill" name="name" />
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label className="creacion-formulario-label">Nombre de usuario *</Form.Label>
-        <Form.Control className="rounded-pill" name="user" />
+        <Form.Label className="creacion-formulario-label">Apellidos <MdDriveFileRenameOutline/> 
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip>Campo obligatorio</Tooltip>}
+        >
+          <span> *</span>
+        </OverlayTrigger>
+        </Form.Label>
+        <Form.Control className="rounded-pill" name="apellido" />
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label className="creacion-formulario-label">Fecha de nacimiento *</Form.Label>
+        <Form.Label className="creacion-formulario-label">Fecha de nacimiento <MdDateRange/>
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip>Campo obligatorio</Tooltip>}
+        >
+          <span> *</span>
+        </OverlayTrigger>
+          </Form.Label>
         <Flatpickr
           options={{
             dateFormat: "Y-m-d",
@@ -49,12 +72,26 @@ function FormularioCreacion() {
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label className="creacion-formulario-label" >Password</Form.Label>
+        <Form.Label className="creacion-formulario-label" >Password 
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip>Campo obligatorio</Tooltip>}
+        >
+          <span> *</span>
+        </OverlayTrigger>
+        </Form.Label>
         <Form.Control type="password" className="rounded-pill" />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword2">
-        <Form.Label className="creacion-formulario-label" >Confirmación de la password</Form.Label>
+        <Form.Label className="creacion-formulario-label" >Confirmación de la password 
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip>Campo obligatorio</Tooltip>}
+        >
+          <span> *</span>
+        </OverlayTrigger>
+        </Form.Label>
         <Form.Control type="password" className="rounded-pill" />
       </Form.Group>
       <div className="creacion-form-submit mt-5">
