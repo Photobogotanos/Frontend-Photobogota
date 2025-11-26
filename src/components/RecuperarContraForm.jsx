@@ -1,38 +1,66 @@
 import { useState } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form } from "react-bootstrap";
+import Swal from "sweetalert2";
 import logo from "../assets/images/logo.png";
 import "./RecuperarContraForm.css";
 import { Link } from "react-router-dom";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 
 export default function RecuperarContraForm() {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+
+  const RequiredMark = () => (
+    <OverlayTrigger
+      placement="right"
+      overlay={<Tooltip>Campo obligatorio</Tooltip>}
+    >
+      <span className="required-mark">*</span>
+    </OverlayTrigger>
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!email) {
-      setError("El correo es obligatorio");
-      return;
+    if (!email.trim()) {
+      return Swal.fire({
+        icon: "warning",
+        title: "Correo requerido",
+        text: "Por favor ingresa tu correo electrónico.",
+        confirmButtonColor: "#3085d6",
+      });
     }
 
-    setError("");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return Swal.fire({
+        icon: "error",
+        title: "Correo inválido",
+        text: "Ingresa un correo electrónico válido.",
+        confirmButtonColor: "#d33",
+      });
+    }
+
+    Swal.fire({
+      icon: "success",
+      title: "Código enviado",
+      text: "Hemos enviado un código de recuperación a tu correo.",
+      confirmButtonColor: "#28a745",
+    });
+
     console.log("Correo para recuperación:", email);
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      {error && <Alert variant="danger">{error}</Alert>}
-
+    <Form onSubmit={handleSubmit} className="recuperar-form-container">
       <div className="login-form-header">
         <img src={logo} alt="Logo" className="login-form-logo" />
         <h2 className="login-form-title">Restablecer contraseña</h2>
       </div>
-      <br />
 
       <Form.Group className="mb-4">
-        <Form.Label className="login-form-label mb-2">
-          Ingresa tu correo *
+        <Form.Label className="login-form-label">
+          Ingresa tu correo <RequiredMark />
         </Form.Label>
 
         <Form.Control
@@ -45,8 +73,11 @@ export default function RecuperarContraForm() {
       </Form.Group>
 
       <div className="solicitud-form-submit mt-4">
-        <button className="rounded-pill" type="submit">
-          Enviar Código
+        <button
+          className="recuperar-contra-submit-btn rounded-pill"
+          type="submit"
+        >
+          <b>Enviar Código</b>
         </button>
       </div>
 
