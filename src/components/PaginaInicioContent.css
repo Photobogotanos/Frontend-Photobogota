@@ -1,0 +1,19 @@
+.pg-inicio-titulo{
+    font-weight: bold;
+    margin-top: 2vh;
+}
+.pg-inicio-parrafo{
+    font-size: x-large;
+}
+.pg-inicio-imagen-main {
+  width: 65vw;
+  height: 80vh;
+  margin-bottom: 70px;
+  border-radius: 10px;
+}
+
+.pg-inicio-img-inspo{
+    margin-top: 5vh;
+    width: 20vw;
+    height: 30vh;
+}
