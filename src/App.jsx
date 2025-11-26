@@ -6,6 +6,7 @@ import SolicitudSocioPage from './pages/SolicitudSocioPage.jsx';
 import CreacionDeCuentaPage from './pages/CreacionDeCuentaPage.jsx';
 import RecuperarContraPage from './pages/RecuperarContraPage.jsx';
 import MenuSuperior from "./components/MenuSuperior";
+import ComunidadPage from './pages/ComunidadPage.jsx';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/creacion-cuenta" element={<CreacionDeCuentaPage />} />
         <Route path="/solicitud-socio" element={<SolicitudSocioPage />} />
         <Route path="/recuperar-contrasena" element={<RecuperarContraPage />} />
+        <Route path="/comunidad" element={<ComunidadPage />} />
       </Routes>
 
     </BrowserRouter>
