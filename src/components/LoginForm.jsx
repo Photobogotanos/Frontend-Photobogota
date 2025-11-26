@@ -1,36 +1,45 @@
 import { useState } from "react";
 import { Form } from "react-bootstrap";
-import Swal from "sweetalert2";
-import logo from "../assets/images/logo.png";
 import "./LoginForm.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [usuarioOCorreo, setUsuarioOCorreo] = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
 
-  const handleSubmit = (e) => {
+  const navegar = useNavigate();
+
+  const manejarEnvio = (e) => {
     e.preventDefault();
 
-    if (!email.trim() || !password.trim()) {
+    if (!usuarioOCorreo.trim()) {
       return Swal.fire({
         icon: "warning",
         title: "Campos obligatorios",
-        text: "Debes completar todos los campos.",
-        confirmButtonColor: "#3085d6",
+        text: "Debes ingresar tu usuario o correo.",
       });
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!contrasena.trim()) {
+      return Swal.fire({
+        icon: "warning",
+        title: "Campos obligatorios",
+        text: "Debes ingresar la contraseña.",
+      });
+    }
 
-    if (!emailRegex.test(email)) {
+    const esCorreoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usuarioOCorreo);
+
+    if (!esCorreoValido && usuarioOCorreo.length < 3) {
       return Swal.fire({
         icon: "error",
-        title: "Correo inválido",
-        text: "Por favor ingresa un correo electrónico válido.",
-        confirmButtonColor: "#d33",
+        title: "Usuario inválido",
+        text: "Debe ser un correo válido o un nombre de usuario con mínimo 3 caracteres.",
       });
     }
 
@@ -38,53 +47,74 @@ export default function LoginForm() {
       icon: "success",
       title: "Inicio de sesión exitoso",
       text: "Bienvenido a Photo Bogotá",
-      confirmButtonColor: "#28a745",
     });
 
-    console.log("Email:", email);
-    console.log("Password:", password);
+    localStorage.setItem("logueado", "true");
+    localStorage.setItem(
+      "usuario",
+      JSON.stringify({
+        nombre: "Usuario Demo",
+        username: "@" + usuarioOCorreo.split("@")[0],
+        email: usuarioOCorreo,
+      })
+    );
+
+    navegar("/comunidad");
   };
 
-  const RequiredMark = () => (
-    <OverlayTrigger
-      placement="right"
-      overlay={<Tooltip>Campo obligatorio</Tooltip>}
-    >
-      <span className="required-mark">*</span>
-    </OverlayTrigger>
-  );
-
   return (
-    <Form onSubmit={handleSubmit} className="login-form-container">
+    <Form onSubmit={manejarEnvio} className="login-form-container">
       <div className="login-form-header">
-        <img src={logo} alt="Logo" className="login-form-logo" />
         <h2 className="login-form-title">Ingresa a Photo Bogotá</h2>
       </div>
 
-      <Form.Group className="mb-4">
+      <Form.Group className="mt-5">
         <Form.Label className="login-form-label">
-          Nombre de Usuario <RequiredMark />
+          Usuario o Correo <FaUser />
+          <OverlayTrigger
+            placement="right"
+            overlay={<Tooltip>Campo obligatorio</Tooltip>}
+          >
+            <span> *</span>
+          </OverlayTrigger>
         </Form.Label>
-        <Form.Control
-          className="grupitos rounded-pill"
-          type="email"
-          placeholder="Ingresa el correo"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+
+        <div className="input-icon-container">
+          <Form.Control
+            className="grupitos rounded-pill input-with-icon"
+            type="text"
+            value={usuarioOCorreo}
+            onChange={(e) => setUsuarioOCorreo(e.target.value)}
+          />
+        </div>
       </Form.Group>
 
-      <Form.Group className="mb-4">
+      <Form.Group className="mt-4">
         <Form.Label className="login-form-label">
-          Contraseña <RequiredMark />
+          Contraseña <FaLock />
+          <OverlayTrigger
+            placement="right"
+            overlay={<Tooltip>Campo obligatorio</Tooltip>}
+          >
+            <span> *</span>
+          </OverlayTrigger>
         </Form.Label>
-        <Form.Control
-          className="grupitos rounded-pill"
-          type="password"
-          placeholder="Ingresa tu contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+
+        <div className="input-icon-container">
+          <Form.Control
+            className="grupitos rounded-pill input-with-icon"
+            type={mostrarContrasena ? "text" : "password"}
+            value={contrasena}
+            onChange={(e) => setContrasena(e.target.value)}
+          />
+
+          <span
+            className="eye-icon"
+            onClick={() => setMostrarContrasena(!mostrarContrasena)}
+          >
+            {mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
       </Form.Group>
 
       <div className="solicitud-form-submit mt-5">
@@ -98,8 +128,10 @@ export default function LoginForm() {
       </p>
 
       <p className="registro-texto">
-        ¿Eres nuevo en Photo Bogotá?
-        <Link to="/creacion-cuenta"> Crear cuenta</Link>
+        ¿Eres nuevo en Photo Bogotá?{" "}
+        <Link to="/creacion-cuenta">
+          <b>Crear cuenta</b>
+        </Link>
       </p>
     </Form>
   );
