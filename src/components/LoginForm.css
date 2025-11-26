@@ -1,42 +1,129 @@
-.login-form-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
+/* Contenedor principal */
+.login-form-container {
+  padding: 20px 25px;
 }
 
-.login-form-logo {
-  width: 120px;
-  margin-bottom: 10px;
-}
-
+/* Header */
 .login-form-title {
-  font-weight: bold;
-  color: #212529;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -0.5px;
+  position: relative;
+  display: inline-block;
+  color: #0a0a0a;
+  padding-bottom: 12px;
+  animation: fadeInTitle 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Doble línea decorativa inferior */
+.login-form-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: #e0e0e0;
+  border-radius: 2px;
+}
 
+.login-form-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #806FBE, #a294d0, #806FBE);
+  background-size: 200% 100%;
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(128, 111, 190, 0.4);
+  animation: lineExpand 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards,
+             shimmer 2.5s ease-in-out 1.5s infinite;
+  z-index: 1;
+}
+
+@keyframes fadeInTitle {
+  from { 
+    opacity: 0; 
+    transform: translateY(-8px);
+    filter: blur(2px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes lineExpand {
+  to { 
+    width: 100%;
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% { 
+    background-position: 0% 0%;
+  }
+  50% { 
+    background-position: 200% 0%;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-form-title {
+    font-size: 1.6rem;
+  }
+}
+
+/* Labels */
 .login-form-label {
   text-align: start;
   width: 100%;
   font-weight: bold;
   font-size: 17px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
+/* Asterisco rojo */
+.required-mark {
+  color: red;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Inputs */
 .grupitos {
-    padding: 30px;
+  padding: 12px 18px;
+  font-size: 16px;
 }
 
-.solicitud-form-submit button    {
+.login-submit-btn {
   text-align: center;
   background-color: var(--color-primary);
   color: white;
   border: none;
   padding: 12px 28px;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
+  font-weight: bold;
+  border-radius: 50px;
+  transition: all 0.25s ease-in-out;
 }
 
+.login-submit-btn:hover {
+  transform: translateY(-4px) scale(1.03); /* Igual al de SolicitudSocio */
+  box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
+}
+
+/* Texto inferior */
 .registro-texto {
-    text-align: center;
+  text-align: center;
   font-weight: bold;
   font-size: 18px;
   margin-top: 10px;
@@ -52,6 +139,7 @@
   color: #0056b3;
 }
 
+/* Recuperar contraseña */
 .recuperar-contra {
   text-align: center;
   margin-top: 5px;
@@ -65,5 +153,34 @@
 
 .recuperar-contra a:hover {
   text-decoration: underline;
-  color: #777272ff;
+  color: #777272;
+}
+
+.login-form-label span {
+  color: red;
+  cursor: pointer;
+}
+
+.grupitos:focus {
+  box-shadow: none !important;
+  border-color: #d9d9d9 !important;
+  outline: none !important;
+}
+
+.input-icon-container {
+  position: relative;
+}
+
+.input-with-icon {
+  padding-right: 45px;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #6c757d;
+  cursor: pointer;
 }
