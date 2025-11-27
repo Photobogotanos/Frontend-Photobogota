@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Container, Nav, Navbar, Image, Button } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaBars, FaBell, FaPlus } from "react-icons/fa";
 import MenuLateral from "./MenuLateral";
 import "./MenuSuperior.css";
@@ -11,7 +11,9 @@ export default function MenuSuperior() {
   const [mostrarSidebar, setMostrarSidebar] = useState(false);
   const [notificaciones] = useState(3);
   const navegar = useNavigate();
+  const location = useLocation();
 
+  // Verificar el estado de login al montar el componente y cuando cambie la ruta
   useEffect(() => {
     const verificarLogin = () => {
       const estadoLogin = localStorage.getItem("logueado") === "true";
@@ -19,12 +21,20 @@ export default function MenuSuperior() {
     };
 
     verificarLogin();
-    window.addEventListener("storage", verificarLogin);
+
+    // Escuchar cambios en localStorage
+    const handleStorageChange = (e) => {
+      if (e.key === "logueado" || e.key === null) {
+        verificarLogin();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
 
     return () => {
-      window.removeEventListener("storage", verificarLogin);
+      window.removeEventListener("storage", handleStorageChange);
     };
-  }, []);
+  }, [location]); // Re-verificar cuando cambie la ruta
 
   const abrirSidebar = () => setMostrarSidebar(true);
   const cerrarSidebar = () => setMostrarSidebar(false);
@@ -45,6 +55,7 @@ export default function MenuSuperior() {
             <button
               onClick={abrirSidebar}
               className="hamburger-btn p-0 me-3"
+              aria-label="Abrir menú lateral"
             >
               <FaBars />
             </button>
@@ -81,17 +92,18 @@ export default function MenuSuperior() {
               <Button
                 as={Link}
                 to="/crear-publicacion"
-                className="btn-crear-publicacion me-3"
+                className="btn-crear-publicacion"
               >
-                <FaPlus className="me-2" /> 
+                <FaPlus /> 
                 <span className="texto-completo">Crear Publicación</span>
                 <span className="texto-corto">Crear</span>
               </Button>
               
-              <button 
-                className="btn-notificaciones position-relative"
+              <button
                 as={Link}
                 to="/notificaciones"
+                className="btn-notificaciones position-relative"
+                aria-label={`Notificaciones (${notificaciones})`}
               >
                 <FaBell />
                 {notificaciones > 0 && (

@@ -1,66 +1,11 @@
 .navbar-custom {
   background-color: var(--color-light);
   width: 100%;
-  border-bottom: 1px solid #eee;
-}
-
-.menu-container {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
-
-.brand-wrapper {
-  display: flex;
-  align-items: center;
-}
-
-.brand-logo {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-}
-
-.brand-title {
-  font-family: "SF Pro", sans-serif;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--color-dark);
-  letter-spacing: -0.5px;
-}
-
-.menu-links .nav-link {
-  font-family: "SF Pro", sans-serif;
-  font-weight: 500;
-  color: var(--color-dark);
-  margin-left: 1rem;
-}
-
-.menu-links .nav-link:hover {
-  color: var(--color-primary);
-}
-
-.inicio-sesion {
-  padding: 6px 14px !important;
-  border-radius: 50px;
-  border: 1px solid var(--color-primary);
-  color: var(--color-primary) !important;
-  font-weight: 600;
-}
-
-.inicio-sesion:hover {
-  background-color: var(--color-primary);
-  color: #fff !important;
-}
-
-/* Navbar principal */
-.navbar-custom {
-  background-color: var(--color-light);
-  width: 100%;
   border-bottom: 1px solid rgba(128, 111, 190, 0.1);
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  animation: slideDown 0.4s ease-out;
 }
 
 .navbar-custom.scrolled {
@@ -73,11 +18,12 @@
   width: 100%;
 }
 
-/* Brand */
 .brand-wrapper {
   display: flex;
   align-items: center;
+  gap: 10px;
   transition: transform 0.3s ease;
+  text-decoration: none;
 }
 
 .brand-wrapper:hover {
@@ -96,7 +42,7 @@
 }
 
 .brand-title {
-  font-family: "SF Pro", sans-serif;
+  font-family: "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   background: linear-gradient(135deg, var(--color-primary) 0%, #9B8BC9 100%);
@@ -104,11 +50,11 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.8px;
+  margin: 0;
 }
 
-/* Links del menú */
 .menu-links .nav-link {
-  font-family: "SF Pro", sans-serif;
+  font-family: "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-weight: 600;
   color: var(--color-dark);
   margin-left: 1.2rem;
@@ -116,6 +62,7 @@
   position: relative;
   padding: 8px 12px;
   border-radius: 10px;
+  text-decoration: none;
 }
 
 .menu-links .nav-link::after {
@@ -140,23 +87,25 @@
   transform: translateX(-50%) scaleX(1);
 }
 
+/* Botón de Iniciar Sesión */
 .inicio-sesion {
   padding: 10px 24px !important;
   border-radius: 50px;
-  background: linear-gradient(135deg, var(--color-primary) 0%, #9B8BC9 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9B8BC9 100%) !important;
   color: white !important;
   font-weight: 600;
-  border: none;
+  border: none !important;
   box-shadow: 0 4px 12px rgba(128, 111, 190, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: 1.5rem !important;
 }
 
 .inicio-sesion::after {
-  display: none;
+  display: none !important;
 }
 
 .inicio-sesion:hover {
-  background: linear-gradient(135deg, #6f5ea8 0%, #8a7bb8 100%);
+  background: linear-gradient(135deg, #6f5ea8 0%, #8a7bb8 100%) !important;
   color: white !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(128, 111, 190, 0.5);
@@ -166,7 +115,21 @@
   transform: translateY(0);
 }
 
-/* Botón hamburguesa */
+/* Forzar estilos en Bootstrap Nav.Link */
+.nav-link.inicio-sesion,
+.nav-link.inicio-sesion:focus,
+.nav-link.inicio-sesion:visited {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9B8BC9 100%) !important;
+  color: white !important;
+}
+
+.acciones-usuario {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Botón Hamburguesa */
 .hamburger-btn {
   color: var(--color-primary);
   font-size: 26px;
@@ -179,6 +142,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .hamburger-btn:hover {
@@ -191,37 +155,34 @@
 }
 
 .hamburger-btn:focus {
+  outline: none;
   box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.2);
 }
 
-/* Acciones de usuario logueado */
-.acciones-usuario {
-  gap: 12px;
-  display: flex;
-  align-items: center;
-}
-
-/* Botón crear publicación */
+/* Botón Crear Publicación */
 .btn-crear-publicacion {
   background: linear-gradient(135deg, var(--color-primary) 0%, #9B8BC9 100%);
   border: none;
   border-radius: 50px;
   padding: 10px 24px;
   font-weight: 600;
-  color: white;
+  color: white !important;
   display: flex;
   align-items: center;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 12px rgba(128, 111, 190, 0.3);
   gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .btn-crear-publicacion:hover {
   background: linear-gradient(135deg, #6f5ea8 0%, #8a7bb8 100%);
-  color: white;
+  color: white !important;
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(128, 111, 190, 0.5);
+  text-decoration: none;
 }
 
 .btn-crear-publicacion:active {
@@ -229,15 +190,16 @@
   box-shadow: 0 4px 12px rgba(128, 111, 190, 0.4);
 }
 
+.btn-crear-publicacion svg {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
 .btn-crear-publicacion .texto-corto {
   display: none;
 }
 
-.btn-crear-publicacion svg {
-  font-size: 16px;
-}
-
-/* Botón notificaciones */
+/* Botón Notificaciones */
 .btn-notificaciones {
   color: #4b5563;
   font-size: 24px;
@@ -251,6 +213,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .btn-notificaciones:hover {
@@ -264,9 +227,11 @@
 }
 
 .btn-notificaciones:focus {
+  outline: none;
   box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.2);
 }
 
+/* Badge de Notificaciones */
 .badge-notificaciones {
   position: absolute;
   top: 6px;
@@ -286,32 +251,30 @@
   animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
-/* Animaciones de carga */
 @keyframes slideDown {
   from {
     transform: translateY(-100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
   }
 }
 
-.navbar-custom {
-  animation: slideDown 0.4s ease-out;
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
 }
 
-/* Responsive */
 @media (max-width: 991px) {
   .menu-links {
     background: var(--color-bg);
@@ -329,6 +292,7 @@
   .inicio-sesion {
     margin-top: 12px;
     text-align: center;
+    display: block;
   }
 }
 
@@ -372,6 +336,7 @@
 @media (max-width: 576px) {
   .brand-title {
     font-size: 1.3rem;
+    letter-spacing: -0.6px;
   }
 
   .brand-logo {
@@ -384,8 +349,26 @@
     font-size: 14px;
   }
 
+  .btn-crear-publicacion svg {
+    font-size: 14px;
+  }
+
   .navbar-custom {
     padding-top: 8px;
     padding-bottom: 8px;
+  }
+
+  .hamburger-btn {
+    font-size: 22px;
+    padding: 8px 10px;
+  }
+
+  .btn-notificaciones {
+    font-size: 20px;
+    padding: 8px 10px;
+  }
+
+  .acciones-usuario {
+    gap: 6px;
   }
 }
