@@ -1,8 +1,15 @@
-export default function ComunidadPage() {
-    return (
-        <div>
-            <h1>Comunidad Page</h1>
-            <p>Bienvenido a la página de la comunidad.</p>
-        </div>
-    );
-}
+import ComunidadContent from "../components/ComunidadContent";
+import Container from 'react-bootstrap/Container';
+import './ComunidadPage.css';
+
+const ComunidadPage = () => {
+  return (
+    <div className="comunidad-page mt-5">
+      <Container className="mt-3">
+        <ComunidadContent />
+      </Container>
+    </div>
+  );
+};
+
+export default ComunidadPage;

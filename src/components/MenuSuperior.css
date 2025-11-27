@@ -52,3 +52,340 @@
   background-color: var(--color-primary);
   color: #fff !important;
 }
+
+/* Navbar principal */
+.navbar-custom {
+  background-color: var(--color-light);
+  width: 100%;
+  border-bottom: 1px solid rgba(128, 111, 190, 0.1);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.navbar-custom.scrolled {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.menu-container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Brand */
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.brand-wrapper:hover {
+  transform: scale(1.02);
+}
+
+.brand-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.brand-wrapper:hover .brand-logo {
+  transform: rotate(5deg);
+}
+
+.brand-title {
+  font-family: "SF Pro", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9B8BC9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.8px;
+}
+
+/* Links del menú */
+.menu-links .nav-link {
+  font-family: "SF Pro", sans-serif;
+  font-weight: 600;
+  color: var(--color-dark);
+  margin-left: 1.2rem;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+.menu-links .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 80%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), #9B8BC9);
+  border-radius: 3px 3px 0 0;
+  transition: transform 0.3s ease;
+}
+
+.menu-links .nav-link:hover {
+  color: var(--color-primary);
+  background-color: rgba(128, 111, 190, 0.08);
+}
+
+.menu-links .nav-link:hover::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+.inicio-sesion {
+  padding: 10px 24px !important;
+  border-radius: 50px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9B8BC9 100%);
+  color: white !important;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4px 12px rgba(128, 111, 190, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.inicio-sesion::after {
+  display: none;
+}
+
+.inicio-sesion:hover {
+  background: linear-gradient(135deg, #6f5ea8 0%, #8a7bb8 100%);
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(128, 111, 190, 0.5);
+}
+
+.inicio-sesion:active {
+  transform: translateY(0);
+}
+
+/* Botón hamburguesa */
+.hamburger-btn {
+  color: var(--color-primary);
+  font-size: 26px;
+  text-decoration: none;
+  border: none;
+  background: rgba(128, 111, 190, 0.1);
+  border-radius: 12px;
+  padding: 10px 12px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger-btn:hover {
+  background: rgba(128, 111, 190, 0.2);
+  transform: scale(1.05);
+}
+
+.hamburger-btn:active {
+  transform: scale(0.95);
+}
+
+.hamburger-btn:focus {
+  box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.2);
+}
+
+/* Acciones de usuario logueado */
+.acciones-usuario {
+  gap: 12px;
+  display: flex;
+  align-items: center;
+}
+
+/* Botón crear publicación */
+.btn-crear-publicacion {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9B8BC9 100%);
+  border: none;
+  border-radius: 50px;
+  padding: 10px 24px;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(128, 111, 190, 0.3);
+  gap: 8px;
+}
+
+.btn-crear-publicacion:hover {
+  background: linear-gradient(135deg, #6f5ea8 0%, #8a7bb8 100%);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(128, 111, 190, 0.5);
+}
+
+.btn-crear-publicacion:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(128, 111, 190, 0.4);
+}
+
+.btn-crear-publicacion .texto-corto {
+  display: none;
+}
+
+.btn-crear-publicacion svg {
+  font-size: 16px;
+}
+
+/* Botón notificaciones */
+.btn-notificaciones {
+  color: #4b5563;
+  font-size: 24px;
+  text-decoration: none;
+  padding: 10px 12px;
+  position: relative;
+  transition: all 0.3s ease;
+  background: transparent;
+  border-radius: 12px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-notificaciones:hover {
+  color: var(--color-primary);
+  background: rgba(128, 111, 190, 0.1);
+  transform: scale(1.05);
+}
+
+.btn-notificaciones:active {
+  transform: scale(0.95);
+}
+
+.btn-notificaciones:focus {
+  box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.2);
+}
+
+.badge-notificaciones {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Animaciones de carga */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.navbar-custom {
+  animation: slideDown 0.4s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .menu-links {
+    background: var(--color-bg);
+    padding: 20px;
+    border-radius: 16px;
+    margin-top: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .menu-links .nav-link {
+    margin: 8px 0;
+    padding: 12px 16px;
+  }
+
+  .inicio-sesion {
+    margin-top: 12px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn-crear-publicacion .texto-completo {
+    display: none;
+  }
+
+  .btn-crear-publicacion .texto-corto {
+    display: inline;
+  }
+
+  .btn-crear-publicacion {
+    padding: 10px 18px;
+    gap: 6px;
+  }
+
+  .hamburger-btn {
+    font-size: 24px;
+    padding: 8px 10px;
+  }
+
+  .btn-notificaciones {
+    font-size: 22px;
+    padding: 8px 10px;
+  }
+
+  .badge-notificaciones {
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+    top: 4px;
+    right: 4px;
+  }
+
+  .acciones-usuario {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  .brand-title {
+    font-size: 1.3rem;
+  }
+
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .btn-crear-publicacion {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .navbar-custom {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
