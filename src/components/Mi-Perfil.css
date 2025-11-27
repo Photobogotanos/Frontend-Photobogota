@@ -1,0 +1,119 @@
+/* CONTENEDOR GENERAL */
+.perfil-container {
+  padding: 30px 20px;
+  background: #f4f1ea;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.perfil-header {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  background: transparent;
+}
+
+.perfil-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.perfil-info h3 {
+  font-weight: 700;
+  margin-top: 5px;
+}
+
+.perfil-username {
+  color: #757575;
+  margin-top: -10px;
+}
+
+.perfil-descripcion {
+  font-size: 15px;
+  margin-top: 5px;
+  max-width: 550px;
+}
+
+/* BADGES */
+.perfil-badges {
+  display: flex;
+  gap: 10px;
+}
+
+.badge-miembro {
+  background: #d9fce3;
+  color: #167c4b;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.badge-nivel {
+  background: #ece4ff;
+  color: #6a3db8;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* STATS */
+.perfil-stats {
+  text-align: center;
+}
+
+.perfil-stat h4 {
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.perfil-editar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-editar-perfil {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #c9c9c9;
+  font-weight: bold;
+  background: white;
+}
+
+/* TABS */
+.perfil-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 35px;
+  border-bottom: 2px solid #d8d4c9;
+}
+
+.perfil-tabs button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  padding-bottom: 12px;
+  font-weight: 600;
+  color: #8b8a8a;
+  transition: 0.3s;
+}
+
+.perfil-tabs .tab-activa {
+  color: black;
+  border-bottom: 3px solid black;
+}
+
+/* GRID DE CARDS */
+.card-grid {
+  margin-top: 40px;
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}

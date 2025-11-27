@@ -6,7 +6,7 @@ import SolicitudSocioPage from './pages/SolicitudSocioPage.jsx';
 import CreacionDeCuentaPage from './pages/CreacionDeCuentaPage.jsx';
 import RecuperarContraPage from './pages/RecuperarContraPage.jsx';
 import MenuSuperior from "./components/MenuSuperior";
-import ComunidadPage from './pages/ComunidadPage.jsx';
+import ComunidadPage from './pages/ComunidadPage.jsx';  
 
 function App() {
 
