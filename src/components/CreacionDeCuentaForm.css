@@ -13,7 +13,19 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.25s ease;
 
+
 }
+.creacion-formulario-button:hover{
+    background-color: var(--color-primary-hover, #6a58ac);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.creacion-formulario-button:active{
+  transform: translateY(-1px) scale(0.98);
+}
+
+
 .creacion-form-submit{
     text-align: center;
 }
@@ -28,7 +40,7 @@
   font-weight: bold;
 }
 
-span{
+.creacion-formulario-label span{
     color: red;
     cursor: pointer;
 }
