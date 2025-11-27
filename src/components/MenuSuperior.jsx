@@ -67,7 +67,7 @@ export default function MenuSuperior() {
                   <Nav.Link as={Link} to="/solicitud-socio">
                     ¿Quieres ser socio?
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/">
+                  <Nav.Link as={Link} to="/nosotros">
                     Quiénes somos
                   </Nav.Link>
                   <Nav.Link as={Link} to="/login" className="inicio-sesion">
