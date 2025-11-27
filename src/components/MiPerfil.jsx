@@ -12,7 +12,7 @@ export default function MiPerfil() {
       {/* HEADER DEL PERFIL */}
       <div className="perfil-header">
         <img
-          src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e"
+          src=""
           alt="Foto perfil"
           className="perfil-avatar"
         />
@@ -40,7 +40,7 @@ export default function MiPerfil() {
 
         <Col className="perfil-editar">
           <Button variant="light" className="btn-editar-perfil">
-            ✏️ Editar perfil
+            Editar perfil
           </Button>
         </Col>
 
