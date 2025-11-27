@@ -15,7 +15,7 @@
   animation: fadeInTitle 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Doble línea decorativa inferior */
+/* Doble línea decorativa inf erior */
 .login-form-title::after {
   content: "";
   position: absolute;
