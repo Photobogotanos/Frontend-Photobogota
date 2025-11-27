@@ -1,5 +1,6 @@
 import "./PaginaInicioContent.css";
 import main from "../assets/images/pagina-inicio-main.png";
+import Footer from "./Footer.jsx"
 import inspo1 from "../assets/images/inspo1.png";
 import inspo2 from "../assets/images/inspo2.png";
 import inspo3 from "../assets/images/inspo3.png";
@@ -68,13 +69,18 @@ export default function PaginaInicioContent (){
                     <FaRegHeart /> 1386
                 </Col>
             </Row>
-            <h2 className="pg-inicio-titulo mt-5 pb-5">Como encontrar Spots</h2>
+            <h2 className="pg-inicio-titulo mt-5 ">Como encontrar Spots</h2>
             <Row>
                 <Col>
-                
+                    <h2 className="pg-inicio-titulo mt-5 ">Mapa</h2>
+                    <p className="pg-inicio-parrafo mb-5">Explora Bogotá a través de un mapa interactivo. Aquí encontrarás los mejores spots marcados para que los descubras fácil</p>
+                    <h2 className="pg-inicio-titulo mt-5 ">Explora por Categorías</h2>
+                    <p className="pg-inicio-parrafo mb-5">Filtra los spots según lo que quieras vivir: urbano, naturaleza, arte, comida o planes nocturnos. Así encuentras justo lo que buscas sin perder tiempo.</p>
+                    <h2 className="pg-inicio-titulo mt-5 ">Detalles del Spot</h2>
+                    <p className="pg-inicio-parrafo mb-5">Cada lugar viene con fotos, descripciones y tips para que sepas qué esperar antes de ir. Inspírate con lo que otros han compartido y arma tu plan perfecto.</p>
                 </Col>
                 <Col>
-                
+                    <div className="pg-inicio-contenedor"> <h2 className="pg-inicio-titulo mt-5 pb-5">Aquí sotito pondra el mapa de openlayers</h2> </div>
                 </Col>
             </Row>
         </div>   
