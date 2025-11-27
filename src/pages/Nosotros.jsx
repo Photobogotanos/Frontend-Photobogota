@@ -1,10 +1,21 @@
+import "./Nosotros.css";
+import "../components/NosotrosContent"
+import NosotrosContent from "../components/NosotrosContent";
+import { Container } from "react-bootstrap";
+
 const Nosotros = () => {
     return (
-        <div>
-            <h1>Nosotros</h1>
-            <p>Bienvenido a la página de Nosotros. Aquí encontrarás información sobre nuestra misión, visión y valores.</p>
-        </div>
+        <>
+            <div className="nosotros-page">
+                <Container className="mt-6">
+                    <NosotrosContent></NosotrosContent>
+                </Container>
+            </div>
+    </>
     );
 };
 
 export default Nosotros;
+
+
+

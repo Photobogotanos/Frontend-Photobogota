@@ -10,12 +10,14 @@
     height: 80vh;
     margin-bottom: 70px;
     border-radius: 10px;
+    object-fit: cover;
 }
 .pg-inicio-img-inspo{
     margin-top: 2vh;
     width: 20vw;
     height: 40vh;
     border-radius: 10px;
+    object-fit: cover;
 }
 .inspo-user{
     margin-top: 15px;
@@ -27,4 +29,7 @@
     height: 20vh;
     margin-bottom: 5vh;
     border-radius: 10px;
+}
+.leaflet-container{
+    height: 70vh;
 }
