@@ -1,35 +1,177 @@
-.pg-inicio-titulo{
-    font-weight: bold;
-    margin-top: 2vh;
+.pg-inicio-hero {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 6rem;
+  height: 85vh;
+  min-height: 600px;
 }
-.pg-inicio-parrafo{
-    font-size: x-large;
+
+.pg-inicio-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 10s ease-in-out;
 }
-.pg-inicio-imagen-main {
-    width: 66vw;
-    height: 80vh;
-    margin-bottom: 70px;
-    border-radius: 10px;
-    object-fit: cover;
+
+.pg-inicio-hero:hover img {
+  transform: scale(1.08);
 }
-.pg-inicio-img-inspo{
-    margin-top: 2vh;
-    width: 20vw;
-    height: 40vh;
-    border-radius: 10px;
-    object-fit: cover;
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.7) 100%);
 }
-.inspo-user{
-    margin-top: 15px;
-    font-weight: bold;
+
+.hero-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 4rem;
+  color: white;
+  max-width: 800px;
 }
-.pg-inicio-contenedor{
-    background-color: var(--color-light);
-    width: 40vh;
-    height: 20vh;
-    margin-bottom: 5vh;
-    border-radius: 10px;
+
+.hero-content h1 {
+  font-size: 4.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.1;
 }
-.leaflet-container{
-    height: 70vh;
+
+.hero-content p {
+  font-size: 1.5rem;
+  font-weight: 400;
+  opacity: 0.95;
+  max-width: 600px;
+}
+
+.section-title {
+  font-weight: 800;
+  font-size: 2.8rem;
+  margin: 4rem 0 3rem 0;
+  text-align: center;
+}
+
+/* Tarjetas de inspiración y spots */
+.card-inspo, .card-spot, .card-review {
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  height: 100%;
+}
+
+.card-inspo:hover, .card-spot:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.card-inspo img, .card-spot img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.card-inspo:hover img {
+  transform: scale(1.1);
+}
+
+.card-info {
+  padding: 1.5rem;
+}
+
+.card-info h5 {
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin: 0.5rem 0;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #555;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+.likes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #e91e63;
+}
+
+/* Reseñas */
+.card-review {
+  padding: 2rem;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-review .user-name {
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.card-review p {
+  font-style: italic;
+  color: #444;
+  line-height: 1.7;
+  font-size: 1.measure;
+}
+
+/* Mapa y guía */
+.guia-container {
+  margin-top: 6rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.guia-text h3 {
+  font-weight: 800;
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.guia-text p {
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: #333;
+  margin-bottom: 2.5rem;
+}
+
+.mapa-container {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  height: 600px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .guia-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .hero-content h1 { font-size: 3.5rem; }
+  .hero-content { padding: 2rem; }
+}
+
+@media (max-width: 768px) {
+  .pg-inicio-hero { height: 70vh; }
+  .hero-content h1 { font-size: 3rem; }
+  .section-title { font-size: 2.3rem; }
 }
