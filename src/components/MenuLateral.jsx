@@ -44,16 +44,6 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
       </Offcanvas.Header>
       
       <Offcanvas.Body className="p-0 d-flex flex-column">
-        <div className="sidebar-profile">
-          <div className="profile-avatar">
-            {usuario?.nombre?.charAt(0).toUpperCase() || "U"}
-          </div>
-          <div className="profile-info">
-            <div className="profile-name">{usuario?.nombre || "Usuario"}</div>
-            <div className="profile-username">{usuario?.username || "@usuario"}</div>
-          </div>
-        </div>
-
         <nav className="sidebar-nav">
           <div className="nav-items-top">
             <MenuLateralLink 
@@ -71,6 +61,13 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
               activo={esRutaActiva("/mapa")}
             />
             <MenuLateralLink 
+              icon={<FaUser />} 
+              texto="Mi Perfil" 
+              to="/perfil"
+              onClick={cerrar}
+              activo={esRutaActiva("/perfil")}
+            />
+            <MenuLateralLink 
               icon={<FaPlus />} 
               texto="Crear Publicación" 
               to="/crear-publicacion"
@@ -78,22 +75,28 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
               activo={esRutaActiva("/crear-publicacion")}
               esBotonCrear={true}
             />
-            <MenuLateralLink 
-              icon={<FaUser />} 
-              texto="Mi Perfil" 
-              to="/perfil"
-              onClick={cerrar}
-              activo={esRutaActiva("/perfil")}
-            />
           </div>
 
-          <MenuLateralLink 
-            icon={<FaSignOutAlt />} 
-            texto="Cerrar Sesión" 
-            onClick={cerrarSesion}
-            esBoton={true}
-            className="sidebar-logout"
-          />
+          {/* Sección inferior con perfil y logout */}
+          <div className="sidebar-bottom-section">
+            <div className="sidebar-profile">
+              <div className="profile-avatar">
+                {usuario?.nombre?.charAt(0).toUpperCase() || "U"}
+              </div>
+              <div className="profile-info">
+                <div className="profile-name">{usuario?.nombre || "Usuario"}</div>
+                <div className="profile-username">{usuario?.username || "@usuario"}</div>
+              </div>
+            </div>
+
+            <MenuLateralLink 
+              icon={<FaSignOutAlt />} 
+              texto="Cerrar Sesión" 
+              onClick={cerrarSesion}
+              esBoton={true}
+              className="sidebar-logout"
+            />
+          </div>
         </nav>
       </Offcanvas.Body>
     </Offcanvas>

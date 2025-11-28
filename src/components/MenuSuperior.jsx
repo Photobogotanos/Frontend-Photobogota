@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
 import { Container, Nav, Navbar, Image, Button } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FaBars, FaBell, FaPlus } from "react-icons/fa";
+import { FaBars, FaPlus } from "react-icons/fa";
 import MenuLateral from "./MenuLateral";
 import "./MenuSuperior.css";
 import logo from "../assets/images/logo.png";
+import Notificaciones from "./Notificaciones";
 
 export default function MenuSuperior() {
   const [logueado, setLogueado] = useState(false);
   const [mostrarSidebar, setMostrarSidebar] = useState(false);
-  const [notificaciones] = useState(3);
+  const [notificaciones] = useState(3); // Ejemplo de notificaciones
+  const [pulsando, setPulsando] = useState(false);
   const navegar = useNavigate();
   const location = useLocation();
 
-  // Verificar el estado de login al montar el componente y cuando cambie la ruta
   useEffect(() => {
     const verificarLogin = () => {
       const estadoLogin = localStorage.getItem("logueado") === "true";
@@ -22,7 +23,6 @@ export default function MenuSuperior() {
 
     verificarLogin();
 
-    // Escuchar cambios en localStorage
     const handleStorageChange = (e) => {
       if (e.key === "logueado" || e.key === null) {
         verificarLogin();
@@ -34,7 +34,19 @@ export default function MenuSuperior() {
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, [location]); // Re-verificar cuando cambie la ruta
+  }, [location]);
+
+  // Efecto de pulso intermitente para el botón (opcional)
+  useEffect(() => {
+    if (logueado) {
+      const interval = setInterval(() => {
+        setPulsando(true);
+        setTimeout(() => setPulsando(false), 2000);
+      }, 15000); // Pulso cada 15 segundos
+
+      return () => clearInterval(interval);
+    }
+  }, [logueado]);
 
   const abrirSidebar = () => setMostrarSidebar(true);
   const cerrarSidebar = () => setMostrarSidebar(false);
@@ -61,8 +73,8 @@ export default function MenuSuperior() {
             </button>
           )}
 
-          <Navbar.Brand 
-            as={Link} 
+          <Navbar.Brand
+            as={Link}
             to={logueado ? "/comunidad" : "/"}
             className="brand-wrapper d-flex align-items-center"
           >
@@ -89,33 +101,24 @@ export default function MenuSuperior() {
             </>
           ) : (
             <div className="d-flex align-items-center ms-auto acciones-usuario">
-              <Button
-                as={Link}
-                to="/crear-publicacion"
-                className="btn-crear-publicacion"
-              >
-                <FaPlus /> 
-                <span className="texto-completo">Crear Publicación</span>
-                <span className="texto-corto">Crear</span>
-              </Button>
-              
               <button
                 as={Link}
-                to="/notificaciones"
-                className="btn-notificaciones position-relative"
-                aria-label={`Notificaciones (${notificaciones})`}
+                to="/crear-publicacion"
+                className={`btn-crear-publicacion ${pulsando ? "pulsing" : ""}`}
+                onMouseEnter={() => setPulsando(false)}
               >
-                <FaBell />
-                {notificaciones > 0 && (
-                  <span className="badge-notificaciones">{notificaciones}</span>
-                )}
+                <FaPlus />
+                <span className="texto-completo">Crear Publicación</span>
+                <span className="texto-corto">Crear</span>
               </button>
+
+              <Notificaciones notificaciones={notificaciones} />
             </div>
           )}
         </Container>
       </Navbar>
 
-      <MenuLateral 
+      <MenuLateral
         mostrar={mostrarSidebar}
         cerrar={cerrarSidebar}
         cerrarSesion={manejarCerrarSesion}
