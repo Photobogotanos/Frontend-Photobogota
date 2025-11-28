@@ -6,7 +6,7 @@
 }
 
 .sidebar-header {
-  background: linear-gradient(135deg, #806FBE 0%, #9B8BC9 100%);
+  background: linear-gradient(135deg, #806fbe 0%, #9b8bc9 100%);
   padding: 24px 20px;
   border: none;
   position: relative;
@@ -14,7 +14,7 @@
 }
 
 .sidebar-header::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   right: -20%;
@@ -62,7 +62,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #806FBE 0%, #9B8BC9 100%);
+  background: linear-gradient(135deg, #806fbe 0%, #9b8bc9 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,7 +129,7 @@
 }
 
 .sidebar-link::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -182,7 +182,7 @@
 
 /* Botón crear publicación */
 .btn-add-post {
-  background: linear-gradient(135deg, #806FBE 0%, #9B8BC9 100%);
+  background: linear-gradient(135deg, #806fbe 0%, #9b8bc9 100%);
   color: white;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(128, 111, 190, 0.3);
@@ -272,5 +272,107 @@
   .sidebar-moderna {
     width: 85vw !important;
     max-width: 320px !important;
+  }
+}
+
+/* Perfil en sidebar - MOVIDO ABAJO */
+.sidebar-profile {
+  padding: 20px 16px;
+  background: white;
+  margin: 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(128, 111, 190, 0.1);
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  order: 2;
+}
+
+/* Links del sidebar */
+.sidebar-nav {
+  padding: 8px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-items-top {
+  flex: 1;
+  order: 1;
+}
+
+/* Sección de perfil y logout en la parte inferior */
+.sidebar-bottom-section {
+  order: 3;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Botón crear publicación mejorado */
+.btn-add-post {
+  background: linear-gradient(135deg, #806fbe 0%, #9b8bc9 100%);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(128, 111, 190, 0.3);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-add-post::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  transform: translate(-50%, -50%);
+}
+
+.btn-add-post:hover::after {
+  width: 100px;
+  height: 100px;
+}
+
+.btn-add-post:hover {
+  background: linear-gradient(135deg, #6f5ea8 0%, #8a7bb8 100%);
+  box-shadow: 0 6px 20px rgba(128, 111, 190, 0.4);
+  transform: translateX(4px) translateY(-2px);
+  color: white;
+}
+
+.btn-add-post:active {
+  transform: translateX(4px) scale(0.98);
+}
+
+/* Indicador de ruta activa mejorado */
+.sidebar-link.active {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(128, 111, 190, 0.3);
+  transform: translateX(4px);
+}
+
+.sidebar-link.active::before {
+  transform: scaleY(1);
+}
+
+.sidebar-link.active .sidebar-link-icon {
+  transform: scale(1.1);
+  animation: iconPulse 2s infinite;
+}
+
+@keyframes iconPulse {
+  0%,
+  100% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.15);
   }
 }

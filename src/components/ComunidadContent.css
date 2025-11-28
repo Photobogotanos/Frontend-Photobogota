@@ -1,0 +1,282 @@
+.tarjeta-publicacion {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.contenedor-imagen-feed {
+  position: relative;
+  cursor: pointer;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.imagen-feed {
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+  display: block;
+}
+
+.badge-multiples-imagenes {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.carrusel-imagenes {
+  position: relative;
+  cursor: pointer;
+}
+
+.boton-nav-carrusel {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.95);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  z-index: 10;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.boton-nav-carrusel:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.boton-nav-carrusel.izquierda {
+  left: 15px;
+}
+
+.boton-nav-carrusel.derecha {
+  right: 15px;
+}
+
+.indicador-carrusel {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.75);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 10;
+}
+
+.texto-secundario {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.insignia-popular {
+  background: #fee;
+  color: #dc3545;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.boton-interaccion {
+  background: none;
+  border: none;
+  color: #495057;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.2s;
+  padding: 5px 10px;
+}
+
+.boton-interaccion:hover {
+  color: #0d6efd;
+}
+
+.enlace-comentarios {
+  color: #0d6efd;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.enlace-comentarios:hover {
+  text-decoration: underline;
+}
+
+/* Modal Post Completo */
+.overlay-post-completo {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.contenedor-post-completo {
+  display: flex;
+  width: 90%;
+  max-width: 1200px;
+  height: 85vh;
+  background: white;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.seccion-imagen-post {
+  width: 60%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.imagen-post-completo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.boton-nav-imagen {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.9);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.boton-nav-imagen:hover {
+  background: white;
+}
+
+.boton-nav-imagen.izquierda {
+  left: 15px;
+}
+
+.boton-nav-imagen.derecha {
+  right: 15px;
+}
+
+.indicador-imagenes {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.seccion-comentarios-post {
+  width: 40%;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+/* Entrada de comentario */
+.entrada-comentario {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 15px;
+  margin-top: 1rem;
+}
+
+.icono-interactivo {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.icono-interactivo:hover {
+  color: #0d6efd;
+}
+
+/* Selector de GIFs */
+.selector-gif {
+  max-height: 250px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.cuadricula-gif {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+}
+
+.miniatura-gif {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.miniatura-gif:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contenedor-post-completo {
+    flex-direction: column;
+    width: 95%;
+    height: 95vh;
+  }
+  
+  .seccion-imagen-post,
+  .seccion-comentarios-post {
+    width: 100%;
+  }
+  
+  .seccion-imagen-post {
+    height: 50%;
+  }
+  
+  .imagen-feed {
+    height: 350px;
+  }
+}

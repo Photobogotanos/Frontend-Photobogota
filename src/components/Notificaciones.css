@@ -1,0 +1,97 @@
+/* Botón Notificaciones */
+.btn-notificaciones {
+  color: #4b5563;
+  font-size: 22px;
+  padding: 10px;
+  position: relative;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-notificaciones:hover {
+  color: var(--color-primary);
+  background: rgba(128, 111, 190, 0.1);
+  transform: scale(1.05);
+}
+
+/* Badge */
+.badge-notificaciones {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  animation: pulse 2s infinite;
+}
+
+/* Panel flotante */
+.panel-notificaciones {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  width: 260px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  animation: fadeIn 0.2s ease;
+  z-index: 2000;
+}
+
+.titulo-notificaciones {
+  font-weight: bold;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 10px;
+}
+
+.lista-notificaciones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lista-notificaciones li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+.lista-notificaciones li:last-child {
+  border-bottom: none;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.shake-bell {
+  animation: bell-shake 1s infinite;
+}
+
+@keyframes bell-shake {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-15deg); }
+  40% { transform: rotate(15deg); }
+  60% { transform: rotate(-10deg); }
+  80% { transform: rotate(10deg); }
+  100% { transform: rotate(0deg); }
+}
