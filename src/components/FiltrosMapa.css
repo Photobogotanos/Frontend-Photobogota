@@ -1,0 +1,124 @@
+.filtros-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 410;
+  margin-top: 70px;           
+  border-radius: 0 0 16px 16px;
+}
+
+.filtros-izquierda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+  min-width: 300px;
+}
+
+.filtro-btn {
+  background: #f8f9fa;
+  border: 1.5px solid #d0d0d0;
+  padding: 11px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #333;
+}
+
+.filtro-btn::after {
+  content: "▼";
+  font-size: 12px;
+  margin-left: 4px;
+  transition: transform 0.2s;
+}
+
+.filtro-btn:hover {
+  background: #e8f0fe;
+  border-color: #1a73e8;
+  color: #1a73e8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(26, 115, 232, 0.15);
+}
+
+.filtro-btn:hover::after {
+  transform: translateY(2px);
+}
+
+.filtro-limpiar {
+  color: #1a73e8;
+  background: transparent;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: 10px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filtro-limpiar:hover {
+  background: #e8f0fe;
+  transform: scale(1.05);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .filtros-container {
+    padding: 16px 18px;
+    gap: 14px;
+    margin-top: 12px;
+  }
+
+  .filtros-izquierda {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filtro-btn {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .filtros-container {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .filtros-izquierda {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .filtro-btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 13.5px;
+    padding: 12px 10px;
+  }
+
+  .filtro-limpiar {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    background: #e8f0fe;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+}

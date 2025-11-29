@@ -10,6 +10,7 @@ import ComunidadPage from './pages/ComunidadPage.jsx';
 import Footer from './components/Footer.jsx';
 import MiPerfil from './components/MiPerfil.jsx';
 import Nosotros from './pages/Nosotros.jsx';
+import Mapa from './components/MapaContent.jsx';
 
 function App() {
 
@@ -26,7 +27,7 @@ function App() {
         <Route path="/recuperar-contrasena" element={<RecuperarContraPage />} />
         <Route path="/comunidad" element={<ComunidadPage />} />
         <Route path="/perfil" element={<MiPerfil />} />
-        <Route path="/mapa" element={<div>Página de Mapa (en construcción)</div>} />
+        <Route path="/mapa" element={<Mapa />} />
         <Route path="/crear-publicacion" element={<div>Página de Crear Publicación (en construcción)</div>} />
         <Route path="/notificaciones" element={<div>Página de Notificaciones (en construcción)</div>} />
         <Route path="/nosotros" element={<Nosotros />} />

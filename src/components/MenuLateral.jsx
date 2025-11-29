@@ -67,14 +67,6 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
               onClick={cerrar}
               activo={esRutaActiva("/perfil")}
             />
-            <MenuLateralLink 
-              icon={<FaPlus />} 
-              texto="Crear Publicación" 
-              to="/crear-publicacion"
-              onClick={cerrar}
-              activo={esRutaActiva("/crear-publicacion")}
-              esBotonCrear={true}
-            />
           </div>
 
           {/* Sección inferior con perfil y logout */}
