@@ -1,5 +1,6 @@
 import "./PaginaInicioContent.css";
-import main from "../assets/images/pagina-inicio-main.png";
+import main from "../../public/images/img-home/pagina-inicio-main.png";
+
 import inspo1 from "../assets/images/inspo1.png";
 import inspo2 from "../assets/images/inspo2.png";
 import inspo3 from "../assets/images/inspo3.png";
@@ -17,9 +18,10 @@ import { motion } from "framer-motion";
 
 export default function PaginaInicioContent() {
   return (
-    <div className="pg-inicio-total">
+    <div className="pg-inicio-total ">
       {/* HERO */}
-      <motion.div 
+      <motion.div
+        fluid 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.2 }}
@@ -125,7 +127,7 @@ export default function PaginaInicioContent() {
       </Row>
 
       {/* GUÍA + MAPA */}
-      <div className="guia-container">
+      <div className="guia-container pb-5">
         <div className="guia-text">
           <motion.h3
             initial={{ x: -50, opacity: 0 }}
