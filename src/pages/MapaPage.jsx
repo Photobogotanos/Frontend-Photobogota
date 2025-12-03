@@ -1,12 +1,12 @@
-import ComunidadContent from "../components/ComunidadContent";
+import MapaContent from "../components/MapaContent";
 import Container from 'react-bootstrap/Container';
 import './MapaPage.css';
 
 const MapaPage = () => {
   return (
-    <div className="mapa-page mt-5">
-      <Container className="mt-3">
-        <ComunidadContent />
+    <div className="mapa-page">
+      <Container fluid className="p-0">  
+        <MapaContent />
       </Container>
     </div>
   );
