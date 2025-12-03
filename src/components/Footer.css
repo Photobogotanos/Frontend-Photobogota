@@ -4,3 +4,10 @@
     border-bottom: 1px solid #eee;
     padding-left: 40px;
 }
+.footer-columna-izquierda{
+    margin-left: 50px;
+}
+.footer-contenedor-icons{
+    display: flex;
+    gap: 40px;
+}

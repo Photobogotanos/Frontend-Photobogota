@@ -1,4 +1,15 @@
-.nosotros-titulo{
-    font-weight: bold;
-    margin-top: 2vh;
+.pg-nosotros-hero{
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 6rem;
+  height: 85vh;
+  min-height: 600px;
+}
+
+.pg-nosotros-hero img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 10s ease-in-out;
 }
