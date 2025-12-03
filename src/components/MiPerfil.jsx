@@ -1,57 +1,68 @@
 import { useState } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
+import { FiEdit3 } from "react-icons/fi";
+import { FaCamera } from "react-icons/fa";
 import SpotCard from "./SpotCard";
 import "./MiPerfil.css";
+import { col, div } from "framer-motion/client";
 
 export default function MiPerfil() {
   const [tab, setTab] = useState("publicaciones");
 
   return (
-    <Container className="perfil-container">
-
-      {/* HEADER DEL PERFIL */}
+    
+    <Container fluid className="perfil-container">
+      <br />
+      <br />
+      {/* HEADER */}
       <div className="perfil-header">
         <img
-          src=""
+          src="public/images/users/fotico_perfil.jfif"
           alt="Foto perfil"
           className="perfil-avatar"
         />
+        
 
         <div className="perfil-info">
           <div className="perfil-badges">
-            <span className="badge-miembro">🟢 Miembro</span>
+            <span className="badge-miembro"><FaCamera /> Miembro</span>
             <span className="badge-nivel">Nivel: 320</span>
           </div>
 
-          <h3 className="perfil-nombre">Juan Sebastián Romero</h3>
-          <p className="perfil-username">@sbxbxs.r</p>
+          <h3 className="perfil-nombre">Juan Sebastian Romero</h3>
+          <p className="perfil-username">@sxbxxs.r</p>
+
           <p className="perfil-descripcion">
-            Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!
+            Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos
+            y explora nuevos destinos cercanos!
           </p>
         </div>
       </div>
 
-      {/* ESTADÍSTICAS */}
-      <Row className="perfil-stats mt-4">
-        <Col className="perfil-stat">
+      {/* STATS + EDITAR */}
+      <Row className="perfil-stats">
+        <Col xs={4} className="perfil-stat">
           <h4>29</h4>
           <p>Publicaciones</p>
         </Col>
 
-        <Col className="perfil-editar">
-          <Button variant="light" className="btn-editar-perfil">
-            Editar perfil
-          </Button>
+        <Col xs={4} className="perfil-edit-wrapper">
+          <button className="btn-editar-perfil">
+            <FiEdit3 size={18} /> Editar perfil
+          </button>
         </Col>
 
-        <Col className="perfil-stat">
+        <Col xs={4} className="perfil-stat">
           <h4>48</h4>
           <p>Reseñas</p>
         </Col>
       </Row>
 
+      {/* LINEA SEPARADORA */}
+      <div className="line-divider" />
+
       {/* TABS */}
-      <div className="perfil-tabs mt-4">
+      <div className="perfil-tabs">
         <button
           className={tab === "publicaciones" ? "tab-activa" : ""}
           onClick={() => setTab("publicaciones")}
@@ -74,42 +85,51 @@ export default function MiPerfil() {
         </button>
       </div>
 
-      {/* CONTENIDO SEGÚN TAB */}
+      {/* TABS CONTENT */}
       <div className="perfil-tab-content">
 
         {tab === "publicaciones" && (
-          <Row className="card-grid">
-            <SpotCard
-              img="https://images.unsplash.com/photo-1568605114967-8130f3a36994"
-              title="Alcaldía local Barrios Unidos"
-              tags={["Naturaleza", "Spots"]}
-              rating="4.8"
-              likes="294"
-            />
-            <SpotCard
-              img="https://images.unsplash.com/photo-1581291519195-ef11498d1cf5"
-              title="Parroquia San Anselmo"
-              tags={["Spots"]}
-              rating="2.6"
-              likes="12"
-            />
-            <SpotCard
-              img="https://images.unsplash.com/photo-1501785888041-af3ef285b470"
-              title="Cl. 152 #9-57, Bogotá"
-              tags={["Naturaleza", "Spots"]}
-              rating="3.8"
-              likes="65"
-            />
-          </Row>
-        )}
+  <div className="publicaciones-grid">
+    <SpotCard
+      img="public/images/default-post.jpg"
+      title="Alcaldía local Barrios Unidos"
+      tags={["Naturaleza", "Spots"]}
+      rating="4.8"
+      likes="294"
+    />
+    <SpotCard
+      img="public/images/default-post.jpg"
+      title="Parroquia San Anselmo"
+      tags={["Spots"]}
+      rating="2.6"
+      likes="12"
+    />
+    <SpotCard
+      img="public/images/default-post.jpg"
+      title="Cl. 152 #9-57, Bogotá"
+      tags={["Naturaleza", "Spots"]}
+      rating="3.8"
+      likes="65"
+    />
+    <SpotCard
+      img="public/images/default-post.jpg"
+      title="Parque de Bavaria"
+      tags={["Urbano", "Spots"]}
+      rating="4.3"
+      likes="79"
+    />
+    {/* Puedes seguir agregando más tarjetas y se irán acomodando automáticamente */}
+  </div>
+)}
 
         {tab === "resenas" && (
-          <p className="text-muted mt-5">Aún no hay reseñas.</p>
+          <p className="text-muted mt-5 text-center">Aún no hay reseñas.</p>
         )}
 
         {tab === "guardados" && (
-          <p className="text-muted mt-5">No has guardado publicaciones.</p>
+          <p className="text-muted mt-5 text-center">No has guardado publicaciones.</p>
         )}
+
       </div>
     </Container>
   );

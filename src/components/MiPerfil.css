@@ -1,16 +1,16 @@
-/* CONTENEDOR GENERAL */
+/* Fondo general */
 .perfil-container {
-  padding: 30px 20px;
-  background: #f4f1ea;
-  min-height: 100vh;
+  background-color: #f4f1eb;
+  border-radius: 12px;
+  padding: 30px;
+  margin-top: 20px;
 }
 
 /* HEADER */
 .perfil-header {
   display: flex;
-  gap: 25px;
   align-items: center;
-  background: transparent;
+  gap: 25px;
 }
 
 .perfil-avatar {
@@ -19,22 +19,27 @@
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-.perfil-info h3 {
-  font-weight: 700;
-  margin-top: 5px;
+.perfil-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.perfil-nombre {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
 .perfil-username {
-  color: #757575;
-  margin-top: -10px;
+  color: #666;
+  margin-bottom: 10px;
 }
 
 .perfil-descripcion {
-  font-size: 15px;
-  margin-top: 5px;
+  color: #444;
   max-width: 550px;
 }
 
@@ -42,78 +47,145 @@
 .perfil-badges {
   display: flex;
   gap: 10px;
+  margin-bottom: 5px;
 }
 
 .badge-miembro {
-  background: #d9fce3;
-  color: #167c4b;
+  background: #dae9db;
   padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 14px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  border: 1px solid #bcd8bf;
   font-weight: bold;
 }
 
 .badge-nivel {
-  background: #ece4ff;
-  color: #6a3db8;
+  background: #e5d9ff;
   padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 14px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  border: 1px solid var(--color-primary);
   font-weight: bold;
 }
 
 /* STATS */
 .perfil-stats {
   text-align: center;
+  margin-top: 25px;
 }
 
 .perfil-stat h4 {
   font-weight: bold;
-  font-size: 24px;
+  margin-bottom: 2px;
 }
 
-.perfil-editar {
+.perfil-stat p {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+/* BOTÓN EDITAR */
+.perfil-edit-wrapper {
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 .btn-editar-perfil {
-  width: 100%;
-  border-radius: 10px;
-  border: 1px solid #c9c9c9;
-  font-weight: bold;
   background: white;
+  border-radius: 10px;
+  padding: 8px 22px;
+  border: 1px solid #c5c5c5;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.btn-editar-perfil:hover {
+  background-color: #f0efef;
+  transform: translateY(-3px);
+}
+
+/* LINEA SEPARADORA */
+.line-divider {
+  width: 100%;
+  height: 1px;
+  background: #d6d4d1;
+  margin: 20px 0;
 }
 
 /* TABS */
 .perfil-tabs {
   display: flex;
   justify-content: space-around;
-  margin-top: 35px;
-  border-bottom: 2px solid #d8d4c9;
+  margin-bottom: 20px;
 }
 
 .perfil-tabs button {
   background: none;
   border: none;
-  font-size: 18px;
-  padding-bottom: 12px;
-  font-weight: 600;
-  color: #8b8a8a;
-  transition: 0.3s;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #8a8a8a;
+  padding-bottom: 6px;
+  cursor: pointer;
+  transition: 0.25s;
 }
 
 .perfil-tabs .tab-activa {
-  color: black;
-  border-bottom: 3px solid black;
+  color: #000;
+  border-bottom: 3px solid #000;
 }
 
-/* GRID DE CARDS */
+/* PUBLICACIONES GRID */
 .card-grid {
-  margin-top: 40px;
   display: flex;
-  gap: 25px;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* PUBLICACIONES GRID - 4 columnas perfectas */
+.publicaciones-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);        /* Siempre 4 columnas */
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 10px;                              /* opcional: un poco de margen lateral */
+}
+
+/* Responsivo para pantallas más pequeñas (opcional pero recomendado) */
+@media (max-width: 1200px) {
+  .publicaciones-grid {
+    grid-template-columns: repeat(3, 1fr);      /* 3 en tablets grandes */
+  }
+}
+
+@media (max-width: 900px) {
+  .publicaciones-grid {
+    grid-template-columns: repeat(2, 1fr);      /* 2 en tablets */
+  }
+}
+
+@media (max-width: 600px) {
+  .publicaciones-grid {
+    grid-template-columns: 1fr;                 /* 1 en móvil */
+    gap: 16px;
+  }
+}
+
+/* Aseguramos que las tarjetas ocupen todo el alto disponible en su celda */
+.publicaciones-grid > * {
+  width: 100% !important;
+  height: 100%;
+}
+
+/* Si quieres que todas las tarjetas tengan la misma altura (recomendado) */
+.spot-card-horizontal {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
