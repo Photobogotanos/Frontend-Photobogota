@@ -10,6 +10,8 @@ import ComunidadPage from './pages/ComunidadPage.jsx';
 import Footer from './components/Footer.jsx';
 import MiPerfil from './components/MiPerfil.jsx';
 import Nosotros from './pages/Nosotros.jsx';
+import ConfirmacionCodigoPage from './pages/ConfirmacionCodigoPage.jsx';
+import Mapa from './pages/MapaPage.jsx';
 
 function App() {
 
