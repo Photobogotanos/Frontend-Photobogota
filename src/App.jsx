@@ -10,7 +10,6 @@ import ComunidadPage from './pages/ComunidadPage.jsx';
 import Footer from './components/Footer.jsx';
 import MiPerfil from './components/MiPerfil.jsx';
 import Nosotros from './pages/Nosotros.jsx';
-import Mapa from './components/MapaContent.jsx';
 
 function App() {
 
@@ -31,6 +30,7 @@ function App() {
         <Route path="/crear-publicacion" element={<div>Página de Crear Publicación (en construcción)</div>} />
         <Route path="/notificaciones" element={<div>Página de Notificaciones (en construcción)</div>} />
         <Route path="/nosotros" element={<Nosotros />} />
+        <Route path="/confirmacion-codigo" element={<ConfirmacionCodigoPage/>} />
       </Routes>
 
       <Footer />

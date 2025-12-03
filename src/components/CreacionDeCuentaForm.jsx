@@ -32,7 +32,6 @@ function FormularioCreacion() {
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
   const [mostrarContrasena2, setMostrarContrasena2] = useState(false);
 
-  const [passwordStrength, setPasswordStrength] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(null);
   const [validationRules, setValidationRules] = useState({
     length: false,
@@ -68,15 +67,6 @@ function FormularioCreacion() {
     setValidationRules(rules);
 
     // Calcular fortaleza de contraseña
-    const total = Object.values(rules).filter(Boolean).length;
-
-    if (total <= 1) {
-      setPasswordStrength("Débil");
-    } else if (total === 2 || total === 3) {
-      setPasswordStrength("Media");
-    } else if (total === 4) {
-      setPasswordStrength("Fuerte");
-    }
   };
 
   const validarFormulario = (e) => {
