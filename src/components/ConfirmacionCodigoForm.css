@@ -1,0 +1,55 @@
+.codigo-form {
+  width: 100%;
+  max-width: 400px;
+  margin: 50px auto;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.subtitle {
+  color: #555;
+  margin-bottom: 25px;
+}
+
+.inputs-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.codigo-input {
+  width: 50px;
+  height: 60px;
+  font-size: 30px;
+  text-align: center;
+  border: none;
+  outline: none;
+  background: #e7e7e7;
+  border-radius: 10px;
+}
+
+.codigo-input:focus {
+  background: #dad9ff;
+}
+
+.btn-confirmar {
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 10px;
+  background: var(--color-primary);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.reenviar {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #6a6a6a;
+}
