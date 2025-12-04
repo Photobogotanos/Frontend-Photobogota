@@ -1,4 +1,3 @@
-/* Updated FiltrosMapa.css */
 .filtros-container {
   display: flex;
   flex-wrap: wrap;
@@ -9,9 +8,9 @@
   background: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  position: sticky;  /* Make filters sticky */
-  top: 80px;  /* Below navbar; adjust as needed */
-  z-index: 1000;
+  position: sticky;  
+  top: 66px; 
+  z-index: 900;
   width: 100%;
 }
 
@@ -24,8 +23,8 @@
 }
 
 .filtro-select {
-  min-width: 180px;  /* Minimum width for selects */
-  flex: 1;  /* Grow equally */
+  min-width: 180px;  
+  flex: 1;  
 }
 
 .filtro-limpiar {
@@ -69,6 +68,7 @@
     flex-direction: column;
     padding: 16px;
     gap: 10px;
+    top: 104px;
   }
 
   .filtros-izquierda {

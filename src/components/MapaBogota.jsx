@@ -115,7 +115,7 @@ const MapaBogota = () => {
       <MapContainer
         center={[4.6529, -74.075]}
         zoom={12}
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
         className="mapa-bogota"
         zoomControl={false}
       >
