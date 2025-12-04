@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import "./ConfirmacionCodigoForm.css";
+import Swal from "sweetalert2";
 
 export default function ConfirmacionCodigoForm() {
   const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);
@@ -13,14 +14,22 @@ export default function ConfirmacionCodigoForm() {
     newCode[index] = value;
     setCodigo(newCode);
 
-    // pasar automáticamente al siguiente input
     if (index < 5) inputsRef.current[index + 1].focus();
   };
 
   const handleKeyDown = (e, index) => {
-    // regresar al input anterior con backspace
-    if (e.key === "Backspace" && !codigo[index] && index > 0) {
-      inputsRef.current[index - 1].focus();
+    if (e.key === "Backspace") {
+      // Si el campo está vacío y no es el primer campo, mueve el foco al anterior
+      if (!codigo[index] && index > 0) {
+        inputsRef.current[index - 1].focus();
+      }
+
+      // Si el campo tiene valor, lo borra
+      if (codigo[index]) {
+        const newCode = [...codigo];
+        newCode[index] = "";
+        setCodigo(newCode);
+      }
     }
   };
 
@@ -54,7 +63,7 @@ export default function ConfirmacionCodigoForm() {
       </div>
 
       <button type="submit" className="btn-confirmar">
-        Sign in
+        Confirmacion Codigo
       </button>
 
       <p className="reenviar">¿Te gustaría reenviar el código?</p>
