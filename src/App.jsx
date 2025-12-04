@@ -12,6 +12,7 @@ import MiPerfil from './components/MiPerfil.jsx';
 import Nosotros from './pages/Nosotros.jsx';
 import ConfirmacionCodigoPage from './pages/ConfirmacionCodigoPage.jsx';
 import Mapa from './pages/MapaPage.jsx';
+import LugarPage from './pages/LugarPage';
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="/notificaciones" element={<div>Página de Notificaciones (en construcción)</div>} />
         <Route path="/nosotros" element={<Nosotros />} />
         <Route path="/confirmacion-codigo" element={<ConfirmacionCodigoPage/>} />
+        <Route path="/lugar/:id" element={<LugarPage />} />
       </Routes>
 
       <Footer />

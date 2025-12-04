@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -11,6 +12,7 @@ import "leaflet/dist/leaflet.css";
 import "./MapaBogota.css";
 import camaraIcon from "../assets/images/icons/camara.jpg";
 import { FaPlus, FaMinus, FaLocationArrow } from "react-icons/fa";
+import LugarPreviewModal from "./LugarPreviewModal";
 
 // === CONFIGURACIÓN ICONO DEFAULT ===
 delete L.Icon.Default.prototype._getIconUrl;
@@ -101,44 +103,113 @@ function MapBounds() {
   return null;
 }
 
-const puntos = [
-  { id: 1, nombre: "Punto Usaquén", coord: [4.6921, -74.03] },
-  { id: 2, nombre: "Punto Chapinero", coord: [4.6486, -74.057] },
-  { id: 3, nombre: "Punto Kennedy", coord: [4.6296, -74.1469] },
-  { id: 4, nombre: "Punto Engativá", coord: [4.6781, -74.1156] },
-  { id: 5, nombre: "Centro Internacional", coord: [4.612, -74.0658] },
-];
-
 const MapaBogota = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
+
+  // === DATOS DE LUGARES ===
+  const lugares = [
+    { 
+      id: 1, 
+      nombre: "Museo del Oro", 
+      coord: [4.601, -74.072],
+      direccion: "Cra. 6 #15-88, Santa Fe, Bogotá",
+      imagen: "/images/lugares/museo-oro.jpg",
+      rating: 4.8,
+      totalResenas: 1095,
+      categoria: "Museo"
+    },
+    { 
+      id: 2, 
+      nombre: "Monserrate", 
+      coord: [4.605, -74.056],
+      direccion: "Carrera 2 Este #21-48, Bogotá",
+      imagen: "/images/lugares/monserrate.jpg",
+      rating: 4.7,
+      totalResenas: 2340,
+      categoria: "Atractivo turístico"
+    },
+    { 
+      id: 3, 
+      nombre: "Plaza de Bolívar", 
+      coord: [4.598, -74.076],
+      direccion: "Carrera 7 #11-10, Bogotá",
+      imagen: "/images/lugares/plaza-bolivar.jpg",
+      rating: 4.5,
+      totalResenas: 3200,
+      categoria: "Plaza"
+    },
+    { 
+      id: 4, 
+      nombre: "Jardín Botánico", 
+      coord: [4.668, -74.099],
+      direccion: "Calle 63 #68-95, Bogotá",
+      imagen: "/images/lugares/jardin-botanico.jpg",
+      rating: 4.6,
+      totalResenas: 1580,
+      categoria: "Parque"
+    },
+    { 
+      id: 5, 
+      nombre: "Museo Nacional", 
+      coord: [4.612, -74.067],
+      direccion: "Carrera 7 #28-66, Bogotá",
+      imagen: "/images/lugares/museo-nacional.jpg",
+      rating: 4.7,
+      totalResenas: 890,
+      categoria: "Museo"
+    },
+  ];
+
+  const handleMarkerClick = (lugar) => {
+    setLugarSeleccionado(lugar);
+    setShowModal(true);
+  };
+
   return (
-    <div className="mapa-wrapper">
-      <MapContainer
-        center={[4.6529, -74.075]}
-        zoom={12}
-        scrollWheelZoom={false}
-        className="mapa-bogota"
-        zoomControl={false}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap contributors'
-        />
+    <>
+      <div className="mapa-wrapper">
+        <MapContainer
+          center={[4.6529, -74.075]}
+          zoom={12}
+          scrollWheelZoom={false}
+          className="mapa-bogota"
+          zoomControl={false}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+            attribution='&copy; OpenStreetMap contributors'
+          />
 
-        <MapBounds />
-        <BotonUbicacion />
-        <ControlesZoom />
+          <MapBounds />
+          <BotonUbicacion />
+          <ControlesZoom />
 
-        {puntos.map((p) => (
-          <Marker key={p.id} position={p.coord} icon={createCustomIcon()}>
-            <Popup>
-              <strong>{p.nombre}</strong>
-              <br />
-              Localidad de Bogotá
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
-    </div>
+          {lugares.map((lugar) => (
+            <Marker 
+              key={lugar.id} 
+              position={lugar.coord} 
+              icon={createCustomIcon()}
+              eventHandlers={{
+                click: () => handleMarkerClick(lugar)
+              }}
+            >
+              <Popup>
+                <strong>{lugar.nombre}</strong>
+                <br />
+                {lugar.direccion}
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </div>
+
+      <LugarPreviewModal 
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        lugar={lugarSeleccionado}
+      />
+    </>
   );
 };
 

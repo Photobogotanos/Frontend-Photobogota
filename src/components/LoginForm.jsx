@@ -43,12 +43,6 @@ export default function LoginForm() {
       });
     }
 
-    Swal.fire({
-      icon: "success",
-      title: "Inicio de sesión exitoso",
-      text: "Bienvenido a Photo Bogotá",
-    });
-
     localStorage.setItem("logueado", "true");
     localStorage.setItem(
       "usuario",
