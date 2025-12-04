@@ -3,8 +3,8 @@ import { Container, Row, Col } from "react-bootstrap";
 import { FiEdit3 } from "react-icons/fi";
 import { FaCamera } from "react-icons/fa";
 import SpotCard from "./SpotCard";
+import Badge from 'react-bootstrap/Badge';
 import "./MiPerfil.css";
-import { col, div } from "framer-motion/client";
 
 export default function MiPerfil() {
   const [tab, setTab] = useState("publicaciones");
@@ -12,12 +12,11 @@ export default function MiPerfil() {
   return (
     
     <Container fluid className="perfil-container">
-      <br />
-      <br />
+      
       {/* HEADER */}
-      <div className="perfil-header">
+      <div className="perfil-header mt-5">
         <img
-          src="public/images/users/fotico_perfil.jfif"
+          src="public/images/default-post.jpg"
           alt="Foto perfil"
           className="perfil-avatar"
         />
@@ -39,17 +38,10 @@ export default function MiPerfil() {
         </div>
       </div>
 
-      {/* STATS + EDITAR */}
       <Row className="perfil-stats">
         <Col xs={4} className="perfil-stat">
           <h4>29</h4>
           <p>Publicaciones</p>
-        </Col>
-
-        <Col xs={4} className="perfil-edit-wrapper">
-          <button className="btn-editar-perfil">
-            <FiEdit3 size={18} /> Editar perfil
-          </button>
         </Col>
 
         <Col xs={4} className="perfil-stat">
@@ -58,10 +50,14 @@ export default function MiPerfil() {
         </Col>
       </Row>
 
-      {/* LINEA SEPARADORA */}
+      <Row>
+          <button className="btn-editar-perfil">
+            <FiEdit3 size={18} /> Editar perfil
+          </button>
+      </Row>
+
       <div className="line-divider" />
 
-      {/* TABS */}
       <div className="perfil-tabs">
         <button
           className={tab === "publicaciones" ? "tab-activa" : ""}
@@ -103,6 +99,20 @@ export default function MiPerfil() {
       tags={["Spots"]}
       rating="2.6"
       likes="12"
+    />
+    <SpotCard
+      img="public/images/default-post.jpg"
+      title="Cl. 152 #9-57, Bogotá"
+      tags={["Naturaleza", "Spots"]}
+      rating="3.8"
+      likes="65"
+    />
+    <SpotCard
+      img="public/images/default-post.jpg"
+      title="Parque de Bavaria"
+      tags={["Urbano", "Spots"]}
+      rating="4.3"
+      likes="79"
     />
     <SpotCard
       img="public/images/default-post.jpg"
