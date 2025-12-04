@@ -1,6 +1,6 @@
 /* Fondo general */
 .perfil-container {
-  background-color: #f4f1eb;
+  background-color: var(--color-bg);
   border-radius: 12px;
   padding: 30px;
   margin-top: 20px;
@@ -68,8 +68,8 @@
   font-weight: bold;
 }
 
-/* STATS */
 .perfil-stats {
+  justify-content: center;
   text-align: center;
   margin-top: 25px;
 }
@@ -91,20 +91,22 @@
 }
 
 .btn-editar-perfil {
-  background: white;
+  background: var(--color-bg);
+  border: 1px solid var(--color-secondary);
   border-radius: 10px;
-  padding: 8px 22px;
-  border: 1px solid #c5c5c5;
+  padding: 9px 24px;
   font-weight: bold;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   cursor: pointer;
-  transition: 0.25s;
+  transition: .25s;
 }
 
 .btn-editar-perfil:hover {
-  background-color: #f0efef;
+  color: white;
+  background-color: var(--color-secondary);
   transform: translateY(-3px);
 }
 

@@ -17,7 +17,6 @@
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.10);
 }
 
-/* IMAGEN */
 .spot-img-h {
   width: 95px;
   height: 95px;
@@ -25,7 +24,6 @@
   object-fit: cover;
 }
 
-/* CONTENIDO */
 .spot-content {
   flex: 1;
   position: relative;
@@ -33,7 +31,8 @@
 
 /* TAGS */
 .spot-tags-h {
-  position: absolute;
+  justify-content: center;
+  position: relative;
   top: -6px;
   right: 0;
   display: flex;
@@ -49,7 +48,6 @@
   font-weight: 500;
 }
 
-/* TÍTULO */
 .spot-title-h {
   font-size: 17px;
   font-weight: 600;
@@ -57,9 +55,10 @@
   margin-top: 6px;
 }
 
-/* INFO (rating + likes) */
 .spot-info-h {
+  justify-content: center;
   display: flex;
+  position: relative;
   gap: 18px;
   align-items: center;
   font-size: 15px;
