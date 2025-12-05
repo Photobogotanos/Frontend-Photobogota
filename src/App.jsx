@@ -13,6 +13,7 @@ import Nosotros from './pages/Nosotros.jsx';
 import ConfirmacionCodigoPage from './pages/ConfirmacionCodigoPage.jsx';
 import Mapa from './pages/MapaPage.jsx';
 import LugarPage from './pages/LugarPage';
+import CreacionPublicacionPage from './pages/CreacionPublicacionPage.jsx';
 
 function App() {
 
@@ -30,7 +31,7 @@ function App() {
         <Route path="/comunidad" element={<ComunidadPage />} />
         <Route path="/perfil" element={<MiPerfil />} />
         <Route path="/mapa" element={<Mapa />} />
-        <Route path="/crear-publicacion" element={<div>Página de Crear Publicación (en construcción)</div>} />
+        <Route path="/crear-publicacion" element={<CreacionPublicacionPage/>} />
         <Route path="/notificaciones" element={<div>Página de Notificaciones (en construcción)</div>} />
         <Route path="/nosotros" element={<Nosotros />} />
         <Route path="/confirmacion-codigo" element={<ConfirmacionCodigoPage/>} />
