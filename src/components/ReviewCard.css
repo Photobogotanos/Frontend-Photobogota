@@ -1,0 +1,106 @@
+/* ======================= RESEÑAS ======================= */
+.review-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.2s;
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.review-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.pin-icon {
+  color: #ff6b6b;
+  font-size: 20px;
+}
+
+.review-date {
+  color: #999;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.review-rating {
+  margin-bottom: 12px;
+}
+
+.star {
+  font-size: 18px;
+  color: #ddd;
+}
+
+.star.filled {
+  color: #ffa502;
+}
+
+.review-text {
+  color: #444;
+  line-height: 1.6;
+  font-size: 15px;
+  margin: 0 0 16px 0;
+}
+
+.review-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-likes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #e11d48;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.heart-icon {
+  font-size: 18px;
+}
+
+.ver-lugar {
+  color: #0095f6;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.ver-lugar:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* En móvil: apilar fecha debajo del título si no cabe */
+@media (max-width: 576px) {
+  .review-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .review-date {
+    align-self: flex-end;
+  }
+}

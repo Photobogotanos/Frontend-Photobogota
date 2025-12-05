@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { FiEdit3 } from "react-icons/fi";
 import { FaCamera } from "react-icons/fa";
 import SpotCard from "./SpotCard";
-import Badge from 'react-bootstrap/Badge';
+import ReviewCard from "./ReviewCard";
 import "./MiPerfil.css";
 
 export default function MiPerfil() {
@@ -13,7 +13,6 @@ export default function MiPerfil() {
     
     <Container fluid className="perfil-container">
       
-      {/* HEADER */}
       <div className="perfil-header mt-5">
         <img
           src="public/images/default-post.jpg"
@@ -81,7 +80,6 @@ export default function MiPerfil() {
         </button>
       </div>
 
-      {/* TABS CONTENT */}
       <div className="perfil-tab-content">
 
         {tab === "publicaciones" && (
@@ -128,18 +126,28 @@ export default function MiPerfil() {
       rating="4.3"
       likes="79"
     />
-    {/* Puedes seguir agregando más tarjetas y se irán acomodando automáticamente */}
   </div>
 )}
-
+    
         {tab === "resenas" && (
-          <p className="text-muted mt-5 text-center">Aún no hay reseñas.</p>
-        )}
+  <div className="reviews-container">
+    <ReviewCard
+      title="Museo del oro"
+      rating={5}
+      text="La experiencia en el Museo del Oro fue increíble, con una impresionante colección que cuenta la historia de los pueblos indígenas de Colombia. Las exhibiciones están bien organizadas y el espacio es moderno. Sin embargo, el único inconveniente fue la falta de parqueadero cercano, lo que obligó a dejar el carro lejos. A pesar de eso, es una visita muy recomendable para conocer más sobre la cultura colombiana."
+      likes={45}
+      date="3 meses"
+    />
 
-        {tab === "guardados" && (
-          <p className="text-muted mt-5 text-center">No has guardado publicaciones.</p>
-        )}
-
+    <ReviewCard
+      title="Bar Gyal"
+      rating={2}
+      text="Un espacio reducido e incómodo, donde los precios son demasiado altos para la calidad de lo que ofrecen. Aunque la atención al cliente es buena, el ambiente se ve opacado por la actitud del público, que no es el más agradable. En general, no lo recomendaría debido a la relación calidad-precio y el entorno."
+      likes={9}
+      date="20 días"
+    />
+  </div>
+)}
       </div>
     </Container>
   );
