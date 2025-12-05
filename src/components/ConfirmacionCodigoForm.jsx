@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
 import "./ConfirmacionCodigoForm.css";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 export default function ConfirmacionCodigoForm() {
+  const navegar = useNavigate(); 
   const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);// arreglo para guardar el codigo
   const inputsRef = useRef([]);// Variable para guardar en el arreglo
 
@@ -51,6 +53,8 @@ export default function ConfirmacionCodigoForm() {
       icon: "success",
       title: "Código enviado",
       text: `Tu código es: ${finalCode}`,
+    }).then(() => {
+      navegar("/comunidad");
     });
 
     console.log("Código ingresado:", finalCode);
