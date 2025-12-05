@@ -4,13 +4,13 @@ import PaginaInicioContent from "../components/PaginaInicioContent";
 
 function PaginaInicioPage() {
   return (
-    <>
+
+    <Container fluid className="p-0 mt-5">
       <div className="pagina-inicio-page">
-        <Container className="mt-5" fluid>
-            <PaginaInicioContent></PaginaInicioContent>
-        </Container>
+        <PaginaInicioContent></PaginaInicioContent>
       </div>
-    </>
+    </Container >
+
   );
 }
 

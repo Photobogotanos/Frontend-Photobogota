@@ -4,7 +4,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaBars, FaPlus } from "react-icons/fa";
 import MenuLateral from "./MenuLateral";
 import "./MenuSuperior.css";
-import logo from "../assets/images/logo.png";
+import logo from "../assets/images/logo.jpg";
 import Notificaciones from "./Notificaciones";
 
 export default function MenuSuperior() {

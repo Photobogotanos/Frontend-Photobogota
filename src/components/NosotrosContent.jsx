@@ -1,7 +1,7 @@
 import "./NosotrosContent.css"
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import main from "../../public/images/img-home/img-nosotros/nosotros.png"
+const fotoNosotros = "images/img-home/img-nosotros/nosotros.png"
 import {motion} from "framer-motion";
 import { div } from "framer-motion/client";
 
@@ -19,7 +19,7 @@ export default function NosotrosContent(){
                 transition={{ duration: 1.2 }}
                 className="pg-nosotros-hero"
               >
-                <img src={main} alt="Los parceros" />
+                <img src={fotoNosotros} alt="Los parceros" />
                 <div className="hero-overlay"></div>
                 <div className="hero-content">
                   <motion.h1

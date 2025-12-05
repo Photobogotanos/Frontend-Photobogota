@@ -54,7 +54,6 @@
   text-align: center;
 }
 
-/* Tarjetas de inspiración y spots */
 .card-inspo, .card-spot, .card-review {
   border-radius: 16px;
   overflow: hidden;
@@ -62,6 +61,8 @@
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-inspo:hover, .card-spot:hover {
@@ -71,17 +72,22 @@
 
 .card-inspo img, .card-spot img {
   width: 100%;
-  height: 380px;
+  height: 320px; 
   object-fit: cover;
+  object-position: center; 
   transition: transform 0.6s ease;
+  flex-shrink: 0;
 }
 
-.card-inspo:hover img {
-  transform: scale(1.1);
+.card-inspo:hover img, .card-spot:hover img {
+  transform: scale(1.05); 
 }
 
 .card-info {
   padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-info h5 {
@@ -103,7 +109,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 1rem;
+  margin-top: auto;
   font-weight: 600;
   color: #e91e63;
 }
@@ -128,7 +134,7 @@
   font-style: italic;
   color: #444;
   line-height: 1.7;
-  font-size: 1.measure;
+  font-size: 1.1rem;
 }
 
 /* Mapa y guía */
@@ -160,6 +166,60 @@
   height: 600px;
 }
 
+/* MODAL RESPONSIVE */
+.custom-modal .modal-content {
+  border-radius: 15px;
+  overflow: hidden;
+  max-height: 90vh; 
+  max-width: 95vw; 
+  margin: 0 auto;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 1050;
+  transition: background 0.3s;
+}
+
+.modal-close-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.modal-title {
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-image-container {
+  width: 100%;
+  max-height: calc(90vh - 70px); 
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-image {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
   .guia-container {
@@ -168,10 +228,291 @@
   }
   .hero-content h1 { font-size: 3.5rem; }
   .hero-content { padding: 2rem; }
+  
+  .card-inspo img, .card-spot img {
+    height: 280px; 
+  }
 }
 
 @media (max-width: 768px) {
-  .pg-inicio-hero { height: 70vh; }
-  .hero-content h1 { font-size: 3rem; }
-  .section-title { font-size: 2.3rem; }
+  .pg-inicio-hero { 
+    height: 70vh;
+    min-height: 500px;
+  }
+  .hero-content h1 { 
+    font-size: 3rem; 
+    margin-bottom: 0.5rem;
+  }
+  .hero-content p {
+    font-size: 1.2rem;
+  }
+  .section-title { 
+    font-size: 2.3rem;
+    margin: 3rem 0 2rem 0;
+  }
+  
+  .card-inspo img, .card-spot img {
+    height: 240px; 
+  }
+  
+  .custom-modal .modal-dialog {
+    margin: 10px;
+    max-width: calc(100vw - 20px);
+  }
+  
+  .modal-close-btn {
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-content h1 { 
+    font-size: 2.5rem; 
+  }
+  .hero-content p {
+    font-size: 1.1rem;
+  }
+  .section-title { 
+    font-size: 2rem;
+  }
+  
+  .card-inspo img, .card-spot img {
+    height: 200px; 
+  }
+}
+
+/* MAPA DEMOSTRATIVO */
+.mapa-demo-container {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  height: 600px;
+  position: relative;
+}
+
+.mapa-demo-overlay {
+  position: absolute;
+  inset: 0;
+  background: white;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapa-demo-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapa-demo-content h5 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.mapa-demo-wrapper {
+  flex: 1;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.mapa-demo {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.demo-note {
+  background-color: #f8f9fa;
+  border-left: 4px solid var(--color-primary);
+  font-size: 0.95rem;
+}
+
+.popup-demo {
+  min-width: 200px;
+}
+
+.demo-lock-info {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.mapa-demo-legend {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  background: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 1000;
+  max-width: 250px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+
+.legend-item:last-child {
+  margin-bottom: 0;
+}
+
+.legend-marker {
+  width: 20px;
+  height: 20px;
+  background-color: #3388ff;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px #3388ff;
+}
+
+.legend-lock {
+  width: 20px;
+  height: 20px;
+  background-color: #ffc107;
+  border-radius: 50%;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.7rem;
+}
+
+.icono-demo-modal {
+  color: var(--color-primary);
+}
+
+.button-register-modal-demo {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button-register-modal-demo:hover {
+  background-color: #6b5cb0;
+}
+
+.button-login-modal-demo {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.button-login-modal-demo:hover {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.apple-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.apple-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  
+  /* Tipografía Apple Style */
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: #1c1c1e; 
+  letter-spacing: -0.2px;
+
+  /* Línea sutil como Apple Settings */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.apple-list li:last-child {
+  border-bottom: none;
+}
+
+/* Íconos estilo Apple: suaves, gris premium */
+.apple-list svg {
+  font-size: 1.2rem;
+  color: #8e8e93; 
+  flex-shrink: 0;
+}
+
+/* Efecto hover muy sutil tipo iOS */
+.apple-list li:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding-left: 6px;
+  transition: 0.25s ease;
+}
+
+
+/* Responsive para mapa demo */
+@media (max-width: 992px) {
+  .mapa-demo-container {
+    height: 500px;
+  }
+  
+  .mapa-demo-legend {
+    max-width: 200px;
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mapa-demo-container {
+    height: 400px;
+  }
+  
+  .mapa-demo-legend {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    margin-top: 15px;
+    max-width: 100%;
+  }
+  
+  .demo-note {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .mapa-demo-container {
+    height: 350px;
+  }
+  
+  .mapa-demo-content h5 {
+    font-size: 1.1rem;
+  }
+  
+  .mapa-demo-content p {
+    font-size: 0.95rem;
+  }
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form } from "react-bootstrap";
 import Swal from "sweetalert2";
-import logo from "../assets/images/logo.png";
+import logo from "../assets/images/logo.jpg";
 import "./RecuperarContraForm.css";
 import { Link } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
