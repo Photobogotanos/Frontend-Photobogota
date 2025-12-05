@@ -2,8 +2,8 @@ import { FaHeart, FaCommentDots, FaShare, FaRegHeart, FaChevronLeft, FaChevronRi
 import { useState } from "react";
 import PublicacionCompleta from "./PublicacionCompleta";
 
-const AVATAR_DEFAULT = "/images/users/default-avatar.jpg";
-const IMAGEN_DEFAULT = "/images/posts/default-post.jpg"; 
+const AVATAR_DEFAULT = "/images/user-pfp/default-avatar.jpg";
+const IMAGEN_DEFAULT = "/images/publicaciones/default-post.jpg"; 
 
 const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
   const [abrirCompleto, setAbrirCompleto] = useState(false);
@@ -32,7 +32,6 @@ const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
   return (
     <>
       <div className="tarjeta-publicacion">
-
         {/* Header */}
         <div className="d-flex align-items-center mb-3">
           <img
@@ -44,8 +43,8 @@ const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
             alt="usuario"
           />
 
-          <div>
-            <strong>{publicacion.usuario}</strong>
+          <div className="flex-grow-1">
+            <strong className="d-block">{publicacion.usuario}</strong>
             <div className="texto-secundario">
               {publicacion.nombreUsuario} · {publicacion.tiempo}
             </div>
@@ -62,6 +61,7 @@ const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
               onError={() => setErrorImagen(true)}
               className="imagen-feed"
               alt="publicación"
+              loading="lazy"
             />
 
             {tieneVariasImagenes && (
@@ -110,7 +110,7 @@ const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
         </div>
 
         {/* Texto y comentarios */}
-        <p className="mb-2">{publicacion.texto}</p>
+        <p className="mb-2 texto-publicacion">{publicacion.texto}</p>
         <span
           className="enlace-comentarios"
           onClick={() => setAbrirCompleto(true)}

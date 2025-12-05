@@ -9,47 +9,47 @@ const publicacionesIniciales = [
     nombreUsuario: "@sebass.ye",
     tiempo: "2h",
     etiqueta: "Centro",
-    imagenes: ["/images/fotodemo3.jpg"],
+    imagenes: ["/images/publicaciones/fotodemo4.jpg","/images/publicaciones/fotodemo1.jpg" ],
     meGustas: 245,
     comentarios: 2,
     texto: "Acá parchando, la locura es solo un placer que solo los locos conocen. No me molesten Guau Guauu",
-    avatar: "/images/users/fotouserdemo1.jpg"
+    avatar: "/images/user-pfp/fotouserdemo1.jpg" 
   },
   {
     id: 2,
     usuario: "Danfel",
     nombreUsuario: "danfel_fr",
     tiempo: "4h",
-    etiqueta: "Norte",
-    imagenes: ["/images/fotodemo1.jpg", "/images/fotodemo2.jpg"],
+    etiqueta: "Centro",
+    imagenes: ["/images/publicaciones/fotodemo2.jpg", "/images/publicaciones/fotodemo8.jpg", "/images/publicaciones/fotodemo9.jpg"],
     meGustas: 189,
     comentarios: 2,
     texto: "Hola papuss",
-    avatar: "/images/users/fotouserdemo2.jpg"
+    avatar: "/images/user-pfp/fotouserdemo2.jpg"
   },
   {
     id: 3,
-    usuario: "Carlos Ruiz",
-    nombreUsuario: "@carlitos_r",
+    usuario: "Sebastian Romero",
+    nombreUsuario: "@sxbxxs.r",
     tiempo: "6h",
-    etiqueta: "Sur",
-    imagenes: ["/images/fotodemo4.jpg"],
+    etiqueta: "Noroccidente",
+    imagenes: ["/images/publicaciones/fotodemo6.jpg", "/images/publicaciones/fotodemo5.jpg", "/images/publicaciones/fotodemo10.jpg"],
     meGustas: 312,
     comentarios: 2,
-    texto: "Nueva aventura comenzada! 🚀 Quien se une?",
+    texto: "Holii, qn pa salchipapa?",
     avatar: "/images/users/fotouserdemo3.jpg"
   },
-  {
+   {
     id: 4,
-    usuario: "Ana Martínez",
-    nombreUsuario: "@anita.m",
-    tiempo: "8h",
+    usuario: "Yanpol",
+    nombreUsuario: "@void0bits",
+    tiempo: "6h",
     etiqueta: "Chapinero",
-    imagenes: ["/images/fotodemo5.jpg", "/images/fotodemo6.jpg", "/images/fotodemo7.jpg"],
-    meGustas: 421,
+    imagenes: ["/images/publicaciones/fotodemo11.jpg", "/images/publicaciones/fotodemo12.jpg"],
+    meGustas: 400,
     comentarios: 2,
-    texto: "Recorrido por la ciudad, cada rincón tiene su magia ✨",
-    avatar: "/images/users/fotouserdemo4.jpg"
+    texto: "Do de la mañana en el clu'",
+    avatar: "/images/users/fotouserdemo3.jpg"
   }
 ];
 

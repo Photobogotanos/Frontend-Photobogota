@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const AVATAR_DEFAULT = "/images/users/default-avatar.jpg";
+const AVATAR_DEFAULT = "/images/user-pfp/default-avatar.jpg";
 
 const ItemComentario = ({ comentario }) => {
   const [errorAvatar, setErrorAvatar] = useState(false);

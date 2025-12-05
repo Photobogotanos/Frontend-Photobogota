@@ -3,8 +3,8 @@ import { useState } from "react";
 import ListaComentarios from "./ListaComentarios";
 import EntradaComentario from "./EntradaComentario";
 
-const AVATAR_DEFAULT = "/images/users/default-avatar.jpg";
-const IMAGEN_DEFAULT = "/images/default-post.jpg";
+const AVATAR_DEFAULT = "/images/user-pfp/default-avatar.jpg";
+const IMAGEN_DEFAULT = "/images/publicaciones/default-post.jpg";
 
 const PublicacionCompleta = ({ publicacion, alCerrar, alToggleMeGusta }) => {
   const [indiceImagenActual, setIndiceImagenActual] = useState(0);
