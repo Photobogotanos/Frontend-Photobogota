@@ -6,9 +6,11 @@ import "./RecuperarContraForm.css";
 import { Link } from "react-router-dom";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import { useNavigate } from "react-router-dom";
 
 export default function RecuperarContraForm() {
   const [email, setEmail] = useState("");
+  const navegar = useNavigate();
 
   const RequiredMark = () => (
     <OverlayTrigger
@@ -46,6 +48,8 @@ export default function RecuperarContraForm() {
       title: "Código enviado",
       text: "Hemos enviado un código de recuperación a tu correo.",
       confirmButtonColor: "#28a745",
+    }).then(() => {
+      navegar("/confirmacion-codigo");
     });
 
     console.log("Correo para recuperación:", email);
