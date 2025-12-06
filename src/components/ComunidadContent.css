@@ -3,7 +3,10 @@
   border-radius: 20px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .contenedor-imagen-feed {
@@ -12,20 +15,24 @@
   border-radius: 15px;
   overflow: hidden;
   margin-bottom: 1rem;
+  background: #f8f9fa;
+  max-width: 100%;
 }
 
 .imagen-feed {
   width: 100%;
-  height: 600px;
-  object-fit: cover;
+  height: auto;
+  max-height: 600px;
+  object-fit: contain;
   display: block;
+  margin: 0 auto;
 }
 
 .badge-multiples-imagenes {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   color: white;
   padding: 5px 12px;
   border-radius: 20px;
@@ -42,7 +49,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255,255,255,0.95);
+  background: rgba(255, 255, 255, 0.95);
   border: none;
   width: 40px;
   height: 40px;
@@ -54,7 +61,7 @@
   font-size: 18px;
   z-index: 10;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .boton-nav-carrusel:hover {
@@ -75,7 +82,7 @@
   bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0,0,0,0.75);
+  background: rgba(0, 0, 0, 0.75);
   color: white;
   padding: 6px 14px;
   border-radius: 20px;
@@ -129,23 +136,39 @@
 .overlay-post-completo {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  padding: 1rem;
+  overflow: hidden;
 }
 
 .contenedor-post-completo {
   display: flex;
-  width: 90%;
-  max-width: 1200px;
-  height: 85vh;
+  width: 95%;
+  max-width: 1100px;
+  height: 90vh;
+  max-height: 800px;
   background: white;
   overflow: hidden;
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .seccion-imagen-post {
@@ -155,11 +178,12 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
 .imagen-post-completo {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
@@ -167,7 +191,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   border: none;
   width: 40px;
   height: 40px;
@@ -198,7 +222,7 @@
   bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   color: white;
   padding: 8px 16px;
   border-radius: 20px;
@@ -210,6 +234,21 @@
   width: 40%;
   overflow-y: auto;
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Encabezado del modal */
+.seccion-comentarios-post .btn-close-modal {
+  align-self: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+/* Área de comentarios */
+.lista-comentarios {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 200px;
 }
 
 /* Entrada de comentario */
@@ -219,6 +258,15 @@
   border-radius: 15px;
   margin-top: 1rem;
 }
+
+.contenedor-entrada-comentario {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
 
 .icono-interactivo {
   cursor: pointer;
@@ -237,7 +285,7 @@
   background: white;
   padding: 10px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .cuadricula-gif {
@@ -259,24 +307,218 @@
   transform: scale(1.05);
 }
 
-/* Responsive */
+@media (max-width: 992px) {
+  .contenedor-post-completo {
+    max-height: 85vh;
+  }
+
+  .seccion-imagen-post {
+    width: 50%;
+  }
+
+  .seccion-comentarios-post {
+    width: 50%;
+  }
+}
+
 @media (max-width: 768px) {
   .contenedor-post-completo {
     flex-direction: column;
     width: 95%;
     height: 95vh;
+    max-height: none;
   }
-  
+
   .seccion-imagen-post,
   .seccion-comentarios-post {
     width: 100%;
   }
-  
+
   .seccion-imagen-post {
-    height: 50%;
+    height: 45%;
+    min-height: 300px;
+    max-height: 400px;
   }
-  
+
+  .seccion-comentarios-post {
+    height: 55%;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .imagen-post-completo {
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 576px) {
+  .contenedor-post-completo {
+    height: 100vh;
+    width: 100%;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .seccion-imagen-post {
+    height: 40%;
+    min-height: 250px;
+  }
+
+  .overlay-post-completo {
+    padding: 0;
+  }
+}
+
+/* Ajustes para pantallas muy altas */
+@media (min-height: 900px) {
+  .contenedor-post-completo {
+    max-height: 850px;
+  }
+}
+
+/* Clase para deshabilitar scroll del body cuando modal está abierto */
+.body-no-scroll {
+  overflow: hidden;
+}
+
+.contenedor-imagen-feed {
+  position: relative;
+  cursor: pointer;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  aspect-ratio: 1 / 1;
+  max-height: 600px;
+}
+
+.imagen-feed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Ajustes responsivos para la imagen */
+@media (max-width: 1200px) {
   .imagen-feed {
-    height: 350px;
+    max-height: 550px;
+  }
+}
+
+@media (max-width: 992px) {
+  .imagen-feed {
+    max-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tarjeta-publicacion {
+    border-radius: 15px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    max-width: 95%;
+  }
+
+  .imagen-feed {
+    max-height: 450px;
+  }
+}
+
+@media (max-width: 576px) {
+  .imagen-feed {
+    max-height: 400px;
+  }
+}
+
+@media (max-width: 576px) {
+  .contenedor-imagen-feed {
+    max-height: 400px;
+    aspect-ratio: 4 / 3;
+  }
+
+  .tarjeta-publicacion {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  .contenedor-imagen-feed {
+    max-height: 350px;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* Ajustes para modal en móviles */
+@media (max-width: 768px) {
+  .contenedor-post-completo {
+    flex-direction: column;
+    width: 95%;
+    height: 95vh;
+    margin: 10px;
+  }
+
+  .seccion-imagen-post,
+  .seccion-comentarios-post {
+    width: 100%;
+  }
+
+  .seccion-imagen-post {
+    height: 40%;
+    /* Reducir altura de imagen en modal móvil */
+    min-height: 300px;
+  }
+
+  .seccion-comentarios-post {
+    height: 60%;
+  }
+
+  .imagen-post-completo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+/* Ajustes para tablets más pequeñas */
+@media (max-width: 576px) {
+  .contenedor-post-completo {
+    height: 90vh;
+    border-radius: 15px;
+  }
+
+  .seccion-imagen-post {
+    height: 35%;
+    min-height: 250px;
+  }
+
+  .seccion-comentarios-post {
+    height: 65%;
+  }
+}
+
+/* Mejorar la visualización de múltiples imágenes */
+.carrusel-imagenes {
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Botones de navegación más pequeños en móviles */
+@media (max-width: 768px) {
+  .boton-nav-carrusel {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+
+  .indicador-carrusel {
+    font-size: 12px;
+    padding: 4px 10px;
   }
 }

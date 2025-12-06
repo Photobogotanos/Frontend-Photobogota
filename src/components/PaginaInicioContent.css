@@ -441,14 +441,10 @@
   align-items: center;
   gap: 12px;
   padding: 10px 0;
-  
-  /* Tipografía Apple Style */
   font-size: 1.05rem;
   font-weight: 400;
   color: #1c1c1e; 
   letter-spacing: -0.2px;
-
-  /* Línea sutil como Apple Settings */
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
@@ -456,14 +452,12 @@
   border-bottom: none;
 }
 
-/* Íconos estilo Apple: suaves, gris premium */
 .apple-list svg {
   font-size: 1.2rem;
   color: #8e8e93; 
   flex-shrink: 0;
 }
 
-/* Efecto hover muy sutil tipo iOS */
 .apple-list li:hover {
   background: rgba(0, 0, 0, 0.04);
   border-radius: 12px;

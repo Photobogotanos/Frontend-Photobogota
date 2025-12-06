@@ -3,7 +3,7 @@ import { useState } from "react";
 import PublicacionCompleta from "./PublicacionCompleta";
 
 const AVATAR_DEFAULT = "/images/user-pfp/default-avatar.jpg";
-const IMAGEN_DEFAULT = "/images/publicaciones/default-post.jpg"; 
+const IMAGEN_DEFAULT = "/images/publicaciones/default-post.jpg";
 
 const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
   const [abrirCompleto, setAbrirCompleto] = useState(false);
@@ -66,11 +66,19 @@ const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
 
             {tieneVariasImagenes && (
               <>
-                <button className="boton-nav-carrusel izquierda" onClick={imagenAnterior}>
+                <button
+                  className="boton-nav-carrusel izquierda"
+                  onClick={imagenAnterior}
+                  aria-label="Imagen anterior"
+                >
                   <FaChevronLeft />
                 </button>
 
-                <button className="boton-nav-carrusel derecha" onClick={imagenSiguiente}>
+                <button
+                  className="boton-nav-carrusel derecha"
+                  onClick={imagenSiguiente}
+                  aria-label="Imagen siguiente"
+                >
                   <FaChevronRight />
                 </button>
 
@@ -81,6 +89,7 @@ const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
             )}
           </div>
         </div>
+
 
         {/* Interacciones */}
         <div className="d-flex gap-4 my-3">

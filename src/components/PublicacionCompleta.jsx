@@ -1,5 +1,5 @@
 import { FaTimes, FaChevronLeft, FaChevronRight, FaHeart, FaRegHeart, FaCommentDots, FaShare } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ListaComentarios from "./ListaComentarios";
 import EntradaComentario from "./EntradaComentario";
 
@@ -11,6 +11,15 @@ const PublicacionCompleta = ({ publicacion, alCerrar, alToggleMeGusta }) => {
   const [errorImagen, setErrorImagen] = useState(false);
   const [errorAvatar, setErrorAvatar] = useState(false);
   const tieneVariasImagenes = publicacion.imagenes.length > 1;
+
+  // Bloquear scroll del body cuando modal está abierto
+  useEffect(() => {
+    document.body.classList.add('body-no-scroll');
+    
+    return () => {
+      document.body.classList.remove('body-no-scroll');
+    };
+  }, []);
 
   const imagenAnterior = () => {
     setIndiceImagenActual((prev) => 
@@ -56,7 +65,7 @@ const PublicacionCompleta = ({ publicacion, alCerrar, alToggleMeGusta }) => {
 
         {/* Derecha: información y comentarios */}
         <div className="seccion-comentarios-post">
-          <button className="btn btn-light mb-3" onClick={alCerrar}>
+          <button className="btn btn-light mb-3 btn-close-modal" onClick={alCerrar}>
             <FaTimes /> Cerrar
           </button>
 
@@ -98,8 +107,15 @@ const PublicacionCompleta = ({ publicacion, alCerrar, alToggleMeGusta }) => {
             </button>
           </div>
 
-          <ListaComentarios idPublicacion={publicacion.id} />
-          <EntradaComentario idPublicacion={publicacion.id} />
+          {/* Lista de comentarios con scroll interno */}
+          <div className="lista-comentarios">
+            <ListaComentarios idPublicacion={publicacion.id} />
+          </div>
+          
+          {/* Entrada de comentario fija en la parte inferior */}
+          <div className="contenedor-entrada-comentario mt-auto">
+            <EntradaComentario idPublicacion={publicacion.id} />
+          </div>
         </div>
       </div>
     </div>

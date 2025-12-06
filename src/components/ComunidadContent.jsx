@@ -9,11 +9,11 @@ const publicacionesIniciales = [
     nombreUsuario: "@sebass.ye",
     tiempo: "2h",
     etiqueta: "Centro",
-    imagenes: ["/images/publicaciones/fotodemo4.jpg","/images/publicaciones/fotodemo1.jpg" ],
+    imagenes: ["/images/publicaciones/fotodemo4.jpg", "/images/publicaciones/fotodemo1.jpg"],
     meGustas: 245,
     comentarios: 2,
     texto: "Acá parchando, la locura es solo un placer que solo los locos conocen. No me molesten Guau Guauu",
-    avatar: "/images/user-pfp/fotouserdemo1.jpg" 
+    avatar: "/images/user-pfp/fotouserdemo1.jpg"
   },
   {
     id: 2,
@@ -39,7 +39,7 @@ const publicacionesIniciales = [
     texto: "Holii, qn pa salchipapa?",
     avatar: "/images/users/fotouserdemo3.jpg"
   },
-   {
+  {
     id: 4,
     usuario: "Yanpol",
     nombreUsuario: "@void0bits",
@@ -70,14 +70,16 @@ const ComunidadContent = () => {
   };
 
   return (
-    <div className="container py-3">
-      {publicaciones.map(pub => (
-        <PublicacionFeed 
-          key={pub.id} 
-          publicacion={pub}
-          alToggleMeGusta={manejarToggleMeGusta}
-        />
-      ))}
+    <div className="container-fluid px-0 px-md-3">
+      <div className="feed-container">
+        {publicaciones.map(pub => (
+          <PublicacionFeed
+            key={pub.id}
+            publicacion={pub}
+            alToggleMeGusta={manejarToggleMeGusta}
+          />
+        ))}
+      </div>
     </div>
   );
 };

@@ -43,6 +43,7 @@ export default function LoginForm() {
       });
     }
 
+    //Demostracion login exitoso
     localStorage.setItem("logueado", "true");
     localStorage.setItem(
       "usuario",
