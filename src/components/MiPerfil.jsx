@@ -5,6 +5,7 @@ import { FaCamera } from "react-icons/fa";
 import SpotCard from "./SpotCard";
 import ReviewCard from "./ReviewCard";
 import "./MiPerfil.css";
+import { CiLocationOn } from "react-icons/ci";
 
 export default function MiPerfil() {
   const [tab, setTab] = useState("publicaciones");
@@ -15,7 +16,7 @@ export default function MiPerfil() {
       
       <div className="perfil-header mt-5">
         <img
-          src="public/images/default-post.jpg"
+          src="public/images/publicaciones/default-post.jpg"
           alt="Foto perfil"
           className="perfil-avatar"
         />
@@ -85,42 +86,42 @@ export default function MiPerfil() {
         {tab === "publicaciones" && (
   <div className="publicaciones-grid">
     <SpotCard
-      img="public/images/default-post.jpg"
+      img="public/images/publicaciones/default-post.jpg"
       title="Alcaldía local Barrios Unidos"
       tags={["Naturaleza", "Spots"]}
       rating="4.8"
       likes="294"
     />
     <SpotCard
-      img="public/images/default-post.jpg"
+      img="public/images/publicaciones/default-post.jpg"
       title="Parroquia San Anselmo"
       tags={["Spots"]}
       rating="2.6"
       likes="12"
     />
     <SpotCard
-      img="public/images/default-post.jpg"
+      img="public/images/publicaciones/default-post.jpg"
       title="Cl. 152 #9-57, Bogotá"
       tags={["Naturaleza", "Spots"]}
       rating="3.8"
       likes="65"
     />
     <SpotCard
-      img="public/images/default-post.jpg"
+      img="public/images/publicaciones/default-post.jpg"
       title="Parque de Bavaria"
       tags={["Urbano", "Spots"]}
       rating="4.3"
       likes="79"
     />
     <SpotCard
-      img="public/images/default-post.jpg"
+      img="public/images/publicaciones/default-post.jpg"
       title="Cl. 152 #9-57, Bogotá"
       tags={["Naturaleza", "Spots"]}
       rating="3.8"
       likes="65"
     />
     <SpotCard
-      img="public/images/default-post.jpg"
+      img="public/images/publicaciones/default-post.jpg"
       title="Parque de Bavaria"
       tags={["Urbano", "Spots"]}
       rating="4.3"
@@ -129,25 +130,118 @@ export default function MiPerfil() {
   </div>
 )}
     
-        {tab === "resenas" && (
-  <div className="reviews-container">
-    <ReviewCard
-      title="Museo del oro"
-      rating={5}
-      text="La experiencia en el Museo del Oro fue increíble, con una impresionante colección que cuenta la historia de los pueblos indígenas de Colombia. Las exhibiciones están bien organizadas y el espacio es moderno. Sin embargo, el único inconveniente fue la falta de parqueadero cercano, lo que obligó a dejar el carro lejos. A pesar de eso, es una visita muy recomendable para conocer más sobre la cultura colombiana."
-      likes={45}
-      date="3 meses"
-    />
+      {tab === "resenas" && (
+        <div>
+          <div className="reviews-grid">
+            
+            <ReviewCard
+              title="Jardín Botánico"
+              rating={5}
+              text="Un paraíso natural increíble. Perfecto para senderismo y fotografía. La biodiversidad es impresionante. Recomiendo llevar ropa adecuada y suficiente agua."
+              likes={567}
+              date="Hace 2 meses"
+              placeId={"4"}
+            />
+            <ReviewCard
+              title="Restaurante El Cielo"
+              rating={4}
+              text="Experiencia gastronómica excepcional con presentación creativa de platos. Los sabores son únicos y el servicio es impecable. Un poco costoso, pero vale la pena para ocasiones especiales."
+              likes={234}
+              date="Hace 1 mes"
+              placeId={"3"}
+            />
+            
+            <ReviewCard
+              title="Café Bourbon"
+              rating={4}
+              text="El mejor café de la ciudad. Ambiente acogedor y personal amable. Perfecto para trabajar o leer un libro tranquilo."
+              likes={189}
+              date="Hace 2 semanas"
+              placeId={"2"}
+            />
+            <ReviewCard
+              title="Galería de Arte Moderno"
+              rating={5}
+              text="Exposiciones increíbles y siempre renovadas. El espacio es luminoso y bien diseñado. Entrada gratuita los domingos."
+              likes={312}
+              date="Hace 1 semana"
+              placeId={"1"}
+            />
+            <ReviewCard
+              title="Museo del oro"
+              rating={5}
+              text="La experiencia en el Museo del Oro fue increíble, con una impresionante colección que cuenta la historia de los pueblos indígenas de Colombia. Las exhibiciones están bien organizadas y el espacio es moderno. Sin embargo, el único inconveniente fue la falta de parqueadero cercano, lo que obligó a dejar el carro lejos. A pesar de eso, es una visita muy recomendable para conocer más sobre la cultura colombiana."
+              likes={945}
+              date="Hace 3 meses"
+              placeId={"5"}
+            />
+            <ReviewCard
+              title="Bar Gyal"
+              rating={2}
+              text="Un espacio reducido e incómodo, donde los precios son demasiado altos para la calidad de lo que ofrecen. Aunque la atención al cliente es buena, el ambiente se ve opacado por la actitud del público, que no es el más agradable. En general, no lo recomendaría debido a la relación calidad-precio y el entorno."
+              likes={9}
+              date="Hace 20 días"
+              placeId={"4"}
+            />
+          </div>
+        </div>
+        )}
 
-    <ReviewCard
-      title="Bar Gyal"
-      rating={2}
-      text="Un espacio reducido e incómodo, donde los precios son demasiado altos para la calidad de lo que ofrecen. Aunque la atención al cliente es buena, el ambiente se ve opacado por la actitud del público, que no es el más agradable. En general, no lo recomendaría debido a la relación calidad-precio y el entorno."
-      likes={9}
-      date="20 días"
-    />
-  </div>
-)}
+           {tab === "guardados" && (
+          <div>
+            {tieneGuardados ? (
+              // CON LUGARES GUARDADOS
+              <div className="guardados-grid">
+                <SpotCard
+                  img="public/images/publicaciones/default-post.jpg"
+                  title="Café Bourbon"
+                  tags={["Café", "Spots"]}
+                  rating="4.7"
+                  likes="189"
+                />
+                <SpotCard
+                  img="public/images/publicaciones/default-post.jpg"
+                  title="Galería de Arte Moderno"
+                  tags={["Arte", "Cultural"]}
+                  rating="4.5"
+                  likes="156"
+                />
+                <SpotCard
+                  img="public/images/publicaciones/default-post.jpg"
+                  title="Teatro Nacional"
+                  tags={["Teatro", "Cultural"]}
+                  rating="4.8"
+                  likes="278"
+                />
+                {/* Puedes agregar más SpotCards aquí */}
+              </div>
+            ) : (
+              // SIN LUGARES GUARDADOS
+              <div className="no-guardados">
+                <div className="empty-icon-guardados">
+                  <FaBookmark size={48} />
+                </div>
+                <h4>No hay lugares guardados</h4>
+                <p>Guarda tus lugares favoritos, para visitarlos después</p>
+                <button className="btn-explorar" onClick={() => console.log("Ir a explorar")}>
+                  Explorar lugares
+                </button>
+              </div>
+            )}
+            
+            {/* Botón debug para guardados (opcional) */}
+            <div className="debug-control" style={{marginTop: '20px', textAlign: 'center'}}>
+              <small style={{color: '#666'}}>
+                Debug: <button 
+                  onClick={() => setTieneGuardados(!tieneGuardados)}
+                  style={{background: '#eee', border: '1px solid #ccc', padding: '4px 8px', borderRadius: '4px'}}
+                >
+                  {tieneGuardados ? 'Ocultar guardados' : 'Mostrar guardados'}
+                </button>
+              </small>
+            </div>
+          </div>
+        )}
       </div>
     </Container>
   );

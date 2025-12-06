@@ -77,7 +77,6 @@
 }
 
 .perfil-stat p {
-  color: #777;
   font-size: 0.9rem;
 }
 
@@ -125,6 +124,7 @@
   padding-bottom: 6px;
   cursor: pointer;
   transition: 0.25s;
+  background-color: var(--color-bg);
 }
 
 .perfil-tabs .tab-activa {
@@ -151,19 +151,19 @@
 
 /* Responsivo para pantallas más pequeñas (opcional pero recomendado) */
 @media (max-width: 1200px) {
-  .publicaciones-grid {
+  .publicaciones-grid, .reviews-grid {
     grid-template-columns: repeat(3, 1fr);      /* 3 en tablets grandes */
   }
 }
 
 @media (max-width: 900px) {
-  .publicaciones-grid {
+  .publicaciones-grid, .reviews-grid {
     grid-template-columns: repeat(2, 1fr);      /* 2 en tablets */
   }
 }
 
 @media (max-width: 600px) {
-  .publicaciones-grid {
+  .publicaciones-grid, .reviews-grid {
     grid-template-columns: 1fr;                 /* 1 en móvil */
     gap: 16px;
   }
@@ -176,7 +176,7 @@
 }
 
 /* Si quieres que todas las tarjetas tengan la misma altura (recomendado) */
-.spot-card-horizontal {
+.spot-card-horizontal{
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -193,4 +193,13 @@
   max-width: 720px;
   margin: 0 auto;
   padding: 10px;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 10px;
 }
