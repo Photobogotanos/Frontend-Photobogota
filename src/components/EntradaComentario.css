@@ -1,0 +1,51 @@
+.entrada-comentario {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 15px;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.emoji-picker {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.cuadricula-emoji {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+}
+
+.emoji-item {
+  font-size: 1.5rem;
+  cursor: pointer;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+.emoji-item:hover {
+  background-color: #f0f0f0;
+}
+
+.icono-interactivo {
+  cursor: pointer;
+  transition: color 0.2s;
+  color: #6c757d;
+}
+
+.icono-interactivo:hover {
+  color: #0d6efd;
+}

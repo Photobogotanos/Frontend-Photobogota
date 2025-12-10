@@ -1,4 +1,5 @@
 import ItemComentario from "./ItemComentario";
+import "./ListaComentarios.css";
 
 const comentariosMock = {
   1: [

@@ -13,7 +13,9 @@ const publicacionesIniciales = [
     meGustas: 245,
     comentarios: 2,
     texto: "Acá parchando, la locura es solo un placer que solo los locos conocen. No me molesten Guau Guauu",
-    avatar: "/images/user-pfp/fotouserdemo1.jpg"
+    avatar: "/images/user-pfp/fotouserdemo1.jpg",
+    meGustaDado: false,
+    guardado: false
   },
   {
     id: 2,
@@ -25,7 +27,9 @@ const publicacionesIniciales = [
     meGustas: 189,
     comentarios: 2,
     texto: "Hola papuss",
-    avatar: "/images/user-pfp/fotouserdemo2.jpg"
+    avatar: "/images/user-pfp/fotouserdemo2.jpg",
+    meGustaDado: false,
+    guardado: false
   },
   {
     id: 3,
@@ -37,7 +41,9 @@ const publicacionesIniciales = [
     meGustas: 312,
     comentarios: 2,
     texto: "Holii, qn pa salchipapa?",
-    avatar: "/images/users/fotouserdemo3.jpg"
+    avatar: "/images/users/fotouserdemo3.jpg",
+    meGustaDado: false,
+    guardado: false
   },
   {
     id: 4,
@@ -49,7 +55,9 @@ const publicacionesIniciales = [
     meGustas: 400,
     comentarios: 2,
     texto: "Do de la mañana en el clu'",
-    avatar: "/images/users/fotouserdemo3.jpg"
+    avatar: "/images/users/fotouserdemo3.jpg",
+    meGustaDado: false,
+    guardado: false
   }
 ];
 
@@ -69,6 +77,18 @@ const ComunidadContent = () => {
     }));
   };
 
+  const manejarToggleGuardar = (idPublicacion) => {
+    setPublicaciones(publicaciones.map(pub => {
+      if (pub.id === idPublicacion) {
+        return {
+          ...pub,
+          guardado: !pub.guardado
+        };
+      }
+      return pub;
+    }));
+  };
+
   return (
     <div className="container-fluid px-0 px-md-3">
       <div className="feed-container">
@@ -77,6 +97,7 @@ const ComunidadContent = () => {
             key={pub.id}
             publicacion={pub}
             alToggleMeGusta={manejarToggleMeGusta}
+            alToggleGuardar={manejarToggleGuardar}
           />
         ))}
       </div>

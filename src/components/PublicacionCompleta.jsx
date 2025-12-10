@@ -1,12 +1,13 @@
-import { FaTimes, FaChevronLeft, FaChevronRight, FaHeart, FaRegHeart, FaCommentDots, FaShare } from "react-icons/fa";
+import { FaTimes, FaChevronLeft, FaChevronRight, FaHeart, FaRegHeart, FaCommentDots, FaShare, FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import ListaComentarios from "./ListaComentarios";
 import EntradaComentario from "./EntradaComentario";
+import "./PublicacionCompleta.css";
 
 const AVATAR_DEFAULT = "/images/user-pfp/default-avatar.jpg";
 const IMAGEN_DEFAULT = "/images/publicaciones/default-post.jpg";
 
-const PublicacionCompleta = ({ publicacion, alCerrar, alToggleMeGusta }) => {
+const PublicacionCompleta = ({ publicacion, alCerrar, alToggleMeGusta, alToggleGuardar }) => {
   const [indiceImagenActual, setIndiceImagenActual] = useState(0);
   const [errorImagen, setErrorImagen] = useState(false);
   const [errorAvatar, setErrorAvatar] = useState(false);
@@ -65,9 +66,24 @@ const PublicacionCompleta = ({ publicacion, alCerrar, alToggleMeGusta }) => {
 
         {/* Derecha: información y comentarios */}
         <div className="seccion-comentarios-post">
-          <button className="btn btn-light mb-3 btn-close-modal" onClick={alCerrar}>
-            <FaTimes /> Cerrar
-          </button>
+          {/* Botón cerrar */}
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <button className="btn btn-light btn-close-modal" onClick={alCerrar}>
+              <FaTimes /> Cerrar
+            </button>
+            
+            {/* Botón de guardar en modal */}
+            <button
+              className="boton-interaccion boton-guardar-modal"
+              onClick={() => alToggleGuardar && alToggleGuardar(publicacion.id)}
+            >
+              {publicacion.guardado ? (
+                <FaBookmark className="text-warning" />
+              ) : (
+                <FaRegBookmark />
+              )}
+            </button>
+          </div>
 
           {/* Header del usuario */}
           <div className="d-flex align-items-center mb-3">

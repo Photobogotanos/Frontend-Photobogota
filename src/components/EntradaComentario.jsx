@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FaSmile, FaPaperPlane, FaImages } from "react-icons/fa";
 import SelectorGif from "./SelectorGif";
+import "./EntradaComentario.css";
 
 const EMOJIS_POPULARES = [
   "😀",

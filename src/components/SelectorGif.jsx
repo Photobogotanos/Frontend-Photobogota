@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
+import "./SelectorGif.css";
 
 const SelectorGif = ({ alSeleccionar }) => {
   const [gifs, setGifs] = useState([]);

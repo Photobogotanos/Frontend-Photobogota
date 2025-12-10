@@ -1,11 +1,12 @@
-import { FaHeart, FaCommentDots, FaShare, FaRegHeart, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaHeart, FaCommentDots, FaShare, FaRegHeart, FaChevronLeft, FaChevronRight, FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { useState } from "react";
 import PublicacionCompleta from "./PublicacionCompleta";
+import "./PublicacionFeed.css";
 
 const AVATAR_DEFAULT = "/images/user-pfp/default-avatar.jpg";
 const IMAGEN_DEFAULT = "/images/publicaciones/default-post.jpg";
 
-const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
+const PublicacionFeed = ({ publicacion, alToggleMeGusta, alToggleGuardar }) => {
   const [abrirCompleto, setAbrirCompleto] = useState(false);
   const [indiceImagenActual, setIndiceImagenActual] = useState(0);
   const [errorAvatar, setErrorAvatar] = useState(false);
@@ -44,7 +45,7 @@ const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
           />
 
           <div className="flex-grow-1">
-            <strong className="d-block">{publicacion.usuario}</strong>
+            <strong className="d-block texto-usuario">{publicacion.usuario}</strong>
             <div className="texto-secundario">
               {publicacion.nombreUsuario} · {publicacion.tiempo}
             </div>
@@ -90,31 +91,44 @@ const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
           </div>
         </div>
 
-
         {/* Interacciones */}
-        <div className="d-flex gap-4 my-3">
+        <div className="d-flex justify-content-between align-items-center my-3">
+          <div className="d-flex gap-4">
+            <button
+              className="boton-interaccion"
+              onClick={() => alToggleMeGusta(publicacion.id)}
+            >
+              {publicacion.meGustaDado ? (
+                <FaHeart className="text-danger" />
+              ) : (
+                <FaRegHeart />
+              )}
+              <span className="ms-1 contador-interaccion">{publicacion.meGustas}</span>
+            </button>
+
+            <button
+              className="boton-interaccion"
+              onClick={() => setAbrirCompleto(true)}
+            >
+              <FaCommentDots />
+              <span className="ms-1 contador-interaccion">{publicacion.comentarios}</span>
+            </button>
+
+            <button className="boton-interaccion">
+              <FaShare />
+            </button>
+          </div>
+
+          {/* Botón de guardar */}
           <button
-            className="boton-interaccion"
-            onClick={() => alToggleMeGusta(publicacion.id)}
+            className="boton-interaccion boton-guardar"
+            onClick={() => alToggleGuardar && alToggleGuardar(publicacion.id)}
           >
-            {publicacion.meGustaDado ? (
-              <FaHeart className="text-danger" />
+            {publicacion.guardado ? (
+              <FaBookmark className="text-warning" />
             ) : (
-              <FaRegHeart />
+              <FaRegBookmark />
             )}
-            <span className="ms-1">{publicacion.meGustas}</span>
-          </button>
-
-          <button
-            className="boton-interaccion"
-            onClick={() => setAbrirCompleto(true)}
-          >
-            <FaCommentDots />
-            <span className="ms-1">{publicacion.comentarios}</span>
-          </button>
-
-          <button className="boton-interaccion">
-            <FaShare />
           </button>
         </div>
 
@@ -134,6 +148,7 @@ const PublicacionFeed = ({ publicacion, alToggleMeGusta }) => {
           publicacion={publicacion}
           alCerrar={() => setAbrirCompleto(false)}
           alToggleMeGusta={alToggleMeGusta}
+          alToggleGuardar={alToggleGuardar}
         />
       )}
     </>
