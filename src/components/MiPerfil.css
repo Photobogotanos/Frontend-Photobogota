@@ -1,3 +1,4 @@
+/* PERFIL CONTAINER */
 .perfil-container {
   background-color: var(--color-bg);
   border-radius: 12px;
@@ -5,6 +6,7 @@
   margin-top: 20px;
 }
 
+/* HEADER DEL PERFIL */
 .perfil-header {
   display: flex;
   align-items: center;
@@ -65,6 +67,7 @@
   font-weight: bold;
 }
 
+/* ESTADÍSTICAS */
 .perfil-stats {
   justify-content: center;
   text-align: center;
@@ -77,11 +80,10 @@
 }
 
 .perfil-stat p {
-  color: #777;
   font-size: 0.9rem;
 }
 
-/* BOTÓN EDITAR */
+/* BOTÓN EDITAR PERFIL */
 .perfil-edit-wrapper {
   display: flex;
   justify-content: center;
@@ -111,6 +113,7 @@
   margin: 20px 0;
 }
 
+/* PESTAÑAS */
 .perfil-tabs {
   display: flex;
   justify-content: space-around;
@@ -125,6 +128,7 @@
   padding-bottom: 6px;
   cursor: pointer;
   transition: 0.25s;
+  background-color: var(--color-bg);
 }
 
 .perfil-tabs .tab-activa {
@@ -132,55 +136,226 @@
   border-bottom: 3px solid #000;
 }
 
-/* PUBLICACIONES GRID */
-.card-grid {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
+/* CONTENIDO DE LAS PESTAÑAS */
+.perfil-tab-content {
+  min-height: 400px;
 }
 
-/* PUBLICACIONES GRID - 4 columnas perfectas */
-.publicaciones-grid {
+/* GRIDS PARA TODAS LAS SECCIONES */
+.publicaciones-grid,
+.reviews-grid,
+.guardados-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);        /* Siempre 4 columnas */
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   width: 100%;
   max-width: 100%;
-  padding: 0 10px;                              /* opcional: un poco de margen lateral */
+  padding: 0 10px;
 }
 
-/* Responsivo para pantallas más pequeñas (opcional pero recomendado) */
-@media (max-width: 1200px) {
-  .publicaciones-grid {
-    grid-template-columns: repeat(3, 1fr);      /* 3 en tablets grandes */
-  }
-}
-
-@media (max-width: 900px) {
-  .publicaciones-grid {
-    grid-template-columns: repeat(2, 1fr);      /* 2 en tablets */
-  }
-}
-
-@media (max-width: 600px) {
-  .publicaciones-grid {
-    grid-template-columns: 1fr;                 /* 1 en móvil */
-    gap: 16px;
-  }
-}
-
-/* Aseguramos que las tarjetas ocupen todo el alto disponible en su celda */
-.publicaciones-grid > * {
+/* Asegurar que las tarjetas ocupen todo el alto disponible */
+.publicaciones-grid > *,
+.reviews-grid > *,
+.guardados-grid > * {
   width: 100% !important;
   height: 100%;
 }
 
-/* Si quieres que todas las tarjetas tengan la misma altura (recomendado) */
-.spot-card-horizontal {
+/* Altura uniforme para todas las tarjetas */
+.spot-card-horizontal,
+.review-card {
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+/* RESPONSIVO PARA TODOS LOS GRIDS */
+@media (max-width: 1200px) {
+  .publicaciones-grid,
+  .reviews-grid,
+  .guardados-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .publicaciones-grid,
+  .reviews-grid,
+  .guardados-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .publicaciones-grid,
+  .reviews-grid,
+  .guardados-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .perfil-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .perfil-avatar {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .perfil-badges {
+    justify-content: center;
+  }
+  
+  .perfil-tabs {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .perfil-tabs button {
+    text-align: center;
+    padding: 10px;
+  }
+}
+
+/* ESTADO VACÍO (para todas las secciones) */
+.no-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  padding: 50px 20px;
+  background: #fafafa;
+  border-radius: 16px;
+  border: 2px dashed #e0e0e0;
+  margin: 20px 0;
+}
+
+.no-contenido .empty-icon {
+  font-size: 48px;
+  margin-bottom: 25px;
+  color: #888;
+  opacity: 0.6;
+}
+
+.no-contenido h4 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.no-contenido p {
+  color: #666;
+  max-width: 400px;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  font-size: 1rem;
+}
+
+/* BOTÓN EXPLORAR/CREAR */
+.btn-explorar {
+  background: var(--color-primary, #007bff);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+.btn-explorar:hover {
+  background: var(--color-secondary, #0056b3);
+  transform: translateY(-3px);
+  box-shadow: 0px 6px 16px rgba(0, 123, 255, 0.3);
+}
+
+/* CONTROLES DEBUG (opcional - puedes comentarlos o borrarlos) */
+.debug-controls {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+  text-align: center;
+}
+
+.debug-controls small {
+  display: block;
+  color: #666;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.debug-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.debug-buttons button {
+  background: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.debug-buttons button:hover {
+  background: #dee2e6;
+  transform: translateY(-1px);
+}
+
+/* Ajustes responsivos para estado vacío */
+@media (max-width: 600px) {
+  .no-contenido {
+    min-height: 350px;
+    padding: 30px 15px;
+  }
+  
+  .no-contenido h4 {
+    font-size: 1.2rem;
+  }
+  
+  .no-contenido p {
+    font-size: 0.9rem;
+  }
+  
+  .btn-explorar {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .debug-controls {
+    padding: 15px;
+  }
+  
+  .debug-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .debug-buttons button {
+    width: 200px;
+  }
+}
+
+/* OLD STYLES (mantenidos por compatibilidad) */
+.card-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
 }
 
 .reviews-list {

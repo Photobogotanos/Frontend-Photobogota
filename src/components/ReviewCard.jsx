@@ -1,41 +1,45 @@
-// ReviewCard.jsx
-import { FiMapPin, FiHeart } from "react-icons/fi";
+import "./ReviewCard.css";
 
-export default function ReviewCard({ 
-  title, 
-  rating, 
-  text, 
-  likes, 
-  date, 
-  placeLink = "-reseñas" 
-}) {
+export default function ReviewCard({ title, rating, text, likes, date, placeId }) {
+  const stars = [];
+  for (let i = 0; i < 5; i++) {
+    stars.push(
+      <span key={i} className={`star ${i < rating ? 'filled' : 'empty'}`}>
+        {i < rating ? '★' : '☆'}
+      </span>
+    );
+  }
+
+  // URL del lugar (ajusta según tu routing)
+  const lugarUrl = placeId ? `/lugar/${placeId}` : "#";
+
   return (
     <div className="review-card">
+      {/* Header */}
       <div className="review-header">
-        <div className="review-location">
-          <FiMapPin className="pin-icon" />
-          <h4 className="review-title">{title}</h4>
+        <div className="review-title-container">
+          <h3 className="review-title">{title}</h3>
+          <div className="review-meta">
+            <span className="review-date">{date}</span>
+            <div className="review-rating">
+              {stars}
+              <span className="rating-number">{rating}.0</span>
+            </div>
+          </div>
         </div>
-        <span className="review-date">{date}</span>
-      </div>
-
-      <div className="review-rating">
-        {[...Array(5)].map((_, i) => (
-          <span key={i} className={i < Math.floor(rating) ? "star filled" : "star"}>
-            Star
-          </span>
-        ))}
+        <div className="review-likes">
+          <span className="heart-icon">❤️</span>
+          <span className="likes-count">{likes}</span>
+        </div>
       </div>
 
       <p className="review-text">{text}</p>
 
-      <div className="review-footer">
-        <div className="review-likes">
-          <FiHeart className="heart-icon" />
-          <span>{likes}</span>
-        </div>
-        <a href={placeLink} className="ver-lugar">
-          Ver lugar
+      {/* Enlace "ver lugar" */}
+      <div className="review-actions">
+        <a href={lugarUrl} className="ver-lugar-link">
+          <span className="ver-lugar-text">Ver lugar</span>
+          <span className="arrow-icon">→</span>
         </a>
       </div>
     </div>
