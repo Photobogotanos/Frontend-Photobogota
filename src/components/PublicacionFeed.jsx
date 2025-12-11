@@ -92,45 +92,45 @@ const PublicacionFeed = ({ publicacion, alToggleMeGusta, alToggleGuardar }) => {
         </div>
 
         {/* Interacciones */}
-        <div className="d-flex justify-content-between align-items-center my-3">
-          <div className="d-flex gap-4">
+        <div className="interacciones">
+          <div className="interacciones-left">
             <button
-              className="boton-interaccion"
+              className="btn-interaccion"
               onClick={() => alToggleMeGusta(publicacion.id)}
             >
               {publicacion.meGustaDado ? (
-                <FaHeart className="text-danger" />
+                <FaHeart className="icon like" />
               ) : (
-                <FaRegHeart />
+                <FaRegHeart className="icon" />
               )}
-              <span className="ms-1 contador-interaccion">{publicacion.meGustas}</span>
+              <span className="contador">{publicacion.meGustas}</span>
             </button>
 
             <button
-              className="boton-interaccion"
+              className="btn-interaccion"
               onClick={() => setAbrirCompleto(true)}
             >
-              <FaCommentDots />
-              <span className="ms-1 contador-interaccion">{publicacion.comentarios}</span>
+              <FaCommentDots className="icon" />
+              <span className="contador">{publicacion.comentarios}</span>
             </button>
 
-            <button className="boton-interaccion">
-              <FaShare />
+            <button className="btn-interaccion">
+              <FaShare className="icon" />
             </button>
           </div>
 
-          {/* Botón de guardar */}
           <button
-            className="boton-interaccion boton-guardar"
+            className="btn-interaccion btn-guardar"
             onClick={() => alToggleGuardar && alToggleGuardar(publicacion.id)}
           >
             {publicacion.guardado ? (
-              <FaBookmark className="text-warning" />
+              <FaBookmark className="icon saved" />
             ) : (
-              <FaRegBookmark />
+              <FaRegBookmark className="icon" />
             )}
           </button>
         </div>
+
 
         {/* Texto y comentarios */}
         <p className="mb-2 texto-publicacion">{publicacion.texto}</p>
