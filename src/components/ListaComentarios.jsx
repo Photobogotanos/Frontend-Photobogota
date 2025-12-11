@@ -5,7 +5,7 @@ const comentariosMock = {
   1: [
     { id: 1, usuario: "Camila Paez", texto: "Soto como siempre el más lindo 😍", tiempo: "3h", avatar: "/images/user-pfp/fotouserdemo.jpg" },
     { id: 2, usuario: "Yanpol", texto: "El soto paput", tiempo: "2h", avatar: "/images/user-pfp/fotouserdemo.jpg" },
-    {id: 8, usuario: "Laura Neira", texto: "Quien es esa pelada", tiempo: "2h", avatar: "/images/user-pfp/fotouserdemo.jpg"}
+    { id: 8, usuario: "Laura Neira", texto: "Quien es esa pelada", tiempo: "2h", avatar: "/images/user-pfp/fotouserdemo.jpg" }
   ],
   2: [
     { id: 3, usuario: "Pedro López", texto: "Qué hermosas fotos! 📸", tiempo: "3h", avatar: "/images/user-pfp/fotouserdemo.jpg" },
@@ -18,7 +18,7 @@ const comentariosMock = {
   4: [
     { id: 6, usuario: "Camila Sotomayor", texto: "Necesito ir ahí!", tiempo: "7h", avatar: "/images/user-pfp/fotouserdemo.jpg" },
     { id: 7, usuario: "Karen Rodriguez", texto: "Impresionante!", tiempo: "6h", avatar: "/images/user-pfp/fotouserdemo.jpg" },
-     { id: 9, usuario: "Los TC", texto: "Sal de ahi bro!🗣", tiempo: "6h", avatar: "/images/user-pfp/fotouserdemo.jpg" }
+    { id: 9, usuario: "Los TC", texto: "Sal de ahi bro!🗣", tiempo: "6h", avatar: "/images/user-pfp/fotouserdemo.jpg" }
   ]
 };
 
