@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { FiEdit3 } from "react-icons/fi";
 import { FaCamera, FaMapMarkerAlt, FaRegEdit, } from "react-icons/fa";
@@ -8,6 +9,7 @@ import ReviewCard from "./ReviewCard";
 import "./MiPerfil.css";
 
 export default function MiPerfil() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState("publicaciones");
   const [tienePublicaciones, setTienePublicaciones] = useState(true);
   const [tieneResenas, setTieneResenas] = useState(true);
@@ -18,7 +20,7 @@ export default function MiPerfil() {
       
       <div className="perfil-header mt-5">
         <img
-          src="public/images/publicaciones/default-post.jpg"
+          src="public/images/user-pfp/default-avatar.jpg"
           alt="Foto perfil"
           className="perfil-avatar"
         />
@@ -46,7 +48,7 @@ export default function MiPerfil() {
         </Col>
 
         <Col xs={4} className="perfil-stat">
-          <h4>{tieneResenas ? "7" : "0"}</h4>
+          <h4>{tieneResenas ? "6" : "0"}</h4>
           <p>Reseñas</p>
         </Col>
         
@@ -139,19 +141,19 @@ export default function MiPerfil() {
               </div>
             ) : (
               <div className="no-contenido">
-                <div className="empty-icon">
-                  <FaMapMarkerAlt size={48} />
-                </div>
-                <h4>No tienes publicaciones</h4>
-                <p>Comparte tus lugares favoritos para que otros los descubran</p>
-                <button 
-                  className="btn-explorar"
-                  onClick={() => setTienePublicaciones(true)}
-                >
-                  Crear primera publicación
-                </button>
+            <div className="empty-icon">
+              <FaMapMarkerAlt size={48} />
               </div>
-            )}
+              <h4>No tienes publicaciones</h4>
+              <p>Comparte tus lugares favoritos para que otros los descubran</p>
+              <button 
+                className="btn-explorar"
+                onClick={() => navigate("/crear-publicacion")}
+              >
+                ¡Crea tu primera publicación!
+              </button>
+            </div>
+    )}
           </div>
         )}
         
@@ -218,7 +220,7 @@ export default function MiPerfil() {
                 <p>Comparte tu experiencia sobre los lugares que visitas</p>
                 <button 
                   className="btn-explorar"
-                  onClick={() => setTieneResenas(true)}
+                  onClick={() => navigate("/mapa")}
                 >
                   Escribir primera reseña
                 </button>
@@ -326,7 +328,7 @@ export default function MiPerfil() {
                 <p>Guarda tus lugares favoritos, para visitarlos después</p>
                 <button 
                   className="btn-explorar"
-                  onClick={() => setTieneGuardados(true)}
+                  onClick={() => navigate("/comunidad")}
                 >
                   Explorar lugares
                 </button>
@@ -335,7 +337,6 @@ export default function MiPerfil() {
           </div>
         )}
         
-        {/* SECCIÓN DEBUG (opcional) */}
         <div className="debug-controls">
           <small>Debug:</small>
           <div className="debug-buttons">
