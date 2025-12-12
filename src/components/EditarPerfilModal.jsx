@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Modal, Button, Form, Container, Row, Col } from "react-bootstrap";
 import { FaCamera, FaUpload, FaTrash, FaLock } from "react-icons/fa";
 import "./EditarPerfilModal.css";
+import { CiUser } from "react-icons/ci";
+import { FaHouseUser } from "react-icons/fa";
+import { MdOutlineEmail, MdOutlineDescription, MdPhone } from "react-icons/md";
 
 export default function EditarPerfilModal({ show, onHide, perfilData }) {
 const [formData, setFormData] = useState({
@@ -51,7 +54,6 @@ const handleSubmit = (e) => {
     return;
     }
     
-    // Aquí iría la lógica para guardar los cambios
     console.log("Datos guardados:", { ...formData, fotoPerfil });
     alert("Perfil actualizado correctamente");
     onHide();
@@ -117,7 +119,7 @@ return (
         
           {/* NOMBRE COMPLETO */}
         <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">Nombre completo</Form.Label>
+            <Form.Label className="form-label-custom"><CiUser /> Nombre completo</Form.Label>
             <Form.Control
             type="text"
             name="nombreCompleto"
@@ -130,7 +132,7 @@ return (
         
           {/* NOMBRE DE USUARIO */}
         <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">Nombre de usuario</Form.Label>
+            <Form.Label className="form-label-custom"><FaHouseUser /> Nombre de usuario</Form.Label>
             <Form.Control
             type="text"
             name="nombreUsuario"
@@ -143,7 +145,7 @@ return (
         
           {/* CORREO ELECTRÓNICO */}
         <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">Correo electrónico</Form.Label>
+            <Form.Label className="form-label-custom"><MdOutlineEmail /> Correo electrónico</Form.Label>
             <Form.Control
             type="email"
             name="correo"
@@ -156,7 +158,7 @@ return (
         
           {/* DESCRIPCIÓN */}
         <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">Descripción</Form.Label>
+            <Form.Label className="form-label-custom"><MdOutlineDescription /> Descripción</Form.Label>
             <Form.Control
             as="textarea"
             rows={3}
@@ -170,7 +172,7 @@ return (
         
           {/* TELÉFONO */}
         <Form.Group className="mb-4">
-            <Form.Label className="form-label-custom">Teléfono</Form.Label>
+            <Form.Label className="form-label-custom"><MdPhone /> Teléfono</Form.Label>
             <Form.Control
             type="tel"
             name="telefono"
@@ -247,20 +249,21 @@ return (
         
           {/* BOTONES DE ACCIÓN */}
         <div className="modal-actions">
-            <Button 
+            <button 
             variant="outline-secondary" 
             onClick={onHide}
             className="btn-cancelar"
             >
             Cancelar
-            </Button>
-            <Button 
+            </button>
+            
+            <button
             type="submit" 
             variant="primary"
             className="btn-guardar"
             >
             Guardar Cambios
-            </Button>
+            </button>
         </div>
         </Form>
     </Modal.Body>
