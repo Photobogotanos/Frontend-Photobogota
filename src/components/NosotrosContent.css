@@ -1,5 +1,12 @@
-.pg-nosotros-hero{
+.pg-nosotros-total{
   position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 6rem;
+  height: 85vh;
+}
+.pg-nosotros-hero{
+  position: absolute;
   border-radius: 20px;
   overflow: hidden;
   margin-bottom: 6rem;
