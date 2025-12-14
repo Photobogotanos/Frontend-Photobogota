@@ -1,13 +1,13 @@
-import Container from 'react-bootstrap/Container';
-import CrearPublicacion from '../components/CreacionPublicacionForm';
-export default function CreacionPublicacionPage(){
+import Container from "react-bootstrap/Container";
+import CrearPublicacion from "../components/CreacionPublicacionForm";
+import "./CreacionPublicacionPage.css";
 
-    return(
+export default function CreacionPublicacionPage() {
+  return (
     <div className="creacion-publicacion">
-    <Container >
+      <Container className="mt-3">
         <CrearPublicacion></CrearPublicacion>
-    </Container>
+      </Container>
     </div>
-    );
-
+  );
 }

@@ -1,8 +1,13 @@
-.creacion-publicacion{
-    background-color: var(--color-bg);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
+.creacion-publicacion {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  display: flex;
+  padding: 2rem 1rem;
+  margin-top: 3rem !important;
+}
+
+@media (max-width: 768px) {
+  .creacion-publicacion {
+    margin-top: 5rem !important;
+  }
 }

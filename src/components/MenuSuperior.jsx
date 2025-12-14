@@ -106,6 +106,7 @@ export default function MenuSuperior() {
                 to="/crear-publicacion"
                 className={`btn-crear-publicacion ${pulsando ? "pulsing" : ""}`}
                 onMouseEnter={() => setPulsando(false)}
+                onClick={() => navegar("/crear-publicacion")}
               >
                 <FaPlus />
                 <span className="texto-completo">Crear Publicación</span>
