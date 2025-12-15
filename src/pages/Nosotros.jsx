@@ -7,7 +7,7 @@ const Nosotros = () => {
     return (
         <>
             <div className="nosotros-page">
-                <Container className="mt-6">
+                <Container className="mt-3">
                     <NosotrosContent></NosotrosContent>
                 </Container>
             </div>
