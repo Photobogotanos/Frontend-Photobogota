@@ -6,6 +6,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import BackButton from "./BackButton";
 
 export default function LoginForm() {
   const [usuarioOCorreo, setUsuarioOCorreo] = useState("");
@@ -58,7 +59,8 @@ export default function LoginForm() {
   };
 
   return (
-    <Form onSubmit={manejarEnvio} className="login-form-container">
+    <>
+      <Form onSubmit={manejarEnvio} className="login-form-container">
       <div className="login-form-header">
         <h2 className="login-form-title">Ingresa a Photo Bogotá</h2>
       </div>
@@ -129,5 +131,7 @@ export default function LoginForm() {
         </Link>
       </p>
     </Form>
+    <BackButton />
+    </>
   );
 }
