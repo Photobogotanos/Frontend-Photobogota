@@ -6,8 +6,8 @@ const centro = "/images/img-home/centro.jpg";
 const villaLuz = "/images/img-home/villa-luz.jpg";
 const aeropuertoDorado = "/images/img-home/aeropuerto-dorado.jpg";
 const portalAmericas = "/images/img-home/portal-americas.jpg";
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import { IoPin } from "react-icons/io5";
 import { FaRegHeart, FaTimes, FaLock } from "react-icons/fa";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -16,12 +16,14 @@ import { motion } from "framer-motion";
 import Modal from "react-bootstrap/Modal";
 import { useState } from "react";
 import { FaCamera, FaStar, FaHeart, FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 // Configuración de iconos de Leaflet
 import L from "leaflet";
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
@@ -31,6 +33,7 @@ export default function PaginaInicioContent() {
   const [selectedImg, setSelectedImg] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState("");
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const navigate = useNavigate();
 
   const openModal = (img, title = "") => {
     setSelectedImg(img);
@@ -47,28 +50,28 @@ export default function PaginaInicioContent() {
       nombre: "Museo del Oro",
       coord: [4.601, -74.072],
       direccion: "Cra. 6 #15-88, Santa Fe, Bogotá",
-      categoria: "Museo"
+      categoria: "Museo",
     },
     {
       id: 2,
       nombre: "Monserrate",
       coord: [4.605, -74.056],
       direccion: "Carrera 2 Este #21-48, Bogotá",
-      categoria: "Atractivo turístico"
+      categoria: "Atractivo turístico",
     },
     {
       id: 3,
       nombre: "Plaza de Bolívar",
       coord: [4.598, -74.076],
       direccion: "Carrera 7 #11-10, Bogotá",
-      categoria: "Plaza"
+      categoria: "Plaza",
     },
     {
       id: 4,
       nombre: "Jardín Botánico",
       coord: [4.668, -74.099],
       direccion: "Calle 63 #68-95, Bogotá",
-      categoria: "Parque"
+      categoria: "Parque",
     },
   ];
 
@@ -100,7 +103,8 @@ export default function PaginaInicioContent() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.8, duration: 1 }}
           >
-            Un espacio para compartir miradas fotográficas y redescubrir Bogotá desde diferentes perspectivas
+            Un espacio para compartir miradas fotográficas y redescubrir Bogotá
+            desde diferentes perspectivas
           </motion.p>
         </div>
       </motion.div>
@@ -109,9 +113,17 @@ export default function PaginaInicioContent() {
       <h2 className="section-title">Inspiración del día</h2>
       <Row className="g-4">
         {[
-          { img: inspo1, user: "@sebass.ye", loc: "Cl. 24 #69a-59, Torre Colpatria" },
-          { img: centro, user: "@vxc_xerg", loc: "Cra. 4 #13-19, Museo del oro" },
-          { img: inspo3, user: "@void0bits", loc: "Cl. 19 #2a-10, Las aguas" }
+          {
+            img: inspo1,
+            user: "@sebass.ye",
+            loc: "Cl. 24 #69a-59, Torre Colpatria",
+          },
+          {
+            img: centro,
+            user: "@vxc_xerg",
+            loc: "Cra. 4 #13-19, Museo del oro",
+          },
+          { img: inspo3, user: "@void0bits", loc: "Cl. 19 #2a-10, Las aguas" },
         ].map((item, i) => (
           <Col xs={12} md={6} lg={4} key={i}>
             <motion.div
@@ -142,9 +154,18 @@ export default function PaginaInicioContent() {
       <h2 className="section-title">Esto dicen nuestros usuarios</h2>
       <Row className="g-4">
         {[
-          { user: "@sxbxxs.r", text: "La mejor app para descubrir spots fotográficos en Bogotá. ¡Insuperable!" },
-          { user: "@dieg.oamt", text: "Gracias a PhotoBogotá encontré lugares que ni sabía que existían. 100% recomendada." },
-          { user: "@danfel_fr", text: "Ahora entiendo por qué Bogotá es tan fotogénica. Esta app me abrió los ojos." }
+          {
+            user: "@sxbxxs.r",
+            text: "La mejor app para descubrir spots fotográficos en Bogotá. ¡Insuperable!",
+          },
+          {
+            user: "@dieg.oamt",
+            text: "Gracias a PhotoBogotá encontré lugares que ni sabía que existían. 100% recomendada.",
+          },
+          {
+            user: "@danfel_fr",
+            text: "Ahora entiendo por qué Bogotá es tan fotogénica. Esta app me abrió los ojos.",
+          },
         ].map((review, i) => (
           <Col md={4} key={i}>
             <motion.div
@@ -167,7 +188,7 @@ export default function PaginaInicioContent() {
         {[
           { img: aeropuertoDorado, name: "Aeropuerto El Dorado", likes: 1795 },
           { img: villaLuz, name: "Parque villa luz", likes: 1247 },
-          { img: portalAmericas, name: "Portal Las Ámericas", likes: 1386 }
+          { img: portalAmericas, name: "Portal Las Ámericas", likes: 1386 },
         ].map((spot, i) => (
           <Col xs={12} md={4} key={i}>
             <motion.div
@@ -210,18 +231,38 @@ export default function PaginaInicioContent() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <h4 style={{ fontWeight: "800", margin: "2.5rem 0 1rem" }}>Mapa Interactivo (Versión Demostrativa)</h4>
-            <p>Explora Bogotá con nuestro mapa lleno de spots marcados por la comunidad. <strong>Haz clic en los marcadores para ver más información.</strong></p>
+            <h4 style={{ fontWeight: "800", margin: "2.5rem 0 1rem" }}>
+              Mapa Interactivo (Versión Demostrativa)
+            </h4>
+            <p>
+              Explora Bogotá con nuestro mapa lleno de spots marcados por la
+              comunidad.{" "}
+              <strong>
+                Haz clic en los marcadores para ver más información.
+              </strong>
+            </p>
 
-            <h4 style={{ fontWeight: "800", margin: "2.5rem 0 1rem" }}>Funcionalidades completas</h4>
-            <p>Al registrarte podrás: añadir nuevos spots, guardar tus favoritos, ver fotos detalladas, leer reseñas completas y acceder a información exclusiva.</p>
+            <h4 style={{ fontWeight: "800", margin: "2.5rem 0 1rem" }}>
+              Funcionalidades completas
+            </h4>
+            <p>
+              Al registrarte podrás: añadir nuevos spots, guardar tus favoritos,
+              ver fotos detalladas, leer reseñas completas y acceder a
+              información exclusiva.
+            </p>
 
-            <h4 style={{ fontWeight: "800", margin: "2.5rem 0 1rem" }}>Todo lo que necesitas saber</h4>
-            <p>Fotos reales, tips de luz, horarios ideales y cómo llegar. Sin sorpresas.</p>
+            <h4 style={{ fontWeight: "800", margin: "2.5rem 0 1rem" }}>
+              Todo lo que necesitas saber
+            </h4>
+            <p>
+              Fotos reales, tips de luz, horarios ideales y cómo llegar. Sin
+              sorpresas.
+            </p>
 
             <div className="demo-note mt-4 p-3 rounded">
               <FaLock className="me-2 " />
-              <strong>Nota:</strong> Esta es una versión demostrativa. Regístrate para acceder a todas las funcionalidades.
+              <strong>Nota:</strong> Esta es una versión demostrativa.
+              Regístrate para acceder a todas las funcionalidades.
             </div>
           </motion.div>
         </div>
@@ -235,7 +276,9 @@ export default function PaginaInicioContent() {
           <div className="mapa-demo-overlay">
             <div className="mapa-demo-content">
               <h5>Mapa Interactivo de PhotoBogotá</h5>
-              <p className="text-muted mb-3">Haz clic en los marcadores para ver información básica</p>
+              <p className="text-muted mb-3">
+                Haz clic en los marcadores para ver información básica
+              </p>
 
               <div className="mapa-demo-wrapper">
                 <MapContainer
@@ -246,7 +289,7 @@ export default function PaginaInicioContent() {
                   zoomControl={false}
                   maxBounds={[
                     [4.2, -74.6],
-                    [5.1, -73.6]
+                    [5.1, -73.6],
                   ]}
                   minZoom={11}
                   maxZoom={16}
@@ -261,17 +304,21 @@ export default function PaginaInicioContent() {
                       key={lugar.id}
                       position={lugar.coord}
                       eventHandlers={{
-                        click: () => handleMarkerClick(lugar)
+                        click: () => handleMarkerClick(lugar),
                       }}
                     >
                       <Popup>
                         <div className="popup-demo">
                           <strong>{lugar.nombre}</strong>
-                          <p className="mb-1"><small>{lugar.categoria}</small></p>
+                          <p className="mb-1">
+                            <small>{lugar.categoria}</small>
+                          </p>
                           <p className="mb-2">{lugar.direccion}</p>
                           <div className="demo-lock-info">
                             <FaLock size={12} className="me-1" />
-                            <small>Inicia sesión para ver fotos y reseñas</small>
+                            <small>
+                              Inicia sesión para ver fotos y reseñas
+                            </small>
                           </div>
                         </div>
                       </Popup>
@@ -285,7 +332,9 @@ export default function PaginaInicioContent() {
                     <span>Lugar fotográfico</span>
                   </div>
                   <div className="legend-item">
-                    <div className="legend-lock"><FaLock size={10} /></div>
+                    <div className="legend-lock">
+                      <FaLock size={10} />
+                    </div>
                     <span>Contenido exclusivo para usuarios</span>
                   </div>
                 </div>
@@ -317,11 +366,7 @@ export default function PaginaInicioContent() {
             </div>
           )}
           <div className="modal-image-container">
-            <img
-              src={selectedImg}
-              alt="Vista previa"
-              className="modal-image"
-            />
+            <img src={selectedImg} alt="Vista previa" className="modal-image" />
           </div>
         </Modal.Body>
       </Modal>
@@ -334,9 +379,7 @@ export default function PaginaInicioContent() {
         size="md"
       >
         <Modal.Header closeButton>
-          <h4>
-            Contenido exclusivo
-          </h4>
+          <h4>Contenido exclusivo</h4>
         </Modal.Header>
         <Modal.Body>
           <div className="text-center py-3">
@@ -349,22 +392,38 @@ export default function PaginaInicioContent() {
               </motion.div>
               <h5>¡Desbloquea todas las funcionalidades!</h5>
             </div>
-            <p className="mb-4">
-              Al registrarte en PhotoBogotá podrás:
-            </p>
+            <p className="mb-4">Al registrarte en PhotoBogotá podrás:</p>
 
             <ul className="apple-list mb-4">
-              <li><FaCamera /> Fotos detalladas de cada lugar</li>
-              <li><FaStar /> Reseñas completas de otros usuarios</li>
-              <li><FaHeart /> Guarda tus spots favoritos</li>
-              <li><FaPlus /> Agrega nuevos lugares a la comunidad</li>
+              <li>
+                <FaCamera /> Fotos detalladas de cada lugar
+              </li>
+              <li>
+                <FaStar /> Reseñas completas de otros usuarios
+              </li>
+              <li>
+                <FaHeart /> Guarda tus spots favoritos
+              </li>
+              <li>
+                <FaPlus /> Agrega nuevos lugares a la comunidad
+              </li>
             </ul>
 
             <div className="d-grid gap-2">
-              <button className="button-register-modal-demo">
+              <button
+                className="button-register-modal-demo"
+                onClick={() => {
+                  navigate("/creacion-cuenta");
+                }}
+              >
                 Regístrate Gratis
               </button>
-              <button className="button-login-modal-demo">
+              <button
+                className="button-login-modal-demo"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
                 Iniciar Sesión
               </button>
             </div>

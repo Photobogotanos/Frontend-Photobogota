@@ -17,6 +17,7 @@ import {
 } from "react-icons/md";
 import { FaLock, FaEye, FaEyeSlash, FaCheck, FaTimes } from "react-icons/fa";
 import { IoIosSend } from "react-icons/io";
+import BackButton from "./BackButton";
 
 function FormularioCreacion() {
   const navegar = useNavigate();
@@ -335,6 +336,7 @@ function FormularioCreacion() {
           </button>
         </div>
       </Form>
+      <BackButton />
     </div>
   );
 }
