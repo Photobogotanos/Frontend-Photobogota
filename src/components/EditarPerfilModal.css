@@ -1,0 +1,299 @@
+/* MODAL PERSONALIZADO */
+.editar-perfil-modal .modal-content {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* HEADER */
+.modal-header-custom {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 20px 30px;
+}
+
+.modal-title-custom {
+  font-weight: 600;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  background: var(--color-primary);
+}
+
+.modal-header-custom .btn-close {
+  filter: invert(1);
+}
+
+.modal-header-custom .btn-close:hover {
+  opacity: 1;
+}
+
+/* BODY */
+.modal-body-custom {
+  padding: 30px;
+  background-color: var(--color-bg);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* SECCIONES */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.section-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.section-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  background: #f0f0f0;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.section-divider {
+  height: 2px;
+  background: linear-gradient(to right, var(--color-primary), transparent);
+  margin: 15px 0 25px 0;
+  opacity: 0.3;
+}
+
+/* ETIQUETAS DE FORMULARIO */
+.form-label-custom {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-label-custom .file-format {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: normal;
+  margin-left: 10px;
+}
+
+/* CONTROLES DE FORMULARIO */
+.form-control-custom {
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.form-control-custom:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 0, 123, 255), 0.1);
+  outline: none;
+}
+
+/* FOTO DE PERFIL */
+.foto-perfil-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.foto-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.foto-perfil-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.foto-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-foto-action {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.btn-foto-action.upload {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-foto-action.upload:hover {
+  background-color: #e5d9ff;
+  color: black;
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px var(--color-secondary);
+}
+
+.btn-foto-action.delete {
+  background-color: var(--color-light);
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.btn-foto-action.delete:hover {
+  background-color: #f0f0f0;
+  color: #dc3545;
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px var(--color-secondary);
+}
+
+/* BOTÓN CAMBIAR CONTRASEÑA */
+.btn-cambiar-contrasena {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-cambiar-contrasena:hover {
+  color: var(--color-secondary);
+  text-decoration: underline;
+}
+
+.contrasena-fields {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+}
+
+/* GUARDADOS PREVIEW */
+.guardados-preview {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #eee;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.guardado-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.guardado-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.guardado-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  background: #f5f5f5;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/* BOTONES DE ACCIÓN */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.btn-cancelar {
+  padding: 10px 25px;
+  border-radius: 10px;
+  font-weight: 500;
+  border: 2px solid #ddd;
+  background: white;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.btn-cancelar:hover {
+  border-color: #999;
+  background: #f8f8f8;
+}
+
+.btn-guardar {
+  padding: 10px 30px;
+  border-radius: 10px;
+  font-weight: bold;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-guardar:hover {
+  transform: translateY(-2px);
+  color: black;
+  background-color: #e5d9ff;
+  box-shadow: 0px 4px 12px var(--color-secondary);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .modal-body-custom {
+    padding: 20px;
+    max-height: 80vh;
+  }
+  
+  .foto-perfil-container {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .foto-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .btn-foto-action {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .guardados-preview {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .btn-cancelar,
+  .btn-guardar {
+    width: 100%;
+  }
+}

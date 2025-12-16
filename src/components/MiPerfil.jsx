@@ -1,24 +1,44 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { FiEdit3 } from "react-icons/fi";
-import { FaCamera, FaMapMarkerAlt, FaRegEdit, } from "react-icons/fa";
+import { FaCamera, FaMapMarkerAlt, FaRegEdit } from "react-icons/fa";
 import { GrMapLocation } from "react-icons/gr";
 import SpotCard from "./SpotCard";
 import ReviewCard from "./ReviewCard";
+import EditarPerfilModal from "./EditarPerfilModal";
 import "./MiPerfil.css";
 
 export default function MiPerfil() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState("publicaciones");
   const [tienePublicaciones, setTienePublicaciones] = useState(true);
   const [tieneResenas, setTieneResenas] = useState(true);
   const [tieneGuardados, setTieneGuardados] = useState(false);
+  const [showEditarPerfil, setShowEditarPerfil] = useState(false);
+
+  // Datos del perfil para pasar al modal
+  const perfilData = {
+    nombreCompleto: "Juan Sebastian Romero",
+    nombreUsuario: "@sxbxxs.r",
+    correo: "photobogota123@gmail.com",
+    descripcion: "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
+    telefono: "3138529778",
+    foto: "public/images/user-pfp/default-avatar.jpg"
+  };
 
   return (
     <Container fluid className="perfil-container">
+      {/* MODAL DE EDITAR PERFIL */}
+      <EditarPerfilModal
+        show={showEditarPerfil}
+        onHide={() => setShowEditarPerfil(false)}
+        perfilData={perfilData}
+      />
       
       <div className="perfil-header mt-5">
         <img
-          src="public/images/publicaciones/default-post.jpg"
+          src="public/images/user-pfp/default-avatar.jpg"
           alt="Foto perfil"
           className="perfil-avatar"
         />
@@ -46,7 +66,7 @@ export default function MiPerfil() {
         </Col>
 
         <Col xs={4} className="perfil-stat">
-          <h4>{tieneResenas ? "7" : "0"}</h4>
+          <h4>{tieneResenas ? "6" : "0"}</h4>
           <p>Reseñas</p>
         </Col>
         
@@ -57,9 +77,12 @@ export default function MiPerfil() {
       </Row>
 
       <Row>
-          <button className="btn-editar-perfil">
-            <FiEdit3 size={18} /> Editar perfil
-          </button>
+        <button 
+          className="btn-editar-perfil"
+          onClick={() => setShowEditarPerfil(true)}
+        >
+          <FiEdit3 size={18} /> Editar perfil
+        </button>
       </Row>
 
       <div className="line-divider" />
@@ -146,7 +169,7 @@ export default function MiPerfil() {
                 <p>Comparte tus lugares favoritos para que otros los descubran</p>
                 <button 
                   className="btn-explorar"
-                  onClick={() => setTienePublicaciones(true)}
+                  onClick={() => navigate("/mapa")}
                 >
                   Crear primera publicación
                 </button>
@@ -218,7 +241,7 @@ export default function MiPerfil() {
                 <p>Comparte tu experiencia sobre los lugares que visitas</p>
                 <button 
                   className="btn-explorar"
-                  onClick={() => setTieneResenas(true)}
+                  onClick={() => navigate("/mapa")}
                 >
                   Escribir primera reseña
                 </button>
@@ -326,7 +349,7 @@ export default function MiPerfil() {
                 <p>Guarda tus lugares favoritos, para visitarlos después</p>
                 <button 
                   className="btn-explorar"
-                  onClick={() => setTieneGuardados(true)}
+                  onClick={() => navigate("/mapa")}
                 >
                   Explorar lugares
                 </button>

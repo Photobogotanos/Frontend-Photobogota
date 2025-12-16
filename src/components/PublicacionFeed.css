@@ -126,40 +126,69 @@
   box-shadow: 0 2px 6px rgba(220, 53, 69, 0.2);
 }
 
-.boton-interaccion {
-  background: none;
+/* Contenedor general */
+.interacciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+}
+
+/* Contenedor izquierdo */
+.interacciones-left {
+  display: flex;
+  gap: 18px;
+}
+
+/* Botón básico */
+.btn-interaccion {
+  background: transparent;
   border: none;
-  color: #495057;
-  font-size: 22px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.2s;
-  padding: 8px 12px;
-  border-radius: 10px;
+  cursor: pointer;
+  padding: 6px;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
-.boton-interaccion:hover {
-  color: #0d6efd;
-  background: #f8f9fa;
+/* Efecto hover */
+.btn-interaccion:hover {
+  transform: scale(1.12);
+  opacity: 0.85;
 }
 
-.boton-interaccion:active {
-  transform: scale(0.95);
+/* Iconos uniformes */
+.icon {
+  font-size: 22px;
+  color: #555;
 }
 
-.boton-guardar {
+/* Icono de me gusta */
+.icon.like {
+  color: #e63946;
+}
+
+/* Icono guardado */
+.icon.saved {
+  color: #f4c430;
+}
+
+/* Contadores */
+.contador {
+  font-size: 15px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Botón guardar */
+.btn-guardar {
   margin-left: auto;
 }
 
-.contador-interaccion {
-  font-size: 14px;
-  font-weight: 500;
-}
 
 .enlace-comentarios {
-  color: #0d6efd;
+  color: var(--color-primary);
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
