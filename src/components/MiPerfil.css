@@ -170,7 +170,6 @@
   justify-content: space-between;
 }
 
-/* RESPONSIVO PARA TODOS LOS GRIDS */
 @media (max-width: 1200px) {
   .publicaciones-grid,
   .reviews-grid,
@@ -260,7 +259,7 @@
 
 /* BOTÓN EXPLORAR/CREAR */
 .btn-explorar {
-  background: var(--color-primary, #007bff);
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 10px;
@@ -269,13 +268,14 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0px 4px 12px rgba(0, 123, 255, 0.2);
+  box-shadow: 0px 4px 12px var(--color-secondary);
 }
 
 .btn-explorar:hover {
-  background: var(--color-secondary, #0056b3);
+  color: black;
+  background: #e5d9ff;
   transform: translateY(-3px);
-  box-shadow: 0px 6px 16px rgba(0, 123, 255, 0.3);
+  box-shadow: 0px 6px 16px var(--color-secondary);
 }
 
 /* CONTROLES DEBUG (opcional - puedes comentarlos o borrarlos) */

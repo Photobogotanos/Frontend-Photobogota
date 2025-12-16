@@ -2,11 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { FiEdit3 } from "react-icons/fi";
-import { FaCamera, FaMapMarkerAlt, FaRegEdit } from "react-icons/fa";
+import { FaCamera, FaMapMarkerAlt, FaRegEdit, } from "react-icons/fa";
 import { GrMapLocation } from "react-icons/gr";
 import SpotCard from "./SpotCard";
 import ReviewCard from "./ReviewCard";
-import EditarPerfilModal from "./EditarPerfilModal";
 import "./MiPerfil.css";
 
 export default function MiPerfil() {
@@ -15,26 +14,9 @@ export default function MiPerfil() {
   const [tienePublicaciones, setTienePublicaciones] = useState(true);
   const [tieneResenas, setTieneResenas] = useState(true);
   const [tieneGuardados, setTieneGuardados] = useState(false);
-  const [showEditarPerfil, setShowEditarPerfil] = useState(false);
-
-  // Datos del perfil para pasar al modal
-  const perfilData = {
-    nombreCompleto: "Juan Sebastian Romero",
-    nombreUsuario: "@sxbxxs.r",
-    correo: "photobogota123@gmail.com",
-    descripcion: "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
-    telefono: "3138529778",
-    foto: "public/images/user-pfp/default-avatar.jpg"
-  };
 
   return (
     <Container fluid className="perfil-container">
-      {/* MODAL DE EDITAR PERFIL */}
-      <EditarPerfilModal
-        show={showEditarPerfil}
-        onHide={() => setShowEditarPerfil(false)}
-        perfilData={perfilData}
-      />
       
       <div className="perfil-header mt-5">
         <img
@@ -77,12 +59,9 @@ export default function MiPerfil() {
       </Row>
 
       <Row>
-        <button 
-          className="btn-editar-perfil"
-          onClick={() => setShowEditarPerfil(true)}
-        >
-          <FiEdit3 size={18} /> Editar perfil
-        </button>
+          <button className="btn-editar-perfil">
+            <FiEdit3 size={18} /> Editar perfil
+          </button>
       </Row>
 
       <div className="line-divider" />
@@ -162,19 +141,19 @@ export default function MiPerfil() {
               </div>
             ) : (
               <div className="no-contenido">
-                <div className="empty-icon">
-                  <FaMapMarkerAlt size={48} />
-                </div>
-                <h4>No tienes publicaciones</h4>
-                <p>Comparte tus lugares favoritos para que otros los descubran</p>
-                <button 
-                  className="btn-explorar"
-                  onClick={() => navigate("/mapa")}
-                >
-                  Crear primera publicación
-                </button>
+            <div className="empty-icon">
+              <FaMapMarkerAlt size={48} />
               </div>
-            )}
+              <h4>No tienes publicaciones</h4>
+              <p>Comparte tus lugares favoritos para que otros los descubran</p>
+              <button 
+                className="btn-explorar"
+                onClick={() => navigate("/crear-publicacion")}
+              >
+                ¡Crea tu primera publicación!
+              </button>
+            </div>
+    )}
           </div>
         )}
         
@@ -349,7 +328,7 @@ export default function MiPerfil() {
                 <p>Guarda tus lugares favoritos, para visitarlos después</p>
                 <button 
                   className="btn-explorar"
-                  onClick={() => navigate("/mapa")}
+                  onClick={() => navigate("/comunidad")}
                 >
                   Explorar lugares
                 </button>
@@ -358,7 +337,6 @@ export default function MiPerfil() {
           </div>
         )}
         
-        {/* SECCIÓN DEBUG (opcional) */}
         <div className="debug-controls">
           <small>Debug:</small>
           <div className="debug-buttons">
