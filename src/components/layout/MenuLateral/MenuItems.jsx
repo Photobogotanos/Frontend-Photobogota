@@ -1,0 +1,188 @@
+import { useLocation } from "react-router-dom";
+import {
+  FaHome,
+  FaUser,
+  FaMapMarkerAlt,
+  FaHandshake,
+  FaStore,
+  FaBullhorn,
+  FaChartBar,
+  FaTachometerAlt,
+  FaFileAlt,
+  FaUserCheck,
+  FaTags,
+  FaUserPlus,
+  FaCreditCard,
+  FaCog,
+  FaBell,
+} from "react-icons/fa";
+import SidebarLink from "./SidebarLink";
+
+export default function MenuItems({ rol, cerrar }) {
+  const location = useLocation();
+
+  const esRutaActiva = (ruta) => {
+    return location.pathname === ruta;
+  };
+
+  return (
+    <>
+      {/* Menú común para todos */}
+      <SidebarLink
+        icon={<FaHome />}
+        texto="Comunidad"
+        to="/comunidad"
+        onClick={cerrar}
+        activo={esRutaActiva("/comunidad")}
+      />
+      <SidebarLink
+        icon={<FaMapMarkerAlt />}
+        texto="Mapa"
+        to="/mapa"
+        onClick={cerrar}
+        activo={esRutaActiva("/mapa")}
+      />
+      <SidebarLink
+        icon={<FaUser />}
+        texto="Mi Perfil"
+        to="/perfil"
+        onClick={cerrar}
+        activo={esRutaActiva("/perfil")}
+      />
+
+      {/* Menú para socios */}
+      {rol === "socio" && (
+        <>
+          <SidebarLink
+            icon={<FaStore />}
+            texto="Locales"
+            to="/locales"
+            onClick={cerrar}
+            activo={esRutaActiva("/locales")}
+          />
+          <SidebarLink
+            icon={<FaBullhorn />}
+            texto="Promociones"
+            to="/promociones"
+            onClick={cerrar}
+            activo={esRutaActiva("/promociones")}
+          />
+          <SidebarLink
+            icon={<FaChartBar />}
+            texto="Estadísticas"
+            to="/estadisticas"
+            onClick={cerrar}
+            activo={esRutaActiva("/estadisticas")}
+          />
+        </>
+      )}
+
+      {/* Menú para moderadores */}
+      {rol === "moderador" && (
+        <>
+          <SidebarLink
+            icon={<FaTachometerAlt />}
+            texto="Dashboard Reportes"
+            to="/dashboard-reportes"
+            onClick={cerrar}
+            activo={esRutaActiva("/dashboard-reportes")}
+          />
+          <SidebarLink
+            icon={<FaFileAlt />}
+            texto="Solicitudes de Socios"
+            to="/solicitudes-socios"
+            onClick={cerrar}
+            activo={esRutaActiva("/solicitudes-socios")}
+          />
+          <SidebarLink
+            icon={<FaFileAlt />}
+            texto="Gestionar Reportes"
+            to="/gestionar-reportes"
+            onClick={cerrar}
+            activo={esRutaActiva("/gestionar-reportes")}
+          />
+          <SidebarLink
+            icon={<FaUserCheck />}
+            texto="Cambiar Rol Miembro a Socio"
+            to="/cambiar-rol"
+            onClick={cerrar}
+            activo={esRutaActiva("/cambiar-rol")}
+          />
+          <SidebarLink
+            icon={<FaTags />}
+            texto="Categorías de Establecimiento"
+            to="/categorias"
+            onClick={cerrar}
+            activo={esRutaActiva("/categorias")}
+          />
+        </>
+      )}
+
+      {/* Menú para administradores */}
+      {rol === "administrador" && (
+        <>
+          <SidebarLink
+            icon={<FaTachometerAlt />}
+            texto="Dashboard"
+            to="/admin-dashboard"
+            onClick={cerrar}
+            activo={esRutaActiva("/admin-dashboard")}
+          />
+          <SidebarLink
+            icon={<FaFileAlt />}
+            texto="Generar Reportes del Sistema"
+            to="/generar-reportes"
+            onClick={cerrar}
+            activo={esRutaActiva("/generar-reportes")}
+          />
+          <SidebarLink
+            icon={<FaFileAlt />}
+            texto="Reportes Escalados"
+            to="/reportes-escalados"
+            onClick={cerrar}
+            activo={esRutaActiva("/reportes-escalados")}
+          />
+          <SidebarLink
+            icon={<FaUserPlus />}
+            texto="Crear Cuentas"
+            to="/crear-cuentas"
+            onClick={cerrar}
+            activo={esRutaActiva("/crear-cuentas")}
+          />
+          <SidebarLink
+            icon={<FaCreditCard />}
+            texto="Gestión Pago Socios"
+            to="/gestion-pagos"
+            onClick={cerrar}
+            activo={esRutaActiva("/gestion-pagos")}
+          />
+          <SidebarLink
+            icon={<FaCog />}
+            texto="Configurar Parámetros"
+            to="/configurar-parametros"
+            onClick={cerrar}
+            activo={esRutaActiva("/configurar-parametros")}
+          />
+          <SidebarLink
+            icon={<FaBell />}
+            texto="Notificaciones de Mantenimiento"
+            to="/notificaciones-mantenimiento"
+            onClick={cerrar}
+            activo={esRutaActiva("/notificaciones-mantenimiento")}
+          />
+        </>
+      )}
+
+      {/* Botón de solicitud de socio para usuarios */}
+      {rol === "usuario" && (
+        <SidebarLink
+          icon={<FaHandshake />}
+          texto="¿Quieres ser socio?"
+          to="/solicitud-socio"
+          onClick={cerrar}
+          activo={esRutaActiva("/solicitud-socio")}
+        />
+      )}
+    </>
+  );
+}
