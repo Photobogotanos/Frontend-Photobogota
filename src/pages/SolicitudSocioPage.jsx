@@ -8,9 +8,9 @@ const SolicitudSocioPage = () => {
   const navigate = useNavigate();
 
   // DEPURACIÓN: Descomentae estas líneas para limpiar el localStorage y probar
-  //useEffect(() => {
-  //  localStorage.removeItem("solicitudSocio");
-  //}, []);
+  useEffect(() => {
+   localStorage.removeItem("solicitudSocio");
+  }, []);
 
   useEffect(() => {
 
