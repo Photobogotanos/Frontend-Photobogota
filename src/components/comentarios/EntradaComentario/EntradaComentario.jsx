@@ -89,7 +89,13 @@ const EntradaComentario = ({ idPublicacion }) => {
   const emojiRef = useRef(null);
   const textareaRef = useRef(null);
 
-  // Cerrar selectores al hacer clic fuera
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [texto]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (emojiRef.current && !emojiRef.current.contains(event.target)) {
@@ -122,7 +128,6 @@ const EntradaComentario = ({ idPublicacion }) => {
       texto.substring(0, inicio) + emoji + texto.substring(fin);
     setTexto(nuevoTexto);
 
-    // Enfocar y posicionar cursor después del emoji
     setTimeout(() => {
       textarea.focus();
       textarea.selectionStart = textarea.selectionEnd = inicio + emoji.length;
@@ -132,19 +137,22 @@ const EntradaComentario = ({ idPublicacion }) => {
   const insertarGif = (urlGif) => {
     setTexto((prev) => prev + ` ![GIF](${urlGif}) `);
     setMostrarGif(false);
+    textareaRef.current?.focus();
   };
 
+  const tieneTexto = texto.trim().length > 0;
+
   return (
-    <div className="entrada-comentario">
+    <div className="entrada-comentario-moderna">
       {mostrarGif && <SelectorGif alSeleccionar={insertarGif} />}
 
       {mostrarEmojis && (
-        <div ref={emojiRef} className="emoji-picker">
-          <div className="cuadricula-emoji">
+        <div ref={emojiRef} className="emoji-picker-moderno">
+          <div className="cuadricula-emoji-moderna">
             {EMOJIS_POPULARES.map((emoji, index) => (
               <span
                 key={index}
-                className="emoji-item"
+                className="emoji-item-moderno"
                 onClick={() => insertarEmoji(emoji)}
               >
                 {emoji}
@@ -154,51 +162,47 @@ const EntradaComentario = ({ idPublicacion }) => {
         </div>
       )}
 
-      <textarea
-        ref={textareaRef}
-        className="form-control mb-2"
-        rows="2"
-        placeholder="Escribe un comentario..."
-        value={texto}
-        onChange={(e) => setTexto(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            manejarEnvio();
-          }
-        }}
-      />
+      <div className="contenedor-input">
+        <textarea
+          ref={textareaRef}
+          rows="1"
+          placeholder="Añade un comentario..."
+          value={texto}
+          onChange={(e) => setTexto(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              manejarEnvio();
+            }
+          }}
+        />
 
-      <div className="d-flex justify-content-between align-items-center">
-        <div className="d-flex gap-3">
-          <div className="contenedor-emoji" style={{ position: "relative" }}>
-            <FaSmile
-              size={20}
-              className="icono-interactivo"
-              onClick={() => {
-                setMostrarEmojis(!mostrarEmojis);
-                setMostrarGif(false);
-              }}
-            />
-          </div>
+        <div className="acciones-input">
+          <FaSmile
+            size={24}
+            className="icono-accion"
+            onClick={() => {
+              setMostrarEmojis(!mostrarEmojis);
+              setMostrarGif(false);
+            }}
+          />
           <FaImages
-            size={20}
-            className="icono-interactivo"
+            size={24}
+            className="icono-accion"
             onClick={() => {
               setMostrarGif(!mostrarGif);
               setMostrarEmojis(false);
             }}
           />
+          <button
+            className={`boton-enviar ${tieneTexto ? "activo" : ""}`}
+            onClick={manejarEnvio}
+            disabled={!tieneTexto}
+          >
+            <FaPaperPlane size={20} />
+            <span className="texto-publicar">Publicar</span>
+          </button>
         </div>
-
-        <button
-          className="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2"
-          onClick={manejarEnvio}
-          disabled={!texto.trim()}
-        >
-          <FaPaperPlane />
-          <span>Publicar</span>
-        </button>
       </div>
     </div>
   );
