@@ -88,7 +88,7 @@ export default function LoginForm() {
     }
 
     localStorage.setItem("logueado", "true");
-    localStorage.setItem("usuario", JSON.stringify(usuarioFinal));
+    localStorage.setItem("miembro", JSON.stringify(usuarioFinal));
 
     navegar("/comunidad");
   };
