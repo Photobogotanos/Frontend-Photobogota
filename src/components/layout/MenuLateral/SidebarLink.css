@@ -1,0 +1,115 @@
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  color: #4b5563;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-size: 15px;
+  border-radius: 12px;
+  margin-bottom: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background-color: var(--color-primary);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(128, 111, 190, 0.08);
+  color: var(--color-primary);
+  transform: translateX(4px);
+}
+
+.sidebar-link:hover::before {
+  transform: scaleY(1);
+}
+
+.sidebar-link.active {
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(128, 111, 190, 0.3);
+  transform: translateX(4px);
+}
+
+.sidebar-link.active::before {
+  transform: scaleY(1);
+}
+
+.sidebar-link.active .sidebar-link-icon {
+  transform: scale(1.1);
+  animation: iconPulse 2s infinite;
+}
+
+.sidebar-link:active {
+  transform: translateX(4px) scale(0.98);
+}
+
+.sidebar-link-icon {
+  font-size: 20px;
+  margin-right: 14px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.sidebar-link-text {
+  font-weight: 500;
+}
+
+/* Estilo para el botón de logout */
+.sidebar-link.sidebar-logout {
+  color: #4b5563;
+  margin-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 16px;
+}
+
+.sidebar-link.sidebar-logout:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
+}
+
+.sidebar-link.sidebar-logout::before {
+  background-color: #ef4444;
+}
+
+@keyframes iconPulse {
+  0%,
+  100% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-link {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .sidebar-link-icon {
+    font-size: 18px;
+    margin-right: 12px;
+  }
+}
