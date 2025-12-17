@@ -1,4 +1,4 @@
-import ComunidadContent from "../components/ComunidadContent";
+import ComunidadContent from "@/components/comunidad/ComunidadContent/ComunidadContent";
 import Container from 'react-bootstrap/Container';
 import './ComunidadPage.css';
 

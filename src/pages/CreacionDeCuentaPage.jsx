@@ -1,5 +1,5 @@
 import Container from 'react-bootstrap/Container';
-import FormularioCreacion from '../components/CreacionDeCuentaForm';
+import FormularioCreacion from '@/components/auth/CreacionDeCuentaForm/CreacionDeCuentaForm';
 import  "./CreacionDeCuentaPage.css"
 
 function CreacionDeCuentaPage() {

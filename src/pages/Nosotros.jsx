@@ -1,6 +1,5 @@
 import "./Nosotros.css";
-import "../components/NosotrosContent"
-import NosotrosContent from "../components/NosotrosContent";
+import NosotrosContent from "@/components/pagina-inicio/NosotrosContent/NosotrosContent";
 import { Container } from "react-bootstrap";
 
 const Nosotros = () => {

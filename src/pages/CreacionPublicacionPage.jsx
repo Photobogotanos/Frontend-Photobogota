@@ -1,5 +1,5 @@
 import Container from "react-bootstrap/Container";
-import CrearPublicacion from "../components/CreacionPublicacionForm";
+import CrearPublicacion from "@/components/comunidad/CreacionPublicacionForm/CreacionPublicacionForm";
 import "./CreacionPublicacionPage.css";
 
 export default function CreacionPublicacionPage() {

@@ -1,4 +1,4 @@
-import MapaContent from "../components/MapaContent";
+import MapaContent from "@/components/mapa/MapaContent/MapaContent";
 import Container from 'react-bootstrap/Container';
 import './MapaPage.css';
 

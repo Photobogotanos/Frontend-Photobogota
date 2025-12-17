@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import "./PaginaInicioPage.css";
-import PaginaInicioContent from "../components/PaginaInicioContent";
+import PaginaInicioContent from "@/components/pagina-inicio/PaginaInicioContent/PaginaInicioContent";
 
 function PaginaInicioPage() {
   const navegar = useNavigate();

@@ -1,8 +1,8 @@
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import LoginForm from "../components/LoginForm";
-import "../pages/LoginPage.css";
+import LoginForm from "@/components/auth/LoginForm/LoginForm";
+import "./LoginPage.css";
 
 export default function Login() {
   return (

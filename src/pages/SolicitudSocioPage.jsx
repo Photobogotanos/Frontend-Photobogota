@@ -1,4 +1,4 @@
-import SolicitudSocioForm from "../components/SolicitudSocioForm";
+import SolicitudSocioForm from "@/components/socio/SolicitudSocioForm/SolicitudSocioForm";
 import Container from 'react-bootstrap/Container';
 import './SolicitudSocioPage.css';
 

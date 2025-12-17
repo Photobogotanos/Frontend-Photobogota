@@ -1,4 +1,4 @@
-import LugarContent from "../components/LugarContent";
+import LugarContent from "@/components/lugares/LugarContent/LugarContent";
 import Container from 'react-bootstrap/Container';
 import './LugarPage.css';
 

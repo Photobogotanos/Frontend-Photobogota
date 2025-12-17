@@ -1,3 +1,61 @@
+:root {
+  --color-primary: #806fbe; /* Morado para botones */
+  --color-secondary: #c5c5c5; /* Borde de botones */
+  --color-light: #ffffff;
+  --color-dark: #212529;
+
+  --color-bg: #f5f2eb; /* Fondo */
+}
+
+@font-face {
+  font-family: "SF Pro";
+  src: url("/src/assets/fonts/sfpro/SF-Pro-Display-Regular.otf")
+    format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SF Pro";
+  src: url("/src/assets/fonts/sfpro/SF-Pro-Display-Medium.otf")
+    format("opentype");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SF Pro";
+  src: url("/src/assets/fonts/sfpro/SF-Pro-Display-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "SF Pro", "Poppins", sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-dark);
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+#root {
+  min-height: 100vh;
+}
+
 body {
   margin: 0;
   min-width: 320px;

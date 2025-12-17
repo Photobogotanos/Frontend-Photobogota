@@ -1,47 +1,14 @@
-import './App.css'
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import PaginaInicioPage from './pages/PaginaInicioPage.jsx';
-import LoginPage from './pages/LoginPage.jsx';
-import SolicitudSocioPage from './pages/SolicitudSocioPage.jsx';
-import CreacionDeCuentaPage from './pages/CreacionDeCuentaPage.jsx';
-import RecuperarContraPage from './pages/RecuperarContraPage.jsx';
-import MenuSuperior from "./components/MenuSuperior";
-import ComunidadPage from './pages/ComunidadPage.jsx';
-import Footer from './components/Footer.jsx';
-import MiPerfil from './components/MiPerfil.jsx';
-import Nosotros from './pages/Nosotros.jsx';
-import ConfirmacionCodigoPage from './pages/ConfirmacionCodigoPage.jsx';
-import Mapa from './pages/MapaPage.jsx';
-import LugarPage from './pages/LugarPage';
-import CreacionPublicacionPage from './pages/CreacionPublicacionPage.jsx';
+import { BrowserRouter } from "react-router-dom";
+import AppRouter from "@/routes/AppRouter";
+import ScrollToTop from "@/components/common/ScrollToTop";
 
 function App() {
-
   return (
     <BrowserRouter>
-
-      <MenuSuperior />
-
-      <Routes>
-        <Route path="/" element={<PaginaInicioPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/creacion-cuenta" element={<CreacionDeCuentaPage />} />
-        <Route path="/solicitud-socio" element={<SolicitudSocioPage />} />
-        <Route path="/recuperar-contrasena" element={<RecuperarContraPage />} />
-        <Route path="/comunidad" element={<ComunidadPage />} />
-        <Route path="/perfil" element={<MiPerfil />} />
-        <Route path="/mapa" element={<Mapa />} />
-        <Route path="/crear-publicacion" element={<CreacionPublicacionPage/>} />
-        <Route path="/notificaciones" element={<div>Página de Notificaciones (en construcción)</div>} />
-        <Route path="/nosotros" element={<Nosotros />} />
-        <Route path="/confirmacion-codigo" element={<ConfirmacionCodigoPage/>} />
-        <Route path="/lugar/:id" element={<LugarPage />} />
-      </Routes>
-
-      <Footer />
-
+      <ScrollToTop />
+      <AppRouter />
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
