@@ -15,6 +15,27 @@ export default function LoginForm() {
 
   const navegar = useNavigate();
 
+  const USUARIOS_HARDCODEADOS = [
+    {
+      usuario: "socio",
+      contrasena: "socio123",
+      rol: "socio",
+      nombre: "Socio Demo",
+    },
+    {
+      usuario: "perro",
+      contrasena: "encerrado",
+      rol: "administrador",
+      nombre: "Administrador Demo",
+    },
+    {
+      usuario: "moderador",
+      contrasena: "mod123",
+      rol: "moderador",
+      nombre: "Moderador Demo",
+    },
+  ];
+
   const manejarEnvio = (e) => {
     e.preventDefault();
 
@@ -44,16 +65,30 @@ export default function LoginForm() {
       });
     }
 
-    //Demostracion login exitoso
-    localStorage.setItem("logueado", "true");
-    localStorage.setItem(
-      "usuario",
-      JSON.stringify({
+    const usuarioEncontrado = USUARIOS_HARDCODEADOS.find(
+      (u) => u.usuario === usuarioOCorreo && u.contrasena === contrasena
+    );
+
+    let usuarioFinal;
+
+    if (usuarioEncontrado) {
+      usuarioFinal = {
+        nombre: usuarioEncontrado.nombre,
+        username: "@" + usuarioEncontrado.usuario,
+        email: `${usuarioEncontrado.usuario}@photobogota.com`,
+        rol: usuarioEncontrado.rol,
+      };
+    } else {
+      usuarioFinal = {
         nombre: "Usuario Demo",
         username: "@" + usuarioOCorreo.split("@")[0],
         email: usuarioOCorreo,
-      })
-    );
+        rol: "miembro",
+      };
+    }
+
+    localStorage.setItem("logueado", "true");
+    localStorage.setItem("usuario", JSON.stringify(usuarioFinal));
 
     navegar("/comunidad");
   };
