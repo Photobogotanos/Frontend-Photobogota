@@ -20,8 +20,7 @@ L.Icon.Default.mergeOptions({
   iconRetinaUrl:
     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
 // === ÍCONO PERSONALIZADO ===
@@ -32,8 +31,7 @@ const createCustomIcon = () => {
     iconSize: [40, 40],
     iconAnchor: [20, 40],
     popupAnchor: [0, -40],
-    shadowUrl:
-      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
     shadowSize: [41, 41],
   });
 };
@@ -48,10 +46,7 @@ function BotonUbicacion() {
 
   useMapEvents({
     locationfound(e) {
-      L.marker(e.latlng)
-        .addTo(map)
-        .bindPopup("📍 Estás aquí")
-        .openPopup();
+      L.marker(e.latlng).addTo(map).bindPopup("📍 Estás aquí").openPopup();
     },
   });
 
@@ -82,10 +77,7 @@ function ControlesZoom() {
 function MapBounds() {
   const map = useMapEvents({
     drag: () => {
-      const bounds = L.latLngBounds(
-        L.latLng(4.3, -74.4),
-        L.latLng(5.0, -73.7)
-      );
+      const bounds = L.latLngBounds(L.latLng(4.3, -74.4), L.latLng(5.0, -73.7));
       if (!bounds.contains(map.getCenter())) {
         map.panTo([4.65, -74.08], { animate: true });
       }
@@ -109,55 +101,55 @@ const MapaBogota = () => {
 
   // === DATOS DE LUGARES ===
   const lugares = [
-    { 
-      id: 1, 
-      nombre: "Museo del Oro", 
-      coord: [4.601, -74.072],
-      direccion: "Cra. 6 #15-88, Santa Fe, Bogotá",
-      imagen: "/images/lugares/museo-oro.jpg",
-      rating: 4.8,
-      totalResenas: 1095,
-      categoria: "Museo"
+    {
+      id: 1,
+      nombre: "Estación Aguas",
+      coord: [4.601, -74.069],
+      direccion: "Carrera 3 #19-00, Bogotá",
+      imagen: "/images/spots/spot-demo.jpg",
+      rating: 4.4,
+      totalResenas: 850,
+      categoria: "Estación TransMilenio",
     },
-    { 
-      id: 2, 
-      nombre: "Monserrate", 
+    {
+      id: 2,
+      nombre: "Monserrate",
       coord: [4.605, -74.056],
       direccion: "Carrera 2 Este #21-48, Bogotá",
-      imagen: "/images/lugares/monserrate.jpg",
+      imagen: "/images/spots/spot-demo2.jpg",
       rating: 4.7,
       totalResenas: 2340,
-      categoria: "Atractivo turístico"
+      categoria: "Atractivo turístico",
     },
-    { 
-      id: 3, 
-      nombre: "Plaza de Bolívar", 
-      coord: [4.598, -74.076],
-      direccion: "Carrera 7 #11-10, Bogotá",
-      imagen: "/images/lugares/plaza-bolivar.jpg",
-      rating: 4.5,
-      totalResenas: 3200,
-      categoria: "Plaza"
+    {
+      id: 3,
+      nombre: "Parque El Jazmín",
+      coord: [4.69, -74.086],
+      direccion: "Barrio El Jazmín, Bogotá",
+      imagen: "/images/spots/spot-demo3.jpg",
+      rating: 4.3,
+      totalResenas: 420,
+      categoria: "Parque",
     },
-    { 
-      id: 4, 
-      nombre: "Jardín Botánico", 
-      coord: [4.668, -74.099],
-      direccion: "Calle 63 #68-95, Bogotá",
-      imagen: "/images/lugares/jardin-botanico.jpg",
+    {
+      id: 4,
+      nombre: "Parque Timiza",
+      coord: [4.595, -74.155],
+      direccion: "Localidad de Kennedy, Bogotá",
+      imagen: "/images/spots/spot-demo4.jpg",
       rating: 4.6,
-      totalResenas: 1580,
-      categoria: "Parque"
+      totalResenas: 1800,
+      categoria: "Parque",
     },
-    { 
-      id: 5, 
-      nombre: "Museo Nacional", 
-      coord: [4.612, -74.067],
-      direccion: "Carrera 7 #28-66, Bogotá",
-      imagen: "/images/lugares/museo-nacional.jpg",
-      rating: 4.7,
-      totalResenas: 890,
-      categoria: "Museo"
+    {
+      id: 5,
+      nombre: "Estación Minuto de Dios",
+      coord: [4.711, -74.071],
+      direccion: "Av. Calle 80, Bogotá",
+      imagen: "/images/spots/spot-demo5.jpg",
+      rating: 4.2,
+      totalResenas: 950,
+      categoria: "Estación TransMilenio",
     },
   ];
 
@@ -178,7 +170,7 @@ const MapaBogota = () => {
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-            attribution='&copy; OpenStreetMap contributors'
+            attribution="&copy; OpenStreetMap contributors"
           />
 
           <MapBounds />
@@ -186,12 +178,12 @@ const MapaBogota = () => {
           <ControlesZoom />
 
           {lugares.map((lugar) => (
-            <Marker 
-              key={lugar.id} 
-              position={lugar.coord} 
+            <Marker
+              key={lugar.id}
+              position={lugar.coord}
               icon={createCustomIcon()}
               eventHandlers={{
-                click: () => handleMarkerClick(lugar)
+                click: () => handleMarkerClick(lugar),
               }}
             >
               <Popup>
@@ -204,7 +196,7 @@ const MapaBogota = () => {
         </MapContainer>
       </div>
 
-      <LugarPreviewModal 
+      <LugarPreviewModal
         show={showModal}
         onHide={() => setShowModal(false)}
         lugar={lugarSeleccionado}
