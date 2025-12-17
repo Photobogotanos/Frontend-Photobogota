@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import PaginaInicioPage from "@/pages/PaginaInicioPage.jsx";
 import LoginPage from "@/pages/LoginPage.jsx";
 import SolicitudSocioPage from "@/pages/SolicitudSocioPage.jsx";
+import SolicitudEnviadaPage from "@/pages/SolicitudEnviadaPage.jsx";
 import CreacionDeCuentaPage from "@/pages/CreacionDeCuentaPage.jsx";
 import RecuperarContraPage from "@/pages/RecuperarContraPage.jsx";
 import ComunidadPage from "@/pages/ComunidadPage.jsx";
@@ -21,6 +22,7 @@ const AppRouter = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/creacion-cuenta" element={<CreacionDeCuentaPage />} />
         <Route path="/solicitud-socio" element={<SolicitudSocioPage />} />
+        <Route path="/solicitud-enviada" element={<SolicitudEnviadaPage />} />
         <Route path="/recuperar-contrasena" element={<RecuperarContraPage />} />
         <Route path="/comunidad" element={<ComunidadPage />} />
         <Route path="/perfil" element={<MiPerfil />} />

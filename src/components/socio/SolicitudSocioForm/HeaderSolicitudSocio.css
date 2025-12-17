@@ -1,0 +1,12 @@
+.encabezado-solicitud {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.encabezado-solicitud-titulo {
+  font-weight: bold;
+}
+
+.encabezado-solicitud-subtitulo {
+  color: #555;
+}

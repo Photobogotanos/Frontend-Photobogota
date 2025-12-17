@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Offcanvas } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  FaHome, 
-  FaUser, 
-  FaMapMarkerAlt, 
+import {
+  FaHome,
+  FaUser,
+  FaMapMarkerAlt,
   FaPlus,
-  FaSignOutAlt
+  FaSignOutAlt,
+  FaHandshake
 } from "react-icons/fa";
 import "./MenuLateral.css";
 
@@ -71,6 +72,13 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
 
           {/* Sección inferior con perfil y logout */}
           <div className="sidebar-bottom-section">
+            <MenuLateralLink
+              icon={<FaHandshake />}
+              texto="¿Quieres ser socio?"
+              to="/solicitud-socio"
+              onClick={cerrar}
+              activo={esRutaActiva("/solicitud-socio")}
+            />
             <div className="sidebar-profile">
               <div className="profile-avatar">
                 {usuario?.nombre?.charAt(0).toUpperCase() || "U"}

@@ -1,0 +1,14 @@
+.terminos-label-solicitud {
+  font-size: 0.95rem;
+  color: var(--color-dark);
+}
+
+.terminos-link-solicitud {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.terminos-link-solicitud:hover {
+  color: #0056b3;
+}

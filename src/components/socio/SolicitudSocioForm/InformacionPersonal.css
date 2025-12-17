@@ -1,0 +1,21 @@
+.label-solicitud-socio {
+  text-align: start;
+  width: 100%;
+  font-weight: bold;
+}
+
+.label-solicitud-socio span {
+  color: red;
+  cursor: pointer;
+}
+
+.input-solicitud-socio {
+  border-radius: 50px;
+  padding-left: 15px;
+}
+
+.input-solicitud-socio:focus {
+  box-shadow: none !important;
+  border-color: #d9d9d9 !important;
+  outline: none !important;
+}
