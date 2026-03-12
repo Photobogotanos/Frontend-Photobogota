@@ -12,7 +12,7 @@ import "leaflet/dist/leaflet.css";
 import "./MapaBogota.css";
 import camaraIcon from "@/assets/images/icons/camara.jpg";
 import { FaPlus, FaMinus, FaLocationArrow } from "react-icons/fa";
-import LugarPreviewModal from "@/components/lugares/LugarPreviewModal/LugarPreviewModal";
+import SpotPreviewModal from "@/components/spots/SpotPreviewModal/SpotPreviewModal";
 
 // === CONFIGURACIÓN ICONO DEFAULT ===
 delete L.Icon.Default.prototype._getIconUrl;
@@ -46,7 +46,7 @@ function BotonUbicacion() {
 
   useMapEvents({
     locationfound(e) {
-      L.marker(e.latlng).addTo(map).bindPopup("📍 Estás aquí").openPopup();
+      L.marker(e.latlng).addTo(map).bindPopup("Estás aquí").openPopup();
     },
   });
 
@@ -110,6 +110,10 @@ const MapaBogota = () => {
       rating: 4.4,
       totalResenas: 850,
       categoria: "Estación TransMilenio",
+      localidad: "La Candelaria",
+      descripcion: "La estación Aguas es una de las estaciones más representativas del sistema TransMilenio en el centro de Bogotá.",
+      recomendacion: "Excelente lugar para fotografiar la arquitectura colonial y moderna de Bogotá.",
+      tipsFoto: "Bajo luz de la mañana, mejor con lente gran angular para capturar toda la estructura.",
     },
     {
       id: 2,
@@ -120,6 +124,10 @@ const MapaBogota = () => {
       rating: 4.7,
       totalResenas: 2340,
       categoria: "Atractivo turístico",
+      localidad: "Santa Fe",
+      descripcion: "Monserrate es uno de los cerros más emblemáticos de Bogotá con una vista panorámica spectacular.",
+      recomendacion: "Impresionante vista de toda Bogotá. Ideal para fotografía de paisajes urbanos.",
+      tipsFoto: "Trípode recomendado para fotos de larga exposición. Mejor al amanecer.",
     },
     {
       id: 3,
@@ -130,6 +138,10 @@ const MapaBogota = () => {
       rating: 4.3,
       totalResenas: 420,
       categoria: "Parque",
+      localidad: "Kennedy",
+      descripcion: "El Parque El Jazmín es un espacio verde ideal para la recreation y el descanso.",
+      recomendacion: "Perfecto para fotos naturales con vegetación. Los árboles florecen en primavera.",
+      tipsFoto: "Lente 50mm ideal para retratos. Horas doradas funcionan perfectamente.",
     },
     {
       id: 4,
@@ -140,6 +152,10 @@ const MapaBogota = () => {
       rating: 4.6,
       totalResenas: 1800,
       categoria: "Parque",
+      localidad: "Kennedy",
+      descripcion: "Uno de los parques más grandes del suroccidente de Bogotá. Popular para actividades deportivas.",
+      recomendacion: "Gran espacio para fotografía deportiva y de acción.",
+      tipsFoto: "Velocidad de obturación rápida para capturar movimiento.",
     },
     {
       id: 5,
@@ -150,6 +166,10 @@ const MapaBogota = () => {
       rating: 4.2,
       totalResenas: 950,
       categoria: "Estación TransMilenio",
+      localidad: "Engativá",
+      descripcion: "Punto clave del sistema TransMilenio sobre la Calle 80.",
+      recomendacion: "Ubicación conveniente para fotos de la vida urbana bogotana.",
+      tipsFoto: "Fotos urbanas típicas de TransMilenio. Captura la vida cotidiana.",
     },
   ];
 
@@ -196,7 +216,7 @@ const MapaBogota = () => {
         </MapContainer>
       </div>
 
-      <LugarPreviewModal
+      <SpotPreviewModal
         show={showModal}
         onHide={() => setShowModal(false)}
         lugar={lugarSeleccionado}

@@ -12,17 +12,19 @@ import {
   FaPencilAlt,
   FaPaperPlane,
   FaTag,
+  FaHeart,
+  FaCamera,
 } from "react-icons/fa";
 import Swal from "sweetalert2"; // ← Nueva importación
-import "./LugarContent.css";
+import "./SpotContent.css";
 
-const LugarContent = () => {
+const SpotContent = () => {
   const { id } = useParams();
   const [lugar, setLugar] = useState(null);
   const [nuevaResena, setNuevaResena] = useState({ rating: 0, comentario: "" });
   const [hoverRating, setHoverRating] = useState(0);
 
-  // === DATOS DE LUGARES (mismo que tenías) ===
+  // === DATOS DE LUGARES ===
   const lugaresData = {
     1: {
       id: 1,
@@ -32,8 +34,13 @@ const LugarContent = () => {
       rating: 4.4,
       totalResenas: 850,
       categoria: "Estación TransMilenio",
+      localidad: "La Candelaria",
       descripcion:
         "La estación Aguas es una de las estaciones más representativas del sistema TransMilenio en el centro de Bogotá. Conecta importantes rutas y se encuentra cerca de zonas históricas y culturales de la ciudad.",
+      recomendacion:
+        "Excelente lugar para fotografiar la arquitectura colonial y moderna de Bogotá. El flujo de personas crea un ambiente único para fotos callejeras.",
+      tipsFoto:
+        "最好在早上8-9点拍摄，光线柔和。建议使用广角镜头捕捉整个车站结构。",
       resenas: [
         {
           id: 1,
@@ -55,8 +62,13 @@ const LugarContent = () => {
       rating: 4.7,
       totalResenas: 2340,
       categoria: "Atractivo turístico",
+      localidad: "Santa Fe",
       descripcion:
-        "Monserrate es uno de los cerros más emblemáticos de Bogotá y un punto clave al inicio de muchos recorridos turísticos. Desde su cima se obtiene una vista panorámica espectacular de toda la ciudad.",
+        "Monserrate es uno de los cerros más emblemáticos de Bogotá y un punto clave al inicio de muchos recorridos turísticos. Desde su cima se obtiene una vista panorámica spectacular de toda la ciudad.",
+      recomendacion:
+        "La vista desde la cima es impresionante, especialmente al amanecer. El teleférico también ofrece oportunidades únicas para fotos del paisaje urbano.",
+      tipsFoto:
+        "Llegar temprano para evitar las nubes. Un lente gran angular es ideal para capturar la ciudad. Trípode recomendado para fotos de larga exposición.",
       resenas: [
         {
           id: 1,
@@ -78,8 +90,13 @@ const LugarContent = () => {
       rating: 4.3,
       totalResenas: 420,
       categoria: "Parque",
+      localidad: "Suba",
       descripcion:
         "El Parque El Jazmín es un espacio verde ideal para la recreación y el descanso de la comunidad. Cuenta con zonas deportivas y áreas para compartir en familia.",
+      recomendacion:
+        "Perfecto para sesiones de fotos familiares o retratos con fondo de naturaleza urbana. Las tardes soleadas tienen la mejor luz.",
+      tipsFoto:
+        "最好在下午晚些时候拍摄，光线柔和。带变焦镜头捕捉运动中的人物。",
       resenas: [
         {
           id: 1,
@@ -101,8 +118,13 @@ const LugarContent = () => {
       rating: 4.6,
       totalResenas: 1800,
       categoria: "Parque",
+      localidad: "Kennedy",
       descripcion:
         "El Parque Timiza es uno de los parques más grandes del suroccidente de Bogotá. Es muy popular para actividades deportivas, recreativas y encuentros familiares.",
+      recomendacion:
+        "Gran variedad de actividades para fotografiar. Desde deportistas hasta familias. Los domingos hay ferias locales con oportunidades fotográficas únicas.",
+      tipsFoto:
+        "Los domingos por la mañana son ideales. Trae un lente rápido para action shots. Las fuentes funcionan bien como elemento de fondo.",
       resenas: [
         {
           id: 1,
@@ -124,8 +146,13 @@ const LugarContent = () => {
       rating: 4.2,
       totalResenas: 950,
       categoria: "Estación TransMilenio",
+      localidad: "Engativá",
       descripcion:
         "La estación Minuto de Dios es un punto clave del sistema TransMilenio sobre la Calle 80, facilitando el acceso a instituciones educativas, zonas residenciales y comerciales.",
+      recomendacion:
+        "Arquitectura moderna interesante para fotos urbanas. El área comercial circundante ofrece escenas callejeras auténticas de Bogotá.",
+      tipsFoto:
+        "Captura la vida urbana por la tarde. La arquitectura de cristal crea reflejos interesantes. Un lente 50mm funciona perfectamente.",
       resenas: [
         {
           id: 1,
@@ -238,6 +265,12 @@ const LugarContent = () => {
             <FaTag className="category-icon" />
             {lugar.categoria}
           </span>
+          {lugar.localidad && (
+            <span className="badge-localidad">
+              <FaMapMarkerAlt className="category-icon" />
+              {lugar.localidad}
+            </span>
+          )}
           <div className="lugar-rating-badge">
             <FaStar className="star-icon" />
             <span className="rating-text">{lugar.rating}</span>
@@ -263,6 +296,26 @@ const LugarContent = () => {
           </h3>
           <p>{lugar.descripcion}</p>
         </div>
+
+        {lugar.recomendacion && (
+          <div className="lugar-recomendacion">
+            <h3>
+              <FaHeart className="section-icon" />
+              ¿Por qué recomendarlo?
+            </h3>
+            <p>{lugar.recomendacion}</p>
+          </div>
+        )}
+
+        {lugar.tipsFoto && (
+          <div className="lugar-tips">
+            <h3>
+              <FaCamera className="section-icon" />
+              Tips de fotografía
+            </h3>
+            <p>{lugar.tipsFoto}</p>
+          </div>
+        )}
       </div>
 
       {/* Sección de reseñas */}
@@ -340,4 +393,4 @@ const LugarContent = () => {
   );
 };
 
-export default LugarContent;
+export default SpotContent;
