@@ -19,7 +19,7 @@
   font-size: 1.5rem;
   display: flex;
   align-items: center;
-  background: var(--color-primary);
+  background: transparent;
 }
 
 .modal-header-custom .btn-close {
