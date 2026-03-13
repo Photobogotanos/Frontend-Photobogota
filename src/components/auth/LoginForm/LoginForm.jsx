@@ -90,7 +90,7 @@ export default function LoginForm() {
     localStorage.setItem("logueado", "true");
     localStorage.setItem("miembro", JSON.stringify(usuarioFinal));
 
-    navegar("/comunidad");
+    navegar("/mapa");
   };
 
   return (

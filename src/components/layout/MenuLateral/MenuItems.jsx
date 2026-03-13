@@ -29,13 +29,6 @@ export default function MenuItems({ rol, cerrar }) {
     <>
       {/* Menú común para todos */}
       <SidebarLink
-        icon={<FaHome />}
-        texto="Comunidad"
-        to="/comunidad"
-        onClick={cerrar}
-        activo={esRutaActiva("/comunidad")}
-      />
-      <SidebarLink
         icon={<FaMapMarkerAlt />}
         texto="Mapa"
         to="/mapa"

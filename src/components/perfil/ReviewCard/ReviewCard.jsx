@@ -10,8 +10,8 @@ export default function ReviewCard({ title, rating, text, likes, date, placeId }
     );
   }
 
-  // URL del lugar (ajusta según tu routing)
-  const lugarUrl = placeId ? `/lugar/${placeId}` : "#";
+  // URL del spot (ajusta según tu routing)
+  const spotUrl = placeId ? `/spot/${placeId}` : "#";
 
   return (
     <div className="review-card">
@@ -35,10 +35,10 @@ export default function ReviewCard({ title, rating, text, likes, date, placeId }
 
       <p className="review-text">{text}</p>
 
-      {/* Enlace "ver lugar" */}
+      {/* Enlace "ver spot" */}
       <div className="review-actions">
-        <a href={lugarUrl} className="ver-lugar-link">
-          <span className="ver-lugar-text">Ver lugar</span>
+        <a href={spotUrl} className="ver-spot-link">
+          <span className="ver-spot-text">Ver spot</span>
           <span className="arrow-icon">→</span>
         </a>
       </div>

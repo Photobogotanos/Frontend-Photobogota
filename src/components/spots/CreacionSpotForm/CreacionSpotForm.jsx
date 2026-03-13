@@ -14,9 +14,16 @@ import {
   FaChevronRight,
   FaPaperPlane,
   FaEye,
+  FaStar,
+  FaRegStar,
+  FaImages,
+  FaMap,
+  FaClock,
+  FaComments,
+  FaPencilAlt,
+  FaTag,
 } from "react-icons/fa";
-import "./CreacionPublicacionForm.css";
-import "@/components/comunidad/PublicacionFeed/PublicacionFeed.css";
+import "./CreacionSpotForm.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -24,7 +31,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 import Modal from "react-bootstrap/Modal";
 import BackButton from "@/components/common/BackButton";
 
-export default function CrearPublicacion() {
+export default function CrearSpot() {
   const [imagenes, setImagenes] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [indiceImagenActual, setIndiceImagenActual] = useState(0);
@@ -38,6 +45,10 @@ export default function CrearPublicacion() {
   const [tipsFoto, setTipsFoto] = useState("");
   const [categoria, setCategoria] = useState(null);
   const [localidad, setLocalidad] = useState(null);
+
+  // Estados para la previsualización del spot (como en SpotPage)
+  const [nuevaResena, setNuevaResena] = useState({ rating: 0, comentario: "" });
+  const [hoverRating, setHoverRating] = useState(0);
 
   const categorias = [
     { value: "naturaleza", label: "Naturaleza" },
@@ -77,22 +88,43 @@ export default function CrearPublicacion() {
     );
   };
 
-  // Datos para la previsualización (simulando PublicacionFeed)
-  const publicacionPreview = {
-    id: 1,
-    usuario: "Tú",
-    nombreUsuario: "@tunombre",
-    avatar: "/images/user-pfp/default-avatar.jpg",
-    tiempo: "Ahora",
-    imagenes: previews,
-    texto: recomendacion || "Cuéntanos por qué recomiendas este lugar...",
-    meGustas: 0,
-    comentarios: 0,
-    meGustaDado: false,
-    guardado: false,
+  // Datos para la previsualización (como en SpotPage)
+  const spotData = {
+    nombre: nombreLugar || "Nombre del lugar",
+    direccion: direccion || "Dirección del lugar",
+    imagen: previews[0] || "/images/spots/spot-demo.jpg",
+    rating: 0,
+    totalResenas: 0,
+    categoria: categoria?.label || "Categoría",
+    localidad: localidad?.label || null,
+    descripcion: descripcionImagen || "Descripción del lugar...",
+    recomendacion: recomendacion || null,
+    tipsFoto: tipsFoto || null,
+    resenas: [],
   };
 
   const tieneVariasImagenes = previews.length > 1;
+
+  // Función para renderizar estrellas (igual que en SpotContent)
+  const renderStars = (rating, isInteractive = false) => {
+    return [1, 2, 3, 4, 5].map((starValue) => {
+      const isFilled = isInteractive
+        ? starValue <= (hoverRating || rating)
+        : starValue <= rating;
+      return (
+        <span
+          key={starValue}
+          className="star-icon"
+          style={{ cursor: isInteractive ? "pointer" : "default" }}
+          onClick={isInteractive ? () => setNuevaResena({ ...nuevaResena, rating: starValue }) : undefined}
+          onMouseEnter={isInteractive ? () => setHoverRating(starValue) : undefined}
+          onMouseLeave={isInteractive ? () => setHoverRating(0) : undefined}
+        >
+          {isFilled ? <FaStar className="star-filled" /> : <FaRegStar className="star-empty" />}
+        </span>
+      );
+    });
+  };
 
   const imagenAnterior = (e) => {
     e.stopPropagation();
@@ -111,7 +143,7 @@ export default function CrearPublicacion() {
   return (
     <div className="pb-5">
       <div className="formulario-contenedor">
-        <h4 className="titulo-crear-publicacion">Crear nueva publicación</h4>
+        <h4 className="titulo-crear-publicacion">Crear nuevo spot</h4>
 
         <Row className="g-4">
           {/* Formulario principal */}
@@ -305,7 +337,7 @@ export default function CrearPublicacion() {
             onClick={() => setShowModal(true)}
           >
             <FaEye />
-            Previsualizar publicación
+            Previsualizar Spot
           </button>
 
           <OverlayTrigger
@@ -318,107 +350,116 @@ export default function CrearPublicacion() {
           </OverlayTrigger>
         </div>
 
-        {/* Modal de previsualización */}
+        {/* Modal de previsualización estilo SpotPage */}
         <Modal
           show={showModal}
           onHide={() => setShowModal(false)}
-          size="lg"
+          size="xl"
           centered
-          className="modal-preview"
+          className="modal-preview-spot"
         >
-          <Modal.Header closeButton className="modal-header-custom">
-            <h2 className="modal-title-custom">
-              Previsualización de la publicación
-            </h2>
+          <Modal.Header closeButton className="border-0 pb-0">
+            <Modal.Title className="fw-bold">
+              Previsualización del Spot
+            </Modal.Title>
           </Modal.Header>
-          <Modal.Body className="modal-body-custom">
-            <div className="mx-auto" style={{ maxWidth: "600px" }}>
-              <div className="tarjeta-publicacion">
-                {/* Header */}
-                <div className="d-flex align-items-center mb-3">
-                  <img
-                    src="/images/user-pfp/default-avatar.jpg"
-                    className="rounded-circle me-3"
-                    width={45}
-                    height={45}
-                    alt="usuario"
-                  />
-                  <div className="flex-grow-1">
-                    <strong className="d-block texto-usuario">Tú</strong>
-                    <div className="texto-secundario">@tunombre · Ahora</div>
-                  </div>
-                  {nombreLugar && (
-                    <span className="ms-auto insignia-popular">Popular 🔥</span>
-                  )}
-                </div>
-
-                {/* Imagen */}
+          <Modal.Body className="pt-2">
+            <div className="lugar-content-wrapper">
+              {/* Imagen principal */}
+              <div className="lugar-imagen-principal">
                 {previews.length > 0 ? (
-                  <div className="contenedor-imagen-feed mb-3">
-                    <div className="carrusel-imagenes">
-                      <img
-                        src={previews[indiceImagenActual]}
-                        alt="Preview"
-                        className="imagen-feed"
-                      />
-
-                      {tieneVariasImagenes && (
-                        <>
-                          <button
-                            className="boton-nav-carrusel izquierda"
-                            onClick={imagenAnterior}
-                            aria-label="Imagen anterior"
-                          >
-                            <FaChevronLeft />
-                          </button>
-
-                          <button
-                            className="boton-nav-carrusel derecha"
-                            onClick={imagenSiguiente}
-                            aria-label="Imagen siguiente"
-                          >
-                            <FaChevronRight />
-                          </button>
-
-                          <div className="indicador-carrusel">
-                            {indiceImagenActual + 1} / {previews.length}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                  <img src={previews[0]} alt={nombreLugar || "Preview"} />
                 ) : (
-                  <div className="contenedor-imagen-feed mb-3 d-flex align-items-center justify-content-center bg-light">
-                    <span className="text-muted">
-                      Sube una imagen para ver la previsualización
-                    </span>
+                  <div className="d-flex align-items-center justify-content-center bg-light" style={{ height: "100%", minHeight: "300px" }}>
+                    <span className="text-muted">Sube una imagen para ver la previsualización</span>
                   </div>
                 )}
+              </div>
 
-                {/* Interacciones */}
-                <div className="d-flex justify-content-between align-items-center my-3">
-                  <div className="d-flex gap-4">
-                    <button className="boton-interaccion">
-                      <FaRegHeart />
-                      <span className="ms-1 contador-interaccion">0</span>
-                    </button>
-                    <button className="boton-interaccion">
-                      <FaCommentDots />
-                      <span className="ms-1 contador-interaccion">0</span>
-                    </button>
-                    <button className="boton-interaccion">
-                      <FaShare />
-                    </button>
+              {/* Información principal */}
+              <div className="lugar-info-container">
+                <h1 className="lugar-nombre">
+                  {nombreLugar || "Nombre del lugar"}
+                </h1>
+                <p className="lugar-direccion">
+                  <FaMapMarkerAlt className="location-icon" />
+                  {direccion || "Dirección del lugar"}
+                </p>
+
+                <div className="lugar-badges">
+                  <span className="badge-categoria">
+                    <FaTag className="category-icon" />
+                    {categoria?.label || "Categoría"}
+                  </span>
+                  {localidad && (
+                    <span className="badge-localidad ms-2">
+                      <FaMapMarkerAlt className="category-icon" />
+                      {localidad.label}
+                    </span>
+                  )}
+                  <div className="lugar-rating-badge">
+                    <FaStar className="star-icon" />
+                    <span className="rating-text">0.0</span>
+                    <span className="reviews-text">(0 reseñas)</span>
                   </div>
-                  <button className="boton-interaccion boton-guardar">
-                    <FaRegBookmark />
+                </div>
+
+                <div className="lugar-acciones">
+                  <button className="btn-ver-mapa">
+                    <FaMap className="btn-icon" />
+                    Ver en mapa
+                  </button>
+                  <button className="btn-galeria">
+                    <FaImages className="btn-icon" />
+                    Galería
                   </button>
                 </div>
 
-                {/* Texto */}
-                <p className="mb-2 texto-publicacion">
-                  {recomendacion || "Aquí aparecerá tu recomendación..."}
-                </p>
+                {/* Descripción / Sobre este lugar */}
+                <div className="lugar-descripcion">
+                  <h3>
+                    <FaInfoCircle className="section-icon" />
+                    Sobre este lugar
+                  </h3>
+                  <p>{descripcionImagen || "Descripción del lugar..."}</p>
+                </div>
+
+                {/* Recomendación del usuario */}
+                {recomendacion && (
+                  <div className="lugar-recomendacion mt-3">
+                    <h3>
+                      <FaHeart className="section-icon" />
+                      ¿Por qué recomendarlo?
+                    </h3>
+                    <p>{recomendacion}</p>
+                  </div>
+                )}
+
+                {/* Tips de fotografía */}
+                {tipsFoto && (
+                  <div className="lugar-tips mt-3">
+                    <h3>
+                      <FaCamera className="section-icon" />
+                      Tips de fotografía
+                    </h3>
+                    <p>{tipsFoto}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Sección de Reseñas */}
+              <div className="resenas-container">
+                <h2 className="resenas-titulo">
+                  <FaComments className="section-icon" />
+                  Reseñas
+                </h2>
+
+                {/* Mensaje cuando no hay reseñas */}
+                <div className="no-resenas">
+                  <FaComments className="no-resenas-icon" />
+                  <p>Aún no hay reseñas para este lugar.</p>
+                  <p className="text-muted">¡Sé el primero en compartir tu experiencia!</p>
+                </div>
               </div>
             </div>
           </Modal.Body>

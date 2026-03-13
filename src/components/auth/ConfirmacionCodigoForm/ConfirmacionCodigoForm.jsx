@@ -54,7 +54,7 @@ export default function ConfirmacionCodigoForm() {
       title: "Código enviado",
       text: `Tu código es: ${finalCode}`,
     }).then(() => {
-      navegar("/comunidad");
+      navegar("/mapa");
     });
 
     console.log("Código ingresado:", finalCode);

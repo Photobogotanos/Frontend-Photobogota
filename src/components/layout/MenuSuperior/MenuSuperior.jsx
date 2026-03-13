@@ -77,7 +77,7 @@ export default function MenuSuperior() {
 
           <Navbar.Brand
             as={Link}
-            to={logueado ? "/comunidad" : "/"}
+            to={logueado ? "/mapa" : "/"}
             className="brand-wrapper d-flex align-items-center"
           >
             <Image src={logo} alt="Logo PhotoBogotá" className="brand-logo" />
@@ -105,13 +105,13 @@ export default function MenuSuperior() {
             <div className="d-flex align-items-center ms-auto acciones-usuario">
               <button
                 as={Link}
-                to="/crear-publicacion"
+                to="/crear-spot"
                 className={`btn-crear-publicacion ${pulsando ? "pulsing" : ""}`}
                 onMouseEnter={() => setPulsando(false)}
-                onClick={() => navegar("/crear-publicacion")}
+                onClick={() => navegar("/crear-spot")}
               >
                 <FaPlus />
-                <span className="texto-completo">Crear Publicación</span>
+                <span className="texto-completo">Crear Spot</span>
                 <span className="texto-corto">Crear</span>
               </button>
 

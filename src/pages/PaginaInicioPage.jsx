@@ -9,9 +9,9 @@ function PaginaInicioPage() {
 
   useEffect(() => {
     const estaLogueado = localStorage.getItem("logueado") === "true";
-    
+
     if (estaLogueado) {
-      navegar("/comunidad");
+      navegar("/mapa");
     }
   }, [navegar]);
 

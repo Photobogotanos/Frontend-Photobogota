@@ -328,7 +328,7 @@ export default function MiPerfil() {
                 <p>Guarda tus lugares favoritos, para visitarlos después</p>
                 <button 
                   className="btn-explorar"
-                  onClick={() => navigate("/comunidad")}
+                  onClick={() => navigate("/mapa")}
                 >
                   Explorar lugares
                 </button>
