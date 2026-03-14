@@ -73,14 +73,14 @@ export default function MiPerfil() {
         </Col>
       </Row>
 
-      <Row>
+      <div className="perfil-edit-wrapper">
         <button
           className="btn-editar-perfil"
           onClick={() => setMostrarEditarPerfil(true)}
         >
           <FiEdit3 size={18} /> Editar perfil
         </button>
-      </Row>
+      </div>
 
       <div className="line-divider" />
 
@@ -89,7 +89,7 @@ export default function MiPerfil() {
           className={tab === "publicaciones" ? "tab-activa" : ""}
           onClick={() => setTab("publicaciones")}
         >
-          Mis Publicaciones
+          Mis Spots
         </button>
 
         <button
@@ -105,7 +105,6 @@ export default function MiPerfil() {
         >
           Guardados
         </button>
-        
       </div>
 
       <div className="perfil-tab-content">
