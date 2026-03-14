@@ -21,17 +21,9 @@ let servidorDisponible = null;
 
 const verificarConexionServidor = async () => {
   try {
-    // Usamos el endpoint real con un body inválido a propósito.
-    // Spring responderá 400 (validación) si el servidor está arriba,
-    // lo que es suficiente para confirmar conexión 
-    await clienteApi.post("/api/v1/usuarios/registro-usuario", {}, { timeout: 3000 });
-    return true;
+    const respuesta = await clienteApi.get("/actuator/health", { timeout: 3000 });
+    return respuesta.data?.status === "UP";
   } catch (error) {
-    // 400, 422, 500, etc. → servidor arriba pero rechazó el body vacío: OK
-    if (error.response) {
-      return true;
-    }
-    // Servidor caído o sin red
     console.warn("Servidor no disponible, usando datos demo:", error.message);
     return false;
   }
