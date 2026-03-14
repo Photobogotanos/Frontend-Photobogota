@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { Modal, Button, Form, Container, Row, Col } from "react-bootstrap";
-import { FaCamera, FaUpload, FaTrash, FaLock } from "react-icons/fa";
+import { FaCamera, FaUpload, FaTrash, FaLock, FaSave } from "react-icons/fa";
 import "./EditarPerfilModal.css";
 import { CiUser } from "react-icons/ci";
 import { FaHouseUser } from "react-icons/fa";
-import { MdOutlineEmail, MdOutlineDescription, MdPhone } from "react-icons/md";
+import {
+  MdOutlineEmail,
+  MdOutlineDescription,
+  MdPhone,
+  MdOutlineCancel,
+} from "react-icons/md";
 import Swal from "sweetalert2";
+import { IoMdPhotos } from "react-icons/io";
 
 export default function EditarPerfilModal({
   show,
@@ -119,7 +125,6 @@ export default function EditarPerfilModal({
           {/* SECCIÓN A: PERFIL */}
           <div className="section-header">
             <span className="section-label">A. Perfil</span>
-            <span className="section-subtitle">Ajustes</span>
           </div>
 
           <div className="section-divider"></div>
@@ -127,7 +132,7 @@ export default function EditarPerfilModal({
           {/* CAMBIAR FOTO */}
           <Form.Group className="mb-4">
             <Form.Label className="form-label-custom">
-              Cambiar foto
+              <IoMdPhotos /> Cambiar foto
               <span className="file-format">JPG, PNG o GIF (máx. 5MB)</span>
             </Form.Label>
             <div className="foto-perfil-container">
@@ -304,25 +309,22 @@ export default function EditarPerfilModal({
                 <span className="guardado-label">Nivel</span>
                 <span className="guardado-value">320</span>
               </div>
-              <div className="guardado-item">
-                <span className="guardado-label">Descripción</span>
-                <span className="guardado-value">Descubre y con...</span>
-              </div>
             </div>
           </div>
 
           {/* BOTONES DE ACCIÓN */}
           <div className="modal-actions">
             <button
+              type="button"
               variant="outline-secondary"
               onClick={onHide}
               className="btn-cancelar"
             >
-              Cancelar
+              <MdOutlineCancel /> Cancelar
             </button>
 
             <button type="submit" variant="primary" className="btn-guardar">
-              Guardar Cambios
+              <FaSave className="icon-test" /> Guardar Cambios
             </button>
           </div>
         </Form>
