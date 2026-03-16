@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import { FiEdit3 } from "react-icons/fi";
-import { FaCamera, FaMapMarkerAlt, FaRegEdit, } from "react-icons/fa";
+import { FaCamera, FaMapMarkerAlt, FaRegEdit } from "react-icons/fa";
 import { GrMapLocation } from "react-icons/gr";
 import SpotCard from "../../spots/SpotCard/SpotCard";
 import ReviewCard from "../ReviewCard/ReviewCard";
+import EditarPerfilModal from "../EditarPerfilModal/EditarPerfilModal";
+import FotoPerfilModal from "../FotoPerfilModal/FotoPerfilModal";
 import "./MiPerfil.css";
 
 export default function MiPerfil() {
@@ -14,30 +16,43 @@ export default function MiPerfil() {
   const [tienePublicaciones, setTienePublicaciones] = useState(true);
   const [tieneResenas, setTieneResenas] = useState(true);
   const [tieneGuardados, setTieneGuardados] = useState(false);
+  const [mostrarEditarPerfil, setMostrarEditarPerfil] = useState(false);
+  const [mostrarFotoPerfil, setMostrarFotoPerfil] = useState(false);
+  const [perfilData, setPerfilData] = useState({
+    nombreCompleto: "Juan Sebastian Romero",
+    nombreUsuario: "sxbxxs.r",
+    descripcion:
+      "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
+    foto: "public/images/user-pfp/default-avatar.jpg",
+  });
+
+  const handlePerfilActualizado = (datosActualizados) => {
+    setPerfilData(datosActualizados);
+  };
 
   return (
     <Container fluid className="perfil-container">
-      
-      <div className="perfil-header mt-5">
+      <div className="perfil-header">
         <img
-          src="public/images/user-pfp/default-avatar.jpg"
+          src={perfilData.foto}
           alt="Foto perfil"
           className="perfil-avatar"
+          onClick={() => setMostrarFotoPerfil(true)}
+          style={{ cursor: "pointer" }}
         />
-        
+
         <div className="perfil-info">
           <div className="perfil-badges">
-            <span className="badge-miembro"><FaCamera /> Miembro</span>
+            <span className="badge-miembro">
+              <FaCamera /> Miembro
+            </span>
             <span className="badge-nivel">Nivel: 320</span>
           </div>
 
-          <h3 className="perfil-nombre">Juan Sebastian Romero</h3>
-          <p className="perfil-username">@sxbxxs.r</p>
+          <h3 className="perfil-nombre">{perfilData.nombreCompleto}</h3>
+          <p className="perfil-username">@{perfilData.nombreUsuario}</p>
 
-          <p className="perfil-descripcion">
-            Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos
-            y explora nuevos destinos cercanos!
-          </p>
+          <p className="perfil-descripcion">{perfilData.descripcion}</p>
         </div>
       </div>
 
@@ -51,18 +66,21 @@ export default function MiPerfil() {
           <h4>{tieneResenas ? "6" : "0"}</h4>
           <p>Reseñas</p>
         </Col>
-        
+
         <Col xs={4} className="perfil-stat">
           <h4>{tieneGuardados ? "12" : "0"}</h4>
           <p>Guardados</p>
         </Col>
       </Row>
 
-      <Row>
-          <button className="btn-editar-perfil">
-            <FiEdit3 size={18} /> Editar perfil
-          </button>
-      </Row>
+      <div className="perfil-edit-wrapper">
+        <button
+          className="btn-editar-perfil"
+          onClick={() => setMostrarEditarPerfil(true)}
+        >
+          <FiEdit3 size={18} /> Editar perfil
+        </button>
+      </div>
 
       <div className="line-divider" />
 
@@ -71,7 +89,7 @@ export default function MiPerfil() {
           className={tab === "publicaciones" ? "tab-activa" : ""}
           onClick={() => setTab("publicaciones")}
         >
-          Mis Publicaciones
+          Mis Spots
         </button>
 
         <button
@@ -90,7 +108,6 @@ export default function MiPerfil() {
       </div>
 
       <div className="perfil-tab-content">
-
         {/* SECCIÓN PUBLICACIONES */}
         {tab === "publicaciones" && (
           <div>
@@ -141,22 +158,24 @@ export default function MiPerfil() {
               </div>
             ) : (
               <div className="no-contenido">
-            <div className="empty-icon">
-              <FaMapMarkerAlt size={48} />
+                <div className="empty-icon">
+                  <FaMapMarkerAlt size={48} />
+                </div>
+                <h4>No tienes publicaciones</h4>
+                <p>
+                  Comparte tus lugares favoritos para que otros los descubran
+                </p>
+                <button
+                  className="btn-explorar"
+                  onClick={() => navigate("/crear-publicacion")}
+                >
+                  ¡Crea tu primera publicación!
+                </button>
               </div>
-              <h4>No tienes publicaciones</h4>
-              <p>Comparte tus lugares favoritos para que otros los descubran</p>
-              <button 
-                className="btn-explorar"
-                onClick={() => navigate("/crear-publicacion")}
-              >
-                ¡Crea tu primera publicación!
-              </button>
-            </div>
-    )}
+            )}
           </div>
         )}
-        
+
         {/* SECCIÓN RESEÑAS */}
         {tab === "resenas" && (
           <div>
@@ -218,7 +237,7 @@ export default function MiPerfil() {
                 </div>
                 <h4>No tienes reseñas</h4>
                 <p>Comparte tu experiencia sobre los lugares que visitas</p>
-                <button 
+                <button
                   className="btn-explorar"
                   onClick={() => navigate("/mapa")}
                 >
@@ -317,16 +336,16 @@ export default function MiPerfil() {
                   tags={["Religioso", "Vistas"]}
                   rating="4.9"
                   likes="456"
-                />  
+                />
               </div>
             ) : (
               <div className="no-contenido">
                 <div className="empty-icon">
-                <GrMapLocation size={48}/>
+                  <GrMapLocation size={48} />
                 </div>
                 <h4>No hay lugares guardados</h4>
                 <p>Guarda tus lugares favoritos, para visitarlos después</p>
-                <button 
+                <button
                   className="btn-explorar"
                   onClick={() => navigate("/mapa")}
                 >
@@ -336,22 +355,36 @@ export default function MiPerfil() {
             )}
           </div>
         )}
-        
+
         <div className="debug-controls">
           <small>Debug:</small>
           <div className="debug-buttons">
             <button onClick={() => setTienePublicaciones(!tienePublicaciones)}>
-              {tienePublicaciones ? 'Sin publicaciones' : 'Con publicaciones'}
+              {tienePublicaciones ? "Sin publicaciones" : "Con publicaciones"}
             </button>
             <button onClick={() => setTieneResenas(!tieneResenas)}>
-              {tieneResenas ? 'Sin reseñas' : 'Con reseñas'}
+              {tieneResenas ? "Sin reseñas" : "Con reseñas"}
             </button>
             <button onClick={() => setTieneGuardados(!tieneGuardados)}>
-              {tieneGuardados ? 'Sin guardados' : 'Con guardados'}
+              {tieneGuardados ? "Sin guardados" : "Con guardados"}
             </button>
           </div>
         </div>
       </div>
+
+      <EditarPerfilModal
+        show={mostrarEditarPerfil}
+        onHide={() => setMostrarEditarPerfil(false)}
+        perfilData={perfilData}
+        onPerfilActualizado={handlePerfilActualizado}
+      />
+
+      <FotoPerfilModal
+        show={mostrarFotoPerfil}
+        onHide={() => setMostrarFotoPerfil(false)}
+        foto={perfilData.foto}
+        nombre={perfilData.nombreCompleto}
+      />
     </Container>
   );
 }
