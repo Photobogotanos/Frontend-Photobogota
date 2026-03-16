@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Container from "react-bootstrap/Container";
+import { Container, Tab, Tabs } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
@@ -169,6 +169,29 @@ export default function SolicitudSocio() {
   const pendientesCount = solicitudes.filter(
     (s) => s.estado === "pendiente"
   ).length;
+  const aprobadasCount = solicitudes.filter(
+    (s) => s.estado === "aprobada"
+  ).length;
+  const rechazadasCount = solicitudes.filter(
+    (s) => s.estado === "rechazada"
+  ).length;
+
+  // Manejar cambio de tab para filtrar por estado
+  const handleTabSelect = (eventKey) => {
+    switch (eventKey) {
+      case "Pendiente":
+        setFiltroEstado("pendiente");
+        break;
+      case "Aprobadas":
+        setFiltroEstado("aprobada");
+        break;
+      case "Rechazadas":
+        setFiltroEstado("rechazada");
+        break;
+      default:
+        setFiltroEstado("todos");
+    }
+  };
 
   if (loading) {
     return (
@@ -181,18 +204,35 @@ export default function SolicitudSocio() {
     );
   }
 
-  return (
-    <div className="solicitud-socio-container">
-      {/* Header */}
+return (
+    <div className="solicitud-socio-main-container"> {/* Contenedor principal opcional */}
       <div className="solicitud-socio-header">
-        <h1 className="solicitud-socio-title">
-          <FiClock className="header-icon" />
-          Solicitudes de Socios
-        </h1>
-        <Badge bg="primary" className="pending-count">
-          {pendientesCount} pendientes
-        </Badge>
+        <div className="solicitud-socio-title-group">
+          <h1 className="solicitud-socio-title">
+            <FiClock className="header-icon" />
+            Solicitudes de Socios
+          </h1>
+          <p className="solicitud-socio-subtitle">
+            Gestion de las solicitudes para convertirse en socio
+          </p>
+        </div>
       </div>
+
+      <Container className="nav-container p-0">
+        <Tabs 
+          activeKey={filtroEstado === "pendiente" ? "Pendiente" : filtroEstado === "aprobada" ? "Aprobadas" : filtroEstado === "rechazada" ? "Rechazadas" : ""}
+          onSelect={handleTabSelect}
+          id="custom-tabs"
+          className="mb-4 fondo-tab rounded-pill p-1 shadow-sm"
+          variant="pills" 
+          fill
+        >
+          <Tab eventKey="Pendiente" title={`Pendientes (${pendientesCount})`} />
+          <Tab eventKey="Aprobadas" title={`Aprobadas (${aprobadasCount})`} />
+          <Tab eventKey="Rechazadas" title={`Rechazadas (${rechazadasCount})`} />
+        </Tabs>
+      </Container>
+
 
       {/* Filtros y búsqueda */}
       <div className="solicitud-socio-filters">
