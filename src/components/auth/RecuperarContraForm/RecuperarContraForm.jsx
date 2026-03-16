@@ -4,22 +4,12 @@ import Swal from "sweetalert2";
 import logo from "@/assets/images/logo.jpg";
 import "./RecuperarContraForm.css";
 import { Link } from "react-router-dom";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import { useNavigate } from "react-router-dom";
+import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 export default function RecuperarContraForm() {
   const [email, setEmail] = useState("");
   const navegar = useNavigate();
-
-  const RequiredMark = () => (
-    <OverlayTrigger
-      placement="right"
-      overlay={<Tooltip>Campo obligatorio</Tooltip>}
-    >
-      <span className="required-mark">*</span>
-    </OverlayTrigger>
-  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
