@@ -108,7 +108,11 @@ export default function MenuSuperior() {
                 to="/crear-spot"
                 className={`btn-crear-publicacion ${pulsando ? "pulsing" : ""}`}
                 onMouseEnter={() => setPulsando(false)}
-                onClick={() => navegar("/crear-spot")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navegar("/crear-spot");
+                }}
+                aria-label="Crear nuevo spot"
               >
                 <FaPlus />
                 <span className="texto-completo">Crear Spot</span>

@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as m, AnimatePresence, LazyMotion, domAnimation } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import {
   FaInstagram,
@@ -296,6 +296,10 @@ export default function NosotrosContent() {
               <div
                 className={`team-card-3d ${flipped[index] ? "flipped" : ""}`}
                 onClick={(e) => handleCardClick(index, e)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(index, e) }}
+                role="button"
+                tabIndex={0}
+                aria-label={`Ver más información de ${member.name}`}
               >
                 <div className="team-card-inner-3d">
                   {/* Front */}
