@@ -3,12 +3,11 @@ import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 import Form from "react-bootstrap/Form";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import "./CreacionDeCuentaForm.css";
 import { registrarUsuario } from "@/services/usuario.service";
+import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 // Iconos
 import {
@@ -177,12 +176,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <MdOutlineEmail />
               Email
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
             <Form.Control
               type="email"
@@ -197,12 +191,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <MdDriveFileRenameOutline />
               Nombres
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
             <Form.Control
               className="rounded-pill input-without-focus"
@@ -216,12 +205,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <MdDriveFileRenameOutline />
               Apellidos
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
             <Form.Control
               className="rounded-pill input-without-focus"
@@ -235,12 +219,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <FaUser />
               Nombre de usuario
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
             <Form.Control
               className="rounded-pill input-without-focus"
@@ -254,12 +233,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <MdDateRange />
               Fecha de nacimiento
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
             <Flatpickr
               options={{
@@ -287,12 +261,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <FaLock />
               Contraseña
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
 
             <div className="input-icon-container">
@@ -318,12 +287,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <FaLock />
               Confirmación de la contraseña
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
 
             <div className="input-icon-container">

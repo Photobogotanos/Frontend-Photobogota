@@ -226,10 +226,18 @@ const SpotContent = () => {
               ? () => setNuevaResena({ ...nuevaResena, rating: starValue })
               : undefined
           }
+          onKeyDown={
+            isInteractive
+              ? (e) => { if (e.key === 'Enter' || e.key === ' ') setNuevaResena({ ...nuevaResena, rating: starValue }) }
+              : undefined
+          }
           onMouseEnter={
             isInteractive ? () => setHoverRating(starValue) : undefined
           }
           onMouseLeave={isInteractive ? () => setHoverRating(0) : undefined}
+          role={isInteractive ? "button" : undefined}
+          tabIndex={isInteractive ? 0 : -1}
+          aria-label={isInteractive ? `Calificar con ${starValue} estrellas` : undefined}
         >
           {isFilled ? (
             <FaStar className="star-filled" />
