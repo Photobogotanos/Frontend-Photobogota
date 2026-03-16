@@ -26,10 +26,9 @@ import {
 import "./CreacionSpotForm.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import Modal from "react-bootstrap/Modal";
 import BackButton from "@/components/common/BackButton";
+import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 export default function CrearSpot() {
   const [imagenes, setImagenes] = useState([]);
@@ -155,12 +154,7 @@ export default function CrearSpot() {
             {/* Upload de imagen */}
             <label className="form-label fw-medium">
               Foto del lugar <FaCamera className="me-2" />
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span className="text-danger"> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </label>
 
             <div className="image-upload rounded-4 mb-3">
@@ -189,12 +183,7 @@ export default function CrearSpot() {
               <Col xs={12}>
                 <label className="form-label">
                   Nombre del lugar
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                  >
-                    <span className="text-danger"> *</span>
-                  </OverlayTrigger>
+                  <RequiredMark />
                 </label>
                 <input
                   type="text"
@@ -210,12 +199,7 @@ export default function CrearSpot() {
               <Col xs={12}>
                 <label className="form-label">
                   Ubicación <FaMapMarkerAlt className="me-2" />
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                  >
-                    <span className="text-danger"> *</span>
-                  </OverlayTrigger>
+                  <RequiredMark />
                 </label>
                 <div className="d-flex gap-2">
                   <input
@@ -245,12 +229,7 @@ export default function CrearSpot() {
               <Col xs={12} md={6}>
                 <label className="form-label">
                   Categoría
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                  >
-                    <span className="text-danger"> *</span>
-                  </OverlayTrigger>
+                  <RequiredMark />
                 </label>
                 <Select
                   options={categorias}
@@ -263,12 +242,7 @@ export default function CrearSpot() {
               <Col xs={12} md={6}>
                 <label className="form-label">
                   Localidad
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                  >
-                    <span className="text-danger"> *</span>
-                  </OverlayTrigger>
+                  <RequiredMark />
                 </label>
                 <Select
                   options={localidades}
@@ -283,12 +257,7 @@ export default function CrearSpot() {
             <div className="mb-2">
               <label className="form-label">
                 Descripción de la(s) imagen(es)
-                <OverlayTrigger
-                  placement="right"
-                  overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                >
-                  <span className="text-danger"> *</span>
-                </OverlayTrigger>
+                <RequiredMark />
               </label>
               <textarea
                 className="form-control rounded-4"
@@ -302,12 +271,7 @@ export default function CrearSpot() {
             <div className="mb-2">
               <label className="form-label">
                 ¿Por qué recomiendas este lugar?
-                <OverlayTrigger
-                  placement="right"
-                  overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                >
-                  <span className="text-danger"> *</span>
-                </OverlayTrigger>
+                <RequiredMark />
               </label>
               <textarea
                 className="form-control rounded-4"

@@ -1,6 +1,4 @@
 import Form from "react-bootstrap/Form";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import Select from "react-select";
 import { MdDriveFileRenameOutline } from "react-icons/md";
 import { FaStreetView } from "react-icons/fa6";
@@ -9,6 +7,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { IoIosDocument } from "react-icons/io";
 import "./InformacionNegocio.css";
+import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormData }) => {
   return (
@@ -16,12 +15,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="apellidos">
           Apellidos <MdDriveFileRenameOutline />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Form.Control
           id="apellidos"
@@ -36,12 +30,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="direccion">
           Dirección <FaStreetView />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Form.Control
           id="direccion"
@@ -56,12 +45,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="nit">
           NIT o RUT <FaIdCard />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Form.Control
           id="nit"
@@ -79,12 +63,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
           htmlFor="propietario"
         >
           Nombre del propietario <FaUserCircle />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Form.Control
           id="propietario"
@@ -99,12 +78,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="categoria">
           Categoría <BiSolidCategoryAlt />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Select
           options={categoriaOptions}
@@ -130,12 +104,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
           htmlFor="rutDocumento"
         >
           Subir RUT (PDF o Imagen) <IoIosDocument />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Form.Control
           id="rutDocumento"

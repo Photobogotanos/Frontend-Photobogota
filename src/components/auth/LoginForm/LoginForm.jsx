@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Form } from "react-bootstrap";
 import "./LoginForm.css";
 import { Link, useNavigate } from "react-router-dom";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import BackButton from "@/components/common/BackButton";
+import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 export default function LoginForm() {
   const [usuarioOCorreo, setUsuarioOCorreo] = useState("");
@@ -103,12 +102,7 @@ export default function LoginForm() {
         <Form.Group className="mt-5">
           <Form.Label className="login-form-label">
             Usuario o Correo <FaUser />
-            <OverlayTrigger
-              placement="right"
-              overlay={<Tooltip>Campo obligatorio</Tooltip>}
-            >
-              <span> *</span>
-            </OverlayTrigger>
+            <RequiredMark />
           </Form.Label>
 
           <div className="input-icon-container">
@@ -124,12 +118,7 @@ export default function LoginForm() {
         <Form.Group className="mt-4">
           <Form.Label className="login-form-label">
             Contraseña <FaLock />
-            <OverlayTrigger
-              placement="right"
-              overlay={<Tooltip>Campo obligatorio</Tooltip>}
-            >
-              <span> *</span>
-            </OverlayTrigger>
+            <RequiredMark />
           </Form.Label>
 
           <div className="input-icon-container">

@@ -97,8 +97,8 @@ export default function ConfirmacionCodigoForm() {
         Confirmar Código
       </button>
 
-      <p className="reenviar" onClick={reenviarCodigo}>  {/*Nombre del evento*/}
-        ¿Te gustaría reenviar el código? <span className="reenviar-link">Reenviar</span>
+      <p className="reenviar">
+        ¿Te gustaría reenviar el código? <span className="reenviar-link" onClick={reenviarCodigo} onKeyDown={(e) => e.key === 'Enter' && reenviarCodigo()} role="button" tabIndex={0}>Reenviar</span>
       </p>
     </form>
   );
