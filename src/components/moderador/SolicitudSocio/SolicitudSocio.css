@@ -7,11 +7,20 @@
 /* Header */
 .solicitud-socio-header {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 1.5rem;
-  flex-wrap: wrap;
   gap: 1rem;
+}
+
+.solicitud-socio-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.solicitud-socio-header .pending-count {
+  flex-shrink: 0;
 }
 
 .solicitud-socio-title {
@@ -22,6 +31,13 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.solicitud-socio-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0.25rem 0 0 0;
+  font-weight: 400;
 }
 
 .header-icon {
@@ -309,9 +325,21 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .solicitud-socio-container {
+    padding: 0.5rem;
+  }
+
   .solicitud-socio-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .solicitud-socio-title {
+    font-size: 1.25rem;
+  }
+
+  .solicitud-socio-header .pending-count {
+    margin-top: 0.5rem;
   }
 
   .solicitud-socio-filters {
@@ -321,6 +349,15 @@
   .search-wrapper,
   .filter-wrapper {
     width: 100%;
+    min-width: unset;
+  }
+
+  .search-wrapper {
+    order: 1;
+  }
+
+  .filter-wrapper {
+    order: 2;
   }
 
   .solicitudes-list {
@@ -339,3 +376,96 @@
     width: 100%;
   }
 }
+
+/* Tabs responsive */
+@media (max-width: 576px) {
+  .nav-container {
+    padding: 0 !important;
+  }
+
+  .fondo-tab {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .fondo-tab::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fondo-tab .nav-link {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+    white-space: nowrap;
+  }
+
+  .solicitud-card {
+    padding: 1rem;
+  }
+
+  .razon-social {
+    font-size: 1rem;
+  }
+
+  .info-row,
+  .categoria {
+    font-size: 0.85rem;
+  }
+
+  .solicitud-modal .modal-title {
+    font-size: 1rem;
+  }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 400px) {
+  .solicitud-socio-title {
+    font-size: 1.1rem;
+  }
+
+  .pending-count {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .fondo-tab .nav-link {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .btn-view,
+  .btn-approve,
+  .btn-reject {
+    font-size: 0.8rem;
+  }
+}
+.fondo-tab {
+  background-color: #f0f0f4; 
+  border: none;
+  display: flex;
+  align-items: center;
+}
+
+
+.fondo-tab .nav-link {
+  color: var(--color-dark) !important;
+  border-radius: 50px !important; 
+  border: none !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.fondo-tab .nav-link.active {
+  background-color: #ffffff !important; 
+  color: #000 !important; 
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.1); 
+}
+
+.nav-pills .nav-link:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+
