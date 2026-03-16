@@ -1,0 +1,10 @@
+.revision-solicitudes-socio {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.revision-solicitudes-socio .container {
+  max-width: 95%;
+  width: 100%;
+}

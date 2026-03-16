@@ -89,7 +89,7 @@ export default function MenuSuperior() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ms-auto menu-links">
-                  <Nav.Link as={Link} to="/solicitud-socio">
+                  <Nav.Link as={Link} to="/solicitud-socio/formulario">
                     ¿Quieres ser socio?
                   </Nav.Link>
                   <Nav.Link as={Link} to="/nosotros">
