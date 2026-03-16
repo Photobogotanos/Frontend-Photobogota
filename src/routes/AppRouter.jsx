@@ -12,6 +12,7 @@ import ConfirmacionCodigoPage from "@/pages/ConfirmacionCodigoPage.jsx";
 import Mapa from "@/pages/MapaPage.jsx";
 import SpotPage from "@/pages/SpotPage";
 import CreacionSpotPage from "@/pages/CreacionSpotPage.jsx";
+import SolicitudesSocioPage from "../pages/ModeradorSolicitudesSocio";
 
 const AppRouter = () => {
   return (
@@ -36,9 +37,11 @@ const AppRouter = () => {
           element={<ConfirmacionCodigoPage />}
         />
         <Route path="/spot/:id" element={<SpotPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      <Route path="/solicitudes-socios" element={<SolicitudesSocioPage/>} />
       </Route>
 
-      <Route path="/login" element={<LoginPage />} />
+      
     </Routes>
   );
 };
