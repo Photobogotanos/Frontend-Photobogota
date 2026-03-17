@@ -132,3 +132,91 @@
 .ver-lugar-link:hover .arrow-icon {
   transform: translateX(3px);
 }
+
+/* CONTENEDOR DE RESPUESTA DEL SOCIO */
+.review-respuesta-container {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+}
+
+.btn-responder-resena {
+  background: #806fbe;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-responder-resena:hover {
+  background: #6b5fad;
+}
+
+.respuesta-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.respuesta-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  resize: none;
+  font-family: inherit;
+}
+
+.respuesta-input:focus {
+  outline: none;
+  border-color: #806fbe;
+  box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.1);
+}
+
+.respuesta-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.btn-cancelar-respuesta {
+  background: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cancelar-respuesta:hover {
+  background: #eee;
+}
+
+.btn-enviar-respuesta {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-enviar-respuesta:hover {
+  background: #219a52;
+}
+
+.btn-enviar-respuesta:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}

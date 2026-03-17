@@ -13,9 +13,9 @@ const EstadisticasSocio = () => {
   return (
     <div className="estadisticas-socio-container">
       <EstadisticasHeader periodo={periodo} setPeriodo={setPeriodo} />
-      <EstadisticasRapidas />
+      <EstadisticasRapidas periodo={periodo} />
       <Suspense fallback={<div className="text-center py-5">Cargando gráficos...</div>}>
-        <GraficosEstadisticos />
+        <GraficosEstadisticos periodo={periodo} />
       </Suspense>
       <LugaresPopulares />
     </div>
