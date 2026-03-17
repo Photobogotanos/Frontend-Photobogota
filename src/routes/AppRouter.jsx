@@ -14,6 +14,7 @@ import Mapa from "@/pages/MapaPage.jsx";
 import SpotPage from "@/pages/SpotPage";
 import CreacionSpotPage from "@/pages/CreacionSpotPage.jsx";
 import EstadisticasSocioPage from "@/pages/EstadisticasSocioPage.jsx";
+import Error404Page from "@/pages/Error404Page.jsx";
 
 const AppRouter = () => {
   return (
@@ -46,6 +47,9 @@ const AppRouter = () => {
         />
         <Route path="/spot/:id" element={<SpotPage />} />
         <Route path="/estadisticas" element={<EstadisticasSocioPage />} />
+        
+        {/* Ruta para página 404 */}
+        <Route path="*" element={<Error404Page />} />
       </Route>
 
 
