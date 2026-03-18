@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function ConfirmacionCodigoForm() {
   const navegar = useNavigate(); 
+  const DIGIT_SLOTS = ["d0", "d1", "d2", "d3", "d4", "d5"];
   const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);// arreglo para guardar el codigo
   const inputsRef = useRef([]);// Variable para guardar en el arreglo
 
@@ -81,7 +82,7 @@ export default function ConfirmacionCodigoForm() {
       <div className="inputs-container">
         {codigo.map((num, idx) => ( //  Mapea el input para hacer el array 
           <input
-            key={idx} // identificador del input 
+            key={DIGIT_SLOTS[idx]} 
             type="text"
             maxLength="1" // Permite solo un caracter
             className="codigo-input"
@@ -97,8 +98,8 @@ export default function ConfirmacionCodigoForm() {
         Confirmar Código
       </button>
 
-      <p className="reenviar" onClick={reenviarCodigo}>  {/*Nombre del evento*/}
-        ¿Te gustaría reenviar el código? <span className="reenviar-link">Reenviar</span>
+      <p className="reenviar">
+        ¿Te gustaría reenviar el código? <span className="reenviar-link" role="button" onClick={reenviarCodigo} onKeyDown={(e) => e.key === 'Enter' && reenviarCodigo()} tabIndex={0}>Reenviar</span>
       </p>
     </form>
   );

@@ -4,6 +4,8 @@
   border: none;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  max-width: 600px;
+  margin: 1.75rem auto;
 }
 
 /* HEADER */
@@ -11,15 +13,15 @@
   background: var(--color-primary);
   color: white;
   border: none;
-  padding: 20px 30px;
+  padding: 12px 20px;
 }
 
 .modal-title-custom {
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   display: flex;
   align-items: center;
-  background: var(--color-primary);
+  background: transparent;
 }
 
 .modal-header-custom .btn-close {
@@ -50,14 +52,6 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-primary);
-}
-
-.section-subtitle {
-  font-size: 0.9rem;
-  color: #666;
-  background: #f0f0f0;
-  padding: 4px 12px;
-  border-radius: 12px;
 }
 
 .section-divider {
@@ -101,7 +95,7 @@
 /* FOTO DE PERFIL */
 .foto-perfil-container {
   display: flex;
-  align-items: center;
+  align-items: left;
   gap: 20px;
 }
 
@@ -113,12 +107,12 @@
 }
 
 .foto-perfil-img {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid white;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 3px solid white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .foto-actions {
@@ -144,20 +138,21 @@
 }
 
 .btn-foto-action.upload:hover {
-  background-color: #e5d9ff;
-  color: black;
+  background-color: var(--color-hover);
+  color: white;
   transform: translateY(-2px);
   box-shadow: 0px 4px 12px var(--color-secondary);
 }
 
 .btn-foto-action.delete {
-  background-color: var(--color-light);
+  background-color: white;
   color: #666;
   border: 1px solid #ddd;
 }
 
 .btn-foto-action.delete:hover {
-  background-color: #f0f0f0;
+  background-color: var(--color-light);
+  filter: brightness(0.92);
   color: #dc3545;
   transform: translateY(-2px);
   box-shadow: 0px 4px 12px var(--color-secondary);
@@ -173,19 +168,21 @@
   align-items: center;
   padding: 8px 0;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
 }
 
 .btn-cambiar-contrasena:hover {
-  color: var(--color-secondary);
+  transform: translateY(-2px);
+  color: var(--color-hover);
+  filter: brightness(0.85);
   text-decoration: underline;
 }
 
 .contrasena-fields {
-  background: #f9f9f9;
+  background: white;
   padding: 20px;
   border-radius: 10px;
-  border: 1px solid #eee;
+  border: 1px solid var(--color-bg);
 }
 
 /* GUARDADOS PREVIEW */
@@ -193,16 +190,18 @@
   background: white;
   border-radius: 10px;
   padding: 20px;
-  border: 1px solid #eee;
+  border: 1px solid var(--color-bg);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 15px;
 }
 
 .guardado-item {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  padding: 15px;
+  background: #fafafa;
+  border-radius: 8px;
+  border: 1px solid #eee;
 }
 
 .guardado-label {
@@ -224,25 +223,32 @@
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 15px;
-  margin-top: 30px;
-  padding-top: 20px;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 15px;
   border-top: 1px solid #eee;
 }
 
 .btn-cancelar {
   padding: 10px 25px;
   border-radius: 10px;
-  font-weight: 500;
+  font-weight: bold;
   border: 2px solid #ddd;
   background: white;
-  color: #666;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .btn-cancelar:hover {
+  transform: translateY(-2px);
+  color: red;
+  font-weight: bold;
   border-color: #999;
-  background: #f8f8f8;
+  background-color: var(--color-light);
+  filter: brightness(0.92);
+  box-shadow: 0px 4px 12px var(--color-secondary);
 }
 
 .btn-guardar {
@@ -253,13 +259,17 @@
   color: white;
   border: none;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .btn-guardar:hover {
   transform: translateY(-2px);
-  color: black;
-  background-color: #e5d9ff;
+  color: white;
+  background-color: var(--color-hover);
   box-shadow: 0px 4px 12px var(--color-secondary);
+  border: 1px solid var(--color-primary);
 }
 
 /* RESPONSIVE */
@@ -268,30 +278,30 @@
     padding: 20px;
     max-height: 80vh;
   }
-  
+
   .foto-perfil-container {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .foto-actions {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .btn-foto-action {
     justify-content: center;
     width: 100%;
   }
-  
+
   .guardados-preview {
     grid-template-columns: 1fr;
   }
-  
+
   .modal-actions {
     flex-direction: column;
   }
-  
+
   .btn-cancelar,
   .btn-guardar {
     width: 100%;
