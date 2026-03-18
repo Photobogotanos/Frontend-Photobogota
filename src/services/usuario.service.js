@@ -1,83 +1,33 @@
-import axios from "axios";
-import { registrarUsuarioDemo } from "./usuario.mock";
+import { postRegistrarUsuario } from "@/api/usuarioApi";
+import { registrarUsuarioDemo } from "@/mocks/usuarioMock";
+import { obtenerEstadoServidor } from "@/utils/serverStatus";
 
-// URL base del servidor
-const API_BASE_URL = "http://localhost:8080";
-
-const clienteApi = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 5000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Cache del estado de conexión
-let servidorDisponible = null;
-
-/**
- * Funciones de conexión
- */
-
-const verificarConexionServidor = async () => {
-  try {
-    const respuesta = await clienteApi.get("/actuator/health", { timeout: 3000 });
-    return respuesta.data?.status === "UP";
-  } catch (error) {
-    console.warn("Servidor no disponible, usando datos demo:", error.message);
-    return false;
-  }
-};
-
-export const obtenerEstadoServidor = async () => {
-  if (servidorDisponible === null) {
-    servidorDisponible = await verificarConexionServidor();
-  }
-  return servidorDisponible;
-};
-
-export const actualizarEstadoServidor = async () => {
-  servidorDisponible = await verificarConexionServidor();
-  return servidorDisponible;
-};
-
-/**
- * Registra un nuevo usuario.
- * Si el servidor está disponible, hace la llamada real.
- * Si no, usa el mock demo en memoria.
- *
- * @param {{ email, nombres, apellidos, fechaNacimiento, contrasena }} datos
- * @returns {{ exitoso: boolean, esDemo: boolean, mensaje?: string }}
- */
 export const registrarUsuario = async (datos) => {
-  const { email, nombres, apellidos, nombreUsuario, fechaNacimiento, contrasena } = datos;
+  const isOnline = await obtenerEstadoServidor();
 
-  const disponible = await obtenerEstadoServidor();
-
-  // --- MODO DEMO ---
-  if (!disponible) {
+  if (!isOnline) {
     const resultado = registrarUsuarioDemo(datos);
-    return {
-      exitoso: resultado.exitoso,
-      esDemo: true,
-      mensaje: resultado.mensaje,
-    };
+    return { ...resultado, esDemo: true };
   }
 
-  // --- MODO SERVIDOR ---
-  const body = {
-    nombresCompletos: `${nombres} ${apellidos}`,
-    email,
-    nombreUsuario,
-    contrasena,
-    fechaNacimiento,
-  };
+  try {
+    const body = {
+      nombresCompletos: `${datos.nombres} ${datos.apellidos}`,
+      email: datos.email,
+      nombreUsuario: datos.nombreUsuario,
+      contrasena: datos.contrasena,
+      fechaNacimiento: datos.fechaNacimiento,
+    };
 
-  const respuesta = await clienteApi.post("/api/v1/usuarios/registro-usuario", body);
+    const respuesta = await postRegistrarUsuario(body);
+    return { exitoso: true, esDemo: false, datos: respuesta.data };
+  } catch (error) {
 
-  return {
-    exitoso: true,
-    esDemo: false,
-    datos: respuesta.data,
-  };
+    return {
+      exitoso: false,
+      esDemo: false,
+      mensaje: error.response?.data?.mensaje || "Error al conectar con el servidor."
+    };
+
+  }
 };
