@@ -322,6 +322,10 @@
   color: var(--color-text);
   line-height: 1.5;
 }
+.document-chip:hover {
+  background-color: #f0f0f0 !important;
+  border-color: #ccc !important;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
