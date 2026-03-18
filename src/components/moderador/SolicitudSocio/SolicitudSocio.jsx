@@ -17,8 +17,10 @@ import {
   FiMapPin,
   FiCalendar,
   FiTag,
-  FiFilter,
-} from "react-icons/fi";
+  FiFileText,
+  FiDownload
+}
+from "react-icons/fi";
 import "./SolicitudSocio.css";
 
 // Datos de ejemplo para simular solicitudes
@@ -39,7 +41,7 @@ const solicitudesEjemplo = [
     solicitudId: "SOL-0002",
     fechaEnvio: "13/03/2026",
     razonSocial: "Fotografía Studio Light",
-    propietaria: "María López",
+    propietario: "Maria Lopez",
     email: "maria@studiolight.co",
     telefono: "3123456789",
     categoria: "Estudio Fotográfico",
@@ -63,7 +65,7 @@ const solicitudesEjemplo = [
     solicitudId: "SOL-0004",
     fechaEnvio: "11/03/2026",
     razonSocial: "Sabores Culinarios",
-    propietaria: "Ana Rodríguez",
+    propietario: "Ana Rodríguez",
     email: "ana@sabores.com",
     telefono: "3201234567",
     categoria: "Restaurante",
@@ -140,6 +142,8 @@ export default function SolicitudSocio() {
     alert(`Solicitud ${solicitudId} rechazada`);
   };
 
+  
+
   const getBadgeVariant = (estado) => {
     switch (estado) {
       case "pendiente":
@@ -155,6 +159,8 @@ export default function SolicitudSocio() {
 
   const getEstadoLabel = (estado) => {
     switch (estado) {
+      case "todos":
+        return "Todos";
       case "pendiente":
         return "Pendiente";
       case "aprobada":
@@ -179,6 +185,9 @@ export default function SolicitudSocio() {
   // Manejar cambio de tab para filtrar por estado
   const handleTabSelect = (eventKey) => {
     switch (eventKey) {
+      case "Todos":
+        setFiltroEstado("todos");
+        break;
       case "Pendiente":
         setFiltroEstado("pendiente");
         break;
@@ -220,13 +229,14 @@ return (
 
       <Container className="nav-container p-0">
         <Tabs 
-          activeKey={filtroEstado === "pendiente" ? "Pendiente" : filtroEstado === "aprobada" ? "Aprobadas" : filtroEstado === "rechazada" ? "Rechazadas" : ""}
+          activeKey={filtroEstado === "pendiente" ? "Pendiente" : filtroEstado === "aprobada" ? "Aprobadas" : filtroEstado === "rechazada" ? "Rechazadas" : filtroEstado === "todos" ? "Todos" : ""}
           onSelect={handleTabSelect}
           id="custom-tabs"
-          className="mb-4 fondo-tab rounded-pill p-1 shadow-sm"
+          className="mb-4 fondo-tab rounded-pill p-1 shadow"
           variant="pills" 
           fill
         >
+          <Tab eventKey="Todos" title={`Todas (${solicitudes.length})`} />
           <Tab eventKey="Pendiente" title={`Pendientes (${pendientesCount})`} />
           <Tab eventKey="Aprobadas" title={`Aprobadas (${aprobadasCount})`} />
           <Tab eventKey="Rechazadas" title={`Rechazadas (${rechazadasCount})`} />
@@ -245,19 +255,6 @@ return (
             onChange={(e) => setBusqueda(e.target.value)}
             className="search-input"
           />
-        </div>
-        <div className="filter-wrapper">
-          <FiFilter className="filter-icon" />
-          <Form.Select
-            value={filtroEstado}
-            onChange={(e) => setFiltroEstado(e.target.value)}
-            className="filter-select"
-          >
-            <option value="todos">Todos los estados</option>
-            <option value="pendiente">Pendientes</option>
-            <option value="aprobada">Aprobadas</option>
-            <option value="rechazada">Rechazadas</option>
-          </Form.Select>
         </div>
       </div>
 
@@ -346,6 +343,40 @@ return (
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+      <div className="detalle-section mt-4">
+        <h4>Documentación Adjunta</h4>
+        <div className="d-flex flex-wrap gap-2 mt-2">
+        {solicitudSeleccionada?.documentos?.map((doc, index) => (
+        <div 
+        key={index}
+        className="d-inline-flex align-items-center px-3 py-2"
+        style={{
+          border: '1px solid #e0e0e0',
+          borderRadius: '50px', // Esto le da el efecto redondeado de la imagen
+          backgroundColor: '#fff',
+          cursor: 'pointer',
+          transition: 'background-color 0.2s'
+        }}
+        >
+        <FiFileText className="me-2 text-muted" />
+        <span 
+          style={{ fontSize: '0.9rem', fontWeight: '500', color: '#333' }}
+          onClick={() => window.open(doc.url, '_blank')} // Abre el PDF
+        >
+          {doc.nombre || 'cedula.pdf'}
+        </span>
+        <a 
+          href={doc.url} 
+          download 
+          className="ms-3 text-dark d-flex align-items-center"
+          style={{ textDecoration: 'none' }}
+        >
+          <FiDownload style={{ fontSize: '1.1rem' }} />
+        </a>
+        </div>
+        ))}
+          </div>
+            </div>
           {solicitudSeleccionada && (
             <div className="solicitud-detalle">
               <div className="detalle-section">
