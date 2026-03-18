@@ -1,0 +1,13 @@
+.moderador-solicitudes {
+  background-color: var(--color-bg);
+  min-height: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.moderador-solicitudes .container {
+  max-width: 95%;
+  width: 100%;
+}

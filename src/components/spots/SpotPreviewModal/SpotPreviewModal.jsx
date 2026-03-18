@@ -5,71 +5,76 @@ import { useNavigate } from "react-router-dom";
 import { FaMapMarkerAlt, FaTag, FaStar, FaHeart, FaCamera } from "react-icons/fa";
 import "./SpotPreviewModal.css";
 
-const SpotPreviewModal = ({ show, onHide, lugar }) => {
+const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
   const navigate = useNavigate();
+
+  // Aceptar datos del spot desde spotData o lugar (compatibilidad hacia atrás)
+  const data = spotData || lugar;
 
   const handleIr = () => {
     onHide();
-    navigate(`/spot/${lugar.id}`);
+    if (data?.id) {
+      navigate(`/spot/${data.id}`);
+    }
   };
 
-  if (!lugar) return null;
+  if (!data) return null;
 
   return (
     <Modal show={show} onHide={onHide} centered className="lugar-preview-modal">
       <Modal.Body className="p-0">
         <div className="preview-image-container">
           <img
-            src={lugar.imagen}
-            alt={lugar.nombre}
+            src={data.imagen}
+            alt={data.nombre}
             className="preview-image"
           />
         </div>
         <div className="preview-content">
-          <h3 className="preview-title">{lugar.nombre}</h3>
+          <h3 className="preview-title">{data.nombre}</h3>
           <p className="preview-ubicacion">
             <FaMapMarkerAlt className="preview-icon" />
-            {lugar.direccion}
+            {data.direccion}
           </p>
           
           <div className="preview-badges">
-            {lugar.categoria && (
+            {data.categoria && (
               <span className="preview-badge-categoria">
                 <FaTag className="preview-badge-icon" />
-                {lugar.categoria}
+                {data.categoria}
               </span>
             )}
-            {lugar.localidad && (
+            {data.localidad && (
               <span className="preview-badge-localidad">
                 <FaMapMarkerAlt className="preview-badge-icon" />
-                {lugar.localidad}
+                {data.localidad}
               </span>
             )}
           </div>
 
           <div className="preview-rating">
             <FaStar className="preview-star" />
-            <span className="rating-number">{lugar.rating}</span>
+            <span className="rating-number">{data.rating}</span>
             <span className="reviews-count">
-              ({lugar.totalResenas} reseñas)
+              ({data.totalResenas} reseñas)
             </span>
           </div>
 
-          {lugar.descripcion && (
-            <p className="preview-descripcion">{lugar.descripcion}</p>
+          {data.descripcion && (
+            <p className="preview-descripcion">{data.descripcion}</p>
           )}
 
-          {lugar.recomendacion && (
+          {data.recomendacion && (
             <div className="preview-recomendacion">
               <h5><FaHeart className="preview-section-icon" /> ¿Por qué recomendarlo?</h5>
-              <p>{lugar.recomendacion}</p>
+              <p>{data.recomendacion}</p>
             </div>
           )}
 
-          {lugar.tipsFoto && (
+          {data.tipsFoto && (
             <div className="preview-tips">
               <h5><FaCamera className="preview-section-icon" /> Tips de fotografía</h5>
-              <p>{lugar.tipsFoto}</p>
+              <p>{data.tipsFoto}</p>
             </div>
           )}
         </div>

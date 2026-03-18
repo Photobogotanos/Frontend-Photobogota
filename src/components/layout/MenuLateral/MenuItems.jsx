@@ -82,10 +82,10 @@ export default function MenuItems({ rol, cerrar }) {
           />
           <SidebarLink
             icon={<FaFileAlt />}
-            texto="Solicitudes de Socios"
-            to="/solicitudes-socios"
+            texto="Revisar Solicitudes de Socios"
+            to="/moderador/revision-solicitudes"
             onClick={cerrar}
-            activo={esRutaActiva("/solicitudes-socios")}
+            activo={esRutaActiva("/moderador/revision-solicitudes") || esRutaActiva("/solicitudes-socios")}
           />
           <SidebarLink
             icon={<FaFileAlt />}
@@ -170,10 +170,10 @@ export default function MenuItems({ rol, cerrar }) {
       {rol === "usuario" && (
         <SidebarLink
           icon={<FaHandshake />}
-          texto="¿Quieres ser socio?"
-          to="/solicitud-socio"
+          texto="Ser Socio"
+          to="/solicitud-socio/formulario"
           onClick={cerrar}
-          activo={esRutaActiva("/solicitud-socio")}
+          activo={esRutaActiva("/solicitud-socio/formulario") || esRutaActiva("/solicitud-socio")}
         />
       )}
     </>

@@ -1,75 +1,232 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import Select from "react-select";
 import {
   FaMapMarkerAlt,
   FaCamera,
   FaInfoCircle,
   FaHeart,
-  FaCommentDots,
-  FaShare,
-  FaRegHeart,
-  FaRegBookmark,
-  FaBookmark,
-  FaChevronLeft,
-  FaChevronRight,
-  FaPaperPlane,
-  FaEye,
+  FaComments,
   FaStar,
   FaRegStar,
   FaImages,
   FaMap,
-  FaClock,
-  FaComments,
-  FaPencilAlt,
   FaTag,
+  FaPaperPlane,
+  FaEye,
 } from "react-icons/fa";
 import "./CreacionSpotForm.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import Modal from "react-bootstrap/Modal";
 import BackButton from "@/components/common/BackButton";
+import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
+import SpotPreviewModal from "../SpotPreviewModal/SpotPreviewModal";
 
+// Reducer para agrupar estados relacionados del formulario
+const spotFormReducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_IMAGENES':
+      return { ...state, imagenes: action.payload };
+    case 'SET_PREVIEWS':
+      return { ...state, previews: action.payload };
+    case 'SET_INDICE_IMAGEN':
+      return { ...state, indiceImagenActual: action.payload };
+    case 'SET_NOMBRE_LUGAR':
+      return { ...state, nombreLugar: action.payload };
+    case 'SET_DIRECCION':
+      return { ...state, direccion: action.payload };
+    case 'SET_DESCRIPCION':
+      return { ...state, descripcionImagen: action.payload };
+    case 'SET_RECOMENDACION':
+      return { ...state, recomendacion: action.payload };
+    case 'SET_TIPS_FOTO':
+      return { ...state, tipsFoto: action.payload };
+    case 'SET_CATEGORIA':
+      return { ...state, categoria: action.payload };
+    case 'SET_LOCALIDAD':
+      return { ...state, localidad: action.payload };
+    case 'SET_SHOW_MODAL':
+      return { ...state, showModal: action.payload };
+    case 'SET_RESENA_RATING':
+      return { ...state, nuevaResena: { ...state.nuevaResena, rating: action.payload } };
+    case 'SET_HOVER_RATING':
+      return { ...state, hoverRating: action.payload };
+    default:
+      return state;
+  }
+};
+
+const initialState = {
+  imagenes: [],
+  previews: [],
+  indiceImagenActual: 0,
+  nombreLugar: "",
+  direccion: "",
+  descripcionImagen: "",
+  recomendacion: "",
+  tipsFoto: "",
+  categoria: null,
+  localidad: null,
+  showModal: false,
+  nuevaResena: { rating: 0, comentario: "" },
+  hoverRating: 0,
+};
+
+const categorias = [
+  { value: "naturaleza", label: "Naturaleza" },
+  { value: "urbano", label: "Urbano" },
+  { value: "historico", label: "Histórico" },
+  { value: "gastronomia", label: "Gastronomía" },
+];
+
+const localidades = [
+  { value: "chapinero", label: "Chapinero" },
+  { value: "usaquen", label: "Usaquén" },
+  { value: "suba", label: "Suba" },
+  { value: "kennedy", label: "Kennedy" },
+];
+
+// Componente: Campo de formulario básico
+const FormField = ({ label, htmlFor, required, icon, children }) => (
+  <Col xs={12}>
+    <label className="form-label" htmlFor={htmlFor}>
+      {icon && <span className="me-2">{icon}</span>}
+      {label}
+      {required && <RequiredMark />}
+    </label>
+    {children}
+  </Col>
+);
+
+// Componente: Selector de imagen
+const ImageUploader = ({ previews, onImageChange }) => (
+  <>
+    <div className="image-upload rounded-4 mb-3">
+      {previews.length > 0 ? (
+        <img src={previews[0]} alt="Preview primera" className="img-preview" />
+      ) : (
+        <span className="text-muted">Previsualización de la imagen</span>
+      )}
+    </div>
+    <input
+      type="file"
+      accept="image/*"
+      multiple
+      className="form-control rounded-pill mb-3"
+      onChange={onImageChange}
+      id="foto-lugar"
+    />
+  </>
+);
+
+// Componente: Selector de ubicación
+const LocationSelector = ({ direccion, onDireccionChange, onUseCurrentLocation }) => (
+  <div className="d-flex gap-2">
+    <input
+      id="ubicacion-lugar"
+      type="text"
+      className="form-control rounded-pill"
+      placeholder="Dirección o referencia"
+      value={direccion}
+      onChange={(e) => onDireccionChange(e.target.value)}
+    />
+    <button
+      type="button"
+      className="btn-primary-custom rounded-pill px-4"
+      onClick={onUseCurrentLocation}
+      aria-label="Obtener ubicación actual"
+    >
+      <FaMapMarkerAlt />
+    </button>
+  </div>
+);
+
+// Componente: Selectores de categoría y localidad
+const CategorySelectors = ({ categoria, localidad, onCategoriaChange, onLocalidadChange }) => (
+  <Row className="g-3 mb-3">
+    <Col xs={12} md={6}>
+      <label className="form-label" htmlFor="categoria-spot">
+        Categoría <RequiredMark />
+      </label>
+      <Select
+        id="categoria-spot"
+        options={categorias}
+        classNamePrefix="react-select"
+        value={categoria}
+        onChange={onCategoriaChange}
+        placeholder="Seleccionar..."
+      />
+    </Col>
+    <Col xs={12} md={6}>
+      <label className="form-label" htmlFor="localidad-spot">
+        Localidad <RequiredMark />
+      </label>
+      <Select
+        id="localidad-spot"
+        options={localidades}
+        classNamePrefix="react-select"
+        value={localidad}
+        onChange={onLocalidadChange}
+        placeholder="Seleccionar..."
+      />
+    </Col>
+  </Row>
+);
+
+// Componente: Área de texto del formulario
+const TextAreaField = ({ label, htmlFor, required, icon, value, onChange, rows, placeholder }) => (
+  <div className="mb-2">
+    <label className="form-label" htmlFor={htmlFor}>
+      {icon && <span className="me-2">{icon}</span>}
+      {label}
+      {required && <RequiredMark />}
+    </label>
+    <textarea
+      id={htmlFor}
+      className="form-control rounded-4"
+      rows={rows}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  </div>
+);
+
+// Componente: Estrellas interactivas para rating
+const StarRating = ({ rating, hoverRating, onRate, onHover, onLeave }) => (
+  <div className="star-rating">
+    {[1, 2, 3, 4, 5].map((starValue) => {
+      const isFilled = starValue <= (hoverRating || rating);
+      return (
+        <span
+          key={starValue}
+          className="star-icon"
+          style={{ cursor: "pointer" }}
+          onClick={() => onRate(starValue)}
+          onMouseEnter={() => onHover(starValue)}
+          onMouseLeave={onLeave}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onRate(starValue) }}
+          aria-label={`Calificar con ${starValue} estrellas`}
+        >
+          {isFilled ? <FaStar className="star-filled" /> : <FaRegStar className="star-empty" />}
+        </span>
+      );
+    })}
+  </div>
+);
+
+// Componente principal del formulario
 export default function CrearSpot() {
-  const [imagenes, setImagenes] = useState([]);
-  const [previews, setPreviews] = useState([]);
-  const [indiceImagenActual, setIndiceImagenActual] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-
-  // Estados del formulario
-  const [nombreLugar, setNombreLugar] = useState("");
-  const [direccion, setDireccion] = useState("");
-  const [descripcionImagen, setDescripcionImagen] = useState("");
-  const [recomendacion, setRecomendacion] = useState("");
-  const [tipsFoto, setTipsFoto] = useState("");
-  const [categoria, setCategoria] = useState(null);
-  const [localidad, setLocalidad] = useState(null);
-
-  // Estados para la previsualización del spot (como en SpotPage)
-  const [nuevaResena, setNuevaResena] = useState({ rating: 0, comentario: "" });
-  const [hoverRating, setHoverRating] = useState(0);
-
-  const categorias = [
-    { value: "naturaleza", label: "Naturaleza" },
-    { value: "urbano", label: "Urbano" },
-    { value: "historico", label: "Histórico" },
-    { value: "gastronomia", label: "Gastronomía" },
-  ];
-
-  const localidades = [
-    { value: "chapinero", label: "Chapinero" },
-    { value: "usaquen", label: "Usaquén" },
-    { value: "suba", label: "Suba" },
-    { value: "kennedy", label: "Kennedy" },
-  ];
+  const [state, dispatch] = useReducer(spotFormReducer, initialState);
 
   const handleImagen = (e) => {
     const files = Array.from(e.target.files);
     const newPreviews = files.map((file) => URL.createObjectURL(file));
-    setImagenes(files);
-    setPreviews(newPreviews);
-    setIndiceImagenActual(0);
+    dispatch({ type: 'SET_IMAGENES', payload: files });
+    dispatch({ type: 'SET_PREVIEWS', payload: newPreviews });
+    dispatch({ type: 'SET_INDICE_IMAGEN', payload: 0 });
   };
 
   const usarUbicacionActual = () => {
@@ -82,62 +239,25 @@ export default function CrearSpot() {
       (pos) => {
         const { latitude, longitude } = pos.coords;
         console.log("Ubicación actual (Bogotá):", latitude, longitude);
-        // Aquí podrías hacer reverse geocoding si lo deseas en el futuro
       },
       () => alert("No se pudo obtener tu ubicación")
     );
   };
 
-  // Datos para la previsualización (como en SpotPage)
+  const tieneVariasImagenes = state.previews.length > 1;
+
   const spotData = {
-    nombre: nombreLugar || "Nombre del lugar",
-    direccion: direccion || "Dirección del lugar",
-    imagen: previews[0] || "/images/spots/spot-demo.jpg",
+    nombre: state.nombreLugar || "Nombre del lugar",
+    direccion: state.direccion || "Dirección del lugar",
+    imagen: state.previews[0] || "/images/spots/spot-demo.jpg",
     rating: 0,
     totalResenas: 0,
-    categoria: categoria?.label || "Categoría",
-    localidad: localidad?.label || null,
-    descripcion: descripcionImagen || "Descripción del lugar...",
-    recomendacion: recomendacion || null,
-    tipsFoto: tipsFoto || null,
+    categoria: state.categoria?.label || "Categoría",
+    localidad: state.localidad?.label || null,
+    descripcion: state.descripcionImagen || "Descripción del lugar...",
+    recomendacion: state.recomendacion || null,
+    tipsFoto: state.tipsFoto || null,
     resenas: [],
-  };
-
-  const tieneVariasImagenes = previews.length > 1;
-
-  // Función para renderizar estrellas (igual que en SpotContent)
-  const renderStars = (rating, isInteractive = false) => {
-    return [1, 2, 3, 4, 5].map((starValue) => {
-      const isFilled = isInteractive
-        ? starValue <= (hoverRating || rating)
-        : starValue <= rating;
-      return (
-        <span
-          key={starValue}
-          className="star-icon"
-          style={{ cursor: isInteractive ? "pointer" : "default" }}
-          onClick={isInteractive ? () => setNuevaResena({ ...nuevaResena, rating: starValue }) : undefined}
-          onMouseEnter={isInteractive ? () => setHoverRating(starValue) : undefined}
-          onMouseLeave={isInteractive ? () => setHoverRating(0) : undefined}
-        >
-          {isFilled ? <FaStar className="star-filled" /> : <FaRegStar className="star-empty" />}
-        </span>
-      );
-    });
-  };
-
-  const imagenAnterior = (e) => {
-    e.stopPropagation();
-    setIndiceImagenActual((prev) =>
-      prev === 0 ? previews.length - 1 : prev - 1
-    );
-  };
-
-  const imagenSiguiente = (e) => {
-    e.stopPropagation();
-    setIndiceImagenActual((prev) =>
-      prev === previews.length - 1 ? 0 : prev + 1
-    );
   };
 
   return (
@@ -146,184 +266,76 @@ export default function CrearSpot() {
         <h4 className="titulo-crear-publicacion">Crear nuevo spot</h4>
 
         <Row className="g-4">
-          {/* Formulario principal */}
           <Col xs={12}>
             {/* Upload de imagen */}
-            <label className="form-label fw-medium">
+            <label className="form-label fw-medium" htmlFor="foto-lugar">
               Foto del lugar <FaCamera className="me-2" />
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span className="text-danger"> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </label>
-
-            <div className="image-upload rounded-4 mb-3">
-              {previews.length > 0 ? (
-                <img
-                  src={previews[0]}
-                  alt="Preview primera"
-                  className="img-preview"
-                />
-              ) : (
-                <span className="text-muted">
-                  Previsualización de la imagen
-                </span>
-              )}
-            </div>
-
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              className="form-control rounded-pill mb-3"
-              onChange={handleImagen}
-            />
+            <ImageUploader previews={state.previews} onImageChange={handleImagen} />
 
             <Row className="g-3 mb-2">
-              <Col xs={12}>
-                <label className="form-label">
-                  Nombre del lugar
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                  >
-                    <span className="text-danger"> *</span>
-                  </OverlayTrigger>
-                </label>
+              <FormField label="Nombre del lugar" htmlFor="nombre-lugar" required>
                 <input
+                  id="nombre-lugar"
                   type="text"
                   className="form-control rounded-pill"
                   placeholder="Ej: Mirador de Monserrate"
-                  value={nombreLugar}
-                  onChange={(e) => setNombreLugar(e.target.value)}
+                  value={state.nombreLugar}
+                  onChange={(e) => dispatch({ type: 'SET_NOMBRE_LUGAR', payload: e.target.value })}
                 />
-              </Col>
+              </FormField>
             </Row>
 
             <Row className="g-3 mb-2">
-              <Col xs={12}>
-                <label className="form-label">
-                  Ubicación <FaMapMarkerAlt className="me-2" />
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                  >
-                    <span className="text-danger"> *</span>
-                  </OverlayTrigger>
-                </label>
-                <div className="d-flex gap-2">
-                  <input
-                    type="text"
-                    className="form-control rounded-pill"
-                    placeholder="Dirección o referencia"
-                    value={direccion}
-                    onChange={(e) => setDireccion(e.target.value)}
-                  />
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip>Obtener ubicación actual</Tooltip>}
-                  >
-                    <button
-                      type="button"
-                      className="btn-primary-custom rounded-pill px-4"
-                      onClick={usarUbicacionActual}
-                    >
-                      <FaMapMarkerAlt className="me-2" />
-                    </button>
-                  </OverlayTrigger>
-                </div>
-              </Col>
+              <FormField label="Ubicación" htmlFor="ubicacion-lugar" required icon={<FaMapMarkerAlt />}>
+                <LocationSelector
+                  direccion={state.direccion}
+                  onDireccionChange={(val) => dispatch({ type: 'SET_DIRECCION', payload: val })}
+                  onUseCurrentLocation={usarUbicacionActual}
+                />
+              </FormField>
             </Row>
 
-            <Row className="g-3 mb-3">
-              <Col xs={12} md={6}>
-                <label className="form-label">
-                  Categoría
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                  >
-                    <span className="text-danger"> *</span>
-                  </OverlayTrigger>
-                </label>
-                <Select
-                  options={categorias}
-                  classNamePrefix="react-select"
-                  value={categoria}
-                  onChange={setCategoria}
-                  placeholder="Seleccionar..."
-                />
-              </Col>
-              <Col xs={12} md={6}>
-                <label className="form-label">
-                  Localidad
-                  <OverlayTrigger
-                    placement="right"
-                    overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                  >
-                    <span className="text-danger"> *</span>
-                  </OverlayTrigger>
-                </label>
-                <Select
-                  options={localidades}
-                  classNamePrefix="react-select"
-                  value={localidad}
-                  onChange={setLocalidad}
-                  placeholder="Seleccionar..."
-                />
-              </Col>
-            </Row>
+            <CategorySelectors
+              categoria={state.categoria}
+              localidad={state.localidad}
+              onCategoriaChange={(val) => dispatch({ type: 'SET_CATEGORIA', payload: val })}
+              onLocalidadChange={(val) => dispatch({ type: 'SET_LOCALIDAD', payload: val })}
+            />
 
-            <div className="mb-2">
-              <label className="form-label">
-                Descripción de la(s) imagen(es)
-                <OverlayTrigger
-                  placement="right"
-                  overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                >
-                  <span className="text-danger"> *</span>
-                </OverlayTrigger>
-              </label>
-              <textarea
-                className="form-control rounded-4"
-                rows="1"
-                placeholder="Describe lo que se ve en la foto"
-                value={descripcionImagen}
-                onChange={(e) => setDescripcionImagen(e.target.value)}
-              />
-            </div>
+            <TextAreaField
+              label="Descripción de la(s) imagen(es)"
+              htmlFor="descripcion-imagen"
+              required
+              value={state.descripcionImagen}
+              onChange={(val) => dispatch({ type: 'SET_DESCRIPCION', payload: val })}
+              rows={1}
+              placeholder="Describe lo que se ve en la foto"
+            />
 
-            <div className="mb-2">
-              <label className="form-label">
-                ¿Por qué recomiendas este lugar?
-                <OverlayTrigger
-                  placement="right"
-                  overlay={<Tooltip>Campo obligatorio</Tooltip>}
-                >
-                  <span className="text-danger"> *</span>
-                </OverlayTrigger>
-              </label>
-              <textarea
-                className="form-control rounded-4"
-                rows="3"
-                placeholder="Cuéntanos tu experiencia"
-                value={recomendacion}
-                onChange={(e) => setRecomendacion(e.target.value)}
-              />
-            </div>
+            <TextAreaField
+              label="¿Por qué recomiendas este lugar?"
+              htmlFor="recomendacion-lugar"
+              required
+              icon={<FaHeart />}
+              value={state.recomendacion}
+              onChange={(val) => dispatch({ type: 'SET_RECOMENDACION', payload: val })}
+              rows={3}
+              placeholder="Cuéntanos tu experiencia"
+            />
 
             <div className="mb-3">
-              <label className="form-label">
+              <label className="form-label" htmlFor="tips-foto">
                 Tips de fotografía (opcional) <FaInfoCircle className="me-2" />
               </label>
               <textarea
+                id="tips-foto"
                 className="form-control rounded-4"
-                rows="1"
+                rows={1}
                 placeholder="Hora ideal, lente, ángulo, etc."
-                value={tipsFoto}
-                onChange={(e) => setTipsFoto(e.target.value)}
+                value={state.tipsFoto}
+                onChange={(e) => dispatch({ type: 'SET_TIPS_FOTO', payload: e.target.value })}
               />
             </div>
           </Col>
@@ -334,136 +346,24 @@ export default function CrearSpot() {
           <button
             type="button"
             className="btn-preview-modern rounded-pill px-4 py-2"
-            onClick={() => setShowModal(true)}
+            onClick={() => dispatch({ type: 'SET_SHOW_MODAL', payload: true })}
           >
             <FaEye />
             Previsualizar Spot
           </button>
 
-          <OverlayTrigger
-            placement="top"
-            overlay={<Tooltip>Crear publicación</Tooltip>}
-          >
-            <button className="btn-primary-custom rounded-pill px-5 py-2">
-              <FaPaperPlane className="me-2" /> Publicart
-            </button>
-          </OverlayTrigger>
+          <button className="btn-primary-custom rounded-pill px-5 py-2" type="button">
+            <FaPaperPlane className="me-2" /> Publicar
+          </button>
         </div>
 
-        {/* Modal de previsualización estilo SpotPage */}
-        <Modal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          size="xl"
-          centered
-          className="modal-preview-spot"
-        >
-          <Modal.Header closeButton className="border-0 pb-0">
-            <Modal.Title className="fw-bold">
-              Previsualización del Spot
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="pt-2">
-            <div className="lugar-content-wrapper">
-              {/* Imagen principal */}
-              <div className="lugar-imagen-principal">
-                {previews.length > 0 ? (
-                  <img src={previews[0]} alt={nombreLugar || "Preview"} />
-                ) : (
-                  <div className="d-flex align-items-center justify-content-center bg-light" style={{ height: "100%", minHeight: "300px" }}>
-                    <span className="text-muted">Sube una imagen para ver la previsualización</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Información principal */}
-              <div className="lugar-info-container">
-                <h1 className="lugar-nombre">
-                  {nombreLugar || "Nombre del lugar"}
-                </h1>
-                <p className="lugar-direccion">
-                  <FaMapMarkerAlt className="location-icon" />
-                  {direccion || "Dirección del lugar"}
-                </p>
-
-                <div className="lugar-badges">
-                  <span className="badge-categoria">
-                    <FaTag className="category-icon" />
-                    {categoria?.label || "Categoría"}
-                  </span>
-                  {localidad && (
-                    <span className="badge-localidad ms-2">
-                      <FaMapMarkerAlt className="category-icon" />
-                      {localidad.label}
-                    </span>
-                  )}
-                  <div className="lugar-rating-badge">
-                    <FaStar className="star-icon" />
-                    <span className="rating-text">0.0</span>
-                    <span className="reviews-text">(0 reseñas)</span>
-                  </div>
-                </div>
-
-                <div className="lugar-acciones">
-                  <button className="btn-ver-mapa">
-                    <FaMap className="btn-icon" />
-                    Ver en mapa
-                  </button>
-                  <button className="btn-galeria">
-                    <FaImages className="btn-icon" />
-                    Galería
-                  </button>
-                </div>
-
-                {/* Descripción / Sobre este lugar */}
-                <div className="lugar-descripcion">
-                  <h3>
-                    <FaInfoCircle className="section-icon" />
-                    Sobre este lugar
-                  </h3>
-                  <p>{descripcionImagen || "Descripción del lugar..."}</p>
-                </div>
-
-                {/* Recomendación del usuario */}
-                {recomendacion && (
-                  <div className="lugar-recomendacion mt-3">
-                    <h3>
-                      <FaHeart className="section-icon" />
-                      ¿Por qué recomendarlo?
-                    </h3>
-                    <p>{recomendacion}</p>
-                  </div>
-                )}
-
-                {/* Tips de fotografía */}
-                {tipsFoto && (
-                  <div className="lugar-tips mt-3">
-                    <h3>
-                      <FaCamera className="section-icon" />
-                      Tips de fotografía
-                    </h3>
-                    <p>{tipsFoto}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Sección de Reseñas */}
-              <div className="resenas-container">
-                <h2 className="resenas-titulo">
-                  <FaComments className="section-icon" />
-                  Reseñas
-                </h2>
-
-                {/* Mensaje cuando no hay reseñas */}
-                <div className="no-resenas">
-                  <FaComments className="no-resenas-icon" />
-                  <p>Aún no hay reseñas para este lugar.</p>
-                  <p className="text-muted">¡Sé el primero en compartir tu experiencia!</p>
-                </div>
-              </div>
-            </div>
-          </Modal.Body>
-        </Modal>
+        {/* Modal de previsualización */}
+        <SpotPreviewModal
+          show={state.showModal}
+          onHide={() => dispatch({ type: 'SET_SHOW_MODAL', payload: false })}
+          spotData={spotData}
+          previews={state.previews}
+        />
       </div>
     </div>
   );

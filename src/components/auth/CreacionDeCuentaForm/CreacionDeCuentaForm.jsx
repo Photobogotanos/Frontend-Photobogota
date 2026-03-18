@@ -3,11 +3,11 @@ import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 import Form from "react-bootstrap/Form";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import "./CreacionDeCuentaForm.css";
+import { registrarUsuario } from "@/services/usuario.service";
+import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 // Iconos
 import {
@@ -15,7 +15,7 @@ import {
   MdOutlineEmail,
   MdDateRange,
 } from "react-icons/md";
-import { FaLock, FaEye, FaEyeSlash, FaCheck, FaTimes } from "react-icons/fa";
+import { FaLock, FaEye, FaEyeSlash, FaCheck, FaTimes, FaUser } from "react-icons/fa";
 import { IoIosSend } from "react-icons/io";
 import BackButton from "../../common/BackButton";
 
@@ -26,6 +26,7 @@ function FormularioCreacion() {
   const [email, setEmail] = useState("");
   const [nombres, setNombres] = useState("");
   const [apellidos, setApellidos] = useState("");
+  const [nombreUsuario, setNombreUsuario] = useState("");
   const [fecha, setFecha] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
@@ -70,11 +71,11 @@ function FormularioCreacion() {
     // Calcular fortaleza de contraseña
   };
 
-  const validarFormulario = (e) => {
+  const validarFormulario = async (e) => {
     e.preventDefault();
 
     // Validación de campos vacíos
-    if (!email || !nombres || !apellidos || !fecha || !password || !password2) {
+    if (!email || !nombres || !apellidos || !nombreUsuario || !fecha || !password || !password2) {
       Swal.fire({
         icon: "error",
         title: "Campos incompletos",
@@ -115,14 +116,50 @@ function FormularioCreacion() {
       return;
     }
 
-    // Registro exitoso
-    Swal.fire({
-      icon: "success",
-      title: "Registro exitoso",
-      text: "Tu cuenta ha sido creada correctamente.",
-    }).then(() => {
-      navegar("/login");
-    });
+    try {
+      // Usar el servicio de autenticación
+      const resultado = await registrarUsuario({
+        email,
+        nombres,
+        apellidos,
+        nombreUsuario,
+        fechaNacimiento: fecha,
+        contrasena: password,
+      });
+
+      if (resultado.exitoso) {
+        // Mostrar mensaje según el modo
+        if (resultado.esDemo) {
+          Swal.fire({
+            icon: "success",
+            title: "Registro exitoso (Demo)",
+            text: resultado.mensaje,
+          }).then(() => {
+            navegar("/login");
+          });
+        } else {
+          Swal.fire({
+            icon: "success",
+            title: "Registro exitoso",
+            text: "Tu cuenta ha sido creada correctamente.",
+          }).then(() => {
+            navegar("/login");
+          });
+        }
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error en el registro",
+          text: resultado.mensaje || "No se pudo crear la cuenta. Por favor intenta de nuevo.",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un error inesperado. Por favor intenta de nuevo.",
+      });
+    }
   };
 
   // RENDER
@@ -139,12 +176,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <MdOutlineEmail />
               Email
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
             <Form.Control
               type="email"
@@ -159,12 +191,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <MdDriveFileRenameOutline />
               Nombres
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
             <Form.Control
               className="rounded-pill input-without-focus"
@@ -178,12 +205,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <MdDriveFileRenameOutline />
               Apellidos
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
             <Form.Control
               className="rounded-pill input-without-focus"
@@ -192,17 +214,26 @@ function FormularioCreacion() {
             />
           </Form.Group>
 
+          {/* Nombre de usuario */}
+          <Form.Group className="mb-3">
+            <Form.Label className="creacion-formulario-label">
+              <FaUser />
+              Nombre de usuario
+              <RequiredMark />
+            </Form.Label>
+            <Form.Control
+              className="rounded-pill input-without-focus"
+              value={nombreUsuario}
+              onChange={(e) => setNombreUsuario(e.target.value)}
+            />
+          </Form.Group>
+
           {/* Fecha de nacimiento */}
           <Form.Group className="mb-4">
             <Form.Label className="creacion-formulario-label">
               <MdDateRange />
               Fecha de nacimiento
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
             <Flatpickr
               options={{
@@ -230,12 +261,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <FaLock />
               Contraseña
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
 
             <div className="input-icon-container">
@@ -261,12 +287,7 @@ function FormularioCreacion() {
             <Form.Label className="creacion-formulario-label">
               <FaLock />
               Confirmación de la contraseña
-              <OverlayTrigger
-                placement="right"
-                overlay={<Tooltip>Campo obligatorio</Tooltip>}
-              >
-                <span> *</span>
-              </OverlayTrigger>
+              <RequiredMark />
             </Form.Label>
 
             <div className="input-icon-container">

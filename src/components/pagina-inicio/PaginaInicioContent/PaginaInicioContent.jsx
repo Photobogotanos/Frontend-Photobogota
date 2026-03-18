@@ -12,7 +12,7 @@ import { IoPin } from "react-icons/io5";
 import { FaRegHeart, FaTimes, FaLock } from "react-icons/fa";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { motion } from "framer-motion";
+import { motion, LazyMotion, domAnimation } from "framer-motion";
 import Modal from "react-bootstrap/Modal";
 import { useState } from "react";
 import { FaCamera, FaStar, FaHeart, FaPlus } from "react-icons/fa";
@@ -114,18 +114,20 @@ export default function PaginaInicioContent() {
       <Row className="g-4">
         {[
           {
+            id: "inspo-1",
             img: inspo1,
             user: "@sebass.ye",
             loc: "Cl. 24 #69a-59, Torre Colpatria",
           },
           {
+            id: "inspo-2",
             img: centro,
             user: "@vxc_xerg",
             loc: "Cra. 4 #13-19, Museo del oro",
           },
-          { img: inspo3, user: "@void0bits", loc: "Cl. 19 #2a-10, Las aguas" },
+          { id: "inspo-3", img: inspo3, user: "@void0bits", loc: "Cl. 19 #2a-10, Las aguas" },
         ].map((item, i) => (
-          <Col xs={12} md={6} lg={4} key={i}>
+          <Col xs={12} md={6} lg={4} key={item.id}>
             <motion.div
               initial={{ y: 60, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -155,19 +157,22 @@ export default function PaginaInicioContent() {
       <Row className="g-4">
         {[
           {
+            id: "review-1",
             user: "@sxbxxs.r",
             text: "La mejor app para descubrir spots fotográficos en Bogotá. ¡Insuperable!",
           },
           {
+            id: "review-2",
             user: "@dieg.oamt",
             text: "Gracias a PhotoBogotá encontré lugares que ni sabía que existían. 100% recomendada.",
           },
           {
+            id: "review-3",
             user: "@danfel_fr",
             text: "Ahora entiendo por qué Bogotá es tan fotogénica. Esta app me abrió los ojos.",
           },
         ].map((review, i) => (
-          <Col md={4} key={i}>
+          <Col md={4} key={review.id}>
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
@@ -186,11 +191,11 @@ export default function PaginaInicioContent() {
       <h2 className="section-title">Top Spots más visitados</h2>
       <Row className="g-4">
         {[
-          { img: aeropuertoDorado, name: "Aeropuerto El Dorado", likes: 1795 },
-          { img: villaLuz, name: "Parque villa luz", likes: 1247 },
-          { img: portalAmericas, name: "Portal Las Ámericas", likes: 1386 },
+          { id: "spot-1", img: aeropuertoDorado, name: "Aeropuerto El Dorado", likes: 1795 },
+          { id: "spot-2", img: villaLuz, name: "Parque villa luz", likes: 1247 },
+          { id: "spot-3", img: portalAmericas, name: "Portal Las Ámericas", likes: 1386 },
         ].map((spot, i) => (
-          <Col xs={12} md={4} key={i}>
+          <Col xs={12} md={4} key={spot.id}>
             <motion.div
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}

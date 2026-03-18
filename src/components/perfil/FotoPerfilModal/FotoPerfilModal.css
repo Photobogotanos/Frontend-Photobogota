@@ -1,0 +1,53 @@
+/* FOTO PERFIL MODAL - Fondo oscuro flotante */
+.foto-perfil-modal .modal-content {
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* HEADER - Oculto */
+.foto-perfil-modal-header {
+  display: none;
+}
+
+/* BODY */
+.foto-perfil-modal-body {
+  padding: 0;
+  background: transparent;
+}
+
+/* CONTENEDOR DE LA FOTO - Fondo oscuro */
+.foto-perfil-container-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  min-height: 80vh;
+
+}
+
+/* FOTO AMPLIADA - FORMATO CUADRADO SIN MARCO */
+.foto-perfil-ampliada {
+  width: 350px;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .foto-perfil-ampliada {
+    width: 100%;
+    height: auto;
+    max-width: 350px;
+    max-height: 350px;
+  }
+
+  .foto-perfil-container {
+    min-height: 60vh;
+  }
+}

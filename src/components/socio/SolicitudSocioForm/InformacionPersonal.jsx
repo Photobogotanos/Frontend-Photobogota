@@ -1,6 +1,4 @@
 import Form from "react-bootstrap/Form";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
@@ -11,6 +9,7 @@ import { MdOutlineFactory } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
 import { PiCityDuotone } from "react-icons/pi";
 import "./InformacionPersonal.css";
+import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 const InformacionPersonal = ({ formData, handleChange }) => {
   return (
@@ -18,12 +17,7 @@ const InformacionPersonal = ({ formData, handleChange }) => {
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="nombres">
           Nombres <MdDriveFileRenameOutline />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Form.Control
           id="nombres"
@@ -38,12 +32,7 @@ const InformacionPersonal = ({ formData, handleChange }) => {
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="email">
           Email <MdOutlineEmail />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Form.Control
           id="email"
@@ -59,12 +48,7 @@ const InformacionPersonal = ({ formData, handleChange }) => {
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="telefono">
           Teléfono <MdOutlinePhoneAndroid />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Form.Control
           id="telefono"
@@ -97,12 +81,7 @@ const InformacionPersonal = ({ formData, handleChange }) => {
           htmlFor="fechaNacimiento"
         >
           Fecha de nacimiento <MdDateRange />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Flatpickr
           options={{
@@ -127,12 +106,7 @@ const InformacionPersonal = ({ formData, handleChange }) => {
           htmlFor="razonSocial"
         >
           Razón Social <MdOutlineFactory />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Form.Control
           id="razonSocial"
@@ -147,12 +121,7 @@ const InformacionPersonal = ({ formData, handleChange }) => {
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="localidad">
           Localidad <PiCityDuotone />
-          <OverlayTrigger
-            placement="right"
-            overlay={<Tooltip>Campo obligatorio</Tooltip>}
-          >
-            <span> *</span>
-          </OverlayTrigger>
+          <RequiredMark />
         </Form.Label>
         <Form.Control
           id="localidad"

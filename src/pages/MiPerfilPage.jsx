@@ -4,7 +4,7 @@ import './MiPerfilPage.css';
 
 const MiPerfilPage = () => {
   return (
-    <div className="perfil-page mt-5">
+    <div className="perfil-page mt-3">
       <Container fluid className="mt-3">
         <MiPerfil />
       </Container>

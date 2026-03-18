@@ -2,8 +2,9 @@ import MainLayout from "@/layouts/MainLayout";
 import { Routes, Route } from "react-router-dom";
 import PaginaInicioPage from "@/pages/PaginaInicioPage.jsx";
 import LoginPage from "@/pages/LoginPage.jsx";
-import SolicitudSocioPage from "@/pages/SolicitudSocioPage.jsx";
+import FormularioSolicitudSocioPage from "@/pages/FormularioSolicitudSocioPage.jsx";
 import SolicitudEnviadaPage from "@/pages/SolicitudEnviadaPage.jsx";
+import RevisionSolicitudesSocioPage from "@/pages/RevisionSolicitudesSocioPage.jsx";
 import CreacionDeCuentaPage from "@/pages/CreacionDeCuentaPage.jsx";
 import RecuperarContraPage from "@/pages/RecuperarContraPage.jsx";
 import MiPerfil from "@/pages/MiPerfilPage.jsx";
@@ -12,6 +13,7 @@ import ConfirmacionCodigoPage from "@/pages/ConfirmacionCodigoPage.jsx";
 import Mapa from "@/pages/MapaPage.jsx";
 import SpotPage from "@/pages/SpotPage";
 import CreacionSpotPage from "@/pages/CreacionSpotPage.jsx";
+import EstadisticasSocioPage from "@/pages/EstadisticasSocioPage.jsx";
 
 const AppRouter = () => {
   return (
@@ -20,8 +22,15 @@ const AppRouter = () => {
         <Route path="/" element={<PaginaInicioPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/creacion-cuenta" element={<CreacionDeCuentaPage />} />
-        <Route path="/solicitud-socio" element={<SolicitudSocioPage />} />
+        
+        {/* Rutas para Solicitud de Socio - Usuario */}
+        <Route path="/solicitud-socio/formulario" element={<FormularioSolicitudSocioPage />} />
         <Route path="/solicitud-enviada" element={<SolicitudEnviadaPage />} />
+        
+        {/* Rutas para Revisión de Solicitudes - Moderador */}
+        <Route path="/moderador/revision-solicitudes" element={<RevisionSolicitudesSocioPage />} />
+        <Route path="/solicitudes-socios" element={<RevisionSolicitudesSocioPage />} />
+        
         <Route path="/recuperar-contrasena" element={<RecuperarContraPage />} />
         <Route path="/perfil" element={<MiPerfil />} />
         <Route path="/mapa" element={<Mapa />} />
@@ -36,9 +45,10 @@ const AppRouter = () => {
           element={<ConfirmacionCodigoPage />}
         />
         <Route path="/spot/:id" element={<SpotPage />} />
+        <Route path="/estadisticas" element={<EstadisticasSocioPage />} />
       </Route>
 
-      <Route path="/login" element={<LoginPage />} />
+
     </Routes>
   );
 };
