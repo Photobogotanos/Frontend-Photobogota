@@ -1,0 +1,19 @@
+.spinner-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.spinner-loader-animation {
+  width: 80px;
+  height: 80px;
+}
+
+.spinner-loader-text {
+  margin-top: 10px;
+  color: var(--color-primary, #7c6cbb);
+  font-weight: 600;
+  font-size: 14px;
+}

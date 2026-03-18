@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import "./CreacionDeCuentaForm.css";
 import { registrarUsuario } from "@/services/usuario.service";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
+import SpinnerLoader from "@/components/common/SpinnerLoader/SpinnerLoader";
 
 // Iconos
 import {
@@ -41,6 +42,7 @@ function FormularioCreacion() {
     lower: false,
     number: false,
   });
+  const [cargando, setCargando] = useState(false);
 
   // FUNCIONES
   const validarPasswordEnTiempoReal = (value, isConfirm = false) => {
@@ -117,6 +119,7 @@ function FormularioCreacion() {
     }
 
     try {
+      setCargando(true);
       // Usar el servicio de autenticación
       const resultado = await registrarUsuario({
         email,
@@ -159,6 +162,8 @@ function FormularioCreacion() {
         title: "Error",
         text: "Ocurrió un error inesperado. Por favor intenta de nuevo.",
       });
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -352,10 +357,18 @@ function FormularioCreacion() {
           <button
             className="creacion-formulario-button rounded-pill"
             type="submit"
+            disabled={cargando}
           >
             Guardar <IoIosSend />
           </button>
         </div>
+
+        {/* OVERLAY DE CARGA */}
+        {cargando && (
+          <div className="loading-overlay">
+            <SpinnerLoader texto="Registrando..." />
+          </div>
+        )}
       </Form>
       <div className="justify-content-center d-flex mb-4 mt-3">
         <BackButton />
