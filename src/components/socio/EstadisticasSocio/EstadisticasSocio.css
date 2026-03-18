@@ -238,6 +238,20 @@
   transform: translateX(4px);
 }
 
+.lugar-item:hover .lugar-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.lugar-arrow {
+  color: #806fbe;
+  font-size: 0.9rem;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
 .lugar-ranking {
   width: 28px;
   height: 28px;

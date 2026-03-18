@@ -14,37 +14,105 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { FaChartLine, FaHeart, FaMapMarkerAlt, FaUsers } from "react-icons/fa";
+import { FaChartLine, FaStar, FaMapMarkerAlt, FaUsers } from "react-icons/fa";
 
-const GraficosEstadisticos = () => {
-  // Datos de ejemplo para el gráfico de visitas
-  const datosVisitas = [
-    { name: "Ene", visitas: 1200 },
-    { name: "Feb", visitas: 1900 },
-    { name: "Mar", visitas: 1500 },
-    { name: "Abr", visitas: 2500 },
-    { name: "May", visitas: 2200 },
-    { name: "Jun", visitas: 3200 },
-  ];
+const GraficosEstadisticos = ({ periodo }) => {
+  // Colores para el gráfico de reseñas
+  const COLORS_RESENAS = ["#27ae60", "#2ecc71", "#f39c12", "#e67e22", "#e74c3c"];
 
-  // Datos para el gráfico de interacciones
-  const datosInteracciones = [
-    { name: "Me gusta", value: 4500 },
-    { name: "Comentarios", value: 1200 },
-    { name: "Compartidos", value: 800 },
-    { name: "Guardados", value: 650 },
-  ];
+  // Datos que cambian según el período seleccionado
+  const getDataByPeriodo = () => {
+    switch (periodo) {
+      case "semana":
+        return {
+          datosVisitas: [
+            { name: "Lun", visitas: 280 },
+            { name: "Mar", visitas: 350 },
+            { name: "Mié", visitas: 320 },
+            { name: "Jue", visitas: 410 },
+            { name: "Vie", visitas: 380 },
+            { name: "Sáb", visitas: 290 },
+            { name: "Dom", visitas: 117 },
+          ],
+          datosResenas: [
+            { name: "5 Estrellas", value: 52 },
+            { name: "4 Estrellas", value: 38 },
+            { name: "3 Estrellas", value: 18 },
+            { name: "2 Estrellas", value: 12 },
+            { name: "1 Estrella", value: 7 },
+          ],
+          datosLugares: [
+            { name: "Parque Central", visitas: 145 },
+            { name: "Plaza Mayor", visitas: 120 },
+            { name: "Mercado Local", visitas: 98 },
+            { name: "Mirador Norte", visitas: 76 },
+            { name: "Jardín Botánico", visitas: 62 },
+          ],
+        };
+      case "ano":
+        return {
+          datosVisitas: [
+            { name: "Ene", visitas: 5200 },
+            { name: "Feb", visitas: 5800 },
+            { name: "Mar", visitas: 6100 },
+            { name: "Abr", visitas: 6500 },
+            { name: "May", visitas: 7200 },
+            { name: "Jun", visitas: 7800 },
+            { name: "Jul", visitas: 8500 },
+            { name: "Ago", visitas: 8200 },
+            { name: "Sep", visitas: 7600 },
+            { name: "Oct", visitas: 7100 },
+            { name: "Nov", visitas: 6800 },
+            { name: "Dic", visitas: 8632 },
+          ],
+          datosResenas: [
+            { name: "5 Estrellas", value: 2100 },
+            { name: "4 Estrellas", value: 1520 },
+            { name: "3 Estrellas", value: 520 },
+            { name: "2 Estrellas", value: 251 },
+            { name: "1 Estrella", value: 130 },
+          ],
+          datosLugares: [
+            { name: "Estación Aguas", visitas: 12500 },
+            { name: "Monserrate", visitas: 10200 },
+            { name: "Parque El Jazmín", visitas: 8900 },
+            { name: "Parque Timiza", visitas: 7200 },
+            { name: "Estación Minuto de Dios", visitas: 6100 },
+          ],
+        };
+      case "mes":
+      default:
+        return {
+          datosVisitas: [
+            { name: "Ene", visitas: 1200 },
+            { name: "Feb", visitas: 1900 },
+            { name: "Mar", visitas: 1500 },
+            { name: "Abr", visitas: 2500 },
+            { name: "May", visitas: 2200 },
+            { name: "Jun", visitas: 3200 },
+          ],
+          datosResenas: [
+            { name: "5 Estrellas", value: 420 },
+            { name: "4 Estrellas", value: 280 },
+            { name: "3 Estrellas", value: 85 },
+            { name: "2 Estrellas", value: 42 },
+            { name: "1 Estrella", value: 20 },
+          ],
+          datosLugares: [
+            { name: "Parque Central", visitas: 850 },
+            { name: "Plaza Mayor", visitas: 720 },
+            { name: "Mercado Local", visitas: 580 },
+            { name: "Mirador Norte", visitas: 450 },
+            { name: "Jardín Botánico", visitas: 380 },
+          ],
+        };
+    }
+  };
 
-  const COLORS = ["#806fbe", "#9b8cd4", "#c5bce6", "#e0daf2"];
-
-  // Datos para el gráfico de lugares populares
-  const datosLugares = [
-    { name: "Parque Central", visitas: 850 },
-    { name: "Plaza Mayor", visitas: 720 },
-    { name: "Mercado Local", visitas: 580 },
-    { name: "Mirador Norte", visitas: 450 },
-    { name: "Jardín Botánico", visitas: 380 },
-  ];
+  const data = getDataByPeriodo();
+  const datosVisitas = data.datosVisitas;
+  const datosResenas = data.datosResenas;
+  const datosLugares = data.datosLugares;
 
   // Datos demográficos
   const datosDemografia = [
@@ -111,7 +179,7 @@ const GraficosEstadisticos = () => {
           <Card className="grafico-card">
             <Card.Header className="grafico-header">
               <h3><FaChartLine className="card-icon" /> Tendencia de Visitas</h3>
-              <span className="grafico-subtitle">Visitas en los últimos 6 meses</span>
+              <span className="grafico-subtitle">{periodo === 'semana' ? 'Visitas en los últimos 7 días' : periodo === 'mes' ? 'Visitas en los últimos 6 meses' : 'Visitas en el último año'}</span>
             </Card.Header>
             <Card.Body className="grafico-body">
               <div className="grafico-linea-container">
@@ -147,15 +215,15 @@ const GraficosEstadisticos = () => {
         <Col xs={12} lg={4}>
           <Card className="grafico-card">
             <Card.Header className="grafico-header">
-              <h3><FaHeart className="card-icon" /> Distribución de Interacciones</h3>
-              <span className="grafico-subtitle">Tipos de engagement</span>
+              <h3><FaStar className="card-icon" /> Distribución de Reseñas</h3>
+              <span className="grafico-subtitle">Calificaciones por estrellas</span>
             </Card.Header>
             <Card.Body className="grafico-body">
               <div className="grafico-doughnut-container">
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
-                      data={datosInteracciones}
+                      data={datosResenas}
                       cx="50%"
                       cy="50%"
                       innerRadius={60}
@@ -163,10 +231,10 @@ const GraficosEstadisticos = () => {
                       paddingAngle={5}
                       dataKey="value"
                     >
-                      {datosInteracciones.map((entry) => (
+                      {datosResenas.map((entry, index) => (
                       <Cell
                         key={entry.name}
-                        fill={COLORS[datosInteracciones.indexOf(entry) % COLORS.length]}
+                        fill={COLORS_RESENAS[index % COLORS_RESENAS.length]}
                       />
                     ))}
                     </Pie>

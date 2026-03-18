@@ -1,6 +1,9 @@
+import { useState } from "react";
 import "./ReviewCard.css";
 
-export default function ReviewCard({ title, rating, text, likes, date, placeId }) {
+export default function ReviewCard({ title, rating, text, likes, date, placeId, canRespond = false }) {
+  const [mostrarRespuesta, setMostrarRespuesta] = useState(false);
+  const [respuesta, setRespuesta] = useState("");
   const stars = [];
   for (let i = 0; i < 5; i++) {
     stars.push(
@@ -12,6 +15,14 @@ export default function ReviewCard({ title, rating, text, likes, date, placeId }
 
   // URL del spot (ajusta según tu routing)
   const spotUrl = placeId ? `/spot/${placeId}` : "#";
+
+  const handleResponder = () => {
+    // Aquí iría la lógica para enviar la respuesta al backend
+    console.log("Respuesta enviada:", respuesta);
+    setMostrarRespuesta(false);
+    setRespuesta("");
+    alert("¡Tu respuesta ha sido enviada!");
+  };
 
   return (
     <div className="review-card">
@@ -34,6 +45,48 @@ export default function ReviewCard({ title, rating, text, likes, date, placeId }
       </div>
 
       <p className="review-text">{text}</p>
+
+      {/* Respuesta del negocio (si existe) */}
+      {canRespond && (
+        <div className="review-respuesta-container">
+          {!mostrarRespuesta ? (
+            <button 
+              className="btn-responder-resena"
+              onClick={() => setMostrarRespuesta(true)}
+            >
+              Responder esta reseña
+            </button>
+          ) : (
+            <div className="respuesta-form">
+              <textarea
+                className="respuesta-input"
+                placeholder="Escribe tu respuesta..."
+                value={respuesta}
+                onChange={(e) => setRespuesta(e.target.value)}
+                rows={3}
+              />
+              <div className="respuesta-actions">
+                <button 
+                  className="btn-cancelar-respuesta"
+                  onClick={() => {
+                    setMostrarRespuesta(false);
+                    setRespuesta("");
+                  }}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  className="btn-enviar-respuesta"
+                  onClick={handleResponder}
+                  disabled={!respuesta.trim()}
+                >
+                  Enviar Respuesta
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Enlace "ver spot" */}
       <div className="review-actions">

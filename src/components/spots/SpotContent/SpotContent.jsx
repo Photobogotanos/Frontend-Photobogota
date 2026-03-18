@@ -14,8 +14,10 @@ import {
   FaTag,
   FaHeart,
   FaCamera,
+  FaReply,
 } from "react-icons/fa";
-import Swal from "sweetalert2"; // ← Nueva importación
+import Swal from "sweetalert2"; 
+import { toast } from "react-hot-toast";
 import "./SpotContent.css";
 
 const SpotContent = () => {
@@ -23,6 +25,12 @@ const SpotContent = () => {
   const [lugar, setLugar] = useState(null);
   const [nuevaResena, setNuevaResena] = useState({ rating: 0, comentario: "" });
   const [hoverRating, setHoverRating] = useState(0);
+  const [respuestaActiva, setRespuestaActiva] = useState(null); // ID de la reseña que se está respondiendo
+  const [respuestas, setRespuestas] = useState({}); // { resenaId: { respuesta, fecha } }
+
+  // Obtener el usuario actual del localStorage
+  const usuarioActual = JSON.parse(localStorage.getItem("miembro") || "null");
+  const usuarioActualId = usuarioActual?.username || usuarioActual?.nombre || "";
 
   // === DATOS DE LUGARES ===
   const lugaresData = {
@@ -39,8 +47,7 @@ const SpotContent = () => {
         "La estación Aguas es una de las estaciones más representativas del sistema TransMilenio en el centro de Bogotá. Conecta importantes rutas y se encuentra cerca de zonas históricas y culturales de la ciudad.",
       recomendacion:
         "Excelente lugar para fotografiar la arquitectura colonial y moderna de Bogotá. El flujo de personas crea un ambiente único para fotos callejeras.",
-      tipsFoto:
-        "最好在早上8-9点拍摄，光线柔和。建议使用广角镜头捕捉整个车站结构。",
+      creadorId: "socio",
       resenas: [
         {
           id: 1,
@@ -69,6 +76,7 @@ const SpotContent = () => {
         "La vista desde la cima es impresionante, especialmente al amanecer. El teleférico también ofrece oportunidades únicas para fotos del paisaje urbano.",
       tipsFoto:
         "Llegar temprano para evitar las nubes. Un lente gran angular es ideal para capturar la ciudad. Trípode recomendado para fotos de larga exposición.",
+      creadorId: "socio",
       resenas: [
         {
           id: 1,
@@ -95,8 +103,7 @@ const SpotContent = () => {
         "El Parque El Jazmín es un espacio verde ideal para la recreación y el descanso de la comunidad. Cuenta con zonas deportivas y áreas para compartir en familia.",
       recomendacion:
         "Perfecto para sesiones de fotos familiares o retratos con fondo de naturaleza urbana. Las tardes soleadas tienen la mejor luz.",
-      tipsFoto:
-        "最好在下午晚些时候拍摄，光线柔和。带变焦镜头捕捉运动中的人物。",
+      creadorId: "socio",
       resenas: [
         {
           id: 1,
@@ -125,6 +132,7 @@ const SpotContent = () => {
         "Gran variedad de actividades para fotografiar. Desde deportistas hasta familias. Los domingos hay ferias locales con oportunidades fotográficas únicas.",
       tipsFoto:
         "Los domingos por la mañana son ideales. Trae un lente rápido para action shots. Las fuentes funcionan bien como elemento de fondo.",
+      creadorId: "socio",
       resenas: [
         {
           id: 1,
@@ -153,6 +161,7 @@ const SpotContent = () => {
         "Arquitectura moderna interesante para fotos urbanas. El área comercial circundante ofrece escenas callejeras auténticas de Bogotá.",
       tipsFoto:
         "Captura la vida urbana por la tarde. La arquitectura de cristal crea reflejos interesantes. Un lente 50mm funciona perfectamente.",
+      creadorId: "socio",
       resenas: [
         {
           id: 1,
@@ -210,6 +219,32 @@ const SpotContent = () => {
     setNuevaResena({ rating: 0, comentario: "" });
   };
 
+  const handleSubmitRespuesta = async (resenaId, respuestaTexto) => {
+    if (!respuestaTexto.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Falta la respuesta",
+        text: "Por favor escribe una respuesta a la reseña.",
+        confirmButtonColor: "#806fbe",
+      });
+      return;
+    }
+
+    // Guardar la respuesta
+    setRespuestas({
+      ...respuestas,
+      [resenaId]: {
+        respuesta: respuestaTexto,
+        fecha: "Ahora",
+        creador: lugar.creadorId,
+      },
+    });
+
+    setRespuestaActiva(null);
+
+    toast.success("¡Respuesta enviada! Gracias por responder a la reseña.");
+  };
+
   const renderStars = (rating, isInteractive = false) => {
     return [...Array(5)].map((_, i) => {
       const starValue = i + 1;
@@ -252,6 +287,10 @@ const SpotContent = () => {
   if (!lugar) {
     return <div className="lugar-loading">Cargando lugar...</div>;
   }
+
+  // Verificar si el usuario actual es el creador del spot
+  const esCreadorDelSpot = usuarioActualId && lugar.creadorId &&
+    usuarioActualId.replace("@", "").toLowerCase() === lugar.creadorId.toLowerCase();
 
   return (
     <div className="lugar-content-wrapper">
@@ -333,37 +372,47 @@ const SpotContent = () => {
           Reseñas
         </h2>
 
-        {/* Formulario nueva reseña */}
-        <div className="nueva-resena-card">
-          <h4>
-            <FaPencilAlt className="form-icon" />
-            Deja tu reseña
-          </h4>
-          <form onSubmit={handleSubmitResena}>
-            <div className="rating-input">
-              <label>Calificación:</label>
-              <div className="stars-input">
-                {renderStars(nuevaResena.rating, true)}
+        {/* Solo mostrar si el usuario NO es el creador del spot */}
+        {!esCreadorDelSpot && (
+          <div className="nueva-resena-card">
+            <h4>
+              <FaPencilAlt className="form-icon" />
+              Deja tu reseña
+            </h4>
+            <form onSubmit={handleSubmitResena}>
+              <div className="rating-input">
+                <label>Calificación:</label>
+                <div className="stars-input">
+                  {renderStars(nuevaResena.rating, true)}
+                </div>
               </div>
-            </div>
 
-            <div className="comentario-input">
-              <textarea
-                placeholder="Cuéntanos tu experiencia en este lugar..."
-                value={nuevaResena.comentario}
-                onChange={(e) =>
-                  setNuevaResena({ ...nuevaResena, comentario: e.target.value })
-                }
-                rows="4"
-              />
-            </div>
+              <div className="comentario-input">
+                <textarea
+                  placeholder="Cuéntanos tu experiencia en este lugar..."
+                  value={nuevaResena.comentario}
+                  onChange={(e) =>
+                    setNuevaResena({ ...nuevaResena, comentario: e.target.value })
+                  }
+                  rows="4"
+                />
+              </div>
 
-            <button type="submit" className="btn-submit-resena">
-              <FaPaperPlane className="btn-icon" />
-              Enviar reseña
-            </button>
-          </form>
-        </div>
+              <button type="submit" className="btn-submit-resena">
+                <FaPaperPlane className="btn-icon" />
+                Enviar reseña
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Mensaje para el creador del spot */}
+        {esCreadorDelSpot && (
+          <div className="info-creador-spot">
+            <p>Eres el creador de este spot. ¡Gracias por compartirlo!</p>
+            <p className="text-muted">Puedes responder las reseñas de los usuarios a continuación.</p>
+          </div>
+        )}
 
         {/* Lista de reseñas existentes */}
         <div className="resenas-lista">
@@ -393,6 +442,61 @@ const SpotContent = () => {
                 </div>
               </div>
               <p className="resena-comentario">{resena.comentario}</p>
+
+              {/* Botón de responder para el creador del spot */}
+              {esCreadorDelSpot && !respuestas[resena.id] && respuestaActiva !== resena.id && (
+                <button
+                  className="btn-responder-resena"
+                  onClick={() => setRespuestaActiva(resena.id)}
+                >
+                  <FaReply className="btn-icon" />
+                  Responder
+                </button>
+              )}
+
+              {/* Formulario de respuesta */}
+              {respuestaActiva === resena.id && (
+                <div className="respuesta-form">
+                  <textarea
+                    placeholder="Escribe tu respuesta a esta reseña..."
+                    className="respuesta-input"
+                    id={`respuesta-${resena.id}`}
+                    rows="3"
+                  />
+                  <div className="respuesta-acciones">
+                    <button
+                      className="btn-cancelar-respuesta"
+                      onClick={() => setRespuestaActiva(null)}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      className="btn-enviar-respuesta"
+                      onClick={() => {
+                        const input = document.getElementById(`respuesta-${resena.id}`);
+                        handleSubmitRespuesta(resena.id, input.value);
+                      }}
+                    >
+                      <FaPaperPlane className="btn-icon" />
+                      Enviar
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Mostrar la respuesta si existe */}
+              {respuestas[resena.id] && (
+                <div className="resena-respuesta">
+                  <div className="respuesta-header">
+                    <span className="respuesta-label">
+                      <FaReply className="respuesta-icon" />
+                      Respuesta del creador:
+                    </span>
+                    <span className="respuesta-fecha">{respuestas[resena.id].fecha}</span>
+                  </div>
+                  <p className="respuesta-texto">{respuestas[resena.id].respuesta}</p>
+                </div>
+              )}
             </div>
           ))}
         </div>
