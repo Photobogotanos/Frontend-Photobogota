@@ -6,6 +6,12 @@
   --color-hover: #5c4d94;
 
   --color-bg: #f5f2eb; /* Fondo */
+
+  --purple-light: #9b8dcf;
+  --purple-shadow: rgba(128, 111, 190, 0.32);
+  --border: #e8e8e8;
+  --muted: #6c757d;
+  --pill: 50px;
 }
 
 @font-face {

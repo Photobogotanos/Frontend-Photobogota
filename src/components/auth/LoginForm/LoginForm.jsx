@@ -16,6 +16,7 @@ export default function LoginForm() {
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
   const [mostrarCuentasDemo, setMostrarCuentasDemo] = useState(false);
   const [copiado, setCopiado] = useState(null);
+  const [cargando, setCargando] = useState(false);
 
   const navegar = useNavigate();
 
@@ -121,12 +122,14 @@ export default function LoginForm() {
     <>
       <Form onSubmit={manejarEnvio} className="login-form-container">
         <div className="login-form-header">
-          <h2 className="login-form-title">Ingresa a Photo Bogotá</h2>
+          <span className="login-subtitle">Accede a tu cuenta</span>
+          <h2 className="login-form-title">Photo Bogotá</h2>
+          <span className="login-title-line"></span>
         </div>
 
         <Form.Group className="mt-5">
           <Form.Label className="login-form-label">
-            Usuario o Correo <FaUser />
+            <FaUser className="lf-label-icon" /> Usuario o Correo
             <RequiredMark />
           </Form.Label>
 
@@ -142,7 +145,7 @@ export default function LoginForm() {
 
         <Form.Group className="mt-4">
           <Form.Label className="login-form-label">
-            Contraseña <FaLock />
+            <FaLock className="lf-label-icon" /> Contraseña
             <RequiredMark />
           </Form.Label>
 
@@ -161,6 +164,10 @@ export default function LoginForm() {
               {mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
+          <div className="lf-forgot mt-1">
+            <Link to="/recuperar-contrasena">¿Olvidaste tu contraseña?</Link>
+          </div>
+
         </Form.Group>
 
         {/* Panel de cuentas demo */}
@@ -217,25 +224,29 @@ export default function LoginForm() {
         </div>
 
         <div className="solicitud-form-submit mt-4">
-          <button className="login-submit-btn rounded-pill" type="submit">
-            <b>Ingresar</b>
+          <button
+            type="submit"
+            className={`lf-submit-btn ${cargando ? "lf-submit-btn--loading" : ""}`}
+            disabled={cargando}
+          >
+            {cargando ? "Ingresando…" : "Ingresar →"}
           </button>
+
         </div>
 
-        <p className="recuperar-contra">
-          <Link to="/recuperar-contrasena">¿Olvidaste tu contraseña?</Link>
-        </p>
 
-        <p className="registro-texto">
-          ¿Eres nuevo en Photo Bogotá?{" "}
-          <Link to="/creacion-cuenta">
-            <b>Crear cuenta</b>
-          </Link>
-        </p>
+        <div className="lf-footer">
+          <p>
+            ¿Eres nuevo en Photo Bogotá?{" "}
+            <Link to="/creacion-cuenta">
+              <b>Crear cuenta</b>
+            </Link>
+          </p>
+          <div className="justify-content-center d-flex mb-4">
+            <BackButton />
+          </div>
+        </div>
       </Form>
-      <div className="justify-content-center d-flex mb-4">
-        <BackButton />
-      </div>
     </>
   );
 }
