@@ -1,48 +1,52 @@
 /* TÍTULO */
 /* Header */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+.creacion-cuenta-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.creacion-cuenta-subtitle {
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: 4px;
+  animation: fadeInTitle 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .creacion-cuenta-title {
+  font-family: 'Playfair Display', serif;
   font-weight: 700;
-  font-size: 2rem;
-  letter-spacing: -0.5px;
-  position: relative;
-  display: inline-block;
+  font-size: 2.4rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
   color: #0a0a0a;
-  padding-bottom: 12px;
-  animation: fadeInTitle 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0;
+  padding: 0;
+  animation: fadeInTitle 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
 }
 
-/* Doble línea decorativa inf erior */
-.creacion-cuenta-title::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
+.creacion-cuenta-line {
+  display: block;
+  height: 1.5px;
+  margin-top: 10px;
   width: 100%;
-  height: 2px;
-  background: #e0e0e0;
   border-radius: 2px;
-}
-
-.creacion-cuenta-title::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0%;
-  height: 2px;
-  background: linear-gradient(90deg, #806fbe, #a294d0, #806fbe);
+  background: linear-gradient(90deg, #806fbe 0%, #a294d0 60%, transparent 100%);
   background-size: 200% 100%;
-  border-radius: 2px;
-  box-shadow: 0 0 12px rgba(128, 111, 190, 0.4);
-  animation: lineExpand 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards,
-    shimmer 2.5s ease-in-out 1.5s infinite;
-  z-index: 1;
+  animation: fadeInTitle 0.6s ease 0.4s both,
+             shimmer 2.5s ease-in-out 1s infinite;
 }
 
 @keyframes fadeInTitle {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-6px);
     filter: blur(2px);
   }
   to {
@@ -52,28 +56,17 @@
   }
 }
 
-@keyframes lineExpand {
-  to {
-    width: 100%;
-  }
-}
-
 @keyframes shimmer {
-  0%,
-  100% {
-    background-position: 0% 0%;
-  }
-  50% {
-    background-position: 200% 0%;
+  0%, 100% { background-position: 0% 0%; }
+  50%       { background-position: 200% 0%; }
+}
+
+@media (max-width: 768px) {
+  .creacion-cuenta-title {
+    font-size: 1.9rem;
   }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .login-form-title {
-    font-size: 1.6rem;
-  }
-}
 /* LABELS */
 .creacion-formulario-label {
   text-align: start;
