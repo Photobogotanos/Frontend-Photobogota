@@ -172,7 +172,9 @@ function FormularioCreacion() {
     <div>
       <Form onSubmit={validarFormulario} className="mt-5">
         <div className="creacion-cuenta-header">
-          <h2 className="creacion-cuenta-title">Registro cuenta</h2>
+          <span className="creacion-cuenta-subtitle">Crea tu cuenta</span>
+          <h2 className="creacion-cuenta-title">Photo Bogotá</h2>
+          <span className="creacion-cuenta-line"></span>
         </div>
 
         <div className="mt-4">
@@ -315,9 +317,8 @@ function FormularioCreacion() {
             {/* Indicador de coincidencia */}
             {password2 !== "" && (
               <span
-                className={`password-match mt-2 ${
-                  passwordMatch ? "ok" : "bad"
-                }`}
+                className={`password-match mt-2 ${passwordMatch ? "ok" : "bad"
+                  }`}
               >
                 {passwordMatch ? (
                   <>
