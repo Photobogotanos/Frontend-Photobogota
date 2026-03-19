@@ -1,31 +1,50 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./ConfirmacionCodigoForm.css";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
+const RESEND_SECONDS = 60; // segundos de espera para reenviar
 
 export default function ConfirmacionCodigoForm() {
-  const navegar = useNavigate(); 
+  const navegar = useNavigate();
+  const location = useLocation();
+
+  // Email recibido desde RecuperarContraForm
+  const email = location.state?.email || "tu correo";
+
   const DIGIT_SLOTS = ["d0", "d1", "d2", "d3", "d4", "d5"];
-  const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);// arreglo para guardar el codigo
-  const inputsRef = useRef([]);// Variable para guardar en el arreglo
+  const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);
+  const inputsRef = useRef([]);
 
-  const handleChange = (e, index) => { // evento al oprimir el boton
-    const value = e.target.value.replace(/[^0-9]/g, ""); // en los campos solo reciba numeros de 0 a 9 y elimine cualquier otra cosa
-    if (!value) return; // Se valida que el usuario ingrese solo numeros, solo lo deja escribir numeros
+  // ── Timer reenvío ──
+  const [segundos, setSegundos] = useState(RESEND_SECONDS);
+  const [puedeReenviar, setPuedeReenviar] = useState(false);
 
-    const newCode = [...codigo]; // crear copia del array
-    newCode[index] = value;// Actualiza el lugar del arreglo
-    setCodigo(newCode); // Guarda el arreglo
+  useEffect(() => {
+    if (segundos <= 0) {
+      setPuedeReenviar(true);
+      return;
+    }
+    const intervalo = setInterval(() => {
+      setSegundos((s) => s - 1);
+    }, 1000);
+    return () => clearInterval(intervalo);
+  }, [segundos]);
 
-    if (index < 5) inputsRef.current[index + 1].focus(); // Al no estar en el ultimo input, mueve el foco del input, lo mueve al siguiente
+  const handleChange = (e, index) => {
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    if (!value) return;
+    const newCode = [...codigo];
+    newCode[index] = value;
+    setCodigo(newCode);
+    if (index < 5) inputsRef.current[index + 1].focus();
   };
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace") {
       if (!codigo[index] && index > 0) {
-        inputsRef.current[index - 1].focus(); 
+        inputsRef.current[index - 1].focus();
       }
-
       if (codigo[index]) {
         const newCode = [...codigo];
         newCode[index] = "";
@@ -34,73 +53,102 @@ export default function ConfirmacionCodigoForm() {
     }
   };
 
-  const handleSubmit = (e) => {// Evento al presionar el boton
-    e.preventDefault();// Control del envio
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const finalCode = codigo.join("");
 
-    const finalCode = codigo.join(""); // array para que ingrese los numeros que ingreso
-
-    if (finalCode.length < 6) { // Valida el array si no estan los 6 digitos, muestra alerta
+    if (finalCode.length < 6) {
       Swal.fire({
         icon: "error",
         title: "Código incompleto",
         text: "Por favor ingresa los 6 dígitos.",
+        confirmButtonColor: "#806fbe",
       });
       return;
-    } 
-    
-    // Si cumple que sea numeros y los 6 digitos muestra alerta de confirmacion
+    }
 
     Swal.fire({
       icon: "success",
-      title: "Código enviado",
-      text: `Tu código es: ${finalCode}`,
+      title: "Código verificado",
+      text: "Tu identidad ha sido confirmada correctamente.",
+      confirmButtonColor: "#806fbe",
     }).then(() => {
       navegar("/mapa");
     });
-
-    console.log("Código ingresado:", finalCode);
   };
 
-  const reenviarCodigo = () => {// Evento al reenviar codigo
+  const reenviarCodigo = () => {
+    if (!puedeReenviar) return;
+
     Swal.fire({
       icon: "info",
       title: "Código reenviado",
-      text: "Se ha reenviado el código a tu correo.",
+      text: `Se ha reenviado el código a ${email}.`,
+      confirmButtonColor: "#806fbe",
       timer: 2000,
       showConfirmButton: false,
     });
+
+    // Reinicia el timer
+    setSegundos(RESEND_SECONDS);
+    setPuedeReenviar(false);
   };
 
+  // Formato mm:ss
+  const timerTexto = `${String(Math.floor(segundos / 60)).padStart(2, "0")}:${String(segundos % 60).padStart(2, "0")}`;
+
   return (
-    <form className="mt-5 codigo-form" onSubmit={handleSubmit}>
-      <h2 className="title">Confirmación de Código</h2>
-      <h2 className="title">INGRESA CÓDIGO DE VERIFICACIÓN</h2>
-      <p className="subtitle">
-        Enviado al correo: <b>photobogota123@gmail.com</b>
+    <form className="confirmacion-form" onSubmit={handleSubmit}>
+
+      <div className="confirmacion-header">
+        <span className="confirmacion-subtitle">Verificación de identidad</span>
+        <h2 className="confirmacion-title">Ingresa tu código</h2>
+        <span className="confirmacion-line"></span>
+      </div>
+
+      <p className="confirmacion-desc">
+        Enviamos un código de 6 dígitos a{" "}
+        <span className="confirmacion-email">{email}</span>
       </p>
 
-      <div className="inputs-container">
-        {codigo.map((num, idx) => ( //  Mapea el input para hacer el array 
+      <div className="confirmacion-inputs">
+        {codigo.map((num, idx) => (
           <input
-            key={DIGIT_SLOTS[idx]} 
+            key={DIGIT_SLOTS[idx]}
             type="text"
-            maxLength="1" // Permite solo un caracter
-            className="codigo-input"
+            inputMode="numeric"
+            maxLength="1"
+            className={`confirmacion-digit${num ? " filled" : ""}`}
             value={num}
-            ref={(el) => (inputsRef.current[idx] = el)} // arreglo para guardar la referencia 
-            onChange={(e) => handleChange(e, idx)} // cambio de input para el siguiente
-            onKeyDown={(e) => handleKeyDown(e, idx)}// Cambio de input cuando borra
+            ref={(el) => (inputsRef.current[idx] = el)}
+            onChange={(e) => handleChange(e, idx)}
+            onKeyDown={(e) => handleKeyDown(e, idx)}
           />
         ))}
       </div>
 
-      <button type="submit" className="btn-confirmar">
-        Confirmar Código
+      <button type="submit" className="confirmacion-btn">
+        Confirmar código
       </button>
 
-      <p className="reenviar">
-        ¿Te gustaría reenviar el código? <span className="reenviar-link" role="button" onClick={reenviarCodigo} onKeyDown={(e) => e.key === 'Enter' && reenviarCodigo()} tabIndex={0}>Reenviar</span>
+      {/* Timer + reenvío */}
+      <p className="confirmacion-reenviar">
+        {puedeReenviar ? (
+          <>
+            ¿No recibiste el código?{" "}
+            <span role="button" tabIndex={0} onClick={reenviarCodigo}
+              onKeyDown={(e) => e.key === "Enter" && reenviarCodigo()}>
+              Reenviar
+            </span>
+          </>
+        ) : (
+          <>
+            Reenviar código en{" "}
+            <span className="confirmacion-timer">{timerTexto}</span>
+          </>
+        )}
       </p>
+
     </form>
   );
 }

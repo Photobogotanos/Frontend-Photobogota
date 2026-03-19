@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Form } from "react-bootstrap";
 import Swal from "sweetalert2";
-import logo from "@/assets/images/logo.jpg";
 import "./RecuperarContraForm.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +18,7 @@ export default function RecuperarContraForm() {
         icon: "warning",
         title: "Correo requerido",
         text: "Por favor ingresa tu correo electrónico.",
-        confirmButtonColor: "#3085d6",
+        confirmButtonColor: "#806fbe",
       });
     }
 
@@ -37,47 +36,50 @@ export default function RecuperarContraForm() {
       icon: "success",
       title: "Código enviado",
       text: "Hemos enviado un código de recuperación a tu correo.",
-      confirmButtonColor: "#28a745",
+      confirmButtonColor: "#806fbe",
     }).then(() => {
-      navegar("/confirmacion-codigo");
+      navegar("/confirmacion-codigo", { state: { email } });
     });
-
-    console.log("Correo para recuperación:", email);
   };
 
   return (
     <Form onSubmit={handleSubmit} className="recuperar-form-container">
-      <div className="login-form-header">
-        <img src={logo} alt="Logo" className="login-form-logo" />
-        <h2 className="login-form-title">Restablecer contraseña</h2>
+
+      {/* Header estilo Opción 2 */}
+      <div className="recuperar-header">
+        <span className="recuperar-subtitle">Acceso seguro</span>
+        <h2 className="recuperar-title">Restablecer contraseña</h2>
+        <span className="recuperar-line"></span>
       </div>
 
-      <Form.Group className="mb-4">
-        <Form.Label className="login-form-label">
-          Ingresa tu correo <RequiredMark />
-        </Form.Label>
+      {/* Descripción corta */}
+      <p className="recuperar-desc">
+        Te enviaremos un código a tu correo para restablecer tu contraseña.
+      </p>
 
+      <Form.Group className="mb-4">
+        <Form.Label className="recuperar-label">
+          Correo electrónico <RequiredMark />
+        </Form.Label>
         <Form.Control
-          className="grupitos rounded-pill"
+          className="recuperar-input"
           type="email"
-          placeholder="Ingresa tu correo"
+          placeholder="tucorreo@ejemplo.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </Form.Group>
 
-      <div className="solicitud-form-submit mt-4">
-        <button
-          className="recuperar-contra-submit-btn rounded-pill"
-          type="submit"
-        >
-          <b>Enviar Código</b>
+      <div className="recuperar-submit-wrap">
+        <button className="recuperar-btn" type="submit">
+          Enviar código
         </button>
       </div>
 
-      <p className="recuperar-contra">
-        <Link to="/login">Volver al inicio de sesión</Link>
+      <p className="recuperar-back">
+        <Link to="/login">← Volver al inicio de sesión</Link>
       </p>
+
     </Form>
   );
 }
