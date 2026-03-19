@@ -5,6 +5,7 @@ import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Stack from "react-bootstrap/Stack";
+import "./SolicitudSocio.css";
 import {
   FiSearch,
   FiCheck,
@@ -21,7 +22,7 @@ import {
   FiDownload
 }
 from "react-icons/fi";
-import "./SolicitudSocio.css";
+
 
 // Datos de ejemplo para simular solicitudes
 const solicitudesEjemplo = [
@@ -36,6 +37,10 @@ const solicitudesEjemplo = [
     direccion: "Carrera 7 # 71-21, Bogotá",
     descripcion: "Café de especialidad con exposiciones de arte",
     estado: "pendiente",
+    documentos: [
+      { nombre: "cedula.pdf", url: "#" },
+      { nombre: "rut.pdf", url: "#" }
+    ]
   },
   {
     solicitudId: "SOL-0002",
@@ -337,13 +342,13 @@ return (
         centered
         className="solicitud-modal"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>
+        <Modal.Header closeButton> 
+          <Modal.Title className="modal-title-top">
             Detalle de Solicitud - {solicitudSeleccionada?.solicitudId}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-      <div className="detalle-section mt-4">
+      <div className="detalle-section ">
         <h4>Documentación Adjunta</h4>
         <div className="d-flex flex-wrap gap-2 mt-2">
         {solicitudSeleccionada?.documentos?.map((doc, index) => (
@@ -379,7 +384,7 @@ return (
             </div>
           {solicitudSeleccionada && (
             <div className="solicitud-detalle">
-              <div className="detalle-section">
+              <div className="detalle-section mt-3">
                 <h4>Información del Negocio</h4>
                 <div className="detalle-grid">
                   <div className="detalle-item">
@@ -401,7 +406,7 @@ return (
                 </div>
               </div>
 
-              <div className="detalle-section">
+              <div className="detalle-section ">
                 <h4>Información del Propietario</h4>
                 <div className="detalle-grid">
                   <div className="detalle-item">
@@ -433,7 +438,7 @@ return (
 
               <div className="detalle-section">
                 <h4>Estado</h4>
-                <Badge bg={getBadgeVariant(solicitudSeleccionada.estado)}>
+                <Badge bg={getBadgeVariant(solicitudSeleccionada.estado)} className="status">
                   {getEstadoLabel(solicitudSeleccionada.estado)}
                 </Badge>
               </div>
