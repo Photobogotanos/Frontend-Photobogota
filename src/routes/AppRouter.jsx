@@ -15,7 +15,7 @@ import SpotPage from "@/pages/SpotPage";
 import CreacionSpotPage from "@/pages/CreacionSpotPage.jsx";
 import EstadisticasSocioPage from "@/pages/EstadisticasSocioPage.jsx";
 import Error404Page from "@/pages/Error404Page.jsx";
-import SocioPromocionesPage from "../pages/SocioPromocionesPage";
+import SocioPromocionesPage from "@/pages/SocioPromocionesPage";
 
 const AppRouter = () => {
   return (
