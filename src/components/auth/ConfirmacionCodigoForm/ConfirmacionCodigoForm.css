@@ -1,63 +1,209 @@
-.codigo-form {
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+/* ── Contenedor ── */
+.confirmacion-form {
   width: 100%;
-  max-width: 400px;
-  margin: 50px auto;
-  text-align: center;
-  font-family: sans-serif;
-}
-
-.title {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.subtitle {
-  color: #555;
-  margin-bottom: 25px;
-}
-
-.inputs-container {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 32px 30px 24px;
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 25px;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.codigo-input {
-  width: 50px;
-  height: 60px;
-  font-size: 30px;
-  text-align: center;
-  border: none;
-  outline: none;
-  background: #e7e7e7;
-  border-radius: 10px;
-}
-
-.codigo-input:focus {
-  background: #dad9ff;
-}
-
-.btn-confirmar {
+/* ── Header ── */
+.confirmacion-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   width: 100%;
-  padding: 10px 0;
-  border: none;
-  border-radius: 10px;
-  background: var(--color-primary);
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.25s ease-in-out;
+  margin-bottom: 1.2rem;
 }
 
-.btn-confirmar:hover{
-  transform: translateY(-4px) scale(1.03);
-  box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.15);
-  opacity: 0.95;
+.confirmacion-subtitle {
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: 4px;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-.reenviar {
+.confirmacion-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #0a0a0a;
+  margin: 0;
+  padding: 0;
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+}
+
+.confirmacion-line {
+  display: block;
+  height: 1.5px;
   margin-top: 10px;
-  font-size: 14px;
-  color: #6a6a6a;
+  width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #806fbe 0%, #a294d0 60%, transparent 100%);
+  background-size: 200% 100%;
+  animation: fadeInUp 0.6s ease 0.4s both,
+    shimmer 2.5s ease-in-out 1s infinite;
+}
+
+/* ── Descripción ── */
+.confirmacion-desc {
+  font-size: 0.875rem;
+  color: #6c757d;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.6s ease 0.3s both;
+}
+
+.confirmacion-email {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ── Inputs de dígitos ── */
+.confirmacion-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.6s ease 0.4s both;
+}
+
+.confirmacion-digit {
+  width: 52px;
+  height: 62px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 14px;
+  background: #fafafa;
+  color: #0a0a0a;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background 0.2s ease, transform 0.15s ease;
+  caret-color: transparent;
+}
+
+.confirmacion-digit:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.15);
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+.confirmacion-digit.filled {
+  border-color: #a294d0;
+  background: #f5f2ff;
+  color: var(--color-primary);
+}
+
+/* ── Botón ── */
+.confirmacion-btn {
+  width: 100%;
+  padding: 13px 0;
+  border: none;
+  border-radius: var(--pill);
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  animation: fadeInUp 0.6s ease 0.5s both;
+}
+
+.confirmacion-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(128, 111, 190, 0.3);
+  opacity: 0.93;
+}
+
+.confirmacion-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}
+
+/* ── Reenviar ── */
+.confirmacion-reenviar {
+  text-align: center;
+  width: 100%;
+  margin-top: 1.2rem;
+  font-size: 13.5px;
+  color: #9e9e9e;
+}
+
+.confirmacion-reenviar span {
+  color: var(--color-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.confirmacion-reenviar span:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+/* ── Animaciones ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes shimmer {
+
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+
+  50% {
+    background-position: 200% 0%;
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .confirmacion-digit {
+    width: 44px;
+    height: 54px;
+    font-size: 1.3rem;
+    border-radius: 10px;
+  }
+
+  .confirmacion-title {
+    font-size: 1.6rem;
+  }
+
+  .confirmacion-form {
+    padding: 24px 16px;
+  }
+}
+
+/* ── Timer ── */
+.confirmacion-timer {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
 }
