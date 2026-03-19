@@ -241,14 +241,25 @@
 }
 
 /* Modal */
-.solicitud-modal .modal-header {
-  background-color: var(--color-bg);
-  border-bottom: 1px solid #dee2e6;
+.solicitud-modal .modal-header .btn-close {
+  border: 2px solid #dee2e6; 
+  border-radius: 8px;    
+  padding: 0.5rem;
+  opacity: 1;              
+  background-size: 0.8rem;   
+  transition: all 0.2s ease-in-out;
 }
 
-.solicitud-modal .modal-title {
+.solicitud-modal .modal-header {
+  border-bottom: none !important;
+  padding-bottom: 0.5rem;
+}
+
+.solicitud-modal .modal-title-top {
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: bold;
+  background: transparent !important;
+  border-bottom: none !important;
 }
 
 .solicitud-modal .modal-footer {
@@ -257,15 +268,24 @@
 }
 
 .solicitud-detalle {
-  display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
 .detalle-section {
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #eee !important;
+  margin-bottom: 1rem;
 }
+
+.detalle-section:last-child {
+    border-bottom: none !important;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+
+
 
 .detalle-section:last-child {
   border-bottom: none;
@@ -324,7 +344,7 @@
 }
 .document-chip:hover {
   background-color: #f0f0f0 !important;
-  border-color: #ccc !important;
+  border: none !important;
 }
 
 /* Responsive */
