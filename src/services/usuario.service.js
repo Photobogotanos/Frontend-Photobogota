@@ -1,5 +1,5 @@
 import { postRegistrarUsuario } from "@/api/usuarioApi";
-import { registrarUsuarioDemo } from "@/mocks/usuarioMock";
+import { registrarUsuarioDemo } from "@/mocks/usuario.mock";
 import { obtenerEstadoServidor } from "@/utils/serverStatus";
 
 export const registrarUsuario = async (datos) => {
