@@ -15,6 +15,7 @@ import SpotPage from "@/pages/SpotPage";
 import CreacionSpotPage from "@/pages/CreacionSpotPage.jsx";
 import EstadisticasSocioPage from "@/pages/EstadisticasSocioPage.jsx";
 import Error404Page from "@/pages/Error404Page.jsx";
+import SocioPromocionesPage from "../pages/SocioPromocionesPage";
 
 const AppRouter = () => {
   return (
@@ -24,9 +25,12 @@ const AppRouter = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/creacion-cuenta" element={<CreacionDeCuentaPage />} />
         
-        {/* Rutas para Solicitud de Socio - Usuario */}
+        {/* Rutas para Solicitud de Socio - Usuario */}  
         <Route path="/solicitud-socio/formulario" element={<FormularioSolicitudSocioPage />} />
         <Route path="/solicitud-enviada" element={<SolicitudEnviadaPage />} />
+        
+        {/* Rutas para Socio Promociones */}
+        <Route path="/socio-promociones" element={<SocioPromocionesPage/>}/>
         
         {/* Rutas para Revisión de Solicitudes - Moderador */}
         <Route path="/moderador/revision-solicitudes" element={<RevisionSolicitudesSocioPage />} />
@@ -45,6 +49,7 @@ const AppRouter = () => {
           path="/confirmacion-codigo"
           element={<ConfirmacionCodigoPage />}
         />
+        
         <Route path="/spot/:id" element={<SpotPage />} />
         <Route path="/estadisticas" element={<EstadisticasSocioPage />} />
         

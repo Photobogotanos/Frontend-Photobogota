@@ -4,7 +4,7 @@ import { Container } from  "react-bootstrap"
 
 const Sociolocales = () =>{
     return(
-        <div className="nosotros-page">
+        <div className="socio-promociones">
             <Container>
                 <SocioPromociones></SocioPromociones>
             </Container>
@@ -12,4 +12,4 @@ const Sociolocales = () =>{
     )
 }
 
-export default SocioPromociones;
+export default SocioPromocionesPage;
