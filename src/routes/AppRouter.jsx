@@ -1,21 +1,21 @@
 import MainLayout from "@/layouts/MainLayout";
 import { Routes, Route } from "react-router-dom";
-import PaginaInicioPage from "@/pages/PaginaInicioPage.jsx";
-import LoginPage from "@/pages/LoginPage.jsx";
-import FormularioSolicitudSocioPage from "@/pages/FormularioSolicitudSocioPage.jsx";
-import SolicitudEnviadaPage from "@/pages/SolicitudEnviadaPage.jsx";
-import RevisionSolicitudesSocioPage from "@/pages/RevisionSolicitudesSocioPage.jsx";
-import CreacionDeCuentaPage from "@/pages/CreacionDeCuentaPage.jsx";
-import RecuperarContraPage from "@/pages/RecuperarContraPage.jsx";
-import MiPerfil from "@/pages/MiPerfilPage.jsx";
-import Nosotros from "@/pages/Nosotros.jsx";
-import ConfirmacionCodigoPage from "@/pages/ConfirmacionCodigoPage.jsx";
-import Mapa from "@/pages/MapaPage.jsx";
-import SpotPage from "@/pages/SpotPage";
-import CreacionSpotPage from "@/pages/CreacionSpotPage.jsx";
-import EstadisticasSocioPage from "@/pages/EstadisticasSocioPage.jsx";
-import Error404Page from "@/pages/Error404Page.jsx";
-import SocioPromocionesPage from "@/pages/SocioPromocionesPage";
+import PaginaInicioPage from "@/pages/pagina-inicio/PaginaInicioPage/PaginaInicioPage.jsx";
+import LoginPage from "@/pages/auth/LoginPage/LoginPage.jsx";
+import FormularioSolicitudSocioPage from "@/pages/socio/FormularioSolicitudSocioPage/FormularioSolicitudSocioPage.jsx";
+import SolicitudEnviadaPage from "@/pages/socio/SolicitudEnviadaPage/SolicitudEnviadaPage.jsx";
+import RevisionSolicitudesSocioPage from "@/pages/moderador/RevisionSolicitudesSocioPage/RevisionSolicitudesSocioPage.jsx";
+import CreacionDeCuentaPage from "@/pages/auth/CreacionDeCuentaPage/CreacionDeCuentaPage.jsx";
+import RecuperarContraPage from "@/pages/auth/RecuperarContraPage/RecuperarContraPage.jsx";
+import MiPerfil from "@/pages/perfil/MiPerfilPage/MiPerfilPage.jsx";
+import Nosotros from "@/pages/pagina-inicio/Nosotros/Nosotros.jsx";
+import ConfirmacionCodigoPage from "@/pages/auth/ConfirmacionCodigoPage/ConfirmacionCodigoPage.jsx";
+import Mapa from "@/pages/mapa/MapaPage/MapaPage.jsx";
+import SpotPage from "@/pages/spots/SpotPage/SpotPage.jsx";
+import CreacionSpotPage from "@/pages/spots/CreacionSpotPage/CreacionSpotPage.jsx";
+import EstadisticasSocioPage from "@/pages/socio/EstadisticasSocioPage/EstadisticasSocioPage.jsx";
+import Error404Page from "@/pages/common/Error404Page/Error404Page.jsx";
+import SocioPromocionesPage from "@/pages/socio/SocioPromocionesPage/SocioPromocionesPage.jsx";
 
 const AppRouter = () => {
   return (
