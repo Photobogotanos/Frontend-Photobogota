@@ -79,24 +79,25 @@ function solicitudReducer(state, action) {
     // Cuando un moderador escribe un comentario interno,
     // lo agregamos a la lista de comentarios de esa solicitud.
     case "AGREGAR_COMENTARIO":
-      return {
-        ...state,
-        solicitudes: state.solicitudes.map((s) =>
-          s.solicitudId === action.payload.id
-            ? {
-                ...s,
-                comentarios: [
-                  ...(s.comentarios || []),
-                  {
-                    texto: action.payload.texto,
-                    autor: action.payload.autor,
-                    fecha: new Date().toLocaleString("es-ES"),
-                  },
-                ],
-              }
-            : s
-        ),
-      };
+    return {
+      ...state,
+      solicitudes: state.solicitudes.map((s) =>
+        s.solicitudId === action.payload.id
+          ? {
+              ...s,
+              comentarios: [
+                ...(s.comentarios || []),
+                {
+                  id: Date.now(),
+                  texto: action.payload.texto,
+                  autor: action.payload.autor,
+                  fecha: new Date().toLocaleString("es-ES"),
+                },
+              ],
+            }
+          : s
+      ),
+    };
 
     // Cambia el filtro de la tab activa (todos, pendiente, aprobada, rechazada).
     case "SET_FILTRO":
