@@ -19,15 +19,15 @@ export default function Footer() {
             </p>
 
             <div className="footer-social">
-              <a href="#" className="footer-social-link" aria-label="Facebook">
+              <button className="footer-social-link" aria-label="Facebook" onClick={() => window.open('https://facebook.com', '_blank', 'noopener,noreferrer')}>
                 <FaFacebookF size={26} />
-              </a>
-              <a href="#" className="footer-social-link" aria-label="YouTube">
+              </button>
+              <button className="footer-social-link" aria-label="YouTube" onClick={() => window.open('https://youtube.com', '_blank', 'noopener,noreferrer')}>
                 <FaYoutube size={26} />
-              </a>
-              <a href="#" className="footer-social-link" aria-label="Instagram">
+              </button>
+              <button className="footer-social-link" aria-label="Instagram" onClick={() => window.open('https://instagram.com', '_blank', 'noopener,noreferrer')}>
                 <FaInstagram size={26} />
-              </a>
+              </button>
             </div>
           </Col>
 
