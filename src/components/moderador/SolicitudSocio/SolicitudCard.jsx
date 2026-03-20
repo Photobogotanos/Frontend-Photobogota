@@ -3,6 +3,8 @@ import Button from "react-bootstrap/Button";
 import Stack from "react-bootstrap/Stack";
 import { FiCheck, FiX, FiEye, FiUser, FiCalendar, FiTag } from "react-icons/fi";
 
+// Estas dos funciones las usamos para mostrar el color y texto
+// correcto según el estado de cada solicitud.
 function getBadgeVariant(estado) {
   switch (estado) {
     case "pendiente": return "warning";
@@ -21,6 +23,8 @@ function getEstadoLabel(estado) {
   }
 }
 
+// Este componente muestra la tarjeta de cada solicitud en la lista.
+// Recibe la solicitud y las funciones del padre para manejar las acciones.
 export default function SolicitudCard({ solicitud, onVerDetalle, onAprobar, onRechazar }) {
   return (
     <div className="solicitud-card">
@@ -33,6 +37,7 @@ export default function SolicitudCard({ solicitud, onVerDetalle, onAprobar, onRe
           {getEstadoLabel(solicitud.estado)}
         </Badge>
       </div>
+
       <div className="solicitud-card-body">
         <h3 className="razon-social">{solicitud.razonSocial}</h3>
         <p className="categoria">
@@ -47,6 +52,9 @@ export default function SolicitudCard({ solicitud, onVerDetalle, onAprobar, onRe
           <span>{solicitud.fechaEnvio}</span>
         </div>
       </div>
+
+      {/* Los botones de aprobar y rechazar solo aparecen
+          si la solicitud todavía está pendiente */}
       <div className="solicitud-card-actions">
         <Button variant="outline-primary" size="sm" onClick={() => onVerDetalle(solicitud)} className="btn-view">
           <FiEye /> Ver Detalle

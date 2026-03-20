@@ -3,9 +3,14 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
+// Este modal aparece cuando el moderador hace clic en "Rechazar".
+// En vez de rechazar directo, pedimos el motivo primero
+// para que quede registrado y el solicitante sepa por qué.
 export default function ModalRechazo({ show, onCerrar, onConfirmar }) {
   const [motivo, setMotivo] = useState("");
 
+  // Al confirmar validamos que haya escrito algo — no tiene sentido
+  // rechazar sin dar una razón.
   const handleConfirmar = () => {
     if (!motivo.trim()) {
       alert("Debes escribir un motivo de rechazo");
@@ -15,6 +20,8 @@ export default function ModalRechazo({ show, onCerrar, onConfirmar }) {
     setMotivo("");
   };
 
+  // Al cerrar limpiamos el campo por si el moderador
+  // abre el modal de nuevo en otra solicitud.
   const handleCerrar = () => {
     setMotivo("");
     onCerrar();
@@ -41,12 +48,8 @@ export default function ModalRechazo({ show, onCerrar, onConfirmar }) {
         </Form.Group>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleCerrar}>
-          Cancelar
-        </Button>
-        <Button variant="danger" onClick={handleConfirmar}>
-          Confirmar rechazo
-        </Button>
+        <Button variant="secondary" onClick={handleCerrar}>Cancelar</Button>
+        <Button variant="danger" onClick={handleConfirmar}>Confirmar rechazo</Button>
       </Modal.Footer>
     </Modal>
   );

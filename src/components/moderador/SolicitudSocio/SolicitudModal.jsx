@@ -1,10 +1,12 @@
+import { useState } from "react";
 import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import { useState } from "react";
 import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
 import { FiCheck, FiX, FiUser, FiMail, FiPhone, FiMapPin, FiCalendar, FiTag, FiFileText, FiDownload } from "react-icons/fi";
 
+// Igual que en SolicitudCard, estas funciones convierten
+// el estado en color y texto legible para el moderador.
 function getBadgeVariant(estado) {
   switch (estado) {
     case "pendiente": return "warning";
@@ -23,15 +25,22 @@ function getEstadoLabel(estado) {
   }
 }
 
+// Este componente muestra el detalle completo de una solicitud.
+// Incluye documentos, información del negocio y propietario,
+// estado con decisión, y la sección de comentarios internos.
 export default function SolicitudModal({ show, solicitud, onCerrar, onAprobar, onRechazar, onAgregarComentario }) {
 
-    const [nuevoComentario, setNuevoComentario] = useState("");
+  // nuevoComentario es local a este componente — solo vive mientras el modal está abierto.
+  const [nuevoComentario, setNuevoComentario] = useState("");
 
-     const handleEnviarComentario = () => {
+  // Cuando el moderador envía el comentario, lo pasamos al padre
+  // y limpiamos el campo de texto.
+  const handleEnviarComentario = () => {
     if (!nuevoComentario.trim()) return;
     onAgregarComentario(solicitud.solicitudId, nuevoComentario);
     setNuevoComentario("");
   };
+
   return (
     <Modal show={show} onHide={onCerrar} size="lg" centered className="solicitud-modal">
       <Modal.Header closeButton>
@@ -39,7 +48,10 @@ export default function SolicitudModal({ show, solicitud, onCerrar, onAprobar, o
           Detalle de Solicitud - {solicitud?.solicitudId}
         </Modal.Title>
       </Modal.Header>
+
       <Modal.Body>
+
+        {/* Documentos adjuntos — se pueden ver y descargar */}
         <div className="detalle-section">
           <h4>Documentación Adjunta</h4>
           <div className="d-flex flex-wrap gap-2 mt-2">
@@ -66,6 +78,8 @@ export default function SolicitudModal({ show, solicitud, onCerrar, onAprobar, o
 
         {solicitud && (
           <div className="solicitud-detalle">
+
+            {/* Información del negocio que quiere ser socio */}
             <div className="detalle-section mt-3">
               <h4>Información del Negocio</h4>
               <div className="detalle-grid">
@@ -84,6 +98,7 @@ export default function SolicitudModal({ show, solicitud, onCerrar, onAprobar, o
               </div>
             </div>
 
+            {/* Datos de contacto del propietario */}
             <div className="detalle-section">
               <h4>Información del Propietario</h4>
               <div className="detalle-grid">
@@ -105,37 +120,41 @@ export default function SolicitudModal({ show, solicitud, onCerrar, onAprobar, o
                 </div>
               </div>
             </div>
-                <div className="detalle-section">
-                <h4>Estado</h4>
-                <Badge bg={getBadgeVariant(solicitud.estado)} className="status">
-                    {getEstadoLabel(solicitud.estado)}
-                </Badge>
 
-                {solicitud.decisionPor && (
-                    <div className="mt-2">
-                    <span className="detalle-label">
-                        {solicitud.estado === "aprobada" ? "Aprobada por:" : "Rechazada por:"}
-                    </span>
-                    <span className="ms-2">{solicitud.decisionPor}</span>
-                    </div>
-                )}
+            {/* Estado actual de la solicitud con el registro de la decisión */}
+            <div className="detalle-section">
+              <h4>Estado</h4>
+              <Badge bg={getBadgeVariant(solicitud.estado)} className="status">
+                {getEstadoLabel(solicitud.estado)}
+              </Badge>
 
-                {solicitud.decisionFecha && (
-                    <div className="mt-1">
-                    <span className="detalle-label">Fecha de decisión:</span>
-                    <span className="ms-2">{solicitud.decisionFecha}</span>
-                    </div>
-                )}
-
-                {solicitud.estado === "rechazada" && solicitud.motivoRechazo && (
-                    <div className="mt-2">
-                    <span className="detalle-label">Motivo de rechazo:</span>
-                    <p className="mt-1">{solicitud.motivoRechazo}</p>
-                    </div>
-                )}
+              {/* Quién tomó la decisión y cuándo */}
+              {solicitud.decisionPor && (
+                <div className="mt-2">
+                  <span className="detalle-label">
+                    {solicitud.estado === "aprobada" ? "Aprobada por:" : "Rechazada por:"}
+                  </span>
+                  <span className="ms-2">{solicitud.decisionPor}</span>
                 </div>
+              )}
+              {solicitud.decisionFecha && (
+                <div className="mt-1">
+                  <span className="detalle-label">Fecha de decisión:</span>
+                  <span className="ms-2">{solicitud.decisionFecha}</span>
+                </div>
+              )}
 
-            {/* Comentarios internos */}
+              {/* El motivo solo aparece si fue rechazada */}
+              {solicitud.estado === "rechazada" && solicitud.motivoRechazo && (
+                <div className="mt-2">
+                  <span className="detalle-label">Motivo de rechazo:</span>
+                  <p className="mt-1">{solicitud.motivoRechazo}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Sección de comentarios internos — solo visible para moderadores.
+                Los comentarios se guardan con autor y fecha automáticamente. */}
             <div className="detalle-section mt-3">
               <h4>Comentarios internos</h4>
 
@@ -145,11 +164,7 @@ export default function SolicitudModal({ show, solicitud, onCerrar, onAprobar, o
                     <div
                       key={i}
                       className="comentario-item p-2 mb-2"
-                      style={{
-                        backgroundColor: "#f8f9fa",
-                        borderRadius: "8px",
-                        borderLeft: "3px solid #0d6efd"
-                      }}
+                      style={{ backgroundColor: "#f8f9fa", borderRadius: "8px", borderLeft: "3px solid #0d6efd" }}
                     >
                       <div className="d-flex justify-content-between mb-1">
                         <span style={{ fontWeight: "500", fontSize: "0.85rem" }}>{comentario.autor}</span>
@@ -172,12 +187,7 @@ export default function SolicitudModal({ show, solicitud, onCerrar, onAprobar, o
                 value={nuevoComentario}
                 onChange={(e) => setNuevoComentario(e.target.value)}
               />
-              <Button
-                variant="outline-primary"
-                size="sm"
-                className="mt-2"
-                onClick={handleEnviarComentario}
-              >
+              <Button variant="outline-primary" size="sm" className="mt-2" onClick={handleEnviarComentario}>
                 Agregar comentario
               </Button>
             </div>
@@ -185,6 +195,8 @@ export default function SolicitudModal({ show, solicitud, onCerrar, onAprobar, o
           </div>
         )}
       </Modal.Body>
+
+      {/* Los botones de aprobar y rechazar solo aparecen si la solicitud está pendiente */}
       <Modal.Footer>
         {solicitud?.estado === "pendiente" && (
           <>

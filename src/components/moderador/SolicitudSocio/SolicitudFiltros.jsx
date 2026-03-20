@@ -2,7 +2,11 @@ import { Container, Tab, Tabs } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import { FiSearch } from "react-icons/fi";
 
+// Este componente maneja las tabs de filtro y el buscador.
+// No tiene estado propio — todo se lo pasa el padre via props.
 export default function SolicitudFiltros({ filtroEstado, busqueda, solicitudes, onTabSelect, onBusqueda }) {
+
+  // Calculamos los contadores aquí para mostrarlos en cada tab.
   const pendientesCount = solicitudes.filter((s) => s.estado === "pendiente").length;
   const aprobadasCount  = solicitudes.filter((s) => s.estado === "aprobada").length;
   const rechazadasCount = solicitudes.filter((s) => s.estado === "rechazada").length;
@@ -29,6 +33,7 @@ export default function SolicitudFiltros({ filtroEstado, busqueda, solicitudes, 
         </Tabs>
       </Container>
 
+      {/* El buscador filtra por ID, razón social o propietario en tiempo real */}
       <div className="solicitud-socio-filters">
         <div className="search-wrapper">
           <FiSearch className="search-icon" />
