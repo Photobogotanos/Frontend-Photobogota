@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -13,7 +13,7 @@ import "./MapaBogota.css";
 import camaraIcon from "@/assets/images/icons/camara.jpg";
 import { FaPlus, FaMinus, FaLocationArrow } from "react-icons/fa";
 import SpotPreviewModal from "@/components/spots/SpotPreviewModal/SpotPreviewModal";
-import { SPOTS } from "@/mocks/spots.mock";
+import { getSpots } from "@/mocks/spots.helpers";
 
 // === CONFIGURACIÓN ICONO DEFAULT ===
 delete L.Icon.Default.prototype._getIconUrl;
@@ -99,6 +99,11 @@ function MapBounds() {
 const MapaBogota = () => {
   const [showModal, setShowModal] = useState(false);
   const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
+  const [spots, setSpots] = useState([]);
+
+  useEffect(() => {
+    setSpots(getSpots());
+  }, []);
 
   const handleMarkerClick = (lugar) => {
     setLugarSeleccionado(lugar);
@@ -124,7 +129,7 @@ const MapaBogota = () => {
           <BotonUbicacion />
           <ControlesZoom />
 
-          {SPOTS.map((lugar) => (
+          {spots.map((lugar) => (
             <Marker
               key={lugar.id}
               position={lugar.coord}
