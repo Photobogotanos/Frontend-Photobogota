@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer} from "react";
 import { Container, Tab, Tabs } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Badge from "react-bootstrap/Badge";
@@ -38,8 +38,8 @@ const solicitudesEjemplo = [
     descripcion: "Café de especialidad con exposiciones de arte",
     estado: "pendiente",
     documentos: [
-      { nombre: "cedula.pdf", url: "#" },
-      { nombre: "rut.pdf", url: "#" }
+      { nombre: "cedula_demo.pdf", url: "/docs/cedula_demo.pdf" },
+      { nombre: "rut_demo.pdf", url: "/docs/rut_demo.pdf" }
     ]
   },
   {
@@ -80,38 +80,56 @@ const solicitudesEjemplo = [
   },
 ];
 
+const initialState ={
+  solicitudes: [],
+  filtroEstado: "todos",
+  busqueda: "",
+  loading: true,
+}
+
+function solicitudReducer(state, action) {
+  switch (action.type) {
+    case "CARGAR_SOLICITUDES":
+      return { ...state, solicitudes: action.payload, loading: false };
+    case "ACTUALIZAR_ESTADO":                              // 👈 este falta
+      return {
+        ...state,
+        solicitudes: state.solicitudes.map((s) =>
+          s.solicitudId === action.payload.id
+            ? { ...s, estado: action.payload.estado }
+            : s
+        ),
+      };
+    case "SET_FILTRO":
+      return { ...state, filtroEstado: action.payload };
+    case "SET_BUSQUEDA":
+      return { ...state, busqueda: action.payload };
+    default:
+      return state;
+  }
+}
 export default function SolicitudSocio() {
-  const [solicitudes, setSolicitudes] = useState([]);
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [filtroEstado, setFiltroEstado] = useState("todos");
-  const [busqueda, setBusqueda] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [state, dispatch] = useReducer(solicitudReducer, initialState);
+  const { solicitudes, filtroEstado, busqueda, loading } = state;
 
-  useEffect(() => {
-    cargarSolicitudes();
-  }, []);
 
-  const cargarSolicitudes = () => {
-    setLoading(true);
-    // Intentar obtener del localStorage
+   useEffect(() => {
     const dataLocalStorage = localStorage.getItem("solicitudSocio");
-    
     if (dataLocalStorage) {
       const parsed = JSON.parse(dataLocalStorage);
-      // Si hay datos en localStorage, agregarlos a las solicitudes
       const solicitudStorage = {
         ...parsed,
         solicitudId: parsed.solicitudId || `SOL-${Date.now().toString().slice(-8)}`,
         fechaEnvio: parsed.fechaEnvio || new Date().toLocaleDateString("es-ES"),
         estado: "pendiente",
       };
-      setSolicitudes([solicitudStorage, ...solicitudesEjemplo]);
+      dispatch({ type: "CARGAR_SOLICITUDES", payload: [solicitudStorage, ...solicitudesEjemplo] });
     } else {
-      setSolicitudes(solicitudesEjemplo);
+      dispatch({ type: "CARGAR_SOLICITUDES", payload: solicitudesEjemplo });
     }
-    setLoading(false);
-  };
+  }, []);
 
   const solicitudesFiltradas = solicitudes.filter((solicitud) => {
     const coincideEstado =
@@ -130,25 +148,15 @@ export default function SolicitudSocio() {
   };
 
   const handleAprobar = (solicitudId) => {
-    setSolicitudes((prev) =>
-      prev.map((s) =>
-        s.solicitudId === solicitudId ? { ...s, estado: "aprobada" } : s
-      )
-    );
+    dispatch({ type: "ACTUALIZAR_ESTADO", payload: { id: solicitudId, estado: "aprobada" } });
     alert(`Solicitud ${solicitudId} aprobada`);
   };
 
-  const handleRechazar = (solicitudId) => {
-    setSolicitudes((prev) =>
-      prev.map((s) =>
-        s.solicitudId === solicitudId ? { ...s, estado: "rechazada" } : s
-      )
-    );
+   const handleRechazar = (solicitudId) => {
+    dispatch({ type: "ACTUALIZAR_ESTADO", payload: { id: solicitudId, estado: "rechazada" } });
     alert(`Solicitud ${solicitudId} rechazada`);
   };
-
   
-
   const getBadgeVariant = (estado) => {
     switch (estado) {
       case "pendiente":
@@ -177,34 +185,18 @@ export default function SolicitudSocio() {
     }
   };
 
-  const pendientesCount = solicitudes.filter(
-    (s) => s.estado === "pendiente"
-  ).length;
-  const aprobadasCount = solicitudes.filter(
-    (s) => s.estado === "aprobada"
-  ).length;
-  const rechazadasCount = solicitudes.filter(
-    (s) => s.estado === "rechazada"
-  ).length;
+  const pendientesCount  = solicitudes.filter((s) => s.estado === "pendiente").length;
+  const aprobadasCount   = solicitudes.filter((s) => s.estado === "aprobada").length;
+  const rechazadasCount  = solicitudes.filter((s) => s.estado === "rechazada").length;
 
-  // Manejar cambio de tab para filtrar por estado
-  const handleTabSelect = (eventKey) => {
-    switch (eventKey) {
-      case "Todos":
-        setFiltroEstado("todos");
-        break;
-      case "Pendiente":
-        setFiltroEstado("pendiente");
-        break;
-      case "Aprobadas":
-        setFiltroEstado("aprobada");
-        break;
-      case "Rechazadas":
-        setFiltroEstado("rechazada");
-        break;
-      default:
-        setFiltroEstado("todos");
-    }
+ const handleTabSelect = (eventKey) => {
+    const mapa = {
+      Todos: "todos",
+      Pendiente: "pendiente",
+      Aprobadas: "aprobada",
+      Rechazadas: "rechazada",
+    };
+    dispatch({ type: "SET_FILTRO", payload: mapa[eventKey] ?? "todos" });
   };
 
   if (loading) {
@@ -248,7 +240,6 @@ return (
         </Tabs>
       </Container>
 
-
       {/* Filtros y búsqueda */}
       <div className="solicitud-socio-filters">
         <div className="search-wrapper">
@@ -257,7 +248,7 @@ return (
             type="text"
             placeholder="Buscar por ID, razón social o propietario..."
             value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            onChange={(e) => dispatch({ type: "SET_BUSQUEDA", payload: e.target.value })}
             className="search-input"
           />
         </div>
@@ -357,7 +348,7 @@ return (
         className="d-inline-flex align-items-center px-3 py-2"
         style={{
           border: '1px solid #e0e0e0',
-          borderRadius: '50px', // Esto le da el efecto redondeado de la imagen
+          borderRadius: '50px',
           backgroundColor: '#fff',
           cursor: 'pointer',
           transition: 'background-color 0.2s'
@@ -372,7 +363,7 @@ return (
         </span>
         <a 
           href={doc.url} 
-          download 
+          download={doc.nombre}
           className="ms-3 text-dark d-flex align-items-center"
           style={{ textDecoration: 'none' }}
         >
@@ -443,7 +434,7 @@ return (
                 </Badge>
               </div>
             </div>
-          )}
+          )}  
         </Modal.Body>
         <Modal.Footer>
           {solicitudSeleccionada?.estado === "pendiente" && (
