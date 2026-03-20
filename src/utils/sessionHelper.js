@@ -13,7 +13,7 @@ export const guardarTokens = (accessToken, refreshToken) => {
 export const obtenerAccessToken = () => Cookies.get("accessToken");
 export const obtenerRefreshToken = () => Cookies.get("refreshToken");
 
-export const eliminarTokens = () => {
+const eliminarTokens = () => {
   Cookies.remove("accessToken");
   Cookies.remove("refreshToken");
 };
