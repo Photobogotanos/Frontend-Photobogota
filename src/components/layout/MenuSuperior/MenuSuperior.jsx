@@ -103,21 +103,16 @@ export default function MenuSuperior() {
             </>
           ) : (
             <div className="d-flex align-items-center ms-auto acciones-usuario">
-              <button
-                as={Link}
+              <Link
                 to="/crear-spot"
                 className={`btn-crear-publicacion ${pulsando ? "pulsing" : ""}`}
                 onMouseEnter={() => setPulsando(false)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navegar("/crear-spot");
-                }}
                 aria-label="Crear nuevo spot"
               >
                 <FaPlus />
                 <span className="texto-completo">Crear Spot</span>
                 <span className="texto-corto">Crear</span>
-              </button>
+              </Link>
 
               <Notificaciones notificaciones={notificaciones} />
             </div>
