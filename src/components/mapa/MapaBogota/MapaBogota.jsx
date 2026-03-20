@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -99,11 +99,7 @@ function MapBounds() {
 const MapaBogota = () => {
   const [showModal, setShowModal] = useState(false);
   const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
-  const [spots, setSpots] = useState([]);
-
-  useEffect(() => {
-    setSpots(getSpots());
-  }, []);
+  const [spots, setSpots] = useState(() => getSpots());
 
   const handleMarkerClick = (lugar) => {
     setLugarSeleccionado(lugar);
