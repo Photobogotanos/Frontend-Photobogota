@@ -6,15 +6,16 @@ import SidebarProfile from "./SidebarProfile";
 import SidebarLink from "./SidebarLink";
 import MenuItems from "./MenuItems";
 import "./MenuLateral.css";
+import { obtenerSesion } from "@/utils/sessionHelper";
 
 export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
   const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
     if (mostrar) {
-      const datosUsuario = localStorage.getItem("miembro");
+      const datosUsuario = obtenerSesion(); 
       if (datosUsuario) {
-        setUsuario(JSON.parse(datosUsuario));
+        setUsuario(datosUsuario);
       } else {
         setUsuario({
           nombre: "Usuario Demo",
