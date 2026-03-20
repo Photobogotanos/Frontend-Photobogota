@@ -6,21 +6,20 @@ import MenuLateral from "@/components/layout/MenuLateral/MenuLateral";
 import "./MenuSuperior.css";
 import logo from "@/assets/images/logo.jpg";
 import Notificaciones from "@/components/notificaciones/Notificaciones/Notificaciones";
-
-
+import { estaLogueado, cerrarSesion } from "@/utils/sessionHelper";
+import { resetEstadoServidor } from "@/utils/serverStatus";
 
 export default function MenuSuperior() {
   const [logueado, setLogueado] = useState(false);
   const [mostrarSidebar, setMostrarSidebar] = useState(false);
-  const [notificaciones] = useState(3); // Ejemplo de notificaciones
+  const [notificaciones] = useState(3);
   const [pulsando, setPulsando] = useState(false);
   const navegar = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const verificarLogin = () => {
-      const estadoLogin = localStorage.getItem("logueado") === "true";
-      setLogueado(estadoLogin);
+      setLogueado(estaLogueado()); // ← usa el helper en vez de leer localStorage directo
     };
 
     verificarLogin();
@@ -32,19 +31,15 @@ export default function MenuSuperior() {
     };
 
     window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, [location]);
 
-  // Efecto de pulso intermitente para el botón (opcional)
   useEffect(() => {
     if (logueado) {
       const interval = setInterval(() => {
         setPulsando(true);
         setTimeout(() => setPulsando(false), 2000);
-      }, 15000); // Pulso cada 15 segundos
+      }, 15000);
 
       return () => clearInterval(interval);
     }
@@ -54,8 +49,8 @@ export default function MenuSuperior() {
   const cerrarSidebar = () => setMostrarSidebar(false);
 
   const manejarCerrarSesion = () => {
-    localStorage.removeItem("logueado");
-    localStorage.removeItem("usuario");
+    resetEstadoServidor(); // limpia el caché del servidor para que al volver a loguearse se reverifique
+    cerrarSesion();        // elimina "logueado", "miembro", accessToken y refreshToken
     setLogueado(false);
     setMostrarSidebar(false);
     navegar("/");
