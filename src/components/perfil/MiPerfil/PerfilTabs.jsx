@@ -3,16 +3,21 @@ import { FaMapMarkerAlt, FaRegEdit } from "react-icons/fa";
 import { GrMapLocation } from "react-icons/gr";
 import SpotCard from "../../spots/SpotCard/SpotCard";
 import ReviewCard from "../ReviewCard/ReviewCard";
+import { getSpots } from "@/mocks/spots.helpers";
 
+// Transformar datos del mock al formato que espera SpotCard
+const transformarSpotParaCard = (spot) => ({
+  title: spot.nombre,
+  tags: [spot.categoria],
+  rating: spot.rating.toString(),
+  likes: spot.totalResenas.toString(),
+  img: spot.imagen,
+});
 
-const spotsEjemplo = [
-  { title: "Alcaldía local Barrios Unidos", tags: ["Naturaleza", "Spots"], rating: "4.8", likes: "294" },
-  { title: "Parroquia San Anselmo",         tags: ["Spots"],               rating: "2.6", likes: "12"  },
-  { title: "Cl. 152 #9-57, Bogotá",         tags: ["Naturaleza", "Spots"], rating: "3.8", likes: "65"  },
-  { title: "Parque de Bavaria",             tags: ["Urbano", "Spots"],     rating: "4.3", likes: "79"  },
-  { title: "Cl. 152 #9-57, Bogotá",         tags: ["Naturaleza", "Spots"], rating: "3.8", likes: "65"  },
-  { title: "Parque de Bavaria",             tags: ["Urbano", "Spots"],     rating: "4.3", likes: "79"  },
-];
+// Obtener spots del mock y transformarlos
+const spotsDatos = getSpots().map(transformarSpotParaCard);
+
+const spotsEjemplo = spotsDatos.slice(0, 6);
 
 const resenasEjemplo = [
   { title: "Jardín Botánico",          rating: 5, likes: 567, date: "Hace 2 meses",   placeId: "4", text: "Un paraíso natural increíble. Perfecto para senderismo y fotografía." },
@@ -23,20 +28,8 @@ const resenasEjemplo = [
   { title: "Bar Gyal",                 rating: 2, likes: 9,   date: "Hace 20 días",   placeId: "4", text: "Un espacio reducido e incómodo, donde los precios son demasiado altos." },
 ];
 
-const guardadosEjemplo = [
-  { title: "Café Bourbon",                       tags: ["Café", "Spots"],              rating: "4.7", likes: "189" },
-  { title: "Galería de Arte Moderno",            tags: ["Arte", "Cultural"],            rating: "4.5", likes: "156" },
-  { title: "Teatro Nacional",                    tags: ["Teatro", "Cultural"],          rating: "4.8", likes: "278" },
-  { title: "Mirador de la Calera",               tags: ["Vistas", "Montaña"],          rating: "4.6", likes: "124" },
-  { title: "Restaurante Andrés Carne de Res",    tags: ["Restaurante", "Nocturno"],    rating: "4.4", likes: "367" },
-  { title: "Parque de la 93",                    tags: ["Parque", "Urbano"],           rating: "4.2", likes: "89"  },
-  { title: "Usaquén - Mercado de las Pulgas",    tags: ["Mercado", "Artesanías"],      rating: "4.3", likes: "142" },
-  { title: "Cinemateca Distrital",               tags: ["Cine", "Cultural"],           rating: "4.1", likes: "67"  },
-  { title: "Biblioteca Virgilio Barco",          tags: ["Biblioteca", "Arquitectura"], rating: "4.7", likes: "98"  },
-  { title: "Zona G - Gastronómica",              tags: ["Gastronomía", "Restaurantes"],rating: "4.5", likes: "213" },
-  { title: "Parque Simón Bolívar",               tags: ["Parque", "Naturaleza"],       rating: "4.6", likes: "178" },
-  { title: "Monserrate",                         tags: ["Religioso", "Vistas"],        rating: "4.9", likes: "456" },
-];
+// Usar los mismos spots transformados para guardados (simulando spots guardados por el usuario)
+const guardadosEjemplo = spotsDatos.slice(0, 6);
 
 // --- Sub-componente: mensaje cuando no hay contenido ---
 // Lo ponemos aquí mismo porque solo se usa en este archivo
