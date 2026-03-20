@@ -16,6 +16,54 @@ import {
 } from "recharts";
 import { FaChartLine, FaStar, FaMapMarkerAlt, FaUsers } from "react-icons/fa";
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          padding: "12px",
+          borderRadius: "8px",
+          color: "#fff",
+        }}
+      >
+        <p style={{ margin: 0, fontWeight: "bold", fontSize: "14px" }}>
+          {label}
+        </p>
+        {payload.map((entry) => (
+            <p key={entry.name} style={{ margin: "4px 0", fontSize: "13px" }}>
+              {entry.name}: {entry.value}
+            </p>
+          ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+const CustomTooltipPie = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          padding: "12px",
+          borderRadius: "8px",
+          color: "#fff",
+        }}
+      >
+        <p style={{ margin: 0, fontWeight: "bold", fontSize: "14px" }}>
+          {payload[0].name}
+        </p>
+        <p style={{ margin: "4px 0", fontSize: "13px" }}>
+          Valor: {payload[0].value}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const GraficosEstadisticos = ({ periodo }) => {
   // Colores para el gráfico de reseñas
   const COLORS_RESENAS = ["#27ae60", "#2ecc71", "#f39c12", "#e67e22", "#e74c3c"];
@@ -122,54 +170,6 @@ const GraficosEstadisticos = ({ periodo }) => {
     { name: "45-54", hombres: 90, mujeres: 110 },
     { name: "55+", hombres: 40, mujeres: 50 },
   ];
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-            padding: "12px",
-            borderRadius: "8px",
-            color: "#fff",
-          }}
-        >
-          <p style={{ margin: 0, fontWeight: "bold", fontSize: "14px" }}>
-            {label}
-          </p>
-          {payload.map((entry) => (
-              <p key={entry.name} style={{ margin: "4px 0", fontSize: "13px" }}>
-                {entry.name}: {entry.value}
-              </p>
-            ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const CustomTooltipPie = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-            padding: "12px",
-            borderRadius: "8px",
-            color: "#fff",
-          }}
-        >
-          <p style={{ margin: 0, fontWeight: "bold", fontSize: "14px" }}>
-            {payload[0].name}
-          </p>
-          <p style={{ margin: "4px 0", fontSize: "13px" }}>
-            Valor: {payload[0].value}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <>
