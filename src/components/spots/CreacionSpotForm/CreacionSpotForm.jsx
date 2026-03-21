@@ -1,20 +1,18 @@
 import { useReducer, useRef, useState } from "react";
-import Select from "react-select";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
-import {
-  FaMapMarkerAlt, FaCamera, FaInfoCircle, FaHeart,
-  FaStar, FaRegStar, FaPaperPlane, FaEye, FaTrash,
-  FaChevronLeft, FaChevronRight,
-} from "react-icons/fa";
+import { FaCamera, FaChevronLeft, FaChevronRight, FaTrash } from "react-icons/fa";
 import "./CreacionSpotForm.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import BackButton from "@/components/common/BackButton";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 import SpotPreviewModal from "../SpotPreviewModal/SpotPreviewModal";
+import HeaderSpot from "./HeaderSpot";
+import SpotInformacionBasica from "./SpotInformacionBasica";
+import SpotCategorizacion from "./SpotCategorizacion";
+import SpotDescripcion from "./SpotDescripcion";
+import SpotBotones from "./SpotBotones";
 
-// ── Reducer ──────────────────────────────────────────────
 const spotFormReducer = (state, action) => {
   switch (action.type) {
     case "SET_IMAGENES": return { ...state, imagenes: action.payload };
@@ -28,8 +26,6 @@ const spotFormReducer = (state, action) => {
     case "SET_CATEGORIA": return { ...state, categoria: action.payload };
     case "SET_LOCALIDAD": return { ...state, localidad: action.payload };
     case "SET_SHOW_MODAL": return { ...state, showModal: action.payload };
-    case "SET_RESENA_RATING": return { ...state, nuevaResena: { ...state.nuevaResena, rating: action.payload } };
-    case "SET_HOVER_RATING": return { ...state, hoverRating: action.payload };
     default: return state;
   }
 };
@@ -40,25 +36,8 @@ const initialState = {
   recomendacion: "", tipsFoto: "",
   categoria: null, localidad: null,
   showModal: false,
-  nuevaResena: { rating: 0, comentario: "" },
-  hoverRating: 0,
 };
 
-const categorias = [
-  { value: "naturaleza", label: "Naturaleza" },
-  { value: "urbano", label: "Urbano" },
-  { value: "historico", label: "Histórico" },
-  { value: "gastronomia", label: "Gastronomía" },
-];
-
-const localidades = [
-  { value: "chapinero", label: "Chapinero" },
-  { value: "usaquen", label: "Usaquén" },
-  { value: "suba", label: "Suba" },
-  { value: "kennedy", label: "Kennedy" },
-];
-
-// ── Drag & Drop Uploader ──────────────────────────────────
 function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, onSelectIndice }) {
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef();
@@ -80,7 +59,6 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
   return (
     <div className="uploader-wrapper">
       {total === 0 ? (
-        // ── Estado vacío ──
         <div
           className={`drop-zone${isDragging ? " dragging" : ""}`}
           onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -100,34 +78,38 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
           <span className="drop-zone-badge">JPG · PNG · WEBP · múltiples</span>
         </div>
       ) : (
-        // ── Con imágenes ──
         <div className="uploader-con-imagenes">
-
-          {/* Imagen principal */}
-          <div className="preview-carousel" onClick={() => onNavigate("next")}>
+          <div
+            className="preview-carousel"
+            onClick={() => onNavigate("next")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && onNavigate("next")}
+            aria-label="Avanzar imagen"
+          >
             <img
               src={previews[indice]}
               alt={`Preview ${indice + 1}`}
               className="preview-img"
             />
-
             <span className="preview-counter">{indice + 1} / {total}</span>
-
             {total > 1 && (
               <>
                 <button type="button" className="preview-nav prev"
-                  onClick={() => onNavigate("prev")} aria-label="Anterior">
+                  onClick={(e) => { e.stopPropagation(); onNavigate("prev"); }}
+                  aria-label="Anterior">
                   <FaChevronLeft />
                 </button>
                 <button type="button" className="preview-nav next"
-                  onClick={() => onNavigate("next")} aria-label="Siguiente">
+                  onClick={(e) => { e.stopPropagation(); onNavigate("next"); }}
+                  aria-label="Siguiente">
                   <FaChevronRight />
                 </button>
               </>
             )}
-
             <button type="button" className="preview-remove"
-              onClick={() => onRemove(indice)} aria-label="Eliminar imagen">
+              onClick={(e) => { e.stopPropagation(); onRemove(indice); }}
+              aria-label="Eliminar imagen">
               <FaTrash />
             </button>
           </div>
@@ -136,7 +118,7 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
           <div className="thumbnails-strip">
             {previews.map((src, idx) => (
               <div
-                key={idx}
+                key={src}
                 className={`thumbnail-item${idx === indice ? " active" : ""}`}
                 onClick={() => onSelectIndice(idx)}
                 role="button"
@@ -145,7 +127,6 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
                 aria-label={`Ver imagen ${idx + 1}`}
               >
                 <img src={src} alt={`Thumb ${idx + 1}`} />
-                {/* Botón eliminar sobre el thumb */}
                 <button
                   type="button"
                   className="thumb-remove"
@@ -170,7 +151,6 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
               <span className="thumbnail-add-text">Añadir</span>
             </div>
           </div>
-
         </div>
       )}
 
@@ -185,36 +165,6 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
     </div>
   );
 }
-
-// ── Sub-componentes ──────────────────────────────────────
-const FormField = ({ label, htmlFor, required, icon, children }) => (
-  <Col xs={12}>
-    <label className="spot-label" htmlFor={htmlFor}>
-      {icon && <span className="me-2">{icon}</span>}
-      {label}
-      {required && <RequiredMark />}
-    </label>
-    {children}
-  </Col>
-);
-
-const TextAreaField = ({ label, htmlFor, required, icon, value, onChange, rows, placeholder }) => (
-  <div className="mb-3">
-    <label className="spot-label" htmlFor={htmlFor}>
-      {icon && <span className="me-2">{icon}</span>}
-      {label}
-      {required && <RequiredMark />}
-    </label>
-    <textarea
-      id={htmlFor}
-      className="spot-textarea"
-      rows={rows}
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
-  </div>
-);
 
 // ── Componente principal ─────────────────────────────────
 export default function CrearSpot() {
@@ -244,17 +194,6 @@ export default function CrearSpot() {
     dispatch({ type: "SET_INDICE_IMAGEN", payload: next });
   };
 
-  const usarUbicacionActual = () => {
-    if (!navigator.geolocation) return alert("Geolocalización no disponible");
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => dispatch({
-        type: "SET_DIRECCION",
-        payload: `${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)}`,
-      }),
-      () => alert("No se pudo obtener tu ubicación")
-    );
-  };
-
   const spotData = {
     nombre: state.nombreLugar || "Nombre del lugar",
     direccion: state.direccion || "Dirección del lugar",
@@ -273,11 +212,7 @@ export default function CrearSpot() {
       <div className="formulario-contenedor">
 
         {/* ── Header editorial ── */}
-        <div className="spot-header">
-          <span className="spot-header-subtitle">Nueva publicación</span>
-          <h2 className="spot-header-title">Crear spot</h2>
-          <span className="spot-header-line" />
-        </div>
+        <HeaderSpot />
 
         <Row className="g-4">
           <Col xs={12}>
@@ -296,121 +231,39 @@ export default function CrearSpot() {
               onSelectIndice={(idx) => dispatch({ type: "SET_INDICE_IMAGEN", payload: idx })}
             />
 
-            {/* Nombre */}
-            <Row className="g-3 mb-2 mt-1">
-              <FormField label="Nombre del lugar" htmlFor="nombre-lugar" required>
-                <input
-                  id="nombre-lugar"
-                  type="text"
-                  className="spot-input"
-                  placeholder="Ej: Mirador de Monserrate"
-                  value={state.nombreLugar}
-                  onChange={(e) => dispatch({ type: "SET_NOMBRE_LUGAR", payload: e.target.value })}
-                />
-              </FormField>
-            </Row>
-
-            {/* Ubicación */}
-            <Row className="g-3 mb-2">
-              <FormField label="Ubicación" htmlFor="ubicacion-lugar" required icon={<FaMapMarkerAlt />}>
-                <div className="d-flex gap-2">
-                  <input
-                    id="ubicacion-lugar"
-                    type="text"
-                    className="spot-input"
-                    placeholder="Dirección o referencia"
-                    value={state.direccion}
-                    onChange={(e) => dispatch({ type: "SET_DIRECCION", payload: e.target.value })}
-                  />
-                  <button
-                    type="button"
-                    className="spot-location-btn"
-                    onClick={usarUbicacionActual}
-                    aria-label="Obtener ubicación actual"
-                  >
-                    <FaMapMarkerAlt />
-                  </button>
-                </div>
-              </FormField>
-            </Row>
-
-            {/* Categoría y localidad */}
-            <Row className="g-3 mb-3">
-              <Col xs={12} md={6}>
-                <label className="spot-label" htmlFor="categoria-spot">
-                  Categoría <RequiredMark />
-                </label>
-                <Select
-                  inputId="categoria-spot"
-                  options={categorias}
-                  classNamePrefix="spot-select"
-                  value={state.categoria}
-                  onChange={(val) => dispatch({ type: "SET_CATEGORIA", payload: val })}
-                  placeholder="Seleccionar..."
-                />
-              </Col>
-              <Col xs={12} md={6}>
-                <label className="spot-label" htmlFor="localidad-spot">
-                  Localidad <RequiredMark />
-                </label>
-                <Select
-                  inputId="localidad-spot"
-                  options={localidades}
-                  classNamePrefix="spot-select"
-                  value={state.localidad}
-                  onChange={(val) => dispatch({ type: "SET_LOCALIDAD", payload: val })}
-                  placeholder="Seleccionar..."
-                />
-              </Col>
-            </Row>
-
-            <TextAreaField
-              label="Descripción de la imagen"
-              htmlFor="descripcion-imagen"
-              required
-              value={state.descripcionImagen}
-              onChange={(val) => dispatch({ type: "SET_DESCRIPCION", payload: val })}
-              rows={2}
-              placeholder="Describe lo que se ve en la foto"
+            {/* Información básica */}
+            <SpotInformacionBasica
+              nombreLugar={state.nombreLugar}
+              direccion={state.direccion}
+              onNombreChange={(val) => dispatch({ type: "SET_NOMBRE_LUGAR", payload: val })}
+              onDireccionChange={(val) => dispatch({ type: "SET_DIRECCION", payload: val })}
             />
 
-            <TextAreaField
-              label="¿Por qué recomiendas este lugar?"
-              htmlFor="recomendacion-lugar"
-              required
-              icon={<FaHeart />}
-              value={state.recomendacion}
-              onChange={(val) => dispatch({ type: "SET_RECOMENDACION", payload: val })}
-              rows={3}
-              placeholder="Cuéntanos tu experiencia"
+            {/* Categorización */}
+            <SpotCategorizacion
+              categoria={state.categoria}
+              localidad={state.localidad}
+              onCategoriaChange={(val) => dispatch({ type: "SET_CATEGORIA", payload: val })}
+              onLocalidadChange={(val) => dispatch({ type: "SET_LOCALIDAD", payload: val })}
             />
 
-            <TextAreaField
-              label="Tips de fotografía (opcional)"
-              htmlFor="tips-foto"
-              icon={<FaInfoCircle />}
-              value={state.tipsFoto}
-              onChange={(val) => dispatch({ type: "SET_TIPS_FOTO", payload: val })}
-              rows={2}
-              placeholder="Hora ideal, lente, ángulo, etc."
+            {/* Descripción */}
+            <SpotDescripcion
+              descripcionImagen={state.descripcionImagen}
+              recomendacion={state.recomendacion}
+              tipsFoto={state.tipsFoto}
+              onDescripcionChange={(val) => dispatch({ type: "SET_DESCRIPCION", payload: val })}
+              onRecomendacionChange={(val) => dispatch({ type: "SET_RECOMENDACION", payload: val })}
+              onTipsFotoChange={(val) => dispatch({ type: "SET_TIPS_FOTO", payload: val })}
             />
           </Col>
         </Row>
 
         {/* Botones */}
-        <div className="botones-contenedor mt-3">
-          <BackButton />
-          <button
-            type="button"
-            className="spot-btn-preview"
-            onClick={() => dispatch({ type: "SET_SHOW_MODAL", payload: true })}
-          >
-            <FaEye /> Previsualizar
-          </button>
-          <button type="button" className="spot-btn-publish">
-            <FaPaperPlane /> Publicar
-          </button>
-        </div>
+        <SpotBotones
+          onPreview={() => dispatch({ type: "SET_SHOW_MODAL", payload: true })}
+          onPublish={() => { }}
+        />
 
         <SpotPreviewModal
           show={state.showModal}
