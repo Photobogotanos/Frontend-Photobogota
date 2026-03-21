@@ -56,9 +56,9 @@ export default function MenuItems({ rol, cerrar }) {
           <SidebarLink
             icon={<FaBullhorn />}
             texto="Promociones"
-            to="/promociones"
+            to="/socio-promociones"
             onClick={cerrar}
-            activo={esRutaActiva("/promociones")}
+            activo={esRutaActiva("/socio-promociones")}
           />
           <SidebarLink
             icon={<FaChartBar />}

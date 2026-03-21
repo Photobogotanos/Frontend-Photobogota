@@ -1,0 +1,477 @@
+/* Contenedor principal */
+.promociones-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.6s ease;
+}
+
+/* Header */
+.promociones-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.promociones-header .header-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.promociones-header .header-titulo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.promociones-header .header-icon {
+  color: var(--color-primary);
+  font-size: 1.5rem;
+}
+
+.promociones-header .header-subtitulo {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Botón crear promoción */
+.btn-crear-promocion {
+  background: var(--color-primary);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(128, 111, 190, 0.35);
+}
+
+.btn-crear-promocion:hover {
+  background: #6a5acd;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(128, 111, 190, 0.45);
+  color: white;
+}
+
+/* Filtros */
+.filtros-promociones {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.filtro-btn {
+  padding: 10px 20px;
+  border: 1px solid #e5e5e5;
+  background: white;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.filtro-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.filtro-btn.activo {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  box-shadow: 0 2px 10px rgba(128, 111, 190, 0.3);
+}
+
+/* Estadísticas rápidas */
+.stat-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon-promociones {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* Grid de promociones */
+.promociones-grid {
+  margin-top: 8px;
+}
+
+/* Tarjeta de promoción */
+.promocion-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.promocion-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.promocion-card.expirada {
+  opacity: 0.75;
+}
+
+.promocion-card.expirada:hover {
+  opacity: 1;
+}
+
+/* Imagen de promoción */
+.promocion-imagen-container {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.promocion-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.promocion-card:hover .promocion-imagen {
+  transform: scale(1.08);
+}
+
+.promocion-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.promocion-descuento {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+/* Cuerpo de la tarjeta */
+.promocion-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.promocion-titulo {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.promocion-descripcion {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Código de promoción */
+.promocion-codigo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-top: 4px;
+}
+
+.codigo-label {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.codigo-valor {
+  background: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  border: 1px dashed #c5b9e8;
+}
+
+.btn-copy {
+  padding: 2px 6px;
+  font-size: 0.85rem;
+  color: #888;
+  text-decoration: none;
+}
+
+/* Fechas */
+.promocion-fechas {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  background: #fafafa;
+  border-radius: 10px;
+}
+
+.fecha-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fecha-label {
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.fecha-valor {
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Usos */
+.promocion-usos {
+  margin-top: 4px;
+}
+
+.usos-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.usos-porcentaje {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.usos-bar {
+  height: 6px;
+  background: #e5e5e5;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.usos-progress {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* Acciones */
+.promocion-acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.promocion-acciones .btn {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.btn-editar:hover {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.btn-duplicar:hover {
+  background: #6b7280;
+  color: white;
+  border-color: #6b7280;
+}
+
+.btn-desactivar:hover {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+/* Sin resultados */
+.no-resultados {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-resultados-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.no-resultados h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.no-resultados p {
+  font-size: 0.95rem;
+  color: #888;
+}
+
+/* Animación fadeIn */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .promociones-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-crear-promocion {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .promociones-container {
+    padding: 16px;
+  }
+  
+  .promociones-header .header-titulo {
+    font-size: 1.4rem;
+  }
+  
+  .filtros-promociones {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 8px;
+  }
+  
+  .filtro-btn {
+    flex-shrink: 0;
+  }
+  
+  .stat-box {
+    padding: 16px;
+  }
+  
+  .stat-icon-promociones {
+    width: 44px;
+    height: 44px;
+    font-size: 1.15rem;
+  }
+  
+  .stat-number {
+    font-size: 1.3rem;
+  }
+  
+  .promocion-imagen-container {
+    height: 160px;
+  }
+  
+  .promocion-body {
+    padding: 16px;
+  }
+  
+  .promocion-acciones {
+    flex-direction: column;
+  }
+  
+  .promocion-acciones .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .promociones-header .header-titulo {
+    font-size: 1.25rem;
+  }
+  
+  .promociones-header .header-subtitulo {
+    font-size: 0.85rem;
+  }
+  
+  .promocion-descuento {
+    font-size: 0.95rem;
+    padding: 6px 12px;
+  }
+  
+  .promocion-titulo {
+    font-size: 0.95rem;
+  }
+}
