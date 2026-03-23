@@ -3,16 +3,7 @@ import { FaMapMarkerAlt, FaRegEdit } from "react-icons/fa";
 import { GrMapLocation } from "react-icons/gr";
 import SpotCard from "../../spots/SpotCard/SpotCard";
 import ReviewCard from "../ReviewCard/ReviewCard";
-
-
-const spotsEjemplo = [
-  { title: "Alcaldía local Barrios Unidos", tags: ["Naturaleza", "Spots"], rating: "4.8", likes: "294" },
-  { title: "Parroquia San Anselmo",         tags: ["Spots"],               rating: "2.6", likes: "12"  },
-  { title: "Cl. 152 #9-57, Bogotá",         tags: ["Naturaleza", "Spots"], rating: "3.8", likes: "65"  },
-  { title: "Parque de Bavaria",             tags: ["Urbano", "Spots"],     rating: "4.3", likes: "79"  },
-  { title: "Cl. 152 #9-57, Bogotá",         tags: ["Naturaleza", "Spots"], rating: "3.8", likes: "65"  },
-  { title: "Parque de Bavaria",             tags: ["Urbano", "Spots"],     rating: "4.3", likes: "79"  },
-];
+import { SPOTS } from "../../../mocks/spots.mock.js";
 
 const resenasEjemplo = [
   { title: "Jardín Botánico",          rating: 5, likes: 567, date: "Hace 2 meses",   placeId: "4", text: "Un paraíso natural increíble. Perfecto para senderismo y fotografía." },
@@ -38,8 +29,7 @@ const guardadosEjemplo = [
   { title: "Monserrate",                         tags: ["Religioso", "Vistas"],        rating: "4.9", likes: "456" },
 ];
 
-// --- Sub-componente: mensaje cuando no hay contenido ---
-// Lo ponemos aquí mismo porque solo se usa en este archivo
+// Mensaje cuando no hay contenido en una pestaña
 const SinContenido = ({ icono, titulo, descripcion, textBoton, rutaBoton }) => {
   const navigate = useNavigate();
   return (
@@ -54,7 +44,6 @@ const SinContenido = ({ icono, titulo, descripcion, textBoton, rutaBoton }) => {
   );
 };
 
-// --- Componente principal de tabs ---
 const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuardados }) => {
   return (
     <>
@@ -87,14 +76,16 @@ const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuar
         {tab === "publicaciones" && (
           tienePublicaciones ? (
             <div className="publicaciones-grid">
-              {spotsEjemplo.map((spot, i) => (
+              {SPOTS.map((spot) => (    // ya no usamos spotsEjemplo, usamos el mock real
                 <SpotCard
-                  key={i}
-                  img="public/images/publicaciones/default-post.jpg"
-                  title={spot.title}
-                  tags={spot.tags}
-                  rating={spot.rating}
-                  likes={spot.likes}
+                  key={spot.id}             // id único del mock
+                  id={spot.id}              //id para poder navegar al lugar al hacer click
+                  img={spot.imagen}         // mock: "imagen"       → SpotCard: "img"
+                  title={spot.nombre}       // mock: "nombre"       → SpotCard: "title"
+                  rating={spot.rating}      // coincide igual
+                  likes={spot.totalResenas} // mock: "totalResenas" → SpotCard: "likes"
+                  tags={[spot.categoria]}   // categoria es string, SpotCard espera array
+                  
                 />
               ))}
             </div>

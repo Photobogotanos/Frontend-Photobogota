@@ -4,8 +4,8 @@ const PerfilStats = ({ tienePublicaciones, tieneResenas, tieneGuardados }) => {
   return (
     <Row className="perfil-stats">
       <Col xs={4} className="perfil-stat">
-        <h4>{tienePublicaciones ? "6" : "0"}</h4>
-        <p>Publicaciones</p>
+        <h4>{tienePublicaciones ? "5" : "0"}</h4>
+        <p>Spots</p>
       </Col>
 
       <Col xs={4} className="perfil-stat">
