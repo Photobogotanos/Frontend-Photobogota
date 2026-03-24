@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Offcanvas } from "react-bootstrap";
 import { FaSignOutAlt } from "react-icons/fa";
 import SidebarHeader from "./SidebarHeader";
@@ -11,20 +11,18 @@ import { obtenerSesion } from "@/utils/sessionHelper";
 export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
   const [usuario, setUsuario] = useState(null);
 
-  useEffect(() => {
-    if (mostrar) {
-      const datosUsuario = obtenerSesion(); 
-      if (datosUsuario) {
-        setUsuario(datosUsuario);
-      } else {
-        setUsuario({
-          nombre: "Usuario Demo",
-          username: "@usuario_demo",
-          rol: "miembro",
-        });
-      }
+  const handleShow = () => {
+    const datosUsuario = obtenerSesion();
+    if (datosUsuario) {
+      setUsuario(datosUsuario);
+    } else {
+      setUsuario({
+        nombre: "Usuario Demo",
+        username: "@usuario_demo",
+        rol: "miembro",
+      });
     }
-  }, [mostrar]);
+  };
 
   const rol = usuario?.rol || "miembro";
 
@@ -32,6 +30,7 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
     <Offcanvas
       show={mostrar}
       onHide={cerrar}
+      onShow={handleShow}
       placement="start"
       className="sidebar-moderna"
     >
