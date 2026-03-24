@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
@@ -20,45 +20,90 @@ import { FaLock, FaEye, FaEyeSlash, FaCheck, FaTimes, FaUser } from "react-icons
 import { IoIosSend } from "react-icons/io";
 import BackButton from "../../common/BackButton";
 
+// Reducer function
+function formReducer(state, action) {
+  switch (action.type) {
+    case "SET_FIELD":
+      return { ...state, [action.payload.field]: action.payload.value };
+    case "SET_PASSWORD":
+      return {
+        ...state,
+        password: action.payload.value,
+        passwordMatch: action.payload.passwordMatch,
+        validationRules: action.payload.validationRules,
+      };
+    case "SET_PASSWORD2":
+      return {
+        ...state,
+        password2: action.payload.value,
+        passwordMatch: action.payload.passwordMatch,
+      };
+    case "TOGGLE_MOSTRAR_CONTRASENA":
+      return { ...state, mostrarContrasena: !state.mostrarContrasena };
+    case "TOGGLE_MOSTRAR_CONTRASENA2":
+      return { ...state, mostrarContrasena2: !state.mostrarContrasena2 };
+    case "SET_CARGANDO":
+      return { ...state, cargando: action.payload };
+    case "RESET_FORM":
+      return {
+        ...state,
+        email: "",
+        nombres: "",
+        apellidos: "",
+        nombreUsuario: "",
+        fecha: "",
+        password: "",
+        password2: "",
+        passwordMatch: null,
+        validationRules: {
+          length: false,
+          upper: false,
+          lower: false,
+          number: false,
+        },
+      };
+    default:
+      return state;
+  }
+}
+
 function FormularioCreacion() {
   const navegar = useNavigate();
 
-  // ESTADOS
-  const [email, setEmail] = useState("");
-  const [nombres, setNombres] = useState("");
-  const [apellidos, setApellidos] = useState("");
-  const [nombreUsuario, setNombreUsuario] = useState("");
-  const [fecha, setFecha] = useState("");
-  const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
+  // Estado inicial del reducer
+  const initialState = {
+    email: "",
+    nombres: "",
+    apellidos: "",
+    nombreUsuario: "",
+    fecha: "",
+    password: "",
+    password2: "",
+    mostrarContrasena: false,
+    mostrarContrasena2: false,
+    passwordMatch: null,
+    validationRules: {
+      length: false,
+      upper: false,
+      lower: false,
+      number: false,
+    },
+    cargando: false,
+  };
 
-  const [mostrarContrasena, setMostrarContrasena] = useState(false);
-  const [mostrarContrasena2, setMostrarContrasena2] = useState(false);
-
-  const [passwordMatch, setPasswordMatch] = useState(null);
-  const [validationRules, setValidationRules] = useState({
-    length: false,
-    upper: false,
-    lower: false,
-    number: false,
-  });
-  const [cargando, setCargando] = useState(false);
+  // Reducer
+  const [state, dispatch] = useReducer(formReducer, initialState);
 
   // FUNCIONES
   const validarPasswordEnTiempoReal = (value, isConfirm = false) => {
-    // Actualizar el estado correspondiente
-    if (!isConfirm) {
-      setPassword(value);
-    } else {
-      setPassword2(value);
-    }
-
+    const { password, password2 } = state;
+    
     // Determinar cuál es la contraseña y cuál la confirmación
     const pass = isConfirm ? password : value;
     const confirm = isConfirm ? value : password2;
 
     // Verificar si las contraseñas coinciden
-    setPasswordMatch(pass && confirm ? pass === confirm : null);
+    const passwordMatch = pass && confirm ? pass === confirm : null;
 
     // Reglas de validación de contraseña
     const rules = {
@@ -68,13 +113,16 @@ function FormularioCreacion() {
       number: /\d/.test(value),
     };
 
-    setValidationRules(rules);
-
-    // Calcular fortaleza de contraseña
+    dispatch({
+      type: isConfirm ? "SET_PASSWORD2" : "SET_PASSWORD",
+      payload: { value, passwordMatch, validationRules: rules },
+    });
   };
 
   const validarFormulario = async (e) => {
     e.preventDefault();
+
+    const { email, nombres, apellidos, nombreUsuario, fecha, password, password2 } = state;
 
     // Validación de campos vacíos
     if (!email || !nombres || !apellidos || !nombreUsuario || !fecha || !password || !password2) {
@@ -119,7 +167,7 @@ function FormularioCreacion() {
     }
 
     try {
-      setCargando(true);
+      dispatch({ type: "SET_CARGANDO", payload: true });
       // Usar el servicio de autenticación
       const resultado = await registrarUsuario({
         email,
@@ -163,7 +211,7 @@ function FormularioCreacion() {
         text: "Ocurrió un error inesperado. Por favor intenta de nuevo.",
       });
     } finally {
-      setCargando(false);
+      dispatch({ type: "SET_CARGANDO", payload: false });
     }
   };
 
@@ -188,8 +236,8 @@ function FormularioCreacion() {
             <Form.Control
               type="email"
               className="rounded-pill input-without-focus"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={state.email}
+              onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "email", value: e.target.value } })}
             />
           </Form.Group>
 
@@ -202,8 +250,8 @@ function FormularioCreacion() {
             </Form.Label>
             <Form.Control
               className="rounded-pill input-without-focus"
-              value={nombres}
-              onChange={(e) => setNombres(e.target.value)}
+              value={state.nombres}
+              onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "nombres", value: e.target.value } })}
             />
           </Form.Group>
 
@@ -216,8 +264,8 @@ function FormularioCreacion() {
             </Form.Label>
             <Form.Control
               className="rounded-pill input-without-focus"
-              value={apellidos}
-              onChange={(e) => setApellidos(e.target.value)}
+              value={state.apellidos}
+              onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "apellidos", value: e.target.value } })}
             />
           </Form.Group>
 
@@ -230,8 +278,8 @@ function FormularioCreacion() {
             </Form.Label>
             <Form.Control
               className="rounded-pill input-without-focus"
-              value={nombreUsuario}
-              onChange={(e) => setNombreUsuario(e.target.value)}
+              value={state.nombreUsuario}
+              onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "nombreUsuario", value: e.target.value } })}
             />
           </Form.Group>
 
@@ -249,13 +297,15 @@ function FormularioCreacion() {
                 locale: Spanish,
                 allowInput: true,
               }}
-              value={fecha}
+              value={state.fecha}
               onChange={(selectedDates) =>
-                setFecha(
-                  selectedDates[0]
-                    ? selectedDates[0].toISOString().split("T")[0]
-                    : ""
-                )
+                dispatch({ 
+                  type: "SET_FIELD", 
+                  payload: { 
+                    field: "fecha", 
+                    value: selectedDates[0] ? selectedDates[0].toISOString().split("T")[0] : "" 
+                  } 
+                })
               }
               className="rounded-pill form-control input-without-focus"
             />
@@ -274,17 +324,17 @@ function FormularioCreacion() {
             <div className="input-icon-container">
               <Form.Control
                 className="rounded-pill input-with-icon input-without-focus"
-                type={mostrarContrasena ? "text" : "password"}
-                value={password}
+                type={state.mostrarContrasena ? "text" : "password"}
+                value={state.password}
                 onChange={(e) =>
                   validarPasswordEnTiempoReal(e.target.value, false)
                 }
               />
               <button type="button"
                 className="eye-icon"
-                onClick={() => setMostrarContrasena(!mostrarContrasena)}
+                onClick={() => dispatch({ type: "TOGGLE_MOSTRAR_CONTRASENA" })}
               >
-                {mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
+                {state.mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
           </Form.Group>
@@ -300,27 +350,26 @@ function FormularioCreacion() {
             <div className="input-icon-container">
               <Form.Control
                 className="rounded-pill input-with-icon input-without-focus"
-                type={mostrarContrasena2 ? "text" : "password"}
-                value={password2}
+                type={state.mostrarContrasena2 ? "text" : "password"}
+                value={state.password2}
                 onChange={(e) =>
                   validarPasswordEnTiempoReal(e.target.value, true)
                 }
               />
               <button type="button"
                 className="eye-icon"
-                onClick={() => setMostrarContrasena2(!mostrarContrasena2)}
+                onClick={() => dispatch({ type: "TOGGLE_MOSTRAR_CONTRASENA2" })}
               >
-                {mostrarContrasena2 ? <FaEyeSlash /> : <FaEye />}
+                {state.mostrarContrasena2 ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
 
             {/* Indicador de coincidencia */}
-            {password2 !== "" && (
+            {state.password2 !== "" && (
               <span
-                className={`password-match mt-2 ${passwordMatch ? "ok" : "bad"
-                  }`}
+                className={`password-match mt-2 ${state.passwordMatch ? "ok" : "bad"}`}
               >
-                {passwordMatch ? (
+                {state.passwordMatch ? (
                   <>
                     <FaCheck /> Las contraseñas coinciden
                   </>
@@ -334,20 +383,20 @@ function FormularioCreacion() {
 
             {/* Reglas de validación */}
             <ul className="password-rules mt-2">
-              <li className={validationRules.length ? "valid" : "invalid"}>
-                {validationRules.length ? <FaCheck /> : <FaTimes />} Mínimo 8
+              <li className={state.validationRules.length ? "valid" : "invalid"}>
+                {state.validationRules.length ? <FaCheck /> : <FaTimes />} Mínimo 8
                 caracteres
               </li>
-              <li className={validationRules.upper ? "valid" : "invalid"}>
-                {validationRules.upper ? <FaCheck /> : <FaTimes />} Una
+              <li className={state.validationRules.upper ? "valid" : "invalid"}>
+                {state.validationRules.upper ? <FaCheck /> : <FaTimes />} Una
                 mayúscula
               </li>
-              <li className={validationRules.lower ? "valid" : "invalid"}>
-                {validationRules.lower ? <FaCheck /> : <FaTimes />} Una
+              <li className={state.validationRules.lower ? "valid" : "invalid"}>
+                {state.validationRules.lower ? <FaCheck /> : <FaTimes />} Una
                 minúscula
               </li>
-              <li className={validationRules.number ? "valid" : "invalid"}>
-                {validationRules.number ? <FaCheck /> : <FaTimes />} Un número
+              <li className={state.validationRules.number ? "valid" : "invalid"}>
+                {state.validationRules.number ? <FaCheck /> : <FaTimes />} Un número
               </li>
             </ul>
           </Form.Group>
@@ -358,14 +407,14 @@ function FormularioCreacion() {
           <button
             className="creacion-formulario-button rounded-pill"
             type="submit"
-            disabled={cargando}
+            disabled={state.cargando}
           >
             Guardar <IoIosSend />
           </button>
         </div>
 
         {/* OVERLAY DE CARGA */}
-        {cargando && (
+        {state.cargando && (
           <div className="loading-overlay">
             <SpinnerLoader texto="Registrando..." />
           </div>
