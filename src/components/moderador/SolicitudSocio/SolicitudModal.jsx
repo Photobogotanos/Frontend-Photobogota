@@ -160,9 +160,9 @@ export default function SolicitudModal({ show, solicitud, onCerrar, onAprobar, o
 
               {solicitud.comentarios && solicitud.comentarios.length > 0 ? (
                 <div className="comentarios-lista mb-3">
-                  {solicitud.comentarios.map((comentario, i) => (
+                  {solicitud.comentarios.map((comentario) => (
                     <div
-                      key={i}
+                      key={comentario.id}
                       className="comentario-item p-2 mb-2"
                       style={{ backgroundColor: "#f8f9fa", borderRadius: "8px", borderLeft: "3px solid #0d6efd" }}
                     >
