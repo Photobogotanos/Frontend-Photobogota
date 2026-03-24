@@ -17,15 +17,12 @@ const transformarSpotParaCard = (spot) => ({
 // Obtener spots del mock y transformarlos
 const spotsDatos = getSpots().map(transformarSpotParaCard);
 
-const spotsEjemplo = spotsDatos.slice(0, 6);
-
 const resenasEjemplo = [
-  { title: "Jardín Botánico",          rating: 5, likes: 567, date: "Hace 2 meses",   placeId: "4", text: "Un paraíso natural increíble. Perfecto para senderismo y fotografía." },
-  { title: "Restaurante El Cielo",     rating: 4, likes: 234, date: "Hace 1 mes",     placeId: "3", text: "Experiencia gastronómica excepcional con presentación creativa de platos." },
-  { title: "Café Bourbon",             rating: 4, likes: 189, date: "Hace 2 semanas", placeId: "2", text: "El mejor café de la ciudad. Ambiente acogedor y personal amable." },
-  { title: "Galería de Arte Moderno",  rating: 5, likes: 312, date: "Hace 1 semana",  placeId: "1", text: "Exposiciones increíbles y siempre renovadas." },
-  { title: "Museo del oro",            rating: 5, likes: 945, date: "Hace 3 meses",   placeId: "5", text: "La experiencia en el Museo del Oro fue increíble, con una impresionante colección." },
-  { title: "Bar Gyal",                 rating: 2, likes: 9,   date: "Hace 20 días",   placeId: "4", text: "Un espacio reducido e incómodo, donde los precios son demasiado altos." },
+  { title: "Estación Aguas",          rating: 5, likes: 850, date: "Hace 1 mes",     placeId: 1, text: "Es una estación muy bien ubicada para moverse por el centro. A veces es concurrida, pero el acceso es rápido." },
+  { title: "Monserrate",              rating: 5, likes: 2340, date: "Hace 2 semanas", placeId: 2, text: "Un lugar imperdible en Bogotá. La vista es increíble y el recorrido vale totalmente la pena." },
+  { title: "Parque El Jazmín",        rating: 4, likes: 420, date: "Hace 3 semanas", placeId: 3, text: "Buen parque para caminar y hacer deporte. Es tranquilo y bien cuidado." },
+  { title: "Parque Timiza",            rating: 5, likes: 1800, date: "Hace 1 semana",  placeId: 4, text: "Excelente parque para hacer ejercicio y pasar el día. Muy amplio y con buenas zonas verdes." },
+  { title: "Estación Minuto de Dios", rating: 4, likes: 950, date: "Hace 1 mes",     placeId: 5, text: "Funcional y bien ubicada, aunque en horas pico suele llenarse bastante." },
 ];
 
 // Usar los mismos spots transformados para guardados (simulando spots guardados por el usuario)
@@ -108,7 +105,7 @@ const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuar
             <div className="reviews-grid">
               {resenasEjemplo.map((resena, i) => (
                 <ReviewCard
-                  key={i}
+                  key={resena.placeId} 
                   title={resena.title}
                   rating={resena.rating}
                   text={resena.text}
