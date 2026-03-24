@@ -75,12 +75,12 @@ const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuar
         {tab === "publicaciones" && (
           tienePublicaciones ? (
             <div className="publicaciones-grid">
-              {SPOTS.map((spot) => (    // ya no usamos spotsEjemplo, usamos el mock real
+              {spotsDatos.map((spot) => (    // ya no usamos spotsEjemplo, usamos el mock real
                 <SpotCard
                   key={spot.id}             // id único del mock
                   id={spot.id}              //id para poder navegar al lugar al hacer click
-                  img={spot.imagen}         // mock: "imagen"       → SpotCard: "img"
-                  title={spot.nombre}       // mock: "nombre"       → SpotCard: "title"
+                  img={spot.img}          // spotsDatos tiene la propiedad 'img' (transformada de 'imagen')
+                  title={spot.title}       // spotsDatos tiene la propiedad 'title' (transformada de 'nombre')
                   rating={spot.rating}      // coincide igual
                   likes={spot.totalResenas} // mock: "totalResenas" → SpotCard: "likes"
                   tags={[spot.categoria]}   // categoria es string, SpotCard espera array
