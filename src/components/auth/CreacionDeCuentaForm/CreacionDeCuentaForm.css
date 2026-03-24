@@ -80,7 +80,8 @@
   margin-bottom: 8px;
 }
 
-.creacion-formulario-label span {
+.creacion-formulario-label span,
+.creacion-formulario-label button {
   color: #e74c3c;
   cursor: pointer;
   font-size: 16px;
@@ -163,6 +164,12 @@
   color: #666;
   font-size: 18px;
   transition: color 0.3s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .eye-icon:hover {
@@ -199,7 +206,8 @@
 }
 
 /* INDICADOR DE COINCIDENCIA */
-.password-match {
+.password-match,
+.password-match.button {
   display: inline-block;
   font-size: 13px;
   font-weight: 600;
@@ -213,19 +221,22 @@
   transition: all 0.3s ease;
 }
 
-.password-match.ok {
+.password-match.ok,
+.password-match.button.ok {
   color: #27ae60;
   background-color: #d5f4e6;
   border: 1px solid #27ae60;
 }
 
-.password-match.bad {
+.password-match.bad,
+.password-match.button.bad {
   color: #e74c3c;
   background-color: #fadbd8;
   border: 1px solid #e74c3c;
 }
 
-.password-match svg {
+.password-match svg,
+.password-match.button svg {
   font-size: 14px;
 }
 

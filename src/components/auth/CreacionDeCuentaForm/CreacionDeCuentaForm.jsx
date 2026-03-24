@@ -280,12 +280,12 @@ function FormularioCreacion() {
                   validarPasswordEnTiempoReal(e.target.value, false)
                 }
               />
-              <span
+              <button type="button"
                 className="eye-icon"
                 onClick={() => setMostrarContrasena(!mostrarContrasena)}
               >
                 {mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
-              </span>
+              </button>
             </div>
           </Form.Group>
 
@@ -306,12 +306,12 @@ function FormularioCreacion() {
                   validarPasswordEnTiempoReal(e.target.value, true)
                 }
               />
-              <span
+              <button type="button"
                 className="eye-icon"
                 onClick={() => setMostrarContrasena2(!mostrarContrasena2)}
               >
                 {mostrarContrasena2 ? <FaEyeSlash /> : <FaEye />}
-              </span>
+              </button>
             </div>
 
             {/* Indicador de coincidencia */}
