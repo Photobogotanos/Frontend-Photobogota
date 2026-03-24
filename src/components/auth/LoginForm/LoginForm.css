@@ -82,7 +82,8 @@
   gap: 5px;
 }
 
-.required-mark {
+.required-mark,
+.required-mark button {
   color: red;
   font-weight: bold;
   cursor: pointer;
@@ -151,7 +152,8 @@
   color: #777272;
 }
 
-.login-form-label span {
+.login-form-label span,
+.login-form-label button {
   color: red;
   cursor: pointer;
 }
@@ -178,6 +180,12 @@
   font-size: 18px;
   color: #6c757d;
   cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Panel de cuentas demo  */
@@ -205,6 +213,11 @@
 .demo-toggle-btn:hover {
   background: #ede9ff;
   border-color: #806fbe;
+}
+
+.demo-toggle-btn:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .demo-toggle-icon {
@@ -260,6 +273,11 @@
   border-color: var(--rol-color, #806fbe);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
+}
+
+.demo-card:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .demo-card--copiado {

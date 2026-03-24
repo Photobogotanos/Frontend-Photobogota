@@ -11,21 +11,21 @@ import { USUARIOS_DEMO } from "@/mocks/usuario.mock";
 import { obtenerEstadoServidor } from "@/utils/serverStatus";
 
 const CREDENCIALES_DEMO = {
-  socio:      "socio123",
-  perro:      "encerrado",
-  moderador:  "mod123",
+  socio: "socio123",
+  perro: "encerrado",
+  moderador: "mod123",
 };
 
 const CUENTAS_ESPECIALES = ["SOCIO", "ADMINISTRADOR", "MODERADOR"];
 
 export default function LoginForm() {
-  const [usuarioOCorreo, setUsuarioOCorreo]     = useState("");
-  const [contrasena, setContrasena]             = useState("");
+  const [usuarioOCorreo, setUsuarioOCorreo] = useState("");
+  const [contrasena, setContrasena] = useState("");
   const [mostrarContrasena, setMostrarContrasena] = useState(false);
   const [mostrarCuentasDemo, setMostrarCuentasDemo] = useState(false);
-  const [copiado, setCopiado]                   = useState(null);
-  const [cargando, setCargando]                 = useState(false);
-  const [servidorOnline, setServidorOnline]     = useState(null); // null = verificando
+  const [copiado, setCopiado] = useState(null);
+  const [cargando, setCargando] = useState(false);
+  const [servidorOnline, setServidorOnline] = useState(null); // null = verificando
 
   const navegar = useNavigate();
 
@@ -102,9 +102,9 @@ export default function LoginForm() {
 
   const etiquetaRol = (rol) => {
     const mapa = {
-      SOCIO:         { texto: "Socio", color: "#806fbe" },
+      SOCIO: { texto: "Socio", color: "#806fbe" },
       ADMINISTRADOR: { texto: "Admin", color: "#e07b54" },
-      MODERADOR:     { texto: "Mod",   color: "#4a9b7f" },
+      MODERADOR: { texto: "Mod", color: "#4a9b7f" },
     };
     return mapa[rol] || { texto: rol, color: "#888" };
   };
@@ -149,12 +149,12 @@ export default function LoginForm() {
               value={contrasena}
               onChange={(e) => setContrasena(e.target.value)}
             />
-            <span
+            <button type="button"
               className="eye-icon"
               onClick={() => setMostrarContrasena(!mostrarContrasena)}
             >
               {mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
-            </span>
+            </button>
           </div>
           <div className="lf-forgot mt-1">
             <Link to="/recuperar-contrasena">¿Olvidaste tu contraseña?</Link>
