@@ -1,0 +1,34 @@
+name: Node.js CI (Vite Project)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # Usamos Node 20 LTS 
+        node-version: [20.x]
+
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Instalar dependencias
+      # Usamos 'install' porque en proyectos grupales a veces el lock cambia seguido
+      run: npm install
+
+    - name: Construir proyecto (Vite)
+      # Esto generará la carpeta /dist y verificará que no haya errores de código
+      run: npm run build
