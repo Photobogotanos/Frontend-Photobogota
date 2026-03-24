@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import { Container, Nav, Navbar, Image } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaBars, FaPlus } from "react-icons/fa";
@@ -9,17 +9,39 @@ import Notificaciones from "@/components/notificaciones/Notificaciones/Notificac
 import { estaLogueado, cerrarSesion } from "@/utils/sessionHelper";
 import { resetEstadoServidor } from "@/utils/serverStatus";
 
+// Reducer para manejar el estado del menú
+const initialState = {
+  logueado: false,
+  mostrarSidebar: false,
+  notificaciones: 3,
+  pulsando: false,
+};
+
+function menuReducer(state, action) {
+  switch (action.type) {
+    case "SET_LOGUEADO":
+      return { ...state, logueado: action.payload };
+    case "SET_MOSTRAR_SIDEBAR":
+      return { ...state, mostrarSidebar: action.payload };
+    case "SET_PULSANDO":
+      return { ...state, pulsando: action.payload };
+    case "RESET_SESION":
+      return { ...state, logueado: false, mostrarSidebar: false };
+    default:
+      return state;
+  }
+}
+
 export default function MenuSuperior() {
-  const [logueado, setLogueado] = useState(false);
-  const [mostrarSidebar, setMostrarSidebar] = useState(false);
-  const [notificaciones] = useState(3);
-  const [pulsando, setPulsando] = useState(false);
+  const [state, dispatch] = useReducer(menuReducer, initialState);
+  const { logueado, mostrarSidebar, pulsando } = state;
+  const notificaciones = 3; // Valor fijo, no necesita estado
   const navegar = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const verificarLogin = () => {
-      setLogueado(estaLogueado()); // ← usa el helper en vez de leer localStorage directo
+      dispatch({ type: "SET_LOGUEADO", payload: estaLogueado() });
     };
 
     verificarLogin();
@@ -37,22 +59,21 @@ export default function MenuSuperior() {
   useEffect(() => {
     if (logueado) {
       const interval = setInterval(() => {
-        setPulsando(true);
-        setTimeout(() => setPulsando(false), 2000);
+        dispatch({ type: "SET_PULSANDO", payload: true });
+        setTimeout(() => dispatch({ type: "SET_PULSANDO", payload: false }), 2000);
       }, 15000);
 
       return () => clearInterval(interval);
     }
   }, [logueado]);
 
-  const abrirSidebar = () => setMostrarSidebar(true);
-  const cerrarSidebar = () => setMostrarSidebar(false);
+  const abrirSidebar = () => dispatch({ type: "SET_MOSTRAR_SIDEBAR", payload: true });
+  const cerrarSidebar = () => dispatch({ type: "SET_MOSTRAR_SIDEBAR", payload: false });
 
   const manejarCerrarSesion = () => {
-    resetEstadoServidor(); // limpia el caché del servidor para que al volver a loguearse se reverifique
-    cerrarSesion();        // elimina "logueado", "miembro", accessToken y refreshToken
-    setLogueado(false);
-    setMostrarSidebar(false);
+    resetEstadoServidor();
+    cerrarSesion();
+    dispatch({ type: "RESET_SESION" });
     navegar("/");
   };
 
@@ -101,7 +122,7 @@ export default function MenuSuperior() {
               <Link
                 to="/crear-spot"
                 className={`btn-crear-publicacion ${pulsando ? "pulsing" : ""}`}
-                onMouseEnter={() => setPulsando(false)}
+                onMouseEnter={() => dispatch({ type: "SET_PULSANDO", payload: false })}
                 aria-label="Crear nuevo spot"
               >
                 <FaPlus />
