@@ -35,12 +35,12 @@ const FormCheckboxes = ({ formData, setFormData, setShowModal }) => {
           label={
             <span className="terminos-label-solicitud">
               Acepto los{" "}
-              <span
+              <button type="button"
                 className="terminos-link-solicitud"
                 onClick={() => setShowModal(true)}
               >
                 términos y condiciones
-              </span>
+              </button>
             </span>
           }
         />
