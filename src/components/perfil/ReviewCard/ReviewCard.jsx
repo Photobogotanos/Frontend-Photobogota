@@ -6,8 +6,10 @@ export default function ReviewCard({ title, rating, text, likes, date, placeId, 
   const [respuesta, setRespuesta] = useState("");
   const stars = [];
   for (let i = 0; i < 5; i++) {
+    // Usamos un string descriptivo como "star-0", "star-1", etc.
+    // Esto es más seguro que el número solo.
     stars.push(
-      <span key={i} className={`star ${i < rating ? 'filled' : 'empty'}`}>
+      <span key={`star-${i}`} className={`star ${i < rating ? 'filled' : 'empty'}`}>
         {i < rating ? '★' : '☆'}
       </span>
     );
