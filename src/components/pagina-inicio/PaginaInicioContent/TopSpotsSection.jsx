@@ -26,6 +26,10 @@ export default function TopSpotsSection({ onImageClick }) {
                   src={spot.imagen}
                   alt={spot.nombre}
                   onClick={() => onImageClick(spot.imagen, spot.nombre)}
+                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onImageClick(spot.imagen, spot.nombre)}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Ver ${spot.nombre}`}
                   style={{ cursor: "pointer" }}
                 />
                 <div className="card-info">
