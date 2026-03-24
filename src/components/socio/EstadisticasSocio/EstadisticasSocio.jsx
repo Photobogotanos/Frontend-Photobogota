@@ -1,4 +1,4 @@
-import { useState, Suspense } from "react";
+import React, { useState, Suspense } from "react";
 import "./EstadisticasSocio.css";
 import EstadisticasHeader from "./EstadisticasHeader";
 import EstadisticasRapidas from "./EstadisticasRapidas";
