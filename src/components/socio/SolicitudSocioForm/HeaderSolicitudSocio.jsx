@@ -2,10 +2,12 @@ import "./HeaderSolicitudSocio.css";
 
 const HeaderSolicitudSocio = () => {
   return (
-    <div className="encabezado-solicitud">
-      <h2 className="encabezado-solicitud-titulo">Solicitud para ser socio</h2>
-      <p className="encabezado-solicitud-subtitulo">
-        Completa todos los campos obligatorios *
+    <div className="solicitud-header">
+      <span className="solicitud-header-subtitle">Únete a la comunidad</span>
+      <h2 className="solicitud-header-title">Solicitud de socio</h2>
+      <span className="solicitud-header-line" />
+      <p className="solicitud-header-desc">
+        Completa todos los campos obligatorios para enviar tu solicitud.
       </p>
     </div>
   );
