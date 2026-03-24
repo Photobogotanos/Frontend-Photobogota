@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import "./LoginForm.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,19 +18,47 @@ const CREDENCIALES_DEMO = {
 
 const CUENTAS_ESPECIALES = ["SOCIO", "ADMINISTRADOR", "MODERADOR"];
 
-export default function LoginForm() {
-  const [usuarioOCorreo, setUsuarioOCorreo] = useState("");
-  const [contrasena, setContrasena] = useState("");
-  const [mostrarContrasena, setMostrarContrasena] = useState(false);
-  const [mostrarCuentasDemo, setMostrarCuentasDemo] = useState(false);
-  const [copiado, setCopiado] = useState(null);
-  const [cargando, setCargando] = useState(false);
-  const [servidorOnline, setServidorOnline] = useState(null); // null = verificando
+// Reducer function
+function loginReducer(state, action) {
+  switch (action.type) {
+    case "SET_FIELD":
+      return { ...state, [action.payload.field]: action.payload.value };
+    case "TOGGLE_MOSTRAR_CONTRASENA":
+      return { ...state, mostrarContrasena: !state.mostrarContrasena };
+    case "TOGGLE_MOSTRAR_CUENTAS_DEMO":
+      return { ...state, mostrarCuentasDemo: !state.mostrarCuentasDemo };
+    case "SET_COPIADO":
+      return { ...state, copiado: action.payload };
+    case "CLEAR_COPIADO":
+      return { ...state, copiado: null };
+    case "SET_CARGANDO":
+      return { ...state, cargando: action.payload };
+    case "SET_SERVIDOR_ONLINE":
+      return { ...state, servidorOnline: action.payload };
+    default:
+      return state;
+  }
+}
 
+// Estado inicial
+const initialState = {
+  usuarioOCorreo: "",
+  contrasena: "",
+  mostrarContrasena: false,
+  mostrarCuentasDemo: false,
+  copiado: null,
+  cargando: false,
+  servidorOnline: null, // null = verificando
+};
+
+export default function LoginForm() {
+  const [state, dispatch] = useReducer(loginReducer, initialState);
   const navegar = useNavigate();
 
   useEffect(() => {
-    obtenerEstadoServidor().then((online) => setServidorOnline(online));
+    obtenerEstadoServidor().then((online) => 
+      dispatch({ type: "SET_SERVIDOR_ONLINE", payload: online })
+    );
   }, []);
 
   const cuentasEspeciales = USUARIOS_DEMO.filter((u) =>
@@ -38,37 +66,36 @@ export default function LoginForm() {
   );
 
   const copiarCredenciales = (nombreUsuario) => {
-    // Usamos el mapa de texto plano local, NO el hash del mock
     const pass = CREDENCIALES_DEMO[nombreUsuario] ?? "";
-    setUsuarioOCorreo(nombreUsuario);
-    setContrasena(pass);
-    setCopiado(nombreUsuario);
-    setTimeout(() => setCopiado(null), 2000);
+    dispatch({ type: "SET_FIELD", payload: { field: "usuarioOCorreo", value: nombreUsuario } });
+    dispatch({ type: "SET_FIELD", payload: { field: "contrasena", value: pass } });
+    dispatch({ type: "SET_COPIADO", payload: nombreUsuario });
+    setTimeout(() => dispatch({ type: "CLEAR_COPIADO" }), 2000);
   };
 
   const manejarEnvio = async (e) => {
     e.preventDefault();
 
-    if (!usuarioOCorreo.trim()) {
+    if (!state.usuarioOCorreo.trim()) {
       toast.error("Debes ingresar tu usuario o correo.");
       return;
     }
 
-    if (!contrasena.trim()) {
+    if (!state.contrasena.trim()) {
       toast.error("Debes ingresar la contraseña.");
       return;
     }
 
-    const esCorreoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usuarioOCorreo);
-    if (!esCorreoValido && usuarioOCorreo.length < 3) {
+    const esCorreoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.usuarioOCorreo);
+    if (!esCorreoValido && state.usuarioOCorreo.length < 3) {
       toast.error("Debe ser un correo válido o un usuario con mínimo 3 caracteres.");
       return;
     }
 
-    setCargando(true);
+    dispatch({ type: "SET_CARGANDO", payload: true });
 
     try {
-      const resultado = await iniciarSesion(usuarioOCorreo.trim(), contrasena);
+      const resultado = await iniciarSesion(state.usuarioOCorreo.trim(), state.contrasena);
 
       if (!resultado.exitoso) {
         toast.error(resultado.mensaje);
@@ -78,7 +105,7 @@ export default function LoginForm() {
       toast.success(
         resultado.esDemo
           ? `¡Bienvenido (Demo)! Hola, ${resultado.datos.nombre}.`
-          : `¡Bienvenido! Hola, ${resultado.datos.nombre || usuarioOCorreo}.`,
+          : `¡Bienvenido! Hola, ${resultado.datos.nombre || state.usuarioOCorreo}.`,
         {
           duration: 3000,
           position: "top-center",
@@ -96,7 +123,7 @@ export default function LoginForm() {
       console.error("Error en login:", error);
       toast.error("No se pudo conectar con el servidor. Intenta de nuevo más tarde.");
     } finally {
-      setCargando(false);
+      dispatch({ type: "SET_CARGANDO", payload: false });
     }
   };
 
@@ -111,7 +138,7 @@ export default function LoginForm() {
 
   // El panel demo solo se muestra si el servidor está OFFLINE (servidorOnline === false)
   // Mientras verifica (null), no mostramos nada para evitar un flash visual
-  const mostrarPanelDemo = servidorOnline === false;
+  const mostrarPanelDemo = state.servidorOnline === false;
 
   return (
     <>
@@ -131,8 +158,8 @@ export default function LoginForm() {
             <Form.Control
               className="grupitos rounded-pill input-with-icon"
               type="text"
-              value={usuarioOCorreo}
-              onChange={(e) => setUsuarioOCorreo(e.target.value)}
+              value={state.usuarioOCorreo}
+              onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "usuarioOCorreo", value: e.target.value } })}
             />
           </div>
         </Form.Group>
@@ -145,15 +172,15 @@ export default function LoginForm() {
           <div className="input-icon-container">
             <Form.Control
               className="grupitos rounded-pill input-with-icon"
-              type={mostrarContrasena ? "text" : "password"}
-              value={contrasena}
-              onChange={(e) => setContrasena(e.target.value)}
+              type={state.mostrarContrasena ? "text" : "password"}
+              value={state.contrasena}
+              onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "contrasena", value: e.target.value } })}
             />
             <button type="button"
               className="eye-icon"
-              onClick={() => setMostrarContrasena(!mostrarContrasena)}
+              onClick={() => dispatch({ type: "TOGGLE_MOSTRAR_CONTRASENA" })}
             >
-              {mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
+              {state.mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
           <div className="lf-forgot mt-1">
@@ -167,13 +194,13 @@ export default function LoginForm() {
             <button
               type="button"
               className="demo-toggle-btn"
-              onClick={() => setMostrarCuentasDemo(!mostrarCuentasDemo)}
+              onClick={() => dispatch({ type: "TOGGLE_MOSTRAR_CUENTAS_DEMO" })}
             >
-              <span className="demo-toggle-icon">{mostrarCuentasDemo ? "▲" : "▼"}</span>
+              <span className="demo-toggle-icon">{state.mostrarCuentasDemo ? "▲" : "▼"}</span>
               Cuentas demo disponibles
             </button>
 
-            <div className={`demo-panel ${mostrarCuentasDemo ? "demo-panel--open" : ""}`}>
+            <div className={`demo-panel ${state.mostrarCuentasDemo ? "demo-panel--open" : ""}`}>
               <p className="demo-panel-info">
                 Haz clic en una cuenta para autocompletar las credenciales.
               </p>
@@ -185,7 +212,7 @@ export default function LoginForm() {
                     <button
                       key={u.id}
                       type="button"
-                      className={`demo-card ${copiado === u.nombreUsuario ? "demo-card--copiado" : ""}`}
+                      className={`demo-card ${state.copiado === u.nombreUsuario ? "demo-card--copiado" : ""}`}
                       onClick={() => copiarCredenciales(u.nombreUsuario)}
                       style={{ "--rol-color": etiqueta.color }}
                     >
@@ -199,7 +226,7 @@ export default function LoginForm() {
                       <span className="demo-card-pass">
                         {CREDENCIALES_DEMO[u.nombreUsuario] ?? "••••••••"}
                       </span>
-                      {copiado === u.nombreUsuario && (
+                      {state.copiado === u.nombreUsuario && (
                         <span className="demo-card-check">✓ Listo</span>
                       )}
                     </button>
@@ -221,10 +248,10 @@ export default function LoginForm() {
         <div className="solicitud-form-submit mt-4">
           <button
             type="submit"
-            className={`lf-submit-btn ${cargando ? "lf-submit-btn--loading" : ""}`}
-            disabled={cargando}
+            className={`lf-submit-btn ${state.cargando ? "lf-submit-btn--loading" : ""}`}
+            disabled={state.cargando}
           >
-            {cargando ? "Ingresando…" : "Ingresar →"}
+            {state.cargando ? "Ingresando…" : "Ingresar →"}
           </button>
         </div>
 
