@@ -31,8 +31,7 @@ const resenasEjemplo = [
 // Usar los mismos spots transformados para guardados (simulando spots guardados por el usuario)
 const guardadosEjemplo = spotsDatos.slice(0, 6);
 
-// --- Sub-componente: mensaje cuando no hay contenido ---
-// Lo ponemos aquí mismo porque solo se usa en este archivo
+// Mensaje cuando no hay contenido en una pestaña
 const SinContenido = ({ icono, titulo, descripcion, textBoton, rutaBoton }) => {
   const navigate = useNavigate();
   return (
@@ -47,7 +46,6 @@ const SinContenido = ({ icono, titulo, descripcion, textBoton, rutaBoton }) => {
   );
 };
 
-// --- Componente principal de tabs ---
 const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuardados }) => {
   return (
     <>
@@ -80,14 +78,16 @@ const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuar
         {tab === "publicaciones" && (
           tienePublicaciones ? (
             <div className="publicaciones-grid">
-              {spotsEjemplo.map((spot, i) => (
+              {SPOTS.map((spot) => (    // ya no usamos spotsEjemplo, usamos el mock real
                 <SpotCard
-                  key={i}
-                  img="public/images/publicaciones/default-post.jpg"
-                  title={spot.title}
-                  tags={spot.tags}
-                  rating={spot.rating}
-                  likes={spot.likes}
+                  key={spot.id}             // id único del mock
+                  id={spot.id}              //id para poder navegar al lugar al hacer click
+                  img={spot.imagen}         // mock: "imagen"       → SpotCard: "img"
+                  title={spot.nombre}       // mock: "nombre"       → SpotCard: "title"
+                  rating={spot.rating}      // coincide igual
+                  likes={spot.totalResenas} // mock: "totalResenas" → SpotCard: "likes"
+                  tags={[spot.categoria]}   // categoria es string, SpotCard espera array
+                  
                 />
               ))}
             </div>

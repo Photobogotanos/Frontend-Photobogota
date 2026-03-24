@@ -84,22 +84,6 @@ export default function MiPerfil() {
         tieneGuardados={state.tieneGuardados}
       />
 
-      {/* CONTROLES DE DEBUG — puedes borrar esto cuando uses datos reales */}
-      <div className="debug-controls">
-        <small>Debug:</small>
-        <div className="debug-buttons">
-          <button onClick={() => dispatch({ type: "TOGGLE_PUBLICACIONES" })}>
-            {state.tienePublicaciones ? "Sin publicaciones" : "Con publicaciones"}
-          </button>
-          <button onClick={() => dispatch({ type: "TOGGLE_RESENAS" })}>
-            {state.tieneResenas ? "Sin reseñas" : "Con reseñas"}
-          </button>
-          <button onClick={() => dispatch({ type: "TOGGLE_GUARDADOS" })}>
-            {state.tieneGuardados ? "Sin guardados" : "Con guardados"}
-          </button>
-        </div>
-      </div>
-
       {/* MODALES — se renderizan fuera del flujo normal */}
       <EditarPerfilModal
         show={state.mostrarEditarPerfil}

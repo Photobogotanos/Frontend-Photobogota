@@ -18,8 +18,8 @@
 }
 
 .spot-img-h {
-  width: 95px;
-  height: 95px;
+  width: 200px;
+  height: 200px;
   border-radius: 10px;
   object-fit: cover;
 }

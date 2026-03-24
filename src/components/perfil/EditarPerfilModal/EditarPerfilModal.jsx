@@ -1,48 +1,71 @@
-import { useState } from "react";
-import { Modal, Button, Form, Container, Row, Col } from "react-bootstrap";
-import { FaCamera, FaUpload, FaTrash, FaLock, FaSave } from "react-icons/fa";
-import "./EditarPerfilModal.css";
-import { CiUser } from "react-icons/ci";
-import { FaHouseUser } from "react-icons/fa";
-import {
-  MdOutlineEmail,
-  MdOutlineDescription,
-  MdPhone,
-  MdOutlineCancel,
-} from "react-icons/md";
-import Swal from "sweetalert2";
-import { IoMdPhotos } from "react-icons/io";
+// ============================================================
+// COMPONENTE PADRE: EditarPerfilModal
+// Su responsabilidad: guardar el estado y la lógica.
+// Los componentes hijos solo muestran, este componente piensa.
+// ============================================================
 
+import { useState } from "react";
+import { Modal, Form, Row, Col } from "react-bootstrap";
+import { FaCamera } from "react-icons/fa";
+import "./EditarPerfilModal.css";
+import Swal from "sweetalert2";
+
+// Importamos los 3 hijos que creamos
+import FotoPerfil from "./FotoPerfil";
+import CambiarContrasena from "./CambiarContrasena";
+import BotonesAccion from "./BotonesAccion";
+
+// ─────────────────────────────────────────────────────────────
+// El componente recibe 4 props desde quien lo usa (por ejemplo, una página):
+//   show                → true/false para mostrar u ocultar el modal
+//   onHide              → función para cerrarlo
+//   perfilData          → objeto con los datos actuales del usuario
+//   onPerfilActualizado → función para avisar que se guardó
+// ─────────────────────────────────────────────────────────────
 export default function EditarPerfilModal({
   show,
   onHide,
   perfilData,
   onPerfilActualizado,
 }) {
+
+  // ── ESTADO DEL FORMULARIO ──────────────────────────────────
+  // useState guarda los valores de los campos de texto.
+  // Se inicializa con los datos que llegaron en perfilData,
+  // o con valores por defecto si perfilData viene vacío.
   const [formData, setFormData] = useState({
-    nombreCompleto: perfilData?.nombreCompleto || "Juan Sebastian Romero",
-    nombreUsuario: perfilData?.nombreUsuario || "sxbxxs.r",
-    correo: perfilData?.correo || "photobogota123@gmail.com",
-    descripcion:
-      perfilData?.descripcion ||
-      "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
-    telefono: perfilData?.telefono || "3138529778",
-    contrasena: "",
+    nombreCompleto:      perfilData?.nombreCompleto || "Juan Sebastian Romero",
+    nombreUsuario:       perfilData?.nombreUsuario  || "sxbxxs.r",
+    correo:              perfilData?.correo         || "photobogota123@gmail.com",
+    descripcion:         perfilData?.descripcion    || "Descubre y comparte los mejores spots locales.",
+    telefono:            perfilData?.telefono       || "3138529778",
+    contrasena:          "",
     confirmarContrasena: "",
   });
-  const [fotoPerfil, setFotoPerfil] = useState(
-    perfilData?.foto || "public/images/user-pfp/default-avatar.jpg",
-  );
-  const [mostrarCambiarContrasena, setMostrarCambiarContrasena] =
-    useState(false);
 
+  // Estado separado para la foto (string con ruta o base64)
+  const [fotoPerfil, setFotoPerfil] = useState(
+    perfilData?.foto || "public/images/user-pfp/default-avatar.jpg"
+  );
+
+  // Estado para mostrar u ocultar los campos de contraseña
+  const [mostrarCambiarContrasena, setMostrarCambiarContrasena] = useState(false);
+
+
+  // ── HANDLERS ───────────────────────────────────────────────
+
+  // Se ejecuta cada vez que el usuario escribe en cualquier campo.
+  // Usa el atributo "name" del input para saber qué campo actualizar.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
-      ...prev,
-      [name]: value,
+      ...prev,       // copia todo lo anterior
+      [name]: value, // sobreescribe solo el campo que cambió
     }));
   };
+
+  // Se ejecuta cuando el usuario elige una imagen nueva.
+  // Valida el tamaño y convierte la imagen a base64 para previsualizarla.
   const handleFotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -54,26 +77,25 @@ export default function EditarPerfilModal({
         });
         return;
       }
-
       const reader = new FileReader();
       reader.onload = (event) => {
-        setFotoPerfil(event.target.result);
+        setFotoPerfil(event.target.result); // guarda la imagen como base64
       };
       reader.readAsDataURL(file);
     }
   };
 
+  // Restaura la foto al avatar por defecto
   const handleEliminarFoto = () => {
     setFotoPerfil("public/images/user-pfp/default-avatar.jpg");
   };
 
+  // Se ejecuta al presionar "Guardar Cambios"
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // evita que la página se recargue
 
-    if (
-      mostrarCambiarContrasena &&
-      formData.contrasena !== formData.confirmarContrasena
-    ) {
+    // Si el usuario quiso cambiar contraseña, verifica que coincidan
+    if (mostrarCambiarContrasena && formData.contrasena !== formData.confirmarContrasena) {
       Swal.fire({
         icon: "error",
         title: "Contraseñas no coinciden",
@@ -84,26 +106,30 @@ export default function EditarPerfilModal({
 
     const datosActualizados = {
       nombreCompleto: formData.nombreCompleto,
-      nombreUsuario: formData.nombreUsuario,
-      correo: formData.correo,
-      descripcion: formData.descripcion,
-      telefono: formData.telefono,
-      foto: fotoPerfil,
+      nombreUsuario:  formData.nombreUsuario,
+      correo:         formData.correo,
+      descripcion:    formData.descripcion,
+      telefono:       formData.telefono,
+      foto:           fotoPerfil,
     };
 
-    console.log("Datos guardados:", datosActualizados);
-
+    // Si quien usó este modal nos pasó onPerfilActualizado,
+    // la llamamos para que el resto de la app se entere del cambio
     if (onPerfilActualizado) {
       onPerfilActualizado(datosActualizados);
     }
 
     Swal.fire({
       icon: "success",
-      title: "Actualizado ",
+      title: "Actualizado",
       text: "Gracias por mantenerte actualizado parcerito",
     });
-    onHide();
+
+    onHide(); // cierra el modal
   };
+
+
+  // ── RENDER ─────────────────────────────────────────────────
   return (
     <Modal
       show={show}
@@ -122,72 +148,39 @@ export default function EditarPerfilModal({
 
       <Modal.Body className="modal-body-custom">
         <Form onSubmit={handleSubmit}>
-          {/* SECCIÓN A: PERFIL */}
+
           <div className="section-header">
             <span className="section-label">A. Perfil</span>
           </div>
-
           <div className="section-divider"></div>
 
-          {/* CAMBIAR FOTO */}
-          <Form.Group className="mb-4">
-            <Form.Label className="form-label-custom">
-              <IoMdPhotos /> Cambiar foto
-              <span className="file-format">JPG, PNG o GIF (máx. 5MB)</span>
-            </Form.Label>
-            <div className="foto-perfil-container">
-              <div className="foto-preview">
-                <img
-                  src={fotoPerfil}
-                  alt="Foto perfil"
-                  className="foto-perfil-img"
-                />
-                <div className="foto-actions">
-                  <label
-                    htmlFor="upload-foto"
-                    className="btn-foto-action upload"
-                  >
-                    <FaUpload className="me-1" /> Cambiar
-                  </label>
-                  <input
-                    type="file"
-                    id="upload-foto"
-                    accept=".jpg,.jpeg,.png,.gif"
-                    onChange={handleFotoChange}
-                    className="d-none"
-                  />
-                  <button
-                    type="button"
-                    className="btn-foto-action delete"
-                    onClick={handleEliminarFoto}
-                  >
-                    <FaTrash className="me-1" /> Eliminar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </Form.Group>
+          {/* ── HIJO 1: FotoPerfil ──────────────────────────────
+              Le pasamos 3 props:
+              - fotoPerfil: el valor actual de la foto (para mostrarla)
+              - onFotoChange: qué hacer cuando elija una foto nueva
+              - onEliminarFoto: qué hacer cuando presione "Eliminar"
+          */}
+          <FotoPerfil
+            fotoPerfil={fotoPerfil}
+            onFotoChange={handleFotoChange}
+            onEliminarFoto={handleEliminarFoto}
+          />
 
-          {/* NOMBRE COMPLETO */}
+          {/* ── CAMPOS DE TEXTO ─────────────────────────────── */}
           <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">
-              <CiUser /> Nombre completo
-            </Form.Label>
+            <Form.Label className="form-label-custom">Nombre completo</Form.Label>
             <Form.Control
               type="text"
-              name="nombreCompleto"
-              value={formData.nombreCompleto}
-              onChange={handleChange}
+              name="nombreCompleto"           // debe coincidir con la key en formData
+              value={formData.nombreCompleto} // valor controlado por el estado
+              onChange={handleChange}         // actualiza el estado al escribir
               className="form-control-custom"
               placeholder="Ingresa tu nombre completo"
             />
           </Form.Group>
 
-          {/* NOMBRE DE USUARIO */}
           <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">
-              <FaHouseUser /> Nombre de usuario
-            </Form.Label>
+            <Form.Label className="form-label-custom">Nombre de usuario</Form.Label>
             <Form.Control
               type="text"
               name="nombreUsuario"
@@ -198,11 +191,8 @@ export default function EditarPerfilModal({
             />
           </Form.Group>
 
-          {/* CORREO ELECTRÓNICO */}
           <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">
-              <MdOutlineEmail /> Correo electrónico
-            </Form.Label>
+            <Form.Label className="form-label-custom">Correo electrónico</Form.Label>
             <Form.Control
               type="email"
               name="correo"
@@ -213,11 +203,8 @@ export default function EditarPerfilModal({
             />
           </Form.Group>
 
-          {/* DESCRIPCIÓN */}
           <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">
-              <MdOutlineDescription /> Descripción
-            </Form.Label>
+            <Form.Label className="form-label-custom">Descripción</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
@@ -229,11 +216,8 @@ export default function EditarPerfilModal({
             />
           </Form.Group>
 
-          {/* TELÉFONO */}
           <Form.Group className="mb-4">
-            <Form.Label className="form-label-custom">
-              <MdPhone /> Teléfono
-            </Form.Label>
+            <Form.Label className="form-label-custom">Teléfono</Form.Label>
             <Form.Control
               type="tel"
               name="telefono"
@@ -244,60 +228,21 @@ export default function EditarPerfilModal({
             />
           </Form.Group>
 
-          {/* CAMBIAR CONTRASEÑA */}
-          <div className="mb-4">
-            <button
-              type="button"
-              className="btn-cambiar-contrasena"
-              onClick={() =>
-                setMostrarCambiarContrasena(!mostrarCambiarContrasena)
-              }
-            >
-              <FaLock className="me-2" />
-              {mostrarCambiarContrasena
-                ? "Ocultar cambio de contraseña"
-                : "Cambiar contraseña"}
-            </button>
+          {/* ── HIJO 2: CambiarContrasena ───────────────────────
+              Le pasamos 4 props:
+              - mostrar: true/false para saber si mostrar los campos
+              - onToggle: función para alternar mostrar/ocultar
+              - formData: necesita contrasena y confirmarContrasena
+              - onChange: para actualizar esos campos en el estado del padre
+          */}
+          <CambiarContrasena
+            mostrar={mostrarCambiarContrasena}
+            onToggle={() => setMostrarCambiarContrasena(!mostrarCambiarContrasena)}
+            formData={formData}
+            onChange={handleChange}
+          />
 
-            {mostrarCambiarContrasena && (
-              <div className="contrasena-fields mt-3">
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label className="form-label-custom">
-                        Contraseña
-                      </Form.Label>
-                      <Form.Control
-                        type="password"
-                        name="contrasena"
-                        value={formData.contrasena}
-                        onChange={handleChange}
-                        className="form-control-custom"
-                        placeholder="Nueva contraseña"
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label className="form-label-custom">
-                        Confirmar Contraseña
-                      </Form.Label>
-                      <Form.Control
-                        type="password"
-                        name="confirmarContrasena"
-                        value={formData.confirmarContrasena}
-                        onChange={handleChange}
-                        className="form-control-custom"
-                        placeholder="Confirmar nueva contraseña"
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-              </div>
-            )}
-          </div>
-
-          {/* GUARDADOS */}
+          {/* ── GUARDADOS ───────────────────────────────────── */}
           <div className="mb-4">
             <Form.Label className="form-label-custom">Guardados</Form.Label>
             <div className="guardados-preview">
@@ -312,21 +257,13 @@ export default function EditarPerfilModal({
             </div>
           </div>
 
-          {/* BOTONES DE ACCIÓN */}
-          <div className="modal-actions">
-            <button
-              type="button"
-              variant="outline-secondary"
-              onClick={onHide}
-              className="btn-cancelar"
-            >
-              <MdOutlineCancel /> Cancelar
-            </button>
+          {/* ── HIJO 3: BotonesAccion ───────────────────────────
+              Solo necesita saber qué hacer al cancelar.
+              El botón guardar es type="submit", entonces
+              automáticamente dispara el onSubmit del Form padre.
+          */}
+          <BotonesAccion onCancelar={onHide} />
 
-            <button type="submit" variant="primary" className="btn-guardar">
-              <FaSave className="icon-test" /> Guardar Cambios
-            </button>
-          </div>
         </Form>
       </Modal.Body>
     </Modal>
