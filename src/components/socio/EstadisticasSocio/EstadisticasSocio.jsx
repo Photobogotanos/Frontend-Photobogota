@@ -1,11 +1,11 @@
-import { useState, lazy, Suspense } from "react";
+import { useState, Suspense } from "react";
 import "./EstadisticasSocio.css";
 import EstadisticasHeader from "./EstadisticasHeader";
 import EstadisticasRapidas from "./EstadisticasRapidas";
 import LugaresPopulares from "./LugaresPopulares";
 
 // Importación lazy para código splitting de rechart
-const GraficosEstadisticos = lazy(() => import("./GraficosEstadisticos"));
+const GraficosEstadisticos = React.lazy(() => import('./GraficosEstadisticos'));
 
 const EstadisticasSocio = () => {
   const [periodo, setPeriodo] = useState("mes");

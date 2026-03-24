@@ -60,7 +60,13 @@ const LugaresPopulares = () => {
               key={lugar.id} 
               className="lugar-item"
               onClick={() => handleLugarClick(lugar.id)}
-              style={{ cursor: 'pointer' }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleLugarClick(lugar.id);
+                }
+              }}
             >
               <span className="lugar-ranking">#{index + 1}</span>
               <img src={lugar.imagen} alt={lugar.nombre} className="lugar-imagen" />
