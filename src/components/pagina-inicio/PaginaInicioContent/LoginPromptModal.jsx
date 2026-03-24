@@ -1,5 +1,5 @@
 import Modal from "react-bootstrap/Modal";
-import { motion } from "framer-motion";
+import { LazyMotion, m, domAnimation } from "framer-motion";
 import { FaLock, FaCamera, FaStar, FaHeart, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -15,12 +15,14 @@ export default function LoginPromptModal({ show, onHide }) {
         <div className="text-center py-3">
 
           <div className="mb-4">
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            >
-              <FaLock size={48} className="icono-demo-modal mb-3" />
-            </motion.div>
+            <LazyMotion features={domAnimation}>
+              <m.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                <FaLock size={48} className="icono-demo-modal mb-3" />
+              </m.div>
+            </LazyMotion>
             <h5>¡Desbloquea todas las funcionalidades!</h5>
           </div>
 

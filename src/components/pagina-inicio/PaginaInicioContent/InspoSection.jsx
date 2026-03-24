@@ -1,7 +1,7 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { IoPin } from "react-icons/io5";
-import { motion } from "framer-motion";
+import { LazyMotion, m, domAnimation } from "framer-motion";
 
 const inspo1 = "/images/img-home/inspo1.jpg";
 const inspo3 = "/images/img-home/inspo3.jpg";
@@ -17,32 +17,34 @@ export default function InspoSection({ onImageClick }) {
   return (
     <>
       <h2 className="section-title">Inspiración del día</h2>
-      <Row className="g-4">
-        {INSPOS.map((item, i) => (
-          <Col xs={12} md={6} lg={4} key={item.id}>
-            <motion.div
-              initial={{ y: 60, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.2 }}
-              className="card-inspo"
-            >
-              <img
-                src={item.img}
-                alt={`Inspiración ${i + 1}`}
-                onClick={() => onImageClick(item.img, `Foto de ${item.user}`)}
-                style={{ cursor: "pointer" }}
-              />
-              <div className="card-info">
-                <h5>{item.user}</h5>
-                <div className="location">
-                  <IoPin /> {item.loc}
+      <LazyMotion features={domAnimation}>
+        <Row className="g-4">
+          {INSPOS.map((item, i) => (
+            <Col xs={12} md={6} lg={4} key={item.id}>
+              <m.div
+                initial={{ y: 60, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.2 }}
+                className="card-inspo"
+              >
+                <img
+                  src={item.img}
+                  alt={`Inspiración ${i + 1}`}
+                  onClick={() => onImageClick(item.img, `Foto de ${item.user}`)}
+                  style={{ cursor: "pointer" }}
+                />
+                <div className="card-info">
+                  <h5>{item.user}</h5>
+                  <div className="location">
+                    <IoPin /> {item.loc}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          </Col>
-        ))}
-      </Row>
+              </m.div>
+            </Col>
+          ))}
+        </Row>
+      </LazyMotion>
     </>
   );
 }
