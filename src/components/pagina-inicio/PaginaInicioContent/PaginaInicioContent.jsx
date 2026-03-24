@@ -139,6 +139,9 @@ export default function PaginaInicioContent() {
                 src={item.img}
                 alt={`Inspiración ${i + 1}`}
                 onClick={() => openModal(item.img, `Foto de ${item.user}`)}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && openModal(item.img, `Foto de ${item.user}`)}
+                role="button"
+                tabIndex={0}
                 style={{ cursor: "pointer" }}
               />
               <div className="card-info">
@@ -207,6 +210,9 @@ export default function PaginaInicioContent() {
                 src={spot.img}
                 alt={spot.name}
                 onClick={() => openModal(spot.img, spot.name)}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && openModal(spot.img, spot.name)}
+                role="button"
+                tabIndex={0}
                 style={{ cursor: "pointer" }}
               />
               <div className="card-info">
