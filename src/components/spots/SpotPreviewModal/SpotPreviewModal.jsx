@@ -2,6 +2,8 @@ import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
+import Lottie from "lottie-react";
+import uploadAnimation from "@/assets/animations/Upload.json";
 import { FaMapMarkerAlt, FaTag, FaStar, FaHeart, FaCamera } from "react-icons/fa";
 import "./SpotPreviewModal.css";
 
@@ -24,11 +26,17 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
     <Modal show={show} onHide={onHide} centered className="lugar-preview-modal">
       <Modal.Body className="p-0">
         <div className="preview-image-container">
-          <img
-            src={data.imagen}
-            alt={data.nombre}
-            className="preview-image"
-          />
+          {data.imagen ? (
+            <img
+              src={data.imagen}
+              alt={data.nombre}
+              className="preview-image"
+            />
+          ) : (
+            <div className="preview-upload-animation">
+              <Lottie animationData={uploadAnimation} loop style={{ width: 120, height: 120 }} />
+            </div>
+          )}
         </div>
         <div className="preview-content">
           <h3 className="preview-title">{data.nombre}</h3>

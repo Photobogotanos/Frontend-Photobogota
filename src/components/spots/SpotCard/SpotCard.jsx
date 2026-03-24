@@ -1,14 +1,14 @@
 import { useNavigate } from "react-router-dom";
+import { FaStar, FaHeart } from "react-icons/fa6";
 import "./SpotCard.css";
 
 export default function SpotCard({ id, img, title, rating, likes, tags }) {
   const navigate = useNavigate();
 
   return (
-    <div
+    <button
       className="spot-card-horizontal"
       onClick={() => {
-        console.log("Click! id:", id); // 👈 esto aparece en consola al hacer click
         navigate(`/spot/${id}`);
       }}
     >
@@ -22,10 +22,10 @@ export default function SpotCard({ id, img, title, rating, likes, tags }) {
         </div>
         <h5 className="spot-title-h">{title}</h5>
         <div className="spot-info-h">
-          <span className="spot-rating-h">⭐ {rating}</span>
-          <span className="spot-likes-h">❤️ {likes}</span>
+          <span className="spot-rating-h"><FaStar style={{ color: "#f59e0b", marginRight: "4px" }} /> {rating}</span>
+          <span className="spot-likes-h"><FaHeart style={{ color: "#ef4444", marginRight: "4px" }} /> {likes}</span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }

@@ -28,6 +28,15 @@
   object-fit: cover;
 }
 
+.preview-upload-animation {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
 .preview-content {
   padding: 20px;
 }

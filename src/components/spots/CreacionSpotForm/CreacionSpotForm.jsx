@@ -197,7 +197,7 @@ export default function CrearSpot() {
   const spotData = {
     nombre: state.nombreLugar || "Nombre del lugar",
     direccion: state.direccion || "Dirección del lugar",
-    imagen: state.previews[0] || "/images/spots/spot-demo.jpg",
+    imagen: state.previews[0] || null,
     rating: 0, totalResenas: 0,
     categoria: state.categoria?.label || "Categoría",
     localidad: state.localidad?.label || null,
