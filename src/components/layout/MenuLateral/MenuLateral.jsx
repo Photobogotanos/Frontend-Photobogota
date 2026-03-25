@@ -19,12 +19,13 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
       setUsuario({
         nombre: "Usuario Demo",
         username: "@usuario_demo",
-        rol: "miembro",
+        rol: "MIEMBRO",
       });
     }
   };
 
-  const rol = usuario?.rol || "miembro";
+  // Normalizar rol a mayúsculas para comparaciones consistentes
+  const rol = (usuario?.rol || "MIEMBRO").toUpperCase();
 
   return (
     <Offcanvas

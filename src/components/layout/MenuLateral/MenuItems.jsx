@@ -1,6 +1,5 @@
 import { useLocation } from "react-router-dom";
 import {
-  FaHome,
   FaUser,
   FaMapMarkerAlt,
   FaHandshake,
@@ -44,7 +43,7 @@ export default function MenuItems({ rol, cerrar }) {
       />
 
       {/* Menú para socios */}
-      {rol === "socio" && (
+      {rol === "SOCIO" && (
         <>
           <SidebarLink
             icon={<FaStore />}
@@ -71,7 +70,7 @@ export default function MenuItems({ rol, cerrar }) {
       )}
 
       {/* Menú para moderadores */}
-      {rol === "moderador" && (
+      {rol === "MOD" && (
         <>
           <SidebarLink
             icon={<FaTachometerAlt />}
@@ -112,7 +111,7 @@ export default function MenuItems({ rol, cerrar }) {
       )}
 
       {/* Menú para administradores */}
-      {rol === "administrador" && (
+      {rol === "ADMIN" && (
         <>
           <SidebarLink
             icon={<FaTachometerAlt />}
@@ -166,8 +165,8 @@ export default function MenuItems({ rol, cerrar }) {
         </>
       )}
 
-      {/* Botón de solicitud de socio para usuarios */}
-      {rol === "usuario" && (
+      {/* Botón de solicitud de socio para miembros */}
+      {rol === "MIEMBRO" && (
         <SidebarLink
           icon={<FaHandshake />}
           texto="Ser Socio"
