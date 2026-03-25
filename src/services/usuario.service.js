@@ -24,7 +24,7 @@ export const iniciarSesion = async (login, contrasena) => {
       nombre: usuarioEncontrado.nombre,
       username: "@" + usuarioEncontrado.nombreUsuario,
       email: usuarioEncontrado.correo,
-      rol: usuarioEncontrado.rol.toLowerCase(),
+      rol: usuarioEncontrado.rol, 
     };
 
     guardarSesion(usuarioFinal);
