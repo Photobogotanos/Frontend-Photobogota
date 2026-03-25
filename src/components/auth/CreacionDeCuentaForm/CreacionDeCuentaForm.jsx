@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import Form from "react-bootstrap/Form";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -14,46 +14,70 @@ import AccountHeader from "./AccountHeader";
 import PersonalInfoFields from "./PersonalInfoFields";
 import PasswordFields from "./PasswordFields";
 
+// ── Reducer para agrupar estados relacionados ────────────────────────────────────
+const initialState = {
+  // Datos del formulario
+  email: "",
+  nombres: "",
+  apellidos: "",
+  nombreUsuario: "",
+  fecha: "",
+  password: "",
+  password2: "",
+  // Visibilidad de contraseñas
+  mostrarContrasena: false,
+  mostrarContrasena2: false,
+  // Validación
+  passwordMatch: null,
+  validationRules: {
+    length: false, upper: false, lower: false, number: false,
+  },
+  // Estado de carga
+  cargando: false,
+};
+
+function formReducer(state, action) {
+  switch (action.type) {
+    case "SET_FIELD":
+      return { ...state, [action.field]: action.value };
+    case "SET_PASSWORD_VISIBILITY":
+      return { ...state, [action.field]: !state[action.field] };
+    case "SET_PASSWORD_MATCH":
+      return { ...state, passwordMatch: action.payload };
+    case "SET_VALIDATION_RULES":
+      return { ...state, validationRules: action.payload };
+    case "SET_LOADING":
+      return { ...state, cargando: action.payload };
+    case "RESET_FORM":
+      return initialState;
+    default:
+      return state;
+  }
+}
+
 function FormularioCreacion() {
   const navegar = useNavigate();
-
-  // ── Estado ──────────────────────────────────────────────────────────────────
-  const [email, setEmail]               = useState("");
-  const [nombres, setNombres]           = useState("");
-  const [apellidos, setApellidos]       = useState("");
-  const [nombreUsuario, setNombreUsuario] = useState("");
-  const [fecha, setFecha]               = useState("");
-  const [password, setPassword]         = useState("");
-  const [password2, setPassword2]       = useState("");
-
-  const [mostrarContrasena, setMostrarContrasena]   = useState(false);
-  const [mostrarContrasena2, setMostrarContrasena2] = useState(false);
-  const [passwordMatch, setPasswordMatch]           = useState(null);
-  const [validationRules, setValidationRules]       = useState({
-    length: false, upper: false, lower: false, number: false,
-  });
-  const [cargando, setCargando] = useState(false);
+  const [state, dispatch] = useReducer(formReducer, initialState);
 
   // ── Validación en tiempo real de contraseñas ─────────────────────────────
   const handlePasswordChange = (valor, esConfirmacion) => {
-    if (!esConfirmacion) {
-      setPassword(valor);
-    } else {
-      setPassword2(valor);
-    }
+    const password = esConfirmacion ? state.password : valor;
+    const password2 = esConfirmacion ? valor : state.password2;
 
-    const pass    = esConfirmacion ? password : valor;
-    const confirm = esConfirmacion ? valor    : password2;
+    dispatch({ type: "SET_FIELD", field: esConfirmacion ? "password2" : "password", value: valor });
 
-    setPasswordMatch(pass && confirm ? pass === confirm : null);
+    dispatch({ type: "SET_PASSWORD_MATCH", payload: password && password2 ? password === password2 : null });
 
     // Las reglas siempre se calculan sobre el campo de contraseña principal
-    const valorPrincipal = esConfirmacion ? password : valor;
-    setValidationRules({
-      length: valorPrincipal.length >= 8,
-      upper:  /[A-Z]/.test(valorPrincipal),
-      lower:  /[a-z]/.test(valorPrincipal),
-      number: /\d/.test(valorPrincipal),
+    const valorPrincipal = esConfirmacion ? state.password : valor;
+    dispatch({
+      type: "SET_VALIDATION_RULES",
+      payload: {
+        length: valorPrincipal.length >= 8,
+        upper:  /[A-Z]/.test(valorPrincipal),
+        lower:  /[a-z]/.test(valorPrincipal),
+        number: /\d/.test(valorPrincipal),
+      },
     });
   };
 
@@ -61,31 +85,31 @@ function FormularioCreacion() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email || !nombres || !apellidos || !nombreUsuario || !fecha || !password || !password2) {
+    if (!state.email || !state.nombres || !state.apellidos || !state.nombreUsuario || !state.fecha || !state.password || !state.password2) {
       Swal.fire({ icon: "error", title: "Campos incompletos", text: "Por favor completa todos los campos obligatorios." });
       return;
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) {
       Swal.fire({ icon: "error", title: "Correo inválido", text: "Por favor ingresa un correo electrónico válido." });
       return;
     }
 
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(state.password)) {
       Swal.fire({ icon: "error", title: "Contraseña insegura", text: "Debe tener mínimo 8 caracteres, mayúsculas, minúsculas y números." });
       return;
     }
 
-    if (password !== password2) {
+    if (state.password !== state.password2) {
       Swal.fire({ icon: "error", title: "Las contraseñas no coinciden", text: "Verifica que ambas contraseñas sean iguales." });
       return;
     }
 
     try {
-      setCargando(true);
+      dispatch({ type: "SET_LOADING", payload: true });
       const resultado = await registrarUsuario({
-        email, nombres, apellidos, nombreUsuario,
-        fechaNacimiento: fecha, contrasena: password,
+        email: state.email, nombres: state.nombres, apellidos: state.apellidos, nombreUsuario: state.nombreUsuario,
+        fechaNacimiento: state.fecha, contrasena: state.password,
       });
 
       if (resultado.exitoso) {
@@ -100,7 +124,7 @@ function FormularioCreacion() {
     } catch {
       Swal.fire({ icon: "error", title: "Error", text: "Ocurrió un error inesperado. Por favor intenta de nuevo." });
     } finally {
-      setCargando(false);
+      dispatch({ type: "SET_LOADING", payload: false });
     }
   };
 
@@ -112,32 +136,32 @@ function FormularioCreacion() {
         <AccountHeader />
 
         <PersonalInfoFields
-          email={email}           setEmail={setEmail}
-          nombres={nombres}       setNombres={setNombres}
-          apellidos={apellidos}   setApellidos={setApellidos}
-          nombreUsuario={nombreUsuario} setNombreUsuario={setNombreUsuario}
-          fecha={fecha}           setFecha={setFecha}
+          email={state.email}           setEmail={(v) => dispatch({ type: "SET_FIELD", field: "email", value: v })}
+          nombres={state.nombres}       setNombres={(v) => dispatch({ type: "SET_FIELD", field: "nombres", value: v })}
+          apellidos={state.apellidos}   setApellidos={(v) => dispatch({ type: "SET_FIELD", field: "apellidos", value: v })}
+          nombreUsuario={state.nombreUsuario} setNombreUsuario={(v) => dispatch({ type: "SET_FIELD", field: "nombreUsuario", value: v })}
+          fecha={state.fecha}           setFecha={(v) => dispatch({ type: "SET_FIELD", field: "fecha", value: v })}
         />
 
         <PasswordFields
-          password={password}
-          password2={password2}
-          mostrarContrasena={mostrarContrasena}   setMostrarContrasena={setMostrarContrasena}
-          mostrarContrasena2={mostrarContrasena2} setMostrarContrasena2={setMostrarContrasena2}
-          passwordMatch={passwordMatch}
-          validationRules={validationRules}
+          password={state.password}
+          password2={state.password2}
+          mostrarContrasena={state.mostrarContrasena}   setMostrarContrasena={() => dispatch({ type: "SET_PASSWORD_VISIBILITY", field: "mostrarContrasena" })}
+          mostrarContrasena2={state.mostrarContrasena2} setMostrarContrasena2={() => dispatch({ type: "SET_PASSWORD_VISIBILITY", field: "mostrarContrasena2" })}
+          passwordMatch={state.passwordMatch}
+          validationRules={state.validationRules}
           onChangePassword={handlePasswordChange}
         />
 
         {/* Botón de envío */}
         <div className="creacion-form-submit mt-4">
-          <button className="creacion-formulario-button rounded-pill" type="submit" disabled={cargando}>
+          <button className="creacion-formulario-button rounded-pill" type="submit" disabled={state.cargando}>
             Guardar <IoIosSend />
           </button>
         </div>
 
         {/* Overlay de carga */}
-        {cargando && (
+        {state.cargando && (
           <div className="loading-overlay">
             <SpinnerLoader texto="Registrando..." />
           </div>
