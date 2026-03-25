@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./ReviewCard.css";
 
-export default function ReviewCard({ title, rating, text, likes, date, placeId, canRespond = false }) {
+export default function ReviewCard({ title, rating, text, date, placeId, canRespond = false }) {
   const [mostrarRespuesta, setMostrarRespuesta] = useState(false);
   const [respuesta, setRespuesta] = useState("");
   const stars = [];
@@ -39,10 +39,6 @@ export default function ReviewCard({ title, rating, text, likes, date, placeId, 
               <span className="rating-number">{rating}.0</span>
             </div>
           </div>
-        </div>
-        <div className="review-likes">
-          <span className="heart-icon">❤️</span>
-          <span className="likes-count">{likes}</span>
         </div>
       </div>
 
