@@ -3,11 +3,19 @@
 
 
 
-// const promoFormReducer = (state, action) =>{
-//     switch (action.type){
-//         case "SET_IMAGENES": return { ...state, imagenes: action.playload };
-//         case "SET_"
-//     }
+const promoFormReducer = (state, action) =>{
+    switch (action.type){
+        case "SET_IMAGENES": return { ...state, imagenes: action.playload };
+        case "SET_PREVIEWS": return { ...state, previews: action.playload };
+        case "SET_INDICE_IMAGEN": return { ...state, indiceImagenActual: action.playload };
+        case "SET_TITULO_PROMO": return { ...state, tituloPromo: action.playload };
+        case "SET_DIRECCION": return  { ...state, direccion: action.playload };
+        case "SET_DESCRIPCION": return { ...state, tituloPromo: action.playload };
+        case "SET_ESTADO": return { ...state, estado: action.playload };
+        case "SET_FECHA_INICIO": return { ...state, fechaInicio: action.playload };
+        case "SET_FECHA_FIN": return { ...state, fechaFin: action.playload };
+        case "SET_SHOW_MODAL": return { ...state,showModal: action.playload };
+    }   
 
 // }
 
@@ -39,3 +47,9 @@
 //     const newPreviews = files.map((f))
 // } 
 // }
+
+return (
+    <div className="pb-5">
+
+    </div>
+)
