@@ -7,6 +7,7 @@ import { getSpots } from "@/mocks/spots.helpers";
 
 // Transformar datos del mock al formato que espera SpotCard
 const transformarSpotParaCard = (spot) => ({
+  id: spot.id, // Preservar el ID único para usar como key
   title: spot.nombre,
   tags: [spot.categoria],
   rating: spot.rating.toString(),
@@ -130,9 +131,9 @@ const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuar
         {tab === "guardados" && (
           tieneGuardados ? (
             <div className="guardados-grid">
-              {guardadosEjemplo.map((spot, i) => (
+              {guardadosEjemplo.map((spot) => (
                 <SpotCard
-                  key={i}
+                  key={spot.id}
                   img="public/images/publicaciones/default-post.jpg"
                   title={spot.title}
                   tags={spot.tags}

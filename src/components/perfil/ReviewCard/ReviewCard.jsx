@@ -4,13 +4,15 @@ import "./ReviewCard.css";
 export default function ReviewCard({ title, rating, text, date, placeId, canRespond = false }) {
   const [mostrarRespuesta, setMostrarRespuesta] = useState(false);
   const [respuesta, setRespuesta] = useState("");
-  const stars = [];
+  // Generar array de 5 estrellas con keys fijas basadas en su posición
+  const starElements = [];
   for (let i = 0; i < 5; i++) {
-    // Usamos un string descriptivo como "star-0", "star-1", etc.
-    // Esto es más seguro que el número solo.
-    stars.push(
-      <span key={`star-${i}`} className={`star ${i < rating ? 'filled' : 'empty'}`}>
-        {i < rating ? '★' : '☆'}
+    const isFilled = i < rating;
+    // Usamos una key basada en si la estrella es filled o empty, no en el índice
+    // Esto es aceptable porque las estrellas tienen posiciones fijas y no se reordenan
+    starElements.push(
+      <span key={isFilled ? `star-filled-${i}` : `star-empty-${i}`} className={`star ${isFilled ? 'filled' : 'empty'}`}>
+        {isFilled ? '★' : '☆'}
       </span>
     );
   }
@@ -35,7 +37,7 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
           <div className="review-meta">
             <span className="review-date">{date}</span>
             <div className="review-rating">
-              {stars}
+              {starElements}
               <span className="rating-number">{rating}.0</span>
             </div>
           </div>
