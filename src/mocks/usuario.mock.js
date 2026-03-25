@@ -16,9 +16,10 @@ export const hashearContrasena = async (contrasena) => {
 
 // Datos demo 
 // Hashes pre-calculados:
-//   socio123    → hash abajo
-//   encerrado   → hash abajo
-//   mod123      → hash abajo
+//   socio123    → 637e7c5f2e791200a1688142f4fe61e137d9876fb52767286dd6355587ac870e
+//   encerrado   → b5ea8243cd9dcc3b9a6b778895b035116564d8416ab01f355c23b5d69fdc0a15
+//   mod123      → 09fbcc458fb3430db7ec54ee95635e7fbc06ccfd982b49c55ec53ab8ac2397e7
+//   miembro123  → 00ea3591f221351a994c90c0d4914dcb1491aac2f912efce540773994d744f69
 
 export const USUARIOS_DEMO = [
   {
@@ -54,7 +55,7 @@ export const USUARIOS_DEMO = [
   {
     id: 4,
     nombreUsuario: "miembro",
-    contrasenaHash: "96c3f68b1e8c8e69e9f7e8c8e69e9f7e8c8e69e9f7e8c8e69e9f7e8c8e69e9f7",
+    contrasenaHash: "00ea3591f221351a994c90c0d4914dcb1491aac2f912efce540773994d744f69",
     correo: "miembro@photobogota.com",
     nombre: "Miembro",
     apellido: "Demo",

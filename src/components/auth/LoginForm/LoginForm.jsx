@@ -237,14 +237,6 @@ export default function LoginForm() {
                   );
                 })}
               </div>
-
-              <div className="demo-miembro-aviso">
-                <span className="demo-miembro-icon">👤</span>
-                <span>
-                  Para acceder como <b>Miembro</b>, primero debes{" "}
-                  <Link to="/creacion-cuenta">crear una cuenta</Link>.
-                </span>
-              </div>
             </div>
           </div>
         )}
