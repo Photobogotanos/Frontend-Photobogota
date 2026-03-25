@@ -57,14 +57,12 @@ export default function MenuSuperior() {
   }, [location]);
 
   useEffect(() => {
-    if (logueado) {
-      const interval = setInterval(() => {
-        dispatch({ type: "SET_PULSANDO", payload: true });
-        setTimeout(() => dispatch({ type: "SET_PULSANDO", payload: false }), 2000);
-      }, 15000);
+    const interval = setInterval(() => {
+      dispatch({ type: "SET_PULSANDO", payload: true });
+      setTimeout(() => dispatch({ type: "SET_PULSANDO", payload: false }), 2000);
+    }, 15000);
 
-      return () => clearInterval(interval);
-    }
+    return () => clearInterval(interval);
   }, [logueado]);
 
   const abrirSidebar = () => dispatch({ type: "SET_MOSTRAR_SIDEBAR", payload: true });
