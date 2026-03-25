@@ -14,9 +14,10 @@ const CREDENCIALES_DEMO = {
   socio: "socio123",
   perro: "encerrado",
   moderador: "mod123",
+  miembro: "miembro123",
 };
 
-const CUENTAS_ESPECIALES = ["SOCIO", "ADMINISTRADOR", "MODERADOR"];
+const CUENTAS_ESPECIALES = ["SOCIO", "MOD", "ADMIN", "MIEMBRO"];
 
 // Reducer function
 function loginReducer(state, action) {
@@ -61,9 +62,11 @@ export default function LoginForm() {
     );
   }, []);
 
-  const cuentasEspeciales = USUARIOS_DEMO.filter((u) =>
-    CUENTAS_ESPECIALES.includes(u.rol)
-  );
+  // Ordenar por rol: MIEMBRO, SOCIO, MOD, ADMIN
+  const ordenRol = { MIEMBRO: 1, SOCIO: 2, MOD: 3, ADMIN: 4 };
+  const cuentasEspeciales = USUARIOS_DEMO
+    .filter((u) => CUENTAS_ESPECIALES.includes(u.rol))
+    .sort((a, b) => ordenRol[a.rol] - ordenRol[b.rol]);
 
   const copiarCredenciales = (nombreUsuario) => {
     const pass = CREDENCIALES_DEMO[nombreUsuario] ?? "";
@@ -130,8 +133,9 @@ export default function LoginForm() {
   const etiquetaRol = (rol) => {
     const mapa = {
       SOCIO: { texto: "Socio", color: "#806fbe" },
-      ADMINISTRADOR: { texto: "Admin", color: "#e07b54" },
-      MODERADOR: { texto: "Mod", color: "#4a9b7f" },
+      ADMIN: { texto: "Admin", color: "#e07b54" },
+      MOD: { texto: "Mod", color: "#4a9b7f" },
+      MIEMBRO: { texto: "Miembro", color: "#888" },
     };
     return mapa[rol] || { texto: rol, color: "#888" };
   };
