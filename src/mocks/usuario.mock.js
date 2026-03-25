@@ -38,7 +38,7 @@ export const USUARIOS_DEMO = [
     correo: "perro@photobogota.com",
     nombre: "Administrador",
     apellido: "Demo",
-    rol: "ADMINISTRADOR",
+    rol: "ADMIN",
     fechaNacimiento: "2004-11-05",
   },
   {
@@ -48,7 +48,17 @@ export const USUARIOS_DEMO = [
     correo: "moderador@photobogota.com",
     nombre: "Moderador",
     apellido: "Demo",
-    rol: "MODERADOR",
+    rol: "MOD",
+    fechaNacimiento: "2004-11-05",
+  },
+  {
+    id: 4,
+    nombreUsuario: "miembro",
+    contrasenaHash: "96c3f68b1e8c8e69e9f7e8c8e69e9f7e8c8e69e9f7e8c8e69e9f7e8c8e69e9f7",
+    correo: "miembro@photobogota.com",
+    nombre: "Miembro",
+    apellido: "Demo",
+    rol: "MIEMBRO",
     fechaNacimiento: "2004-11-05",
   },
 ];

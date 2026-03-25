@@ -58,15 +58,6 @@
   margin-bottom: 5px;
 }
 
-.badge-miembro {
-  background: #dae9db;
-  padding: 4px 12px;
-  border-radius: 50px;
-  font-size: 0.85rem;
-  border: 1px solid #bcd8bf;
-  font-weight: bold;
-}
-
 .badge-nivel {
   background: #e5d9ff;
   padding: 4px 12px;
@@ -74,6 +65,41 @@
   font-size: 0.85rem;
   border: 1px solid var(--color-primary);
   font-weight: bold;
+}
+
+/* Badges de rol */
+.badge-rol {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.badge-miembro {
+  background: #dae9db;
+  border: 1px solid #bcd8bf;
+  color: #2e7d32;
+}
+
+.badge-admin {
+  background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+  border: 1px solid #e6a800;
+  color: #5d4000;
+}
+
+.badge-mod {
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  color: #1565c0;
+}
+
+.badge-socio {
+  background: #fff3e0;
+  border: 1px solid #ffb74d;
+  color: #e65100;
 }
 
 /* ESTADÍSTICAS */

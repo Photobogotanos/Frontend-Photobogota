@@ -1,7 +1,31 @@
-import { FaCamera } from "react-icons/fa";
+import { FaUser, FaCrown, FaUserShield, FaStore } from "react-icons/fa";
 import { FiEdit3 } from "react-icons/fi";
 
-const PerfilHeader = ({ perfilData, dispatch }) => {
+const BadgeRol = ({ rol }) => {
+  const getBadgeConfig = () => {
+    switch (rol) {
+      case "ADMIN":
+        return { clase: "badge-admin", icono: <FaCrown />, texto: "Admin" };
+      case "MOD":
+        return { clase: "badge-mod", icono: <FaUserShield />, texto: "Moderador" };
+      case "SOCIO":
+        return { clase: "badge-socio", icono: <FaStore />, texto: "Socio" };
+      case "MIEMBRO":
+      default:
+        return { clase: "badge-miembro", icono: <FaUser />, texto: "Miembro" };
+    }
+  };
+
+  const config = getBadgeConfig();
+
+  return (
+    <span className={`badge-rol ${config.clase}`}>
+      {config.icono} {config.texto}
+    </span>
+  );
+};
+
+const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO" }) => {
   return (
     <>
       {/* FOTO + INFO DEL USUARIO */}
@@ -22,9 +46,7 @@ const PerfilHeader = ({ perfilData, dispatch }) => {
 
         <div className="perfil-info">
           <div className="perfil-badges">
-            <span className="badge-miembro">
-              <FaCamera /> Miembro
-            </span>
+            <BadgeRol rol={rol} />
             <span className="badge-nivel">Nivel: 320</span>
           </div>
 
