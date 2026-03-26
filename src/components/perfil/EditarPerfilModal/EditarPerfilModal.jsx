@@ -1,135 +1,116 @@
-// ============================================================
-// COMPONENTE PADRE: EditarPerfilModal
-// Su responsabilidad: guardar el estado y la lógica.
-// Los componentes hijos solo muestran, este componente piensa.
-// ============================================================
-
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Modal, Form, Row, Col } from "react-bootstrap";
-import { FaCamera } from "react-icons/fa";
+import {
+  FaUser, FaEnvelope, FaPhone,
+  FaShieldAlt,
+} from "react-icons/fa";
+import { FiEdit3 } from "react-icons/fi";
 import "./EditarPerfilModal.css";
 import Swal from "sweetalert2";
-
-// Importamos los 3 hijos que creamos
 import FotoPerfil from "./FotoPerfil";
-import CambiarContrasena from "./CambiarContrasena";
 import BotonesAccion from "./BotonesAccion";
+import PassField from "./PassField";
 
-// ─────────────────────────────────────────────────────────────
-// El componente recibe 4 props desde quien lo usa (por ejemplo, una página):
-//   show                → true/false para mostrar u ocultar el modal
-//   onHide              → función para cerrarlo
-//   perfilData          → objeto con los datos actuales del usuario
-//   onPerfilActualizado → función para avisar que se guardó
-// ─────────────────────────────────────────────────────────────
+
 export default function EditarPerfilModal({
   show,
   onHide,
   perfilData,
   onPerfilActualizado,
 }) {
+  const [tabActiva, setTabActiva] = useState("perfil");
 
-  // ── ESTADO DEL FORMULARIO ──────────────────────────────────
-  // useState guarda los valores de los campos de texto.
-  // Se inicializa con los datos que llegaron en perfilData,
-  // o con valores por defecto si perfilData viene vacío.
   const [formData, setFormData] = useState({
-    nombreCompleto:      perfilData?.nombreCompleto || "Juan Sebastian Romero",
-    nombreUsuario:       perfilData?.nombreUsuario  || "sxbxxs.r",
-    correo:              perfilData?.correo         || "photobogota123@gmail.com",
-    descripcion:         perfilData?.descripcion    || "Descubre y comparte los mejores spots locales.",
-    telefono:            perfilData?.telefono       || "3138529778",
-    contrasena:          "",
+    nombreCompleto: perfilData?.nombreCompleto || "Juan Sebastian Romero",
+    nombreUsuario: perfilData?.nombreUsuario || "sxbxxs.r",
+    correo: perfilData?.correo || "photobogota123@gmail.com",
+    descripcion: perfilData?.descripcion || "Descubre y comparte los mejores spots locales.",
+    telefono: perfilData?.telefono || "3138529778",
+    contrasenaActual: "",
+    contrasenaNueva: "",
     confirmarContrasena: "",
   });
 
-  // Estado separado para la foto (string con ruta o base64)
   const [fotoPerfil, setFotoPerfil] = useState(
     perfilData?.foto || "public/images/user-pfp/default-avatar.jpg"
   );
+  const [verActual, setVerActual] = useState(false);
+  const [verNueva, setVerNueva] = useState(false);
+  const [verConfirmar, setVerConfirmar] = useState(false);
 
-  // Estado para mostrar u ocultar los campos de contraseña
-  const [mostrarCambiarContrasena, setMostrarCambiarContrasena] = useState(false);
+  // ─── validación de contraseña ──────────────────────────
+  const validationRules = useMemo(() => ({
+    length: formData.contrasenaNueva.length >= 8,
+    upper: /[A-Z]/.test(formData.contrasenaNueva),
+    lower: /[a-z]/.test(formData.contrasenaNueva),
+    number: /[0-9]/.test(formData.contrasenaNueva),
+  }), [formData.contrasenaNueva]);
 
+  const passwordIsValid = Object.values(validationRules).every(Boolean);
 
-  // ── HANDLERS ───────────────────────────────────────────────
-
-  // Se ejecuta cada vez que el usuario escribe en cualquier campo.
-  // Usa el atributo "name" del input para saber qué campo actualizar.
+  // ─── handlers ──────────────────────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,       // copia todo lo anterior
-      [name]: value, // sobreescribe solo el campo que cambió
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Se ejecuta cuando el usuario elige una imagen nueva.
-  // Valida el tamaño y convierte la imagen a base64 para previsualizarla.
   const handleFotoChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        Swal.fire({
-          icon: "error",
-          title: "Archivo demasiado grande",
-          text: "El tamaño máximo permitido es de 5MB.",
-        });
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFotoPerfil(event.target.result); // guarda la imagen como base64
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      Swal.fire({ icon: "error", title: "Archivo demasiado grande", text: "Máximo 5MB." });
+      return;
     }
+    const reader = new FileReader();
+    reader.onload = (ev) => setFotoPerfil(ev.target.result);
+    reader.readAsDataURL(file);
   };
 
-  // Restaura la foto al avatar por defecto
   const handleEliminarFoto = () => {
     setFotoPerfil("public/images/user-pfp/default-avatar.jpg");
   };
 
-  // Se ejecuta al presionar "Guardar Cambios"
-  const handleSubmit = (e) => {
-    e.preventDefault(); // evita que la página se recargue
+  const passwordsCoinciden =
+    formData.contrasenaNueva.length > 0 &&
+    formData.contrasenaNueva === formData.confirmarContrasena;
 
-    // Si el usuario quiso cambiar contraseña, verifica que coincidan
-    if (mostrarCambiarContrasena && formData.contrasena !== formData.confirmarContrasena) {
-      Swal.fire({
-        icon: "error",
-        title: "Contraseñas no coinciden",
-        text: "Por favor verifica que ambas contraseñas sean iguales.",
-      });
-      return;
-    }
-
+  // submit tab Perfil
+  const handleSubmitPerfil = (e) => {
+    e.preventDefault();
     const datosActualizados = {
       nombreCompleto: formData.nombreCompleto,
-      nombreUsuario:  formData.nombreUsuario,
-      correo:         formData.correo,
-      descripcion:    formData.descripcion,
-      telefono:       formData.telefono,
-      foto:           fotoPerfil,
+      nombreUsuario: formData.nombreUsuario,
+      correo: formData.correo,
+      descripcion: formData.descripcion,
+      telefono: formData.telefono,
+      foto: fotoPerfil,
     };
+    if (onPerfilActualizado) onPerfilActualizado(datosActualizados);
+    Swal.fire({ icon: "success", title: "¡Perfil actualizado!", confirmButtonColor: "var(--color-primary)" });
+    onHide();
+  };
 
-    // Si quien usó este modal nos pasó onPerfilActualizado,
-    // la llamamos para que el resto de la app se entere del cambio
-    if (onPerfilActualizado) {
-      onPerfilActualizado(datosActualizados);
+  // submit tab Contraseña
+  const handleSubmitContrasena = (e) => {
+    e.preventDefault();
+    if (!formData.contrasenaActual) {
+      Swal.fire({ icon: "error", title: "Ingresa tu contraseña actual" });
+      return;
     }
-
-    Swal.fire({
-      icon: "success",
-      title: "Actualizado",
-      text: "Gracias por mantenerte actualizado parcerito",
-    });
-
-    onHide(); // cierra el modal
+    if (!passwordIsValid) {
+      Swal.fire({ icon: "error", title: "Contraseña no válida", text: "La contraseña debe cumplir todos los requisitos." });
+      return;
+    }
+    if (!passwordsCoinciden) {
+      Swal.fire({ icon: "error", title: "Las contraseñas no coinciden" });
+      return;
+    }
+    Swal.fire({ icon: "success", title: "¡Contraseña actualizada!", confirmButtonColor: "var(--color-primary)" });
+    setFormData((p) => ({ ...p, contrasenaActual: "", contrasenaNueva: "", confirmarContrasena: "" }));
+    onHide();
   };
 
 
-  // ── RENDER ─────────────────────────────────────────────────
   return (
     <Modal
       show={show}
@@ -139,132 +120,198 @@ export default function EditarPerfilModal({
       backdrop="static"
       className="editar-perfil-modal"
     >
+      {/* HEADER */}
       <Modal.Header closeButton className="modal-header-custom">
-        <Modal.Title className="modal-title-custom">
-          <FaCamera className="me-2" />
-          Editar Perfil
-        </Modal.Title>
+        <div className="modal-title-custom">
+          <span className="mh-icon-box"><FiEdit3 /></span>
+          Editar perfil
+        </div>
       </Modal.Header>
 
+      {/* TABS NAV */}
+      <div className="modal-tabs-nav">
+        <button
+          type="button"
+          className={`mtab ${tabActiva === "perfil" ? "active" : ""}`}
+          onClick={() => setTabActiva("perfil")}
+        >
+          <FaUser className="mtab-icon" />
+          Perfil
+        </button>
+        <button
+          type="button"
+          className={`mtab ${tabActiva === "contrasena" ? "active" : ""}`}
+          onClick={() => setTabActiva("contrasena")}
+        >
+          <FaShieldAlt className="mtab-icon" />
+          Contraseña
+        </button>
+      </div>
+
       <Modal.Body className="modal-body-custom">
-        <Form onSubmit={handleSubmit}>
 
-          <div className="section-header">
-            <span className="section-label">A. Perfil</span>
-          </div>
-          <div className="section-divider"></div>
+        {/* ══ TAB: PERFIL ══════════════════════════════════ */}
+        {tabActiva === "perfil" && (
+          <Form onSubmit={handleSubmitPerfil}>
 
-          {/* ── HIJO 1: FotoPerfil ──────────────────────────────
-              Le pasamos 3 props:
-              - fotoPerfil: el valor actual de la foto (para mostrarla)
-              - onFotoChange: qué hacer cuando elija una foto nueva
-              - onEliminarFoto: qué hacer cuando presione "Eliminar"
-          */}
-          <FotoPerfil
-            fotoPerfil={fotoPerfil}
-            onFotoChange={handleFotoChange}
-            onEliminarFoto={handleEliminarFoto}
-          />
-
-          {/* ── CAMPOS DE TEXTO ─────────────────────────────── */}
-          <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">Nombre completo</Form.Label>
-            <Form.Control
-              type="text"
-              name="nombreCompleto"           // debe coincidir con la key en formData
-              value={formData.nombreCompleto} // valor controlado por el estado
-              onChange={handleChange}         // actualiza el estado al escribir
-              className="form-control-custom"
-              placeholder="Ingresa tu nombre completo"
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">Nombre de usuario</Form.Label>
-            <Form.Control
-              type="text"
-              name="nombreUsuario"
-              value={formData.nombreUsuario}
-              onChange={handleChange}
-              className="form-control-custom"
-              placeholder="Ingresa tu nombre de usuario"
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">Correo electrónico</Form.Label>
-            <Form.Control
-              type="email"
-              name="correo"
-              value={formData.correo}
-              onChange={handleChange}
-              className="form-control-custom"
-              placeholder="Ingresa tu correo electrónico"
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label className="form-label-custom">Descripción</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              name="descripcion"
-              value={formData.descripcion}
-              onChange={handleChange}
-              className="form-control-custom"
-              placeholder="Cuéntanos sobre ti"
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-4">
-            <Form.Label className="form-label-custom">Teléfono</Form.Label>
-            <Form.Control
-              type="tel"
-              name="telefono"
-              value={formData.telefono}
-              onChange={handleChange}
-              className="form-control-custom"
-              placeholder="Ingresa tu número de teléfono"
-            />
-          </Form.Group>
-
-          {/* ── HIJO 2: CambiarContrasena ───────────────────────
-              Le pasamos 4 props:
-              - mostrar: true/false para saber si mostrar los campos
-              - onToggle: función para alternar mostrar/ocultar
-              - formData: necesita contrasena y confirmarContrasena
-              - onChange: para actualizar esos campos en el estado del padre
-          */}
-          <CambiarContrasena
-            mostrar={mostrarCambiarContrasena}
-            onToggle={() => setMostrarCambiarContrasena(!mostrarCambiarContrasena)}
-            formData={formData}
-            onChange={handleChange}
-          />
-
-          {/* ── GUARDADOS ───────────────────────────────────── */}
-          <div className="mb-4">
-            <Form.Label className="form-label-custom">Guardados</Form.Label>
-            <div className="guardados-preview">
-              <div className="guardado-item">
-                <span className="guardado-label">Miembro</span>
-                <span className="guardado-value">Miembro</span>
-              </div>
-              <div className="guardado-item">
-                <span className="guardado-label">Nivel</span>
-                <span className="guardado-value">320</span>
+            {/* Hero foto */}
+            <div className="profile-hero">
+              <FotoPerfil
+                fotoPerfil={fotoPerfil}
+                onFotoChange={handleFotoChange}
+                onEliminarFoto={handleEliminarFoto}
+              />
+              <div className="hero-info">
+                <p className="hero-name">{formData.nombreCompleto}</p>
+                <p className="hero-user">@{formData.nombreUsuario}</p>
+                <div className="hero-pills">
+                  <span className="hpill">Miembro</span>
+                  <span className="hpill accent">Nivel 320</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* ── HIJO 3: BotonesAccion ───────────────────────────
-              Solo necesita saber qué hacer al cancelar.
-              El botón guardar es type="submit", entonces
-              automáticamente dispara el onSubmit del Form padre.
-          */}
-          <BotonesAccion onCancelar={onHide} />
+            {/* Info personal */}
+            <div className="form-block">
+              <div className="block-heading">
+                <FaUser className="bh-icon" />
+                <span>Información personal</span>
+              </div>
+              <Row className="g-3">
+                <Col md={6}>
+                  <div className="fgroup">
+                    <label className="flabel">Nombre completo</label>
+                    <Form.Control
+                      type="text" name="nombreCompleto"
+                      value={formData.nombreCompleto} onChange={handleChange}
+                      className="finput" placeholder="Tu nombre completo"
+                    />
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="fgroup">
+                    <label className="flabel">Nombre de usuario</label>
+                    <div className="prefix-wrap">
+                      <span className="input-pfx">@</span>
+                      <Form.Control
+                        type="text" name="nombreUsuario"
+                        value={formData.nombreUsuario} onChange={handleChange}
+                        className="finput with-pfx" placeholder="usuario"
+                      />
+                    </div>
+                  </div>
+                </Col>
+                <Col md={12}>
+                  <div className="fgroup">
+                    <label className="flabel">Descripción</label>
+                    <Form.Control
+                      as="textarea" rows={3} name="descripcion"
+                      value={formData.descripcion} onChange={handleChange}
+                      className="finput ftextarea" placeholder="Cuéntanos sobre ti..."
+                      maxLength={160}
+                    />
+                    <span className="char-hint">{formData.descripcion.length}/160</span>
+                  </div>
+                </Col>
+              </Row>
+            </div>
 
-        </Form>
+            <div className="block-sep" />
+
+            {/* Contacto */}
+            <div className="form-block">
+              <div className="block-heading">
+                <FaEnvelope className="bh-icon" />
+                <span>Contacto</span>
+              </div>
+              <Row className="g-3">
+                <Col md={7}>
+                  <div className="fgroup">
+                    <label className="flabel">Correo electrónico</label>
+                    <Form.Control
+                      type="email" name="correo"
+                      value={formData.correo} onChange={handleChange}
+                      className="finput" placeholder="correo@ejemplo.com"
+                    />
+                  </div>
+                </Col>
+                <Col md={5}>
+                  <div className="fgroup">
+                    <label className="flabel">
+                      <FaPhone style={{ fontSize: "0.7rem", marginRight: 5 }} />
+                      Teléfono
+                    </label>
+                    <Form.Control
+                      type="tel" name="telefono"
+                      value={formData.telefono} onChange={handleChange}
+                      className="finput" placeholder="300 000 0000"
+                    />
+                  </div>
+                </Col>
+              </Row>
+            </div>
+
+            <BotonesAccion onCancelar={onHide} />
+          </Form>
+        )}
+
+        {/* ══ TAB: CONTRASEÑA ══════════════════════════════ */}
+        {tabActiva === "contrasena" && (
+          <Form onSubmit={handleSubmitContrasena}>
+            <div className="form-block pass-tab-block">
+
+              {/* Ilustración / ícono decorativo */}
+              <div className="pass-hero">
+                <span className="pass-hero-icon"><FaShieldAlt /></span>
+                <p className="pass-hero-title">Cambiar contraseña</p>
+                <p className="pass-hero-sub">
+                  Elige una contraseña segura con al menos 8 caracteres, una mayúscula, una minúscula y un número.
+                </p>
+              </div>
+
+              <div className="pass-fields-stack">
+                <PassField
+                  label="Contraseña actual"
+                  name="contrasenaActual"
+                  value={formData.contrasenaActual} // Pasa los valores explícitamente
+                  onChange={handleChange}
+                  ver={verActual}
+                  onToggle={() => setVerActual(!verActual)}
+                  placeholder="Tu contraseña actual"
+                  formData={formData}
+                />
+
+                <div className="pass-divider" />
+
+                <PassField
+                  label="Nueva contraseña"
+                  name="contrasenaNueva"
+                  value={formData.contrasenaNueva}
+                  onChange={handleChange}
+                  ver={verNueva}
+                  onToggle={() => setVerNueva(!verNueva)}
+                  placeholder="Mínimo 8 caracteres..."
+                  formData={formData}
+                  validationRules={validationRules}
+                />
+
+                <PassField
+                  label="Confirmar nueva contraseña"
+                  name="confirmarContrasena"
+                  value={formData.confirmarContrasena}
+                  onChange={handleChange}
+                  ver={verConfirmar}
+                  onToggle={() => setVerConfirmar(!verConfirmar)}
+                  placeholder="Repite la nueva contraseña"
+                  formData={formData}
+                  passwordsCoinciden={passwordsCoinciden}
+                />
+              </div>
+            </div>
+            <BotonesAccion onCancelar={onHide} />
+          </Form>
+        )}
+
       </Modal.Body>
     </Modal>
   );

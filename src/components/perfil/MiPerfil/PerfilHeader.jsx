@@ -54,16 +54,16 @@ const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO" }) => {
           <p className="perfil-username">@{perfilData.nombreUsuario}</p>
           <p className="perfil-descripcion">{perfilData.descripcion}</p>
         </div>
-      </div>
 
-      {/* BOTÓN EDITAR PERFIL */}
-      <div className="perfil-edit-wrapper">
-        <button
-          className="btn-editar-perfil"
-          onClick={() => dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: true })}
-        >
-          <FiEdit3 size={18} /> Editar perfil
-        </button>
+        {/* BOTÓN EDITAR PERFIL - Lado derecho */}
+        <div className="perfil-edit-wrapper">
+          <button
+            className="btn-editar-perfil"
+            onClick={() => dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: true })}
+          >
+            <FiEdit3 size={18} /> Editar perfil
+          </button>
+        </div>
       </div>
     </>
   );
