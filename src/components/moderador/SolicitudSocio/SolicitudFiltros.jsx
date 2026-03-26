@@ -13,7 +13,7 @@ export default function SolicitudFiltros({ filtroEstado, busqueda, solicitudes, 
 
   return (
     <>
-      <Container className="nav-container p-0">
+      <Container className="nav-container mt-4">
         <Tabs
           activeKey={
             filtroEstado === "pendiente" ? "Pendiente" :
@@ -38,11 +38,11 @@ export default function SolicitudFiltros({ filtroEstado, busqueda, solicitudes, 
         <div className="search-wrapper">
           <FiSearch className="search-icon" />
           <Form.Control
+            className="search-input"
             type="text"
-            placeholder="Buscar por ID, razón social o propietario..."
+            placeholder="Buscar por ID, razón social o propietario"
             value={busqueda}
             onChange={(e) => onBusqueda(e.target.value)}
-            className="search-input"
           />
         </div>
       </div>
