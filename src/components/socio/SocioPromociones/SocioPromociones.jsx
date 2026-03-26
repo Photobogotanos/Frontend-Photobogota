@@ -9,6 +9,10 @@ import { FaCircleXmark } from "react-icons/fa6";
 import { FaRegClock } from "react-icons/fa";
 import { TfiStatsUp } from "react-icons/tfi";
 import { BsMailbox } from "react-icons/bs";
+import { FaBars, FaPlus } from "react-icons/fa";
+import { FiEdit3 } from "react-icons/fi";
+import { LuCopyPlus } from "react-icons/lu";
+import { FaBan } from "react-icons/fa6";
 
 import { Link } from "react-router-dom";
 
@@ -63,7 +67,7 @@ const SocioPromociones = () => {
           </p>
         </div>
         <Link className="btn-crear-promocion">
-          + Crear Nueva Promoción
+          <FaPlus />  Crear Nueva Promoción
         </Link>
       </div>
 
@@ -138,7 +142,7 @@ const SocioPromociones = () => {
 
       {/* Grid de promociones */}
       <Row className="promociones-grid">
-        {promocionesFiltradas.map((promocion) => (
+        {PROMOCIONES.map((promocion) => (
           <Col key={promocion.id} lg={6} xl={4} className="mb-4">
             <Card className={`promocion-card ${promocion.estado}`}>
               <div className="promocion-imagen-container">
@@ -216,14 +220,14 @@ const SocioPromociones = () => {
                 
                 <div className="promocion-acciones">
                   <Button variant="outline-primary" size="sm" className="btn-editar">
-                    ✏️ Editar
+                    <FiEdit3 /> Editar
                   </Button>
                   <Button variant="outline-secondary" size="sm" className="btn-duplicar">
-                    📋 Duplicar
+                    <LuCopyPlus/> Duplicar
                   </Button>
                   {promocion.estado === "activa" && (
                     <Button variant="outline-danger" size="sm" className="btn-desactivar">
-                      ✕ Desactivar
+                      <FaBan/> Desactivar
                     </Button>
                   )}
                 </div>
@@ -234,7 +238,7 @@ const SocioPromociones = () => {
       </Row>
 
       {/* Mensaje si no hay resultados */}
-      {promocionesFiltradas.length === 0 && (
+      {PROMOCIONES.length === 0 && (
         <div className="no-resultados">
           <div className="no-resultados-icon"><BsMailbox /></div>
           <h3>No se encontraron promociones</h3>
