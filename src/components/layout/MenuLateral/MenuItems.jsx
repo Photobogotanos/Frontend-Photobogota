@@ -162,6 +162,13 @@ export default function MenuItems({ rol, cerrar }) {
             onClick={cerrar}
             activo={esRutaActiva("/notificaciones-mantenimiento")}
           />
+          <SidebarLink
+            icon={<FaFileAlt />}
+            texto="Ver Logs"
+            to="/ver-logs"
+            onClick={cerrar}
+            activo={esRutaActiva("/ver-logs")}
+          />
         </>
       )}
 
