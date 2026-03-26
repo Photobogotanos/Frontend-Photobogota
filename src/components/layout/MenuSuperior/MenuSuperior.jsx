@@ -6,7 +6,8 @@ import MenuLateral from "@/components/layout/MenuLateral/MenuLateral";
 import "./MenuSuperior.css";
 import logo from "@/assets/images/logo.jpg";
 import Notificaciones from "@/components/notificaciones/Notificaciones/Notificaciones";
-import { estaLogueado, cerrarSesion } from "@/utils/sessionHelper";
+import { estaLogueado } from "@/utils/sessionHelper";
+import { useAuth } from "@/context/AuthContext";
 import { resetEstadoServidor } from "@/utils/serverStatus";
 
 // Reducer para manejar el estado del menú
@@ -38,6 +39,7 @@ export default function MenuSuperior() {
   const notificaciones = 3; // Valor fijo, no necesita estado
   const navegar = useNavigate();
   const location = useLocation();
+  const { cerrarSesion } = useAuth();
 
   useEffect(() => {
     const verificarLogin = () => {
@@ -68,9 +70,9 @@ export default function MenuSuperior() {
   const abrirSidebar = () => dispatch({ type: "SET_MOSTRAR_SIDEBAR", payload: true });
   const cerrarSidebar = () => dispatch({ type: "SET_MOSTRAR_SIDEBAR", payload: false });
 
-  const manejarCerrarSesion = () => {
+  const manejarCerrarSesion = async () => {
     resetEstadoServidor();
-    cerrarSesion();
+    await cerrarSesion();
     dispatch({ type: "RESET_SESION" });
     navegar("/");
   };

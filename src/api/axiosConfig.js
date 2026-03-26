@@ -1,5 +1,6 @@
 import axios from "axios";
 import { obtenerAccessToken, obtenerRefreshToken, guardarTokens, cerrarSesion } from "@/utils/sessionHelper";
+import { toast } from "react-hot-toast";
 
 const API_BASE_URL = "http://localhost:8080";
 
@@ -29,42 +30,64 @@ clienteApi.interceptors.request.use(
 
 let estaRenovando = false; // evita que múltiples requests fallen al mismo tiempo
 // y todas intenten renovar el token simultáneamente
+let peticionesEnEspera = []; // para almacenar requests que llegan mientras se renueva el token
+
+const procesarCola = (token) => {
+    peticionesEnEspera.forEach((callback) => callback(token));
+    peticionesEnEspera = [];
+};
 
 clienteApi.interceptors.response.use(
-    (response) => response, // si la respuesta es exitosa, la dejamos pasar sin tocar
+    (response) => response,
     async (error) => {
-        const requestOriginal = error.config;
+        const { config, response } = error;
 
-        const es401 = error.response?.status === 401;
-        const noEsReintentoYa = !requestOriginal._reintentado; // evita bucle infinito
+        if (config.url.includes("/auth/login") || response?.status !== 401) {
+            return Promise.reject(error);
+        }
 
-        if (es401 && noEsReintentoYa && !estaRenovando) {
+        if (response?.status === 401 && !config._reintentado) {
+            if (estaRenovando) {
+                return new Promise((resolve) => {
+                    peticionesEnEspera.push((token) => {
+                        config.headers.Authorization = `Bearer ${token}`;
+                        resolve(clienteApi(config));
+                    });
+                });
+            }
+
+            config._reintentado = true;
             estaRenovando = true;
-            requestOriginal._reintentado = true; // marcamos para no reintentar de nuevo
+
+            // Mostramos un toast informativo
+            const idToast = toast.loading("Actualizando sesión...");
 
             try {
                 const refreshToken = obtenerRefreshToken();
+                // Instancia limpia para no entrar en bucle
+                const { data } = await axios.post(`${API_BASE_URL}/api/v1/auth/refresh`, { refreshToken });
 
-                // Le pedimos al backend un nuevo par de tokens
-                const { data } = await clienteApi.post("/api/v1/auth/refresh", { refreshToken });
-
-                // Guardamos los nuevos tokens en cookies
                 guardarTokens(data.accessToken, data.refreshToken);
 
-                // Actualizamos el header de la request original con el nuevo token
-                requestOriginal.headers.Authorization = `Bearer ${data.accessToken}`;
+                toast.success("Sesión renovada", { id: idToast });
 
-                return clienteApi(requestOriginal); // reintentamos la request que había fallado
-            } catch {
-                // El refreshToken también expiró o fue rechazado = forzar logout
-                cerrarSesion();
-                window.location.href = "/login";
-                return Promise.reject(error);
-            } finally {
                 estaRenovando = false;
-            }
-        }
+                procesarCola(data.accessToken);
 
+                config.headers.Authorization = `Bearer ${data.accessToken}`;
+                return clienteApi(config);
+
+            } catch (err) {
+                estaRenovando = false;
+                peticionesEnEspera = [];
+                toast.error("La sesión ha expirado. Redirigiendo...", { id: idToast });
+
+                cerrarSesion();
+                setTimeout(() => { window.location.href = "/login"; }, 1500);
+                return Promise.reject(err);
+            }
+            
+        }
         return Promise.reject(error);
     }
 );

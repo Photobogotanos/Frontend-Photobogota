@@ -70,6 +70,7 @@ const obtenerEstadoInicial = () => {
     descripcion: "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
     foto: "/images/user-pfp/default-avatar.jpg",
     rol: "MIEMBRO", // Rol por defecto (en mayúsculas para la API real)
+    nivel: null,
   };
   
   // Si hay usuario en storage, usar sus datos
@@ -83,6 +84,7 @@ const obtenerEstadoInicial = () => {
       descripcion: usuarioStorage.descripcion || defaults.descripcion,
       foto: usuarioStorage.foto || defaults.foto,
       rol: (usuarioStorage.rol || defaults.rol).toUpperCase(), // Normalizar a mayúsculas
+      nivel: usuarioStorage.nivel ?? null,
     };
   }
   
@@ -119,6 +121,7 @@ export default function MiPerfil() {
         perfilData={state.perfilData}
         dispatch={dispatch}
         rol={state.perfilData.rol}
+        nivel={state.perfilData.nivel}
       />
 
       <div className="line-divider" />

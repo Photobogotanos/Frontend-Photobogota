@@ -16,6 +16,8 @@ export const obtenerRefreshToken = () => Cookies.get("refreshToken");
 const eliminarTokens = () => {
   Cookies.remove("accessToken");
   Cookies.remove("refreshToken");
+  localStorage.clear();
+  sessionStorage.clear();
 };
 
 // Sesión de usuario 
@@ -31,6 +33,18 @@ export const obtenerSesion = () => {
 };
 
 export const estaLogueado = () => localStorage.getItem("logueado") === "true";
+
+/**
+ * Actualiza parcialmente la sesión del usuario en localStorage
+ * @param {Object} datosActualizados - Datos a actualizar del usuario
+ */
+export const actualizarSesion = (datosActualizados) => {
+  const sesionActual = obtenerSesion();
+  if (sesionActual) {
+    const nuevaSesion = { ...sesionActual, ...datosActualizados };
+    localStorage.setItem("miembro", JSON.stringify(nuevaSesion));
+  }
+};
 
 export const cerrarSesion = () => {
   localStorage.removeItem("logueado");

@@ -21,10 +21,11 @@ export const iniciarSesion = async (login, contrasena) => {
     }
 
     const usuarioFinal = {
-      nombre: usuarioEncontrado.nombre,
+      nombre: usuarioEncontrado.nombreUsuario, // nombreUsuario del DTO
       username: "@" + usuarioEncontrado.nombreUsuario,
       email: usuarioEncontrado.correo,
-      rol: usuarioEncontrado.rol, 
+      rol: usuarioEncontrado.rol,
+      ...(usuarioEncontrado.rol === "MIEMBRO" && usuarioEncontrado.nivel !== undefined && { nivel: usuarioEncontrado.nivel }),
     };
 
     guardarSesion(usuarioFinal);
@@ -33,12 +34,24 @@ export const iniciarSesion = async (login, contrasena) => {
 
   try {
     const respuesta = await postLogin({ login, contrasena });
-    const { accessToken, refreshToken, usuario } = respuesta.data;
+    const { token, refreshToken, nombreUsuario, email, rol, nivel, mensaje } = respuesta.data;
 
-    guardarTokens(accessToken, refreshToken);
+    // Guardar tokens
+    guardarTokens(token, refreshToken);
+    
+    // Crear objeto de sesión según LoginResponseDTO
+    // El nivel solo se usa para miembros
+    const usuario = {
+      nombre: nombreUsuario,
+      username: "@" + nombreUsuario,
+      email: email,
+      rol: rol,
+      ...(rol === "MIEMBRO" && nivel !== undefined && { nivel: nivel }),
+    };
+    
     guardarSesion(usuario);
 
-    return { exitoso: true, esDemo: false, datos: usuario };
+    return { exitoso: true, esDemo: false, datos: usuario, mensaje };
   } catch (error) {
     const status = error.response?.status;
     let mensaje = "Error al conectar con el servidor.";

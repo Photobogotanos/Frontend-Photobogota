@@ -6,9 +6,11 @@ import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
 import BackButton from "@/components/common/BackButton";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
-import { iniciarSesion } from "@/services/usuario.service";
+import { iniciarSesion as iniciarSesionService } from "@/services/usuario.service";
 import { USUARIOS_DEMO } from "@/mocks/usuario.mock";
 import { obtenerEstadoServidor } from "@/utils/serverStatus";
+import { useAuth } from "@/context/AuthContext";
+import { validarLogin } from "@/utils/validacionesLogin";
 
 const CREDENCIALES_DEMO = {
   socio: "socio123",
@@ -55,11 +57,29 @@ const initialState = {
 export default function LoginForm() {
   const [state, dispatch] = useReducer(loginReducer, initialState);
   const navegar = useNavigate();
+  const { iniciarSesion: iniciarSesionContext } = useAuth();
 
   useEffect(() => {
-    obtenerEstadoServidor().then((online) => 
-      dispatch({ type: "SET_SERVIDOR_ONLINE", payload: online })
-    );
+    let intervalo;
+
+    const verificar = async () => {
+      const online = await obtenerEstadoServidor();
+      dispatch({ type: "SET_SERVIDOR_ONLINE", payload: online });
+
+      if (online) {
+        clearInterval(intervalo);
+        dispatch({ type: "SET_FIELD", payload: { field: "usuarioOCorreo", value: "" } });
+        dispatch({ type: "SET_FIELD", payload: { field: "contrasena", value: "" } });
+      }
+    };
+
+    verificar();
+
+    intervalo = setInterval(() => {
+      verificar();
+    }, 5000);
+
+    return () => clearInterval(intervalo); 
   }, []);
 
   // Ordenar por rol: MIEMBRO, SOCIO, MOD, ADMIN
@@ -79,31 +99,25 @@ export default function LoginForm() {
   const manejarEnvio = async (e) => {
     e.preventDefault();
 
-    if (!state.usuarioOCorreo.trim()) {
-      toast.error("Debes ingresar tu usuario o correo.");
-      return;
-    }
-
-    if (!state.contrasena.trim()) {
-      toast.error("Debes ingresar la contraseña.");
-      return;
-    }
-
-    const esCorreoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.usuarioOCorreo);
-    if (!esCorreoValido && state.usuarioOCorreo.length < 3) {
-      toast.error("Debe ser un correo válido o un usuario con mínimo 3 caracteres.");
+    // Validar campos usando el módulo de validaciones
+    const validacion = validarLogin(state.usuarioOCorreo, state.contrasena);
+    if (!validacion.valido) {
+      toast.error(validacion.mensaje);
       return;
     }
 
     dispatch({ type: "SET_CARGANDO", payload: true });
 
     try {
-      const resultado = await iniciarSesion(state.usuarioOCorreo.trim(), state.contrasena);
+      const resultado = await iniciarSesionService(state.usuarioOCorreo.trim(), state.contrasena);
 
       if (!resultado.exitoso) {
         toast.error(resultado.mensaje);
         return;
       }
+
+      // Actualizar contexto de autenticación
+      iniciarSesionContext(resultado.datos);
 
       toast.success(
         resultado.esDemo

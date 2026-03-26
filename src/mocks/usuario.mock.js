@@ -60,6 +60,7 @@ export const USUARIOS_DEMO = [
     nombre: "Miembro",
     apellido: "Demo",
     rol: "MIEMBRO",
+    nivel: 5,
     fechaNacimiento: "2004-11-05",
   },
 ];

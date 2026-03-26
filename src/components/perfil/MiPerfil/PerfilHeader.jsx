@@ -25,7 +25,10 @@ const BadgeRol = ({ rol }) => {
   );
 };
 
-const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO" }) => {
+const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) => {
+  // Mostrar badge de nivel solo para miembros
+  const mostrarNivel = rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
+  
   return (
     <>
       {/* FOTO + INFO DEL USUARIO */}
@@ -47,7 +50,7 @@ const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO" }) => {
         <div className="perfil-info">
           <div className="perfil-badges">
             <BadgeRol rol={rol} />
-            <span className="badge-nivel">Nivel: 320</span>
+            {mostrarNivel && <span className="badge-nivel">Nivel: {nivel}</span>}
           </div>
 
           <h3 className="perfil-nombre">{perfilData.nombreCompleto}</h3>
