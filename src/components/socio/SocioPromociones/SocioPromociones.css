@@ -72,7 +72,7 @@
 
 .filtro-btn {
   padding: 10px 20px;
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--border);
   background: white;
   border-radius: 10px;
   font-size: 0.9rem;

@@ -1,74 +1,21 @@
 import { useState } from "react";
 import { Container, Row, Col, Card, Badge, Button } from "react-bootstrap";
 import "./SocioPromociones.css";
+import { PROMOCIONES } from "@/mocks/promocion.mock";
+import { CiShoppingTag } from "react-icons/ci";
+import { FaCheckCircle } from "react-icons/fa";
+import { TbTargetArrow } from "react-icons/tb";
+import { FaCircleXmark } from "react-icons/fa6";
+import { FaRegClock } from "react-icons/fa";
+import { TfiStatsUp } from "react-icons/tfi";
+import { BsMailbox } from "react-icons/bs";
+
+import { Link } from "react-router-dom";
+
 
 // Datos de ejemplo para las promociones
 const promocionesEjemplo = [
-  {
-    id: 1,
-    titulo: "50% de descuento en sesión de fotos",
-    descripcion: "Promoción especial para nuevos clientes que agendén su primera sesión de fotos profesionales en el mes de abril.",
-    descuento: "50%",
-    codigo: "NUEVO50",
-    fechaInicio: "2026-04-01",
-    fechaFin: "2026-04-30",
-    estado: "activa",
-    usos: 12,
-    usosMaximos: 50,
-    imagen: "/images/publicaciones/fotodemo1.jpg"
-  },
-  {
-    id: 2,
-    titulo: "Pack Familiar - 30% OFF",
-    descripcion: "Paquete especial para sesiones familiares que incluye 20 fotos editadas y un marco digital.",
-    descuento: "30%",
-    codigo: "FAMILIA30",
-    fechaInicio: "2026-03-15",
-    fechaFin: "2026-05-15",
-    estado: "activa",
-    usos: 28,
-    usosMaximos: 100,
-    imagen: "/images/publicaciones/fotodemo2.jpg"
-  },
-  {
-    id: 3,
-    titulo: "Sesión de Photoshoot + Revelado",
-    descripcion: "Incluye sesión de fotos de 2 horas más revelado de 50 fotografías en papel profesional.",
-    descuento: "25%",
-    codigo: "PHOTO25",
-    fechaInicio: "2026-02-01",
-    fechaFin: "2026-03-31",
-    estado: "expirada",
-    usos: 45,
-    usosMaximos: 50,
-    imagen: "/images/publicaciones/fotodemo3.jpg"
-  },
-  {
-    id: 4,
-    titulo: "Promoción de San Valentín",
-    descripcion: "Sesiones de pareja con rosas incluidas y album digital de 10 páginas.",
-    descuento: "40%",
-    codigo: "AMOR40",
-    fechaInicio: "2026-02-10",
-    fechaFin: "2026-02-28",
-    estado: "expirada",
-    usos: 30,
-    usosMaximos: 30,
-    imagen: "/images/publicaciones/fotodemo4.jpg"
-  },
-  {
-    id: 5,
-    titulo: " Sesión de Graduación - Early Bird",
-    descripcion: "Reserva anticipada para sesiones de graduación del segundo semestre con 20% de descuento.",
-    descuento: "20%",
-    codigo: "GRADUO20",
-    fechaInicio: "2026-05-01",
-    fechaFin: "2026-06-30",
-    estado: "proximamente",
-    usos: 0,
-    usosMaximos: 75,
-    imagen: "/images/publicaciones/fotodemo5.jpg"
-  }
+  
 ];
 
 const SocioPromociones = () => {
@@ -108,16 +55,16 @@ const SocioPromociones = () => {
       <div className="promociones-header">
         <div className="header-info">
           <h1 className="header-titulo">
-            <span className="header-icon">🏷️</span>
+            <span className="header-icon"><CiShoppingTag /></span>
             Mis Promociones
           </h1>
           <p className="header-subtitulo">
             Gestiona y administra las ofertas y descuentos para tus clientes
           </p>
         </div>
-        <Button className="btn-crear-promocion">
+        <Link className="btn-crear-promocion">
           + Crear Nueva Promoción
-        </Button>
+        </Link>
       </div>
 
       {/* Filtros */}
@@ -153,7 +100,7 @@ const SocioPromociones = () => {
         <Col md={4}>
           <div className="stat-box">
             <div className="stat-icon-promociones" style={{ background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)" }}>
-              ✓
+              <FaCheckCircle />
             </div>
             <div className="stat-content">
               <span className="stat-label">Promociones Activas</span>
@@ -166,7 +113,7 @@ const SocioPromociones = () => {
         <Col md={4}>
           <div className="stat-box">
             <div className="stat-icon-promociones" style={{ background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)" }}>
-              📈
+              <TfiStatsUp />
             </div>
             <div className="stat-content">
               <span className="stat-label">Total Usos</span>
@@ -179,7 +126,7 @@ const SocioPromociones = () => {
         <Col md={4}>
           <div className="stat-box">
             <div className="stat-icon-promociones" style={{ background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)" }}>
-              🎯
+              <TbTargetArrow />
             </div>
             <div className="stat-content">
               <span className="stat-label">Descuentos Promedio</span>
@@ -205,9 +152,9 @@ const SocioPromociones = () => {
                   bg={getBadgeColor(promocion.estado)} 
                   className="promocion-badge"
                 >
-                  {promocion.estado === "activa" && "✓ Activa"}
-                  {promocion.estado === "expirada" && "✕ Expirada"}
-                  {promocion.estado === "proximamente" && "⏰ Próximamente"}
+                  {promocion.estado === "activa" && <><FaCheckCircle /> Activa</>}
+                  {promocion.estado === "expirada" && <><FaCircleXmark /> Expirada</> }
+                  {promocion.estado === "proximamente" && <><FaRegClock /> Próximamente</> }
                 </Badge>
                 <div className="promocion-descuento">
                   {promocion.descuento} OFF
@@ -289,7 +236,7 @@ const SocioPromociones = () => {
       {/* Mensaje si no hay resultados */}
       {promocionesFiltradas.length === 0 && (
         <div className="no-resultados">
-          <div className="no-resultados-icon">📭</div>
+          <div className="no-resultados-icon"><BsMailbox /></div>
           <h3>No se encontraron promociones</h3>
           <p>No hay promociones con el filtro seleccionado.</p>
         </div>
