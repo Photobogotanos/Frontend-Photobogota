@@ -1,0 +1,48 @@
+.formulario-contenedor {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ── Header editorial ── */
+.promo-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.promo-header-subtitle {
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: 4px;
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.promo-header-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: #0a0a0a;
+  margin: 0;
+  padding: 0;
+  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+}
+
+.spot-promo-line {
+  display: block;
+  height: 1.5px;
+  margin-top: 10px;
+  width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #806fbe 0%, #a294d0 60%, transparent 100%);
+  background-size: 200% 100%;
+  animation: fadeInUp 0.6s ease 0.4s both,
+             shimmer 2.5s ease-in-out 1s infinite;
+}
