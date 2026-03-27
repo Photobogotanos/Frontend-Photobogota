@@ -66,8 +66,14 @@ const SocioPromociones = () => {
             Gestiona y administra las ofertas y descuentos para tus clientes
           </p>
         </div>
-        <Link className="btn-crear-promocion">
-          <FaPlus />  Crear Nueva Promoción
+        <Link 
+          to="/crear-promocion"
+          className= {`btn-crear-promocion ${pulsando ? "pulsing" : ""}`}
+          aria-label="Crear nueva promoción"
+          >
+          <FaPlus />
+          <span className="texto-completo">Crear Promoción</span>
+          <span className="texto-corto">Crear Promo</span> 
         </Link>
       </div>
 

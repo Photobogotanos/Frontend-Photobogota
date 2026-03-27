@@ -16,6 +16,7 @@ import CreacionSpotPage from "@/pages/spots/CreacionSpotPage/CreacionSpotPage.js
 import EstadisticasSocioPage from "@/pages/socio/EstadisticasSocioPage/EstadisticasSocioPage.jsx";
 import Error404Page from "@/pages/common/Error404Page/Error404Page.jsx";
 import SocioPromocionesPage from "@/pages/socio/SocioPromocionesPage/SocioPromocionesPage.jsx";
+import CrearPromocionPage from "../pages/socio/SocioPromocionesPage/CrearPromocionPage";
 
 const AppRouter = () => {
   return (
@@ -31,7 +32,8 @@ const AppRouter = () => {
         
         {/* Rutas para Socio Promociones */}
         <Route path="/socio-promociones" element={<SocioPromocionesPage/>}/>
-        
+        <Route path="/crear-promocion" element={<CrearPromocionPage/>}/>
+
         {/* Rutas para Revisión de Solicitudes - Moderador */}
         <Route path="/moderador/revision-solicitudes" element={<RevisionSolicitudesSocioPage />} />
         <Route path="/solicitudes-socios" element={<RevisionSolicitudesSocioPage />} />
