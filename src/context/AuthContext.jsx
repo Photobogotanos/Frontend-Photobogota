@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { obtenerSesion, estaLogueado, cerrarSesion as cerrarSesionHelper, actualizarSesion } from "@/utils/sessionHelper";
-import { postLogout } from "@/api/usuarioApi";
+import { postLogout, getUsuarioAutenticado } from "@/api/usuarioApi";
 import SpinnerLoader from "@/components/common/SpinnerLoader/SpinnerLoader";
 import { toast } from "react-hot-toast";
 
@@ -17,11 +17,21 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // Cargar sesión inicial desde localStorage
-    const verificarSesion = () => {
+    const verificarSesion = async () => {
       if (estaLogueado()) {
         const sesion = obtenerSesion();
         setUsuario(sesion);
         setLogueado(true);
+        
+        // Cargar datos actualizados del usuario desde el backend
+        try {
+          const response = await getUsuarioAutenticado();
+          setUsuario(response.data);
+          actualizarSesion(response.data);
+        } catch (error) {
+          console.error("Error al cargar datos del usuario desde el backend:", error);
+          // Si falla, mantenemos los datos del localStorage
+        }
       }
       setCargando(false);
     };
@@ -73,6 +83,21 @@ export function AuthProvider({ children }) {
     actualizarSesion(datosActualizados);
   };
 
+  /**
+   * Recarga los datos del usuario desde el backend
+   * Útil después de actualizar el perfil o cambiar la contraseña
+   */
+  const recargarUsuario = async () => {
+    try {
+      const response = await getUsuarioAutenticado();
+      setUsuario(response.data);
+      actualizarSesion(response.data);
+    } catch (error) {
+      console.error("Error al recargar datos del usuario:", error);
+      throw error;
+    }
+  };
+
   const valor = {
     usuario,
     logueado,
@@ -80,6 +105,7 @@ export function AuthProvider({ children }) {
     iniciarSesion,
     cerrarSesion,
     actualizarUsuario,
+    recargarUsuario,
   };
 
   return <AuthContext.Provider value={valor}>{cargando ? <SpinnerLoader texto="Cargando..." /> : children}</AuthContext.Provider>;

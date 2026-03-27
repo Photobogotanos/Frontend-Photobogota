@@ -10,6 +10,8 @@ import Swal from "sweetalert2";
 import FotoPerfil from "./FotoPerfil";
 import BotonesAccion from "./BotonesAccion";
 import PassField from "./PassField";
+import { putEditarPerfil, patchCambiarContrasena } from "../../../api/usuarioApi";
+import { useAuth } from "../../../context/AuthContext";
 
 
 export default function EditarPerfilModal({
@@ -18,6 +20,7 @@ export default function EditarPerfilModal({
   perfilData,
   onPerfilActualizado,
 }) {
+  const { recargarUsuario } = useAuth();
   const [tabActiva, setTabActiva] = useState("perfil");
 
   const [formData, setFormData] = useState({
@@ -75,7 +78,7 @@ export default function EditarPerfilModal({
     formData.contrasenaNueva === formData.confirmarContrasena;
 
   // submit tab Perfil
-  const handleSubmitPerfil = (e) => {
+  const handleSubmitPerfil = async (e) => {
     e.preventDefault();
     const datosActualizados = {
       nombreCompleto: formData.nombreCompleto,
@@ -85,13 +88,20 @@ export default function EditarPerfilModal({
       telefono: formData.telefono,
       foto: fotoPerfil,
     };
-    if (onPerfilActualizado) onPerfilActualizado(datosActualizados);
-    Swal.fire({ icon: "success", title: "¡Perfil actualizado!", confirmButtonColor: "var(--color-primary)" });
-    onHide();
+    try {
+      const response = await putEditarPerfil(datosActualizados);
+      if (onPerfilActualizado) onPerfilActualizado(response.data);
+      await recargarUsuario();
+      Swal.fire({ icon: "success", title: "¡Perfil actualizado!", confirmButtonColor: "var(--color-primary)" });
+      onHide();
+    } catch (error) {
+      const mensaje = error.response?.data?.mensaje || "Error al actualizar el perfil";
+      Swal.fire({ icon: "error", title: "Error", text: mensaje });
+    }
   };
 
   // submit tab Contraseña
-  const handleSubmitContrasena = (e) => {
+  const handleSubmitContrasena = async (e) => {
     e.preventDefault();
     if (!formData.contrasenaActual) {
       Swal.fire({ icon: "error", title: "Ingresa tu contraseña actual" });
@@ -105,9 +115,19 @@ export default function EditarPerfilModal({
       Swal.fire({ icon: "error", title: "Las contraseñas no coinciden" });
       return;
     }
-    Swal.fire({ icon: "success", title: "¡Contraseña actualizada!", confirmButtonColor: "var(--color-primary)" });
-    setFormData((p) => ({ ...p, contrasenaActual: "", contrasenaNueva: "", confirmarContrasena: "" }));
-    onHide();
+    try {
+      await patchCambiarContrasena({
+        contrasenaActual: formData.contrasenaActual,
+        contrasenaNueva: formData.contrasenaNueva,
+      });
+      await recargarUsuario();
+      Swal.fire({ icon: "success", title: "¡Contraseña actualizada!", confirmButtonColor: "var(--color-primary)" });
+      setFormData((p) => ({ ...p, contrasenaActual: "", contrasenaNueva: "", confirmarContrasena: "" }));
+      onHide();
+    } catch (error) {
+      const mensaje = error.response?.data?.mensaje || "Error al cambiar la contraseña";
+      Swal.fire({ icon: "error", title: "Error", text: mensaje });
+    }
   };
 
 
