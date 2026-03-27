@@ -16,8 +16,10 @@ export default function SpotCard({ id, img, title, rating, tags }) {
 
       <div className="spot-content">
         <div className="spot-tags-h">
-          {tags.map((t) => (
-            <span key={t} className="spot-tag-h">{t}</span>
+          {tags.map((t, index) => (
+            <span key={`${t}-${index}`} className="spot-tag-h">
+              {t}
+            </span>
           ))}
         </div>
         <h5 className="spot-title-h">{title}</h5>
