@@ -8,7 +8,7 @@ import BackButton from "@/components/common/BackButton";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 import { iniciarSesion as iniciarSesionService } from "@/services/usuario.service";
 import { USUARIOS_DEMO } from "@/mocks/usuario.mock";
-import { obtenerEstadoServidor } from "@/utils/serverStatus";
+import { obtenerEstadoServidor, resetEstadoServidor } from "@/utils/serverStatus";
 import { useAuth } from "@/context/AuthContext";
 import { validarLogin } from "@/utils/validacionesLogin";
 
@@ -62,24 +62,23 @@ export default function LoginForm() {
   useEffect(() => {
     let intervalo;
 
+    resetEstadoServidor(); 
+
     const verificar = async () => {
       const online = await obtenerEstadoServidor();
-      dispatch({ type: "SET_SERVIDOR_ONLINE", payload: online });
 
       if (online) {
+        dispatch({ type: "SET_SERVIDOR_ONLINE", payload: true });
         clearInterval(intervalo);
-        dispatch({ type: "SET_FIELD", payload: { field: "usuarioOCorreo", value: "" } });
-        dispatch({ type: "SET_FIELD", payload: { field: "contrasena", value: "" } });
+      } else {
+        dispatch({ type: "SET_SERVIDOR_ONLINE", payload: false });
       }
     };
 
     verificar();
+    intervalo = setInterval(verificar, 2000);
 
-    intervalo = setInterval(() => {
-      verificar();
-    }, 5000);
-
-    return () => clearInterval(intervalo); 
+    return () => clearInterval(intervalo);
   }, []);
 
   // Ordenar por rol: MIEMBRO, SOCIO, MOD, ADMIN
@@ -205,6 +204,16 @@ export default function LoginForm() {
             <Link to="/recuperar-contrasena">¿Olvidaste tu contraseña?</Link>
           </div>
         </Form.Group>
+
+        {/* Indicador de verificación del servidor */}
+        {state.servidorOnline === null && (
+          <div className="server-checking-wrapper mt-4">
+            <div className="server-checking-indicator">
+              <span className="server-checking-dot"></span>
+              Verificando servidor...
+            </div>
+          </div>
+        )}
 
         {/* Panel de cuentas demo — solo visible si el servidor está offline */}
         {mostrarPanelDemo && (
