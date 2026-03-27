@@ -1,8 +1,7 @@
 import { checkBackendHealth } from "../api/baseApi";
 
 // Cuanto tiempo guardar el estado del servidor en cache para evitar múltiples llamadas seguidas al servidor
-const CACHE_DURACION_MS = 30_000; // 30 segundos
-
+const CACHE_DURACION_MS = 2000; // 2 segundos
 
 // Estas dos variables "recuerdan" el último resultado entre llamadas.
 // Viven fuera de la función para que no se reinicien cada vez que la llamas.
