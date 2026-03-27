@@ -68,7 +68,7 @@ const SocioPromociones = () => {
         </div>
         <Link 
           to="/crear-promocion"
-          className= {`btn-crear-promocion ${pulsando ? "pulsing" : ""}`}
+          className= {`btn-crear-promocion`}
           aria-label="Crear nueva promoción"
           >
           <FaPlus />
