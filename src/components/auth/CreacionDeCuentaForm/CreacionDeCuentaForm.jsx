@@ -61,22 +61,30 @@ function FormularioCreacion() {
 
   // ── Validación en tiempo real de contraseñas ─────────────────────────────
   const handlePasswordChange = (valor, esConfirmacion) => {
-    const password = esConfirmacion ? state.password : valor;
-    const password2 = esConfirmacion ? valor : state.password2;
 
-    dispatch({ type: "SET_FIELD", field: esConfirmacion ? "password2" : "password", value: valor });
+    const nuevoPassword = esConfirmacion ? state.password : valor;
+    const nuevoPassword2 = esConfirmacion ? valor : state.password2;
 
-    dispatch({ type: "SET_PASSWORD_MATCH", payload: password && password2 ? password === password2 : null });
+    dispatch({
+      type: "SET_FIELD",
+      field: esConfirmacion ? "password2" : "password",
+      value: valor,
+    });
 
-    // Las reglas siempre se calculan sobre el campo de contraseña principal
-    const valorPrincipal = esConfirmacion ? state.password : valor;
+    dispatch({
+      type: "SET_PASSWORD_MATCH",
+      payload: nuevoPassword && nuevoPassword2
+        ? nuevoPassword === nuevoPassword2
+        : null,
+    });
+
     dispatch({
       type: "SET_VALIDATION_RULES",
       payload: {
-        length: valorPrincipal.length >= 8,
-        upper:  /[A-Z]/.test(valorPrincipal),
-        lower:  /[a-z]/.test(valorPrincipal),
-        number: /\d/.test(valorPrincipal),
+        length: nuevoPassword.length >= 8,
+        upper: /[A-Z]/.test(nuevoPassword),
+        lower: /[a-z]/.test(nuevoPassword),
+        number: /\d/.test(nuevoPassword),
       },
     });
   };
@@ -116,7 +124,7 @@ function FormularioCreacion() {
         Swal.fire({
           icon: "success",
           title: resultado.esDemo ? "Registro exitoso (Demo)" : "Registro exitoso",
-          text:  resultado.esDemo ? resultado.mensaje : "Tu cuenta ha sido creada correctamente.",
+          text: resultado.esDemo ? resultado.mensaje : "Tu cuenta ha sido creada correctamente.",
         }).then(() => navegar("/login"));
       } else {
         Swal.fire({ icon: "error", title: "Error en el registro", text: resultado.mensaje || "No se pudo crear la cuenta. Por favor intenta de nuevo." });
@@ -136,17 +144,17 @@ function FormularioCreacion() {
         <AccountHeader />
 
         <PersonalInfoFields
-          email={state.email}           setEmail={(v) => dispatch({ type: "SET_FIELD", field: "email", value: v })}
-          nombres={state.nombres}       setNombres={(v) => dispatch({ type: "SET_FIELD", field: "nombres", value: v })}
-          apellidos={state.apellidos}   setApellidos={(v) => dispatch({ type: "SET_FIELD", field: "apellidos", value: v })}
+          email={state.email} setEmail={(v) => dispatch({ type: "SET_FIELD", field: "email", value: v })}
+          nombres={state.nombres} setNombres={(v) => dispatch({ type: "SET_FIELD", field: "nombres", value: v })}
+          apellidos={state.apellidos} setApellidos={(v) => dispatch({ type: "SET_FIELD", field: "apellidos", value: v })}
           nombreUsuario={state.nombreUsuario} setNombreUsuario={(v) => dispatch({ type: "SET_FIELD", field: "nombreUsuario", value: v })}
-          fecha={state.fecha}           setFecha={(v) => dispatch({ type: "SET_FIELD", field: "fecha", value: v })}
+          fecha={state.fecha} setFecha={(v) => dispatch({ type: "SET_FIELD", field: "fecha", value: v })}
         />
 
         <PasswordFields
           password={state.password}
           password2={state.password2}
-          mostrarContrasena={state.mostrarContrasena}   setMostrarContrasena={() => dispatch({ type: "SET_PASSWORD_VISIBILITY", field: "mostrarContrasena" })}
+          mostrarContrasena={state.mostrarContrasena} setMostrarContrasena={() => dispatch({ type: "SET_PASSWORD_VISIBILITY", field: "mostrarContrasena" })}
           mostrarContrasena2={state.mostrarContrasena2} setMostrarContrasena2={() => dispatch({ type: "SET_PASSWORD_VISIBILITY", field: "mostrarContrasena2" })}
           passwordMatch={state.passwordMatch}
           validationRules={state.validationRules}
