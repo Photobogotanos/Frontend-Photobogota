@@ -52,3 +52,21 @@ export const patchCambiarContrasena = (body) =>
  */
 export const getUsuarioAutenticado = () => 
     clienteApi.get("/usuarios/me");
+
+/**
+ * Solicitar código de recuperación de contraseña.
+ * El backend genera un código de 6 dígitos y lo envía al correo del usuario.
+ * El código expira en 15 minutos.
+ * @param {{ email: string }} body
+ * @returns {Promise<{ data: { mensaje: string } }>}
+ */
+export const postSolicitarRecuperacion = (body) =>
+    clienteApi.post("/auth/recuperar-password", body);
+
+/**
+ * Verificar el código recibido por correo y establecer la nueva contraseña.
+ * @param {{ email: string, codigo: string, nuevaContrasena: string }} body
+ * @returns {Promise<{ data: { mensaje: string } }>}
+ */
+export const postVerificarCodigo = (body) =>
+    clienteApi.post("/auth/verificar-codigo", body);

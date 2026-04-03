@@ -2,15 +2,16 @@ import { useState } from "react";
 import { Form } from "react-bootstrap";
 import Swal from "sweetalert2";
 import "./RecuperarContraForm.css";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
+import { postSolicitarRecuperacion } from "@/api/usuarioApi";
 
 export default function RecuperarContraForm() {
   const [email, setEmail] = useState("");
+  const [cargando, setCargando] = useState(false);
   const navegar = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email.trim()) {
@@ -32,27 +33,43 @@ export default function RecuperarContraForm() {
       });
     }
 
-    Swal.fire({
-      icon: "success",
-      title: "Código enviado",
-      text: "Hemos enviado un código de recuperación a tu correo.",
-      confirmButtonColor: "#806fbe",
-    }).then(() => {
-      navegar("/confirmacion-codigo", { state: { email } });
-    });
+    setCargando(true);
+    try {
+      // Llama al backend para generar y enviar el código al correo
+      await postSolicitarRecuperacion({ email });
+
+      Swal.fire({
+        icon: "success",
+        title: "Código enviado",
+        text: "Hemos enviado un código de recuperación a tu correo.",
+        confirmButtonColor: "#806fbe",
+      }).then(() => {
+        // Pasa el email al formulario de confirmación
+        navegar("/confirmacion-codigo", { state: { email } });
+      });
+
+    } catch (error) {
+      const mensaje = error.response?.data?.message || "No encontramos una cuenta con ese correo.";
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: mensaje,
+        confirmButtonColor: "#d33",
+      });
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (
     <Form onSubmit={handleSubmit} className="recuperar-form-container">
 
-      {/* Header estilo Opción 2 */}
       <div className="recuperar-header">
         <span className="recuperar-subtitle">Acceso seguro</span>
         <h2 className="recuperar-title">Restablecer contraseña</h2>
         <span className="recuperar-line"></span>
       </div>
 
-      {/* Descripción corta */}
       <p className="recuperar-desc">
         Te enviaremos un código a tu correo para restablecer tu contraseña.
       </p>
@@ -71,8 +88,8 @@ export default function RecuperarContraForm() {
       </Form.Group>
 
       <div className="recuperar-submit-wrap">
-        <button className="recuperar-btn" type="submit">
-          Enviar código
+        <button className="recuperar-btn" type="submit" disabled={cargando}>
+          {cargando ? "Enviando..." : "Enviar código"}
         </button>
       </div>
 

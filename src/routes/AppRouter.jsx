@@ -17,6 +17,7 @@ import EstadisticasSocioPage from "@/pages/socio/EstadisticasSocioPage/Estadisti
 import Error404Page from "@/pages/common/Error404Page/Error404Page.jsx";
 import SocioPromocionesPage from "@/pages/socio/SocioPromocionesPage/SocioPromocionesPage.jsx";
 import CrearPromocionPage from "../pages/socio/SocioPromocionesPage/CrearPromocionPage";
+import ContrasenaNuevaPage from "../pages/auth/ContrasenaNuevaPage/ContrasenaNuevaPage";
 
 const AppRouter = () => {
   return (
@@ -39,6 +40,7 @@ const AppRouter = () => {
         <Route path="/solicitudes-socios" element={<RevisionSolicitudesSocioPage />} />
         
         <Route path="/recuperar-contrasena" element={<RecuperarContraPage />} />
+        <Route path="/nueva-contrasena" element={<ContrasenaNuevaPage/>} />
         <Route path="/perfil" element={<MiPerfil />} />
         <Route path="/mapa" element={<Mapa />} />
         <Route path="/crear-spot" element={<CreacionSpotPage />} />
