@@ -4,7 +4,7 @@ import { clienteApi } from "./axiosConfig";
  * Registro de nuevo usuario
  */
 export const postRegistrarUsuario = (body) => 
-    clienteApi.post("/api/v1/auth/register", body);
+    clienteApi.post("/auth/register", body);
 
 /**
  * Login de usuario
@@ -12,7 +12,7 @@ export const postRegistrarUsuario = (body) =>
  * @returns {Promise<{ data: { token: string, refreshToken: string, nombreUsuario: string, email: string, rol: string, nivel?: number, mensaje: string } }>}
  */
 export const postLogin = (credentials) => 
-    clienteApi.post("/api/v1/auth/login", credentials);
+    clienteApi.post("/auth/login", credentials);
 
 /**
  * Logout de usuario
@@ -20,7 +20,7 @@ export const postLogin = (credentials) =>
  * @returns {Promise}
  */
 export const postLogout = () => 
-    clienteApi.post("/api/v1/auth/logout");
+    clienteApi.post("/auth/logout");
 
 /**
  * Obtener perfil de usuario
@@ -28,7 +28,7 @@ export const postLogout = () =>
  * @returns {Promise<{ data: PerfilUsuarioDTO }>}
  */
 export const getPerfilUsuario = (nombreUsuario) => 
-    clienteApi.get(`/api/v1/usuarios/perfil/${nombreUsuario}`);
+    clienteApi.get(`/usuarios/perfil/${nombreUsuario}`);
 
 /**
  * Editar perfil de usuario
@@ -36,7 +36,7 @@ export const getPerfilUsuario = (nombreUsuario) =>
  * @returns {Promise<{ data: PerfilUsuarioDTO }>}
  */
 export const putEditarPerfil = (body) => 
-    clienteApi.put("/api/v1/usuarios/perfil", body);
+    clienteApi.put("/usuarios/perfil", body);
 
 /**
  * Cambiar contraseña de usuario
@@ -44,11 +44,11 @@ export const putEditarPerfil = (body) =>
  * @returns {Promise<{ data: CambiarContrasenaResponseDTO }>}
  */
 export const patchCambiarContrasena = (body) => 
-    clienteApi.patch("/api/v1/usuarios/me/password", body);
+    clienteApi.patch("/usuarios/me/password", body);
 
 /**
  * Obtener datos del usuario autenticado
  * @returns {Promise<{ data: UsuarioResumenDTO }>}
  */
 export const getUsuarioAutenticado = () => 
-    clienteApi.get("/api/v1/usuarios/me");
+    clienteApi.get("/usuarios/me");
