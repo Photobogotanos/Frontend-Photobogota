@@ -1,6 +1,9 @@
-
+import { useReducer, useRef, useState } from "react";
 import "./CrearPromocion.css";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
+import { FaCamera, FaChevronLeft, FaChevronRight, FaTrash } from "react-icons/fa";
 import HeaderPromo from "./HeaderPromo";
 
 const promoFormReducer = (state, action) =>{
@@ -26,7 +29,7 @@ const initialState = {
 };
 
 
-
+//-- Componente principal --------------------------------------------
 export default function CrearPromocion(){
     const[state, dispatch] = useReducer(promoFormReducer, initialState);
 
@@ -71,7 +74,18 @@ export default function CrearPromocion(){
     return(
         <div className="pb-5">
             <div className="formulario-contenedor">
+
+                {/* Header  */}
                 <HeaderPromo/>
+
+                <Row className="g-4">
+                    <Col xs={12}>
+                      {/* Uploader */}
+                      <label className="promo-label mb-2" htmlFor="foto-promocion" >
+                        <FaCamera className="me-2"></FaCamera>
+                      </label>
+                    </Col>
+                </Row>
             </div>
         </div>
     )
