@@ -1,10 +1,12 @@
 import { useReducer, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
 import { FaCamera, FaChevronLeft, FaChevronRight, FaTrash } from "react-icons/fa";
 import "./CreacionSpotForm.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Swal from "sweetalert2";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 import SpotPreviewModal from "../SpotPreviewModal/SpotPreviewModal";
 import HeaderSpot from "./HeaderSpot";
@@ -12,30 +14,35 @@ import SpotInformacionBasica from "./SpotInformacionBasica";
 import SpotCategorizacion from "./SpotCategorizacion";
 import SpotDescripcion from "./SpotDescripcion";
 import SpotBotones from "./SpotBotones";
+import { crearSpot } from "@/services/spot.service";
 
 const spotFormReducer = (state, action) => {
   switch (action.type) {
-    case "SET_IMAGENES": return { ...state, imagenes: action.payload };
-    case "SET_PREVIEWS": return { ...state, previews: action.payload };
-    case "SET_INDICE_IMAGEN": return { ...state, indiceImagenActual: action.payload };
-    case "SET_NOMBRE_LUGAR": return { ...state, nombreLugar: action.payload };
-    case "SET_DIRECCION": return { ...state, direccion: action.payload };
-    case "SET_DESCRIPCION": return { ...state, descripcionImagen: action.payload };
-    case "SET_RECOMENDACION": return { ...state, recomendacion: action.payload };
-    case "SET_TIPS_FOTO": return { ...state, tipsFoto: action.payload };
-    case "SET_CATEGORIA": return { ...state, categoria: action.payload };
-    case "SET_LOCALIDAD": return { ...state, localidad: action.payload };
-    case "SET_SHOW_MODAL": return { ...state, showModal: action.payload };
+    case "SET_IMAGENES":        return { ...state, imagenes: action.payload };
+    case "SET_PREVIEWS":        return { ...state, previews: action.payload };
+    case "SET_INDICE_IMAGEN":   return { ...state, indiceImagenActual: action.payload };
+    case "SET_NOMBRE_LUGAR":    return { ...state, nombreLugar: action.payload };
+    case "SET_DIRECCION":       return { ...state, direccion: action.payload };
+    case "SET_LATITUD":         return { ...state, latitud: action.payload };
+    case "SET_LONGITUD":        return { ...state, longitud: action.payload };
+    case "SET_DESCRIPCION":     return { ...state, descripcionImagen: action.payload };
+    case "SET_RECOMENDACION":   return { ...state, recomendacion: action.payload };
+    case "SET_TIPS_FOTO":       return { ...state, tipsFoto: action.payload };
+    case "SET_CATEGORIA":       return { ...state, categoria: action.payload };
+    case "SET_LOCALIDAD":       return { ...state, localidad: action.payload };
+    case "SET_SHOW_MODAL":      return { ...state, showModal: action.payload };
+    case "SET_CARGANDO":        return { ...state, cargando: action.payload };
     default: return state;
   }
 };
 
 const initialState = {
   imagenes: [], previews: [], indiceImagenActual: 0,
-  nombreLugar: "", direccion: "", descripcionImagen: "",
-  recomendacion: "", tipsFoto: "",
+  nombreLugar: "", direccion: "",
+  latitud: null, longitud: null,
+  descripcionImagen: "", recomendacion: "", tipsFoto: "",
   categoria: null, localidad: null,
-  showModal: false,
+  showModal: false, cargando: false,
 };
 
 function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, onSelectIndice }) {
@@ -87,11 +94,7 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
             onKeyDown={(e) => e.key === "Enter" && onNavigate("next")}
             aria-label="Avanzar imagen"
           >
-            <img
-              src={previews[indice]}
-              alt={`Preview ${indice + 1}`}
-              className="preview-img"
-            />
+            <img src={previews[indice]} alt={`Preview ${indice + 1}`} className="preview-img" />
             <span className="preview-counter">{indice + 1} / {total}</span>
             {total > 1 && (
               <>
@@ -114,7 +117,6 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
             </button>
           </div>
 
-          {/* ── Tira de thumbnails ── */}
           <div className="thumbnails-strip">
             {previews.map((src, idx) => (
               <div
@@ -137,8 +139,6 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
                 </button>
               </div>
             ))}
-
-            {/* Botón agregar más */}
             <div
               className="thumbnail-add"
               onClick={() => inputRef.current.click()}
@@ -166,9 +166,9 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
   );
 }
 
-// ── Componente principal ─────────────────────────────────
 export default function CrearSpot() {
   const [state, dispatch] = useReducer(spotFormReducer, initialState);
+  const navigate = useNavigate();
 
   const handleImagen = (files) => {
     const newPreviews = files.map((f) => URL.createObjectURL(f));
@@ -194,6 +194,53 @@ export default function CrearSpot() {
     dispatch({ type: "SET_INDICE_IMAGEN", payload: next });
   };
 
+  const handlePublicar = async () => {
+    if (!state.nombreLugar || !state.direccion || !state.categoria || !state.localidad || !state.descripcionImagen) {
+      Swal.fire({
+        icon: "warning",
+        title: "Faltan campos obligatorios",
+        text: "Completa todos los campos requeridos antes de publicar.",
+        confirmButtonColor: "#806fbe",
+      });
+      return;
+    }
+
+    if (!state.latitud || !state.longitud) {
+      Swal.fire({
+        icon: "warning",
+        title: "Falta la ubicación GPS",
+        text: "Usa el botón de ubicación para obtener las coordenadas del lugar.",
+        confirmButtonColor: "#806fbe",
+      });
+      return;
+    }
+
+    dispatch({ type: "SET_CARGANDO", payload: true });
+
+    const resultado = await crearSpot(state);
+
+    dispatch({ type: "SET_CARGANDO", payload: false });
+
+    if (resultado.exitoso) {
+      await Swal.fire({
+        icon: "success",
+        title: "¡Spot publicado!",
+        text: "Tu spot ya está visible en el mapa.",
+        timer: 2000,
+        showConfirmButton: false,
+        timerProgressBar: true,
+      });
+      navigate(`/spot/${resultado.datos.id}`);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error al publicar",
+        text: resultado.mensaje,
+        confirmButtonColor: "#806fbe",
+      });
+    }
+  };
+
   const spotData = {
     nombre: state.nombreLugar || "Nombre del lugar",
     direccion: state.direccion || "Dirección del lugar",
@@ -210,14 +257,10 @@ export default function CrearSpot() {
   return (
     <div className="pb-5">
       <div className="formulario-contenedor">
-
-        {/* ── Header editorial ── */}
         <HeaderSpot />
 
         <Row className="g-4">
           <Col xs={12}>
-
-            {/* Uploader */}
             <label className="spot-label mb-2" htmlFor="foto-lugar">
               <FaCamera className="me-2" />
               Foto del lugar <RequiredMark />
@@ -231,15 +274,15 @@ export default function CrearSpot() {
               onSelectIndice={(idx) => dispatch({ type: "SET_INDICE_IMAGEN", payload: idx })}
             />
 
-            {/* Información básica */}
             <SpotInformacionBasica
               nombreLugar={state.nombreLugar}
               direccion={state.direccion}
               onNombreChange={(val) => dispatch({ type: "SET_NOMBRE_LUGAR", payload: val })}
               onDireccionChange={(val) => dispatch({ type: "SET_DIRECCION", payload: val })}
+              onLatitudChange={(val) => dispatch({ type: "SET_LATITUD", payload: val })}
+              onLongitudChange={(val) => dispatch({ type: "SET_LONGITUD", payload: val })}
             />
 
-            {/* Categorización */}
             <SpotCategorizacion
               categoria={state.categoria}
               localidad={state.localidad}
@@ -247,7 +290,6 @@ export default function CrearSpot() {
               onLocalidadChange={(val) => dispatch({ type: "SET_LOCALIDAD", payload: val })}
             />
 
-            {/* Descripción */}
             <SpotDescripcion
               descripcionImagen={state.descripcionImagen}
               recomendacion={state.recomendacion}
@@ -259,10 +301,10 @@ export default function CrearSpot() {
           </Col>
         </Row>
 
-        {/* Botones */}
         <SpotBotones
           onPreview={() => dispatch({ type: "SET_SHOW_MODAL", payload: true })}
-          onPublish={() => { }}
+          onPublish={handlePublicar}
+          cargando={state.cargando}
         />
 
         <SpotPreviewModal

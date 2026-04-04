@@ -3,25 +3,28 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
-export default function SpotInformacionBasica({ 
-  nombreLugar, 
-  direccion, 
-  onNombreChange, 
-  onDireccionChange 
+export default function SpotInformacionBasica({
+  nombreLugar,
+  direccion,
+  onNombreChange,
+  onDireccionChange,
+  onLatitudChange,
+  onLongitudChange,
 }) {
   const usarUbicacionActual = () => {
     if (!navigator.geolocation) return alert("Geolocalización no disponible");
     navigator.geolocation.getCurrentPosition(
-      ({ coords }) => onDireccionChange(
-        `${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)}`
-      ),
+      ({ coords }) => {
+        onDireccionChange(`${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)}`);
+        onLatitudChange(coords.latitude);
+        onLongitudChange(coords.longitude);
+      },
       () => alert("No se pudo obtener tu ubicación")
     );
   };
 
   return (
     <>
-      {/* Nombre */}
       <Row className="g-3 mb-2 mt-1">
         <Col xs={12}>
           <label className="spot-label" htmlFor="nombre-lugar">
@@ -38,7 +41,6 @@ export default function SpotInformacionBasica({
         </Col>
       </Row>
 
-      {/* Ubicación */}
       <Row className="g-3 mb-2">
         <Col xs={12}>
           <label className="spot-label" htmlFor="ubicacion-lugar">
