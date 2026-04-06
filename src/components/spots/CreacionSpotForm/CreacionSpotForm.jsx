@@ -219,6 +219,8 @@ export default function CrearSpot() {
 
     const resultado = await crearSpot(state);
 
+    console.log("Resultado de crearSpot:", resultado);
+
     dispatch({ type: "SET_CARGANDO", payload: false });
 
     if (resultado.exitoso) {
@@ -232,6 +234,7 @@ export default function CrearSpot() {
       });
       navigate(`/spot/${resultado.datos.id}`);
     } else {
+      console.error("Error al publicar spot:", resultado.mensaje);
       Swal.fire({
         icon: "error",
         title: "Error al publicar",

@@ -60,20 +60,22 @@ export const crearSpot = async (formState) => {
     return { exitoso: false, esDemo: true, mensaje: "Debes estar conectado para publicar un spot." };
 
   try {
-    const body = {
-      nombre: formState.nombreLugar,
-      latitud: formState.latitud,
-      longitud: formState.longitud,
-      direccion: formState.direccion,
-      categoria: formState.categoria?.value ?? "",
-      localidad: formState.localidad?.value ?? "",
-      descripcion: formState.descripcionImagen,
-      recomendacion: formState.recomendacion,
-      tipsFoto: formState.tipsFoto,
-      imagenes: formState.imagenesUrls ?? [],
-    };
+    const formData = new FormData();
+    formData.append('nombre', formState.nombreLugar);
+    formData.append('latitud', formState.latitud);
+    formData.append('longitud', formState.longitud);
+    formData.append('direccion', formState.direccion);
+    formData.append('categoria', formState.categoria?.value ?? "");
+    formData.append('localidad', formState.localidad?.value ?? "");
+    formData.append('descripcion', formState.descripcionImagen);
+    formData.append('recomendacion', formState.recomendacion);
+    formData.append('tipsFoto', formState.tipsFoto);
 
-    const { data } = await postCrearSpot(body);
+    formState.imagenes.forEach((file) => {
+      formData.append(`imagenes`, file);
+    });
+
+    const { data } = await postCrearSpot(formData);
     return { exitoso: true, datos: data };
   } catch (error) {
     const status = error.response?.status;

@@ -12,7 +12,7 @@ export default function SpotBotones({ onPreview, onPublish }) {
       >
         <FaEye /> Previsualizar
       </button>
-      <button type="button" className="spot-btn-publish">
+      <button type="button" className="spot-btn-publish" onClick={onPublish}>
         <FaPaperPlane /> Publicar
       </button>
     </div>
