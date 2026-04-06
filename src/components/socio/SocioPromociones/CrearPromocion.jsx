@@ -2,9 +2,11 @@ import { useReducer, useRef, useState } from "react";
 import "./CrearPromocion.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 import { FaCamera, FaChevronLeft, FaChevronRight, FaTrash } from "react-icons/fa";
 import HeaderPromo from "./HeaderPromo";
+import { div } from "framer-motion/client";
 
 const promoFormReducer = (state, action) =>{
     switch (action.type){
@@ -27,6 +29,45 @@ const initialState = {
     estado: null, fechaInicio: null, fechaFin: null,
     showModal: false,
 };
+
+function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, onSelectIndice }){
+  const[isDragging, setIsDragging] = useState(false);
+  const inputRef = useRef();
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith("image/"));
+    if (files.length) onImageChange(files);
+  };
+
+  const handleFileInput = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length) onImageChange(files);
+  };
+
+  const total = previews.length;
+
+//   return (
+//     <div className="uploader-wrapper">
+//       {total === 0 ?(
+//         <div
+//           className={`drop-zone${isDragging ? " dragging" : ""}`}
+//           onDragOver={(e) => { e.preventDefault(); setIsDragging(true);}}
+//           onDragLeave={() => setIsDragging(false)}
+//           onDrop={handleDrop}
+//           onClick={() => inputRef.current.click()}
+//           role="button"
+//           tabIndex={0}
+//           onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
+//           aria-label="Subir Imagenes"
+//         >
+
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
 
 
 //-- Componente principal --------------------------------------------
@@ -82,8 +123,11 @@ export default function CrearPromocion(){
                     <Col xs={12}>
                       {/* Uploader */}
                       <label className="promo-label mb-2" htmlFor="foto-promocion" >
-                        <FaCamera className="me-2"></FaCamera>
+                        <FaCamera className="me-2" />
+                        Foto de la promoción <RequiredMark />
                       </label>
+
+
                     </Col>
                 </Row>
             </div>
