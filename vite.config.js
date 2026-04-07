@@ -5,6 +5,7 @@ import path from 'path';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: '/PhotoBogota/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'), // Configuración del aliasss
