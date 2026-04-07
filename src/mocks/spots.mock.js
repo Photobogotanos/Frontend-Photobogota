@@ -1,3 +1,9 @@
+import spotDemo1 from '/images/spots/spot-demo.jpg?url';
+import spotDemo2 from '/images/spots/spot-demo2.jpg?url';
+import spotDemo3 from '/images/spots/spot-demo3.jpg?url';
+import spotDemo4 from '/images/spots/spot-demo4.jpg?url';
+import spotDemo5 from '/images/spots/spot-demo5.jpg?url';
+
 // === LUGARES FOTOGRÁFICOS DE BOGOTÁ ===
 export const SPOTS = [
   {
@@ -5,7 +11,7 @@ export const SPOTS = [
     nombre: "Estación Aguas",
     coord: [4.601, -74.069],
     direccion: "Carrera 3 #19-00, Bogotá",
-    imagen: "public/images/spots/spot-demo.jpg",
+    imagen: spotDemo1,
     rating: 4.4,
     totalResenas: 850,
     categoria: "Estación TransMilenio",
@@ -23,7 +29,7 @@ export const SPOTS = [
     nombre: "Monserrate",
     coord: [4.605, -74.056],
     direccion: "Carrera 2 Este #21-48, Bogotá",
-    imagen: "public/images/spots/spot-demo2.jpg",
+    imagen: spotDemo2,
     rating: 4.7,
     totalResenas: 2340,
     categoria: "Atractivo turístico",
@@ -41,7 +47,7 @@ export const SPOTS = [
     nombre: "Parque El Jazmín",
     coord: [4.69, -74.086],
     direccion: "Barrio El Jazmín, Bogotá",
-    imagen: "public/images/spots/spot-demo3.jpg",
+    imagen: spotDemo3,
     rating: 4.3,
     totalResenas: 420,
     categoria: "Parque",
@@ -59,7 +65,7 @@ export const SPOTS = [
     nombre: "Parque Timiza",
     coord: [4.595, -74.155],
     direccion: "Localidad de Kennedy, Bogotá",
-    imagen: "public/images/spots/spot-demo4.jpg",
+    imagen: spotDemo4,
     rating: 4.6,
     totalResenas: 1800,
     categoria: "Parque",
@@ -77,7 +83,7 @@ export const SPOTS = [
     nombre: "Estación Minuto de Dios",
     coord: [4.711, -74.071],
     direccion: "Av. Calle 80, Bogotá",
-    imagen: "public/images/spots/spot-demo5.jpg",
+    imagen: spotDemo5,
     rating: 4.2,
     totalResenas: 950,
     categoria: "Estación TransMilenio",

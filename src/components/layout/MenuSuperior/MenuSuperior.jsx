@@ -74,7 +74,7 @@ export default function MenuSuperior() {
     resetEstadoServidor();
     await cerrarSesion();
     dispatch({ type: "RESET_SESION" });
-    navegar("/");
+    navegar("");
   };
 
   return (

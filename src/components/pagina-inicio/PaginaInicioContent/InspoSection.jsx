@@ -3,9 +3,13 @@ import Col from "react-bootstrap/Col";
 import { IoPin } from "react-icons/io5";
 import { LazyMotion, m, domAnimation } from "framer-motion";
 
-const inspo1 = "/images/img-home/inspo1.jpg";
-const inspo3 = "/images/img-home/inspo3.jpg";
-const centro = "/images/img-home/centro.jpg";
+import FotoInspo1 from "/images/img-home/inspo1.jpg?url";
+import FotoInspo3 from "/images/img-home/inspo3.jpg?url";
+import FotoCentro from "/images/img-home/centro.jpg?url";
+
+const inspo1 = FotoInspo1;
+const inspo3 = FotoInspo3;
+const centro = FotoCentro;
 
 const INSPOS = [
   { id: "inspo-1", img: inspo1,  user: "@sebass.ye", loc: "Cl. 24 #69a-59, Torre Colpatria" },
