@@ -60,31 +60,28 @@ export const crearSpot = async (formState) => {
     return { exitoso: false, esDemo: true, mensaje: "Debes estar conectado para publicar un spot." };
 
   try {
-    const formData = new FormData();
-    formData.append('nombre', formState.nombreLugar);
-    formData.append('latitud', formState.latitud);
-    formData.append('longitud', formState.longitud);
-    formData.append('direccion', formState.direccion);
-    formData.append('categoria', formState.categoria?.value ?? "");
-    formData.append('localidad', formState.localidad?.value ?? "");
-    formData.append('descripcion', formState.descripcionImagen);
-    formData.append('recomendacion', formState.recomendacion);
-    formData.append('tipsFoto', formState.tipsFoto);
+    const payload = {
+      nombre: formState.nombreLugar,
+      latitud: formState.latitud,
+      longitud: formState.longitud,
+      direccion: formState.direccion,
+      categoria: formState.categoria?.value ?? "",
+      localidad: formState.localidad?.value ?? "",
+      descripcion: formState.descripcionImagen,
+      recomendacion: formState.recomendacion,
+      tipsFoto: formState.tipsFoto
+    };
 
-    formState.imagenes.forEach((file) => {
-      formData.append(`imagenes`, file);
-    });
-
-    const { data } = await postCrearSpot(formData);
+    const { data } = await postCrearSpot(payload);
     return { exitoso: true, datos: data };
   } catch (error) {
     const status = error.response?.status;
-    return {
-      exitoso: false,
-      mensaje: status === 403
-        ? "Solo los socios pueden publicar spots."
-        : error.response?.data?.mensaje ?? "Error al publicar el spot.",
-    };
+      return {
+        exitoso: false,
+        mensaje: status === 403
+          ? "Solo los miembros activos pueden publicar spots."
+          : error.response?.data?.mensaje ?? "Error al publicar el spot.",
+      };
   }
 };
 

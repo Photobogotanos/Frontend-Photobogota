@@ -34,17 +34,20 @@ const createCustomIcon = () =>
     shadowSize: [41, 41],
   });
 
+const createUserLocationIcon = () => new L.Icon.Default();
+
 function BotonUbicacion() {
   const map = useMap();
 
   useMapEvents({
     locationfound(e) {
-      L.marker(e.latlng).addTo(map).bindPopup("Estás aquí").openPopup();
+      map.setView(e.latlng, 16);
+      L.marker(e.latlng, { icon: createUserLocationIcon() }).addTo(map).bindPopup("Estás aquí").openPopup();
     },
   });
 
   return (
-    <button className="btn-ubicacion" onClick={() => map.locate({ setView: true, maxZoom: 16 })}>
+    <button className="btn-ubicacion" onClick={() => map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true })}>
       <FaLocationArrow />
     </button>
   );
