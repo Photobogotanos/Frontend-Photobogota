@@ -51,9 +51,8 @@ clienteApi.interceptors.response.use(
     async (error) => {
         const { config, response } = error;
 
-        // Si no hay respuesta del servidor (backend caído, sin red), notifica al usuario.
-        if (!response) {
-            toast.error("No se pudo conectar con el servidor.");
+        const esHealthCheck = config.url.includes('/actuator/health');
+        if (config._silent || esHealthCheck) {
             return Promise.reject(error);
         }
 
@@ -87,6 +86,9 @@ clienteApi.interceptors.response.use(
             try {
                 const refreshToken = obtenerRefreshToken();
 
+                // Si ni siquiera hay Refresh Token, no intentamos nada
+                if (!refreshToken) throw new Error("No hay refresh token");
+
                 // Usa una instancia limpia de axios para no pasar por los interceptores
                 // y evitar un bucle infinito.
                 const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, { refreshToken });
@@ -104,14 +106,17 @@ clienteApi.interceptors.response.use(
                 return clienteApi(config);
 
             } catch (err) {
-                // Si el refresh también falla, cierra la sesión
-                // y redirige al usuario al login.
                 estaRenovando = false;
                 peticionesEnEspera = [];
-                toast.error("La sesión ha expirado. Redirigiendo...", { id: idToast });
 
+                // IMPORTANTE: Limpiar el estado y redirigir
                 cerrarSesion();
-                setTimeout(() => { window.location.href = "/login"; }, 1500);
+
+                // Solo redirigir si no estamos ya en la página de login
+                if (!window.location.pathname.includes("/login")) {
+                    toast.error("Tu sesión ha expirado.");
+                    window.location.href = "/login";
+                }
                 return Promise.reject(err);
             }
         }

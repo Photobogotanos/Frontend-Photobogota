@@ -6,6 +6,7 @@ import PerfilHeader from "./PerfilHeader";
 import PerfilStats from "./PerfilStats";
 import PerfilTabs from "./PerfilTabs";
 import "./MiPerfil.css";
+import defaultAvatar from "/images/user-pfp/default-avatar.jpg?url";
 
 // Función para obtener el usuario del localStorage
 const obtenerUsuarioStorage = () => {
@@ -21,9 +22,9 @@ const obtenerUsuarioStorage = () => {
 // Tabs por rol (espejo de TABS_POR_ROL en PerfilTabs para poder resetear la tab aquí)
 const PRIMERA_TAB_POR_ROL = {
   MIEMBRO: "publicaciones",
-  SOCIO:   "publicaciones",
-  MOD:     "reportes",
-  ADMIN:   "usuarios",
+  SOCIO: "publicaciones",
+  MOD: "reportes",
+  ADMIN: "usuarios",
 };
 
 // ─── REDUCER ────────────────────────────────────────────────────────────────
@@ -62,22 +63,23 @@ const perfilReducer = (state, action) => {
 // ESTADO INICIAL
 const obtenerEstadoInicial = () => {
   const usuarioStorage = obtenerUsuarioStorage();
-  
+
+
   // Valores por defecto (en mayúsculas para que coincida con la API real)
   const defaults = {
     nombreCompleto: "Usuario",
     nombreUsuario: "usuario",
     descripcion: "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
-    foto: "/images/user-pfp/default-avatar.jpg",
+    foto: defaultAvatar,
     rol: "MIEMBRO", // Rol por defecto (en mayúsculas para la API real)
     nivel: null,
   };
-  
+
   // Si hay usuario en storage, usar sus datos
   if (usuarioStorage) {
     // El username viene con @ del localStorage, lo quitamos para mostrar
     const usernameLimpio = usuarioStorage.username ? usuarioStorage.username.replace(/^@/, "") : "";
-    
+
     return {
       nombreCompleto: usuarioStorage.nombre || defaults.nombreCompleto,
       nombreUsuario: usernameLimpio || defaults.nombreUsuario,
@@ -87,7 +89,7 @@ const obtenerEstadoInicial = () => {
       nivel: usuarioStorage.nivel ?? null,
     };
   }
-  
+
   return defaults;
 };
 
