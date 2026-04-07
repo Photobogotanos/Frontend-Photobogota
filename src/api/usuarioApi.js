@@ -47,11 +47,11 @@ export const patchCambiarContrasena = (body) =>
     clienteApi.patch("/usuarios/me/password", body);
 
 /**
- * Obtener datos del usuario autenticado
+ * Obtener datos del usuario autenticado (Sincroniza persistencia local con Backend)
  * @returns {Promise<{ data: UsuarioResumenDTO }>}
  */
 export const getUsuarioAutenticado = () => 
-    clienteApi.get("/usuarios/me");
+    clienteApi.get("/auth/me");
 
 /**
  * Solicitar código de recuperación de contraseña.

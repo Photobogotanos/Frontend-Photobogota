@@ -1,6 +1,8 @@
 import { LazyMotion, m, domAnimation } from "framer-motion";
 
-const fotoPrincipal = "/images/img-home/pagina-inicio-main.jpg";
+import paginaInicioMain from '/images/img-home/pagina-inicio-main.jpg?url';
+
+const fotoPrincipal = paginaInicioMain;
 
 export default function HeroSection() {
   return (
