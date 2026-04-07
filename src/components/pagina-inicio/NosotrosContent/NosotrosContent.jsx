@@ -2,18 +2,27 @@ import { m, LazyMotion, domAnimation } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
 import TeamCard from "./TeamCard";
 import TeamCarousel from "./TeamCarousel.jsx";
-
 import "./NosotrosContent.css";
+import FotoNosotros2 from "/images/img-home/nosotros2.jpg?url";
+import FotoNosotros3 from "/images/img-home/nosotros3.jpg?url";
+import FotoSoto from "/images/img-home/soto.jpg?url";
+import FotoSebastian from "/images/img-home/sebastian.jpg?url";
+import FotoDanfel from "/images/img-home/danfel.jpg?url";
+import FotoYanpol from "/images/img-home/yanpol.jpg?url";
 
-const fotoNosotros2 = "../public/images/img-home/nosotros2.jpg";
-const fotoNosotros3 = "../public/images/img-home/nosotros3.jpg";
-const fotoSoto = "../public/images/img-home/soto.jpg";
-const fotoSebastian = "../public/images/img-home/sebastian.jpg";
-const fotoDanfel = "../public/images/img-home/danfel.jpg";
-const fotoYanpol = "../public/images/img-home/yanpol.jpg";
+import CancionSoto from '/songs/Daft-Punk-Instant-Crush.mp3?url';
+import CancionSebastian from '/songs/Entrega-Grupo-Niche.mp3?url';
+import CancionDanfel from '/songs/Gustavo-Cerati-Me-Quedo-Aqui.mp3?url';
+import CancionYanpol from '/songs/Mazzy-Star-Fade-Into-You.mp3?url';
+
+const fotoNosotros2 = FotoNosotros2;
+const fotoNosotros3 = FotoNosotros3;
+const fotoSoto = FotoSoto;
+const fotoSebastian = FotoSebastian;
+const fotoDanfel = FotoDanfel;
+const fotoYanpol = FotoYanpol;
 
 const carouselImages = [
   { id: "nosotros2", src: fotoNosotros2, alt: "Equipo PhotoBogota", caption: "Nosotros" },
@@ -31,7 +40,7 @@ const teamMembers = [
     status: "Buscando oportunidades laborales",
     instagram: "https://www.instagram.com/sebass.ye?igsh=MXRldHhwanFhMzd0aA%3D%3D&utm_source=qr",
     linkedin: "https://www.linkedin.com/in/sebassye/",
-    song: "/songs/Daft-Punk-Instant-Crush.mp3",
+    song: CancionSoto,
     songName: "Instant Crush - Daft Punk",
   },
   {
@@ -44,7 +53,7 @@ const teamMembers = [
     status: "Buscando oportunidades laborales",
     instagram: "https://www.instagram.com/sxbxxs.r?igsh=MW8wOWVvNjQ1Y2J4ZA==",
     linkedin: null,
-    song: "/songs/Entrega-Grupo-Niche.mp3",
+    song: CancionSebastian,
     songName: "Entrega - Grupo Niche",
   },
   {
@@ -57,7 +66,7 @@ const teamMembers = [
     status: "Buscando oportunidades laborales",
     instagram: "https://www.instagram.com/danfel_fr?igsh=ZW5vM3o0MTRuYWJv",
     linkedin: null,
-    song: "/songs/Gustavo-Cerati-Me-Quedo-Aqui.mp3",
+    song: CancionDanfel,
     songName: "Me Quedo Aquí - Cerati",
   },
   {
@@ -70,7 +79,7 @@ const teamMembers = [
     status: "Buscando oportunidades laborales",
     instagram: "https://www.instagram.com/void0bits?igsh=MTN0OWtvOHN3eGZhbQ==",
     linkedin: null,
-    song: "/songs/Mazzy-Star-Fade-Into-You.mp3",
+    song: CancionYanpol,
     songName: "Fade Into You - Mazzy Star",
   },
 ];

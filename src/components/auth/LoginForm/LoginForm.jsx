@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import "./LoginForm.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,9 +8,9 @@ import BackButton from "@/components/common/BackButton";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 import { iniciarSesion as iniciarSesionService } from "@/services/usuario.service";
 import { USUARIOS_DEMO } from "@/mocks/usuario.mock";
-import { obtenerEstadoServidor, resetEstadoServidor } from "@/utils/serverStatus";
 import { useAuth } from "@/context/AuthContext";
 import { validarLogin } from "@/utils/validacionesLogin";
+import { checkBackendHealth } from "@/api/baseApi";
 
 const CREDENCIALES_DEMO = {
   socio: "socio123",
@@ -20,6 +20,8 @@ const CREDENCIALES_DEMO = {
 };
 
 const CUENTAS_ESPECIALES = ["SOCIO", "MOD", "ADMIN", "MIEMBRO"];
+const MAX_INTENTOS = 5;
+const TIEMPO_BLOQUEO = 5 * 60 * 1000; // 5 minutos
 
 // Reducer function
 function loginReducer(state, action) {
@@ -38,6 +40,12 @@ function loginReducer(state, action) {
       return { ...state, cargando: action.payload };
     case "SET_SERVIDOR_ONLINE":
       return { ...state, servidorOnline: action.payload };
+    case "INCREMENTAR_INTENTOS":
+      return { ...state, intentos: state.intentos + 1 };
+    case "RESET_INTENTOS":
+      return { ...state, intentos: 0, bloqueadoHasta: null };
+    case "SET_BLOQUEADO":
+      return { ...state, bloqueadoHasta: action.payload };
     default:
       return state;
   }
@@ -52,34 +60,51 @@ const initialState = {
   copiado: null,
   cargando: false,
   servidorOnline: null, // null = verificando
+  intentos: 0,
+  bloqueadoHasta: null,
 };
 
 export default function LoginForm() {
   const [state, dispatch] = useReducer(loginReducer, initialState);
+  const [verificandoServidor, setVerificandoServidor] = useState(true);
   const navegar = useNavigate();
   const { iniciarSesion: iniciarSesionContext } = useAuth();
 
+  // Verificar servidor al montar el componente
   useEffect(() => {
-    let intervalo;
-
-    resetEstadoServidor(); 
-
     const verificar = async () => {
-      const online = await obtenerEstadoServidor();
+      try {
+        const online = await checkBackendHealth();
+        dispatch({ type: "SET_SERVIDOR_ONLINE", payload: online });
 
-      if (online) {
-        dispatch({ type: "SET_SERVIDOR_ONLINE", payload: true });
-        clearInterval(intervalo);
-      } else {
+        if (!online) {
+          console.log("Servidor no disponible - Modo Demo activado");
+          toast.custom((t) => (
+            <div className="server-offline-toast">
+              Servidor no disponible. Usando modo demo.
+            </div>
+          ), { duration: 4000 });
+        }
+      } catch (error) {
         dispatch({ type: "SET_SERVIDOR_ONLINE", payload: false });
+        console.log("Error al verificar servidor:", error.message);
+      } finally {
+        setVerificandoServidor(false);
       }
     };
 
     verificar();
-    intervalo = setInterval(verificar, 2000);
-
-    return () => clearInterval(intervalo);
   }, []);
+
+  // Verificar si está bloqueado
+  const estaBloqueado = () => {
+    if (state.bloqueadoHasta && new Date() < new Date(state.bloqueadoHasta)) {
+      const tiempoRestante = Math.ceil((new Date(state.bloqueadoHasta) - new Date()) / 1000 / 60);
+      toast.error(`Demasiados intentos. Espera ${tiempoRestante} minutos.`);
+      return true;
+    }
+    return false;
+  };
 
   // Ordenar por rol: MIEMBRO, SOCIO, MOD, ADMIN
   const ordenRol = { MIEMBRO: 1, SOCIO: 2, MOD: 3, ADMIN: 4 };
@@ -98,6 +123,9 @@ export default function LoginForm() {
   const manejarEnvio = async (e) => {
     e.preventDefault();
 
+    // Verificar bloqueo
+    if (estaBloqueado()) return;
+
     // Validar campos usando el módulo de validaciones
     const validacion = validarLogin(state.usuarioOCorreo, state.contrasena);
     if (!validacion.valido) {
@@ -111,8 +139,30 @@ export default function LoginForm() {
       const resultado = await iniciarSesionService(state.usuarioOCorreo.trim(), state.contrasena);
 
       if (!resultado.exitoso) {
-        toast.error(resultado.mensaje);
+        // Incrementar intentos fallidos
+        const nuevosIntentos = state.intentos + 1;
+        dispatch({ type: "INCREMENTAR_INTENTOS" });
+
+        if (nuevosIntentos >= MAX_INTENTOS) {
+          const bloqueoHasta = new Date(Date.now() + TIEMPO_BLOQUEO);
+          dispatch({ type: "SET_BLOQUEADO", payload: bloqueoHasta });
+          toast.error(`Demasiados intentos fallidos. Cuenta bloqueada por 5 minutos.`);
+        } else {
+          toast.error(`${resultado.mensaje} (Intento ${nuevosIntentos}/${MAX_INTENTOS})`);
+        }
         return;
+      }
+
+      // Resetear intentos al iniciar sesión exitosamente
+      dispatch({ type: "RESET_INTENTOS" });
+
+      const esModoDemo = resultado.esDemo || !state.servidorOnline;
+      if (esModoDemo) {
+        localStorage.setItem('modoDemo', 'true');
+        sessionStorage.setItem('modoDemo', 'true');
+      } else {
+        localStorage.removeItem('modoDemo');
+        sessionStorage.removeItem('modoDemo');
       }
 
       // Actualizar contexto de autenticación
@@ -137,7 +187,16 @@ export default function LoginForm() {
       navegar("/mapa");
     } catch (error) {
       console.error("Error en login:", error);
-      toast.error("No se pudo conectar con el servidor. Intenta de nuevo más tarde.");
+
+      // Manejo específico de errores de red
+      if (error.message === "Failed to fetch" || error.name === "TypeError") {
+        toast.error("No se pudo conectar al servidor. Verifica tu conexión.", {
+          duration: 5000,
+        });
+        dispatch({ type: "SET_SERVIDOR_ONLINE", payload: false });
+      } else {
+        toast.error("Error inesperado. Intenta de nuevo más tarde.");
+      }
     } finally {
       dispatch({ type: "SET_CARGANDO", payload: false });
     }
@@ -153,9 +212,13 @@ export default function LoginForm() {
     return mapa[rol] || { texto: rol, color: "#888" };
   };
 
-  // El panel demo solo se muestra si el servidor está OFFLINE (servidorOnline === false)
-  // Mientras verifica (null), no mostramos nada para evitar un flash visual
-  const mostrarPanelDemo = state.servidorOnline === false;
+  // Mostrar panel demo si el servidor NO está online (false O null)
+  const mostrarPanelDemo = !verificandoServidor && state.servidorOnline !== true;
+
+  // Calcular tiempo de bloqueo restante
+  const tiempoBloqueoRestante = state.bloqueadoHasta
+    ? Math.ceil((new Date(state.bloqueadoHasta) - new Date()) / 1000 / 60)
+    : 0;
 
   return (
     <>
@@ -165,6 +228,13 @@ export default function LoginForm() {
           <h2 className="login-form-title">Photo Bogotá</h2>
           <span className="login-title-line"></span>
         </div>
+
+        {/* Indicador de bloqueo */}
+        {state.bloqueadoHasta && new Date() < new Date(state.bloqueadoHasta) && (
+          <div className="alert alert-warning mt-3 text-center" role="alert">
+            Cuenta temporalmente bloqueada. Espera {tiempoBloqueoRestante} minutos.
+          </div>
+        )}
 
         <Form.Group className="mt-5">
           <Form.Label className="login-form-label">
@@ -176,7 +246,9 @@ export default function LoginForm() {
               className="grupitos rounded-pill input-with-icon"
               type="text"
               value={state.usuarioOCorreo}
+              disabled={state.cargando || (state.bloqueadoHasta && new Date() < new Date(state.bloqueadoHasta))}
               onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "usuarioOCorreo", value: e.target.value } })}
+              placeholder="ejemplo@correo.com o usuario123"
             />
           </div>
         </Form.Group>
@@ -191,11 +263,15 @@ export default function LoginForm() {
               className="grupitos rounded-pill input-with-icon"
               type={state.mostrarContrasena ? "text" : "password"}
               value={state.contrasena}
+              disabled={state.cargando || (state.bloqueadoHasta && new Date() < new Date(state.bloqueadoHasta))}
               onChange={(e) => dispatch({ type: "SET_FIELD", payload: { field: "contrasena", value: e.target.value } })}
+              placeholder="Ingresa tu contraseña"
             />
-            <button type="button"
+            <button
+              type="button"
               className="eye-icon"
               onClick={() => dispatch({ type: "TOGGLE_MOSTRAR_CONTRASENA" })}
+              disabled={state.cargando}
             >
               {state.mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
             </button>
@@ -206,12 +282,21 @@ export default function LoginForm() {
         </Form.Group>
 
         {/* Indicador de verificación del servidor */}
-        {state.servidorOnline === null && (
+        {verificandoServidor && (
           <div className="server-checking-wrapper mt-4">
             <div className="server-checking-indicator">
               <span className="server-checking-dot"></span>
-              Verificando servidor...
+              Conectando con el servidor...
             </div>
+          </div>
+        )}
+
+        {/* Estado del servidor */}
+        {!verificandoServidor && state.servidorOnline === false && (
+          <div className="server-offline-badge mt-3">
+            <span className="badge bg-warning text-dark">
+              Modo Demo - Conexión limitada
+            </span>
           </div>
         )}
 
@@ -268,9 +353,16 @@ export default function LoginForm() {
           <button
             type="submit"
             className={`lf-submit-btn ${state.cargando ? "lf-submit-btn--loading" : ""}`}
-            disabled={state.cargando}
+            disabled={state.cargando || (state.bloqueadoHasta && new Date() < new Date(state.bloqueadoHasta))}
           >
-            {state.cargando ? "Ingresando…" : "Ingresar →"}
+            {state.cargando ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Ingresando…
+              </>
+            ) : (
+              "Ingresar →"
+            )}
           </button>
         </div>
 
