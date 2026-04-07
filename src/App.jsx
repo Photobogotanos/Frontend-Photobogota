@@ -4,7 +4,7 @@ import ScrollToTop from "@/components/common/ScrollToTop";
 
 function App() {
   return (
-    <BrowserRouter>
+   <BrowserRouter basename="/Frontend-Photobogota">
       <ScrollToTop />
       <AppRouter />
     </BrowserRouter>

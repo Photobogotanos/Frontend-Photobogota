@@ -1,4 +1,4 @@
-name: Node.js CI (Vite Project)
+name: Frontend-Photobogota
 
 on:
   push:
@@ -6,13 +6,16 @@ on:
   pull_request:
     branches: [ "main" ]
 
+# Permisos necesarios para que el Action pueda escribir en la rama gh-pages
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        # Usamos Node 20 LTS 
         node-version: [20.x]
 
     steps:
@@ -26,9 +29,15 @@ jobs:
         cache: 'npm'
 
     - name: Instalar dependencias
-      # Usamos 'install' porque en proyectos grupales a veces el lock cambia seguido
       run: npm install
 
     - name: Construir proyecto (Vite)
-      # Esto generará la carpeta /dist y verificará que no haya errores de código
       run: npm run build
+
+    # Paso nuevo para el despliegue automático
+    - name: Deploy
+      if: github.event_name == 'push' # Solo despliega cuando haces push a main
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: dist # Vite genera la salida en esta carpeta
+        branch: gh-pages
