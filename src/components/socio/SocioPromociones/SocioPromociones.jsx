@@ -73,7 +73,7 @@ const SocioPromociones = () => {
           >
           <FaPlus />
           <span className="texto-completo">Crear Promoción</span>
-          <span className="texto-corto">Crear Promo</span> 
+          <span className="texto-corto"></span> 
         </Link>
       </div>
 
