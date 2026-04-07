@@ -1,4 +1,6 @@
 import { useReducer, useRef, useState } from "react";
+import Lottie from "lottie-react";
+import uploadAnimation from "@/assets/animations/Upload.json";
 import "./CrearPromocion.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -48,33 +50,121 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
 
   const total = previews.length;
 
-//   return (
-//     <div className="uploader-wrapper">
-//       {total === 0 ?(
-//         <div
-//           className={`drop-zone${isDragging ? " dragging" : ""}`}
-//           onDragOver={(e) => { e.preventDefault(); setIsDragging(true);}}
-//           onDragLeave={() => setIsDragging(false)}
-//           onDrop={handleDrop}
-//           onClick={() => inputRef.current.click()}
-//           role="button"
-//           tabIndex={0}
-//           onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
-//           aria-label="Subir Imagenes"
-//         >
+  return (
+    <div className="uploader-wrapper">
+      {total === 0 ?(
+        <div
+          className={`drop-zone${isDragging ? " dragging" : ""}`}
+          onDragOver={(e) => { e.preventDefault(); setIsDragging(true);}}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={handleDrop}
+          onClick={() => inputRef.current.click()}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
+          aria-label="Subir Imagenes"
+        >
+          <div className="drop-zone-lottie">
+             <Lottie animationData={uploadAnimation} loop style={{ width: 110, height: 110}}/>
+          </div>
+          <p className="drop-zone-title">Pon las fotos de tu promoción aquí</p>
+          <p className="drop-zone-sub">o haz click para seleccionar</p>
+          <span className="drop-zone-badge">JPG · PNG · WEBP · múltiples</span>
+        </div>
+      ) : (
+        <div className="uploader-con-imagenes">
+          <div
+           className="preview-carousel"
+           onClick={() => onNavigate("next")}
+           role="button"
+           tableIndex={0}
+           onKeyDown={(e) => e.key === "Enter" && onNavigate("next")}
+           aria-label="Avanzar imagen"
+          >
+            <img
+             src={previews[indice]}
+             alt={`Previews ${indice + 1}`}
+             className="preview-img"
+            />
+            <span className="preview-counter">{indice + 1} / {total} </span>
+            {total > 1 && ( 
+              <>
+                <button type="button" className="preview-nav prev"
+                  onClick={(e) => {e.stopPropagation(); onNavigate("prev"); }}
+                  aria-label="Anterior">
+                  <FaChevronLeft />
+                </button>
+                <button type="button" className="preview-nav next"
+                  onClick={(e) => {e.stopPropagation(); onNavigate("next"); }}
+                  aria-label="Siguiente">
+                  <FaChevronRight/>
+                </button>
+              </>
+            )}
+            <button type="button" className="preview-remove"
+              onClick={(e) => { e.stopPropagation(); onRemove(indice);}}
+              aria-label="Eliminar imagen">
+              <FaTrash/>
+            </button>
+        </div>
 
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
+        {/* ── Tira de thumbnails ── */}
+        <div className="thumbnails-strip">
+          {previews.map((src, idx) => (
+            <div 
+             key={src}
+             className={`thumnail-item${idx === indice ? " active" : ""}`}
+             onClick={() => onSelectIndice(idx)}
+             role="button"
+             tabIndex={0}
+             onKeyDown={(e) => e.key === "Enter" && onSelectIndice(idx)}
+             aria-label={`Ver imagen ${idx + 1}`} 
+            >
+              <img src={src} alt={`Thumb ${idx + 1}`} />
+              <button 
+                type="button"
+                className="thumb-remove"
+                onClick={(e) => { e.stopPropagation(); onRemove(idx);}}
+                aria-label={`Eliminar imagen ${idx + 1}`}
+              >
+                ×
+              </button>
+            </div>
+          ))}
 
+          {/* Botón agregar más */}
+          <div 
+           className="thumbnail-add"
+           onClick={() => inputRef.current.click()}
+           role="button"
+           tabIndex={0}
+           onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
+           aria-label="Agregar más fotos"
+          >
+            <span className="thumbnail-add-icon">+</span>
+            <span className="thumbnail-add-text">Añañiiir</span>
+          </div>
+         </div>
+       </div>
+      )}
+      
+      <input 
+       ref={inputRef}
+       type="file"
+       accept="image/"
+       multiple
+       style={{ display: "none" }}
+       onChange={handleFileInput}
+      />
+    </div>
+  );
+}
 
 //-- Componente principal --------------------------------------------
 export default function CrearPromocion(){
     const[state, dispatch] = useReducer(promoFormReducer, initialState);
 
-    const handleImage = (files) =>{
+    const handleImagen = (files) =>{
         const newPreviews = files.map((f) => URL.createObjectURL(f));
         dispatch({ type: "SET_IMAGENES", playload: [...state.imagenes, ...files]});
         dispatch({ type: "SET_PREVIEWS", playload: [...state.previews, ...newPreviews] })
@@ -126,6 +216,14 @@ export default function CrearPromocion(){
                         <FaCamera className="me-2" />
                         Foto de la promoción <RequiredMark />
                       </label>
+                      <ImageUploader
+                       previews={state.previews}
+                       indice={state.indiceImagenActual}
+                       onImageChange={handleImagen}
+                       onRemove={handleRemoveImagen}
+                       onNavigate={handleNavigate}
+                       onSelectIndice={(idx) => dispatch({ type : "SET_INDICE_IMAGEN", payload: idx })}
+                      />
 
 
                     </Col>
