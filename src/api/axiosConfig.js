@@ -49,15 +49,20 @@ clienteApi.interceptors.response.use(
     (response) => response,
 
     async (error) => {
-        const { config, response } = error;
-
-        const esHealthCheck = config.url.includes('/actuator/health');
+        const config = error.config || {};
+        const response = error.response;
+        
+        const esHealthCheck = config.url?.includes('/actuator/health');
         if (config._silent || esHealthCheck) {
             return Promise.reject(error);
         }
+        
+        // Si no hay response (error de red, servidor caído), rechazar directamente
+        if (!response) {
+            console.warn("Error de red - servidor no disponible:", error.message);
+            return Promise.reject(error);
+        }
 
-        // No intenta renovar el token si el error ocurrió en el login
-        // o si el código de error no es 401.
         const esLoginEndpoint = config?.url?.includes("/auth/login");
         if (esLoginEndpoint || response.status !== 401) {
             return Promise.reject(error);

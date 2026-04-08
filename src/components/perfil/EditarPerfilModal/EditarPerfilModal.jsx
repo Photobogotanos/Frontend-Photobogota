@@ -13,29 +13,30 @@ import PassField from "./PassField";
 import { putEditarPerfil, patchCambiarContrasena } from "../../../api/usuarioApi";
 import { useAuth } from "../../../context/AuthContext";
 
-
 export default function EditarPerfilModal({
   show,
   onHide,
   perfilData,
   onPerfilActualizado,
+  usandoMock = false,
 }) {
   const { recargarUsuario } = useAuth();
   const [tabActiva, setTabActiva] = useState("perfil");
 
+  // Inicializar con datos reales del perfil (sin datos quemados)
   const [formData, setFormData] = useState({
-    nombreCompleto: perfilData?.nombreCompleto || "Juan Sebastian Romero",
-    nombreUsuario: perfilData?.nombreUsuario || "sxbxxs.r",
-    correo: perfilData?.correo || "photobogota123@gmail.com",
-    descripcion: perfilData?.descripcion || "Descubre y comparte los mejores spots locales.",
-    telefono: perfilData?.telefono || "3138529778",
+    nombresCompletos: perfilData?.nombresCompletos || "",
+    nombreUsuario: perfilData?.nombreUsuario || "",
+    email: perfilData?.email || "",
+    biografia: perfilData?.biografia || "",
+    telefono: perfilData?.telefono || "",
     contrasenaActual: "",
     contrasenaNueva: "",
     confirmarContrasena: "",
   });
 
   const [fotoPerfil, setFotoPerfil] = useState(
-    perfilData?.foto || "public/images/user-pfp/default-avatar.jpg"
+    perfilData?.fotoPerfil || "/images/user-pfp/default-avatar.jpg"
   );
   const [verActual, setVerActual] = useState(false);
   const [verNueva, setVerNueva] = useState(false);
@@ -70,7 +71,7 @@ export default function EditarPerfilModal({
   };
 
   const handleEliminarFoto = () => {
-    setFotoPerfil("public/images/user-pfp/default-avatar.jpg");
+    setFotoPerfil("/images/user-pfp/default-avatar.jpg");
   };
 
   const passwordsCoinciden =
@@ -80,19 +81,46 @@ export default function EditarPerfilModal({
   // submit tab Perfil
   const handleSubmitPerfil = async (e) => {
     e.preventDefault();
+
+    // Si está en modo mock, simular éxito sin llamar al backend
+    if (usandoMock) {
+      Swal.fire({
+        icon: "info",
+        title: "Modo demostración",
+        text: "Los cambios no se guardarán porque no hay conexión con el servidor.",
+        confirmButtonColor: "var(--color-primary)"
+      });
+      // Simular actualización local
+      if (onPerfilActualizado) {
+        onPerfilActualizado({
+          ...perfilData,
+          nombresCompletos: formData.nombresCompletos,
+          biografia: formData.biografia,
+          telefono: formData.telefono,
+          fotoPerfil: fotoPerfil,
+        });
+      }
+      onHide();
+      return;
+    }
+
+    // Lógica normal con backend
     const datosActualizados = {
-      nombreCompleto: formData.nombreCompleto,
-      nombreUsuario: formData.nombreUsuario,
-      correo: formData.correo,
-      descripcion: formData.descripcion,
+      nombresCompletos: formData.nombresCompletos,
       telefono: formData.telefono,
-      foto: fotoPerfil,
+      biografia: formData.biografia,
+      fotoPerfil: fotoPerfil,
     };
+
     try {
-      const response = await putEditarPerfil(datosActualizados);
-      if (onPerfilActualizado) onPerfilActualizado(response.data);
+      await putEditarPerfil(datosActualizados);
+      if (onPerfilActualizado) onPerfilActualizado(datosActualizados);
       await recargarUsuario();
-      Swal.fire({ icon: "success", title: "¡Perfil actualizado!", confirmButtonColor: "var(--color-primary)" });
+      Swal.fire({
+        icon: "success",
+        title: "¡Perfil actualizado!",
+        confirmButtonColor: "var(--color-primary)"
+      });
       onHide();
     } catch (error) {
       const mensaje = error.response?.data?.mensaje || "Error al actualizar el perfil";
@@ -103,12 +131,29 @@ export default function EditarPerfilModal({
   // submit tab Contraseña
   const handleSubmitContrasena = async (e) => {
     e.preventDefault();
+
+    // Modo mock para contraseña
+    if (usandoMock) {
+      Swal.fire({
+        icon: "info",
+        title: "Modo demostración",
+        text: "En modo demo no se puede cambiar la contraseña.",
+        confirmButtonColor: "var(--color-primary)"
+      });
+      onHide();
+      return;
+    }
+
     if (!formData.contrasenaActual) {
       Swal.fire({ icon: "error", title: "Ingresa tu contraseña actual" });
       return;
     }
     if (!passwordIsValid) {
-      Swal.fire({ icon: "error", title: "Contraseña no válida", text: "La contraseña debe cumplir todos los requisitos." });
+      Swal.fire({
+        icon: "error",
+        title: "Contraseña no válida",
+        text: "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula y un número."
+      });
       return;
     }
     if (!passwordsCoinciden) {
@@ -118,18 +163,27 @@ export default function EditarPerfilModal({
     try {
       await patchCambiarContrasena({
         contrasenaActual: formData.contrasenaActual,
-        contrasenaNueva: formData.contrasenaNueva,
+        nuevaContrasena: formData.contrasenaNueva,
+        confirmarContrasena: formData.confirmarContrasena
       });
       await recargarUsuario();
-      Swal.fire({ icon: "success", title: "¡Contraseña actualizada!", confirmButtonColor: "var(--color-primary)" });
-      setFormData((p) => ({ ...p, contrasenaActual: "", contrasenaNueva: "", confirmarContrasena: "" }));
+      Swal.fire({
+        icon: "success",
+        title: "¡Contraseña actualizada!",
+        confirmButtonColor: "var(--color-primary)"
+      });
+      setFormData((p) => ({
+        ...p,
+        contrasenaActual: "",
+        contrasenaNueva: "",
+        confirmarContrasena: ""
+      }));
       onHide();
     } catch (error) {
       const mensaje = error.response?.data?.mensaje || "Error al cambiar la contraseña";
       Swal.fire({ icon: "error", title: "Error", text: mensaje });
     }
   };
-
 
   return (
     <Modal
@@ -182,11 +236,13 @@ export default function EditarPerfilModal({
                 onEliminarFoto={handleEliminarFoto}
               />
               <div className="hero-info">
-                <p className="hero-name">{formData.nombreCompleto}</p>
-                <p className="hero-user">@{formData.nombreUsuario}</p>
+                <p className="hero-name">{formData.nombresCompletos || "Usuario"}</p>
+                <p className="hero-user">@{formData.nombreUsuario || "usuario"}</p>
                 <div className="hero-pills">
                   <span className="hpill">Miembro</span>
-                  <span className="hpill accent">Nivel 320</span>
+                  <span className="hpill accent">
+                    Nivel {perfilData?.nivel || 1}
+                  </span>
                 </div>
               </div>
             </div>
@@ -198,39 +254,33 @@ export default function EditarPerfilModal({
                 <span>Información personal</span>
               </div>
               <Row className="g-3">
-                <Col md={6}>
+                <Col md={12}>
                   <div className="fgroup">
                     <label className="flabel">Nombre completo</label>
                     <Form.Control
-                      type="text" name="nombreCompleto"
-                      value={formData.nombreCompleto} onChange={handleChange}
-                      className="finput" placeholder="Tu nombre completo"
+                      type="text"
+                      name="nombresCompletos"
+                      value={formData.nombresCompletos}
+                      onChange={handleChange}
+                      className="finput"
+                      placeholder="Tu nombre completo"
                     />
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className="fgroup">
-                    <label className="flabel">Nombre de usuario</label>
-                    <div className="prefix-wrap">
-                      <span className="input-pfx">@</span>
-                      <Form.Control
-                        type="text" name="nombreUsuario"
-                        value={formData.nombreUsuario} onChange={handleChange}
-                        className="finput with-pfx" placeholder="usuario"
-                      />
-                    </div>
                   </div>
                 </Col>
                 <Col md={12}>
                   <div className="fgroup">
-                    <label className="flabel">Descripción</label>
+                    <label className="flabel">Biografía</label>
                     <Form.Control
-                      as="textarea" rows={3} name="descripcion"
-                      value={formData.descripcion} onChange={handleChange}
-                      className="finput ftextarea" placeholder="Cuéntanos sobre ti..."
+                      as="textarea"
+                      rows={3}
+                      name="biografia"
+                      value={formData.biografia}
+                      onChange={handleChange}
+                      className="finput ftextarea"
+                      placeholder="Cuéntanos sobre ti..."
                       maxLength={160}
                     />
-                    <span className="char-hint">{formData.descripcion.length}/160</span>
+                    <span className="char-hint">{formData.biografia?.length || 0}/160</span>
                   </div>
                 </Col>
               </Row>
@@ -249,9 +299,13 @@ export default function EditarPerfilModal({
                   <div className="fgroup">
                     <label className="flabel">Correo electrónico</label>
                     <Form.Control
-                      type="email" name="correo"
-                      value={formData.correo} onChange={handleChange}
-                      className="finput" placeholder="correo@ejemplo.com"
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="finput"
+                      placeholder="correo@ejemplo.com"
+                      disabled
                     />
                   </div>
                 </Col>
@@ -262,9 +316,12 @@ export default function EditarPerfilModal({
                       Teléfono
                     </label>
                     <Form.Control
-                      type="tel" name="telefono"
-                      value={formData.telefono} onChange={handleChange}
-                      className="finput" placeholder="300 000 0000"
+                      type="tel"
+                      name="telefono"
+                      value={formData.telefono}
+                      onChange={handleChange}
+                      className="finput"
+                      placeholder="300 000 0000"
                     />
                   </div>
                 </Col>
@@ -293,7 +350,7 @@ export default function EditarPerfilModal({
                 <PassField
                   label="Contraseña actual"
                   name="contrasenaActual"
-                  value={formData.contrasenaActual} // Pasa los valores explícitamente
+                  value={formData.contrasenaActual}
                   onChange={handleChange}
                   ver={verActual}
                   onToggle={() => setVerActual(!verActual)}
