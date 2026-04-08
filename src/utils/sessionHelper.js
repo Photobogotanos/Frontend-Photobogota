@@ -5,16 +5,16 @@ const COOKIE_OPTIONS = { expires: COOKIE_EXPIRY_DAYS, sameSite: "Strict" };
 
 // Tokens 
 
-export const guardarTokens = (accessToken, refreshToken) => {
-  Cookies.set("accessToken", accessToken, COOKIE_OPTIONS);
+export const guardarTokens = (token, refreshToken) => {
+  Cookies.set("token", token, COOKIE_OPTIONS);
   Cookies.set("refreshToken", refreshToken, COOKIE_OPTIONS);
 };
 
-export const obtenerAccessToken = () => Cookies.get("accessToken");
+export const obtenerAccessToken = () => Cookies.get("token");
 export const obtenerRefreshToken = () => Cookies.get("refreshToken");
 
 const eliminarTokens = () => {
-  Cookies.remove("accessToken");
+  Cookies.remove("token");
   Cookies.remove("refreshToken");
   localStorage.clear();
   sessionStorage.clear();
