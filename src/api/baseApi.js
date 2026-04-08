@@ -2,11 +2,14 @@ import { clienteApi } from "./axiosConfig";
 
 export const checkBackendHealth = async () => {
     try {
-        return await clienteApi.get("/actuator/health", {
+        const respuesta = await clienteApi.get("/actuator/health", {
             timeout: 1000,
-            _silent: true 
+            _silent: true,
         });
-    } catch (error) {
-        return { status: 'down', demoMode: true };
+        // Verificamos el body por si el actuator responde 200 pero degradado.
+        const status = respuesta?.data?.status;
+        return status ? status === "UP" : true;
+    } catch {
+        return false;
     }
 };

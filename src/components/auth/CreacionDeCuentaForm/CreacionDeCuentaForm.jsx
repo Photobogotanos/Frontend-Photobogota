@@ -103,8 +103,12 @@ function FormularioCreacion() {
       return;
     }
 
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(state.password)) {
-      Swal.fire({ icon: "error", title: "Contraseña insegura", text: "Debe tener mínimo 8 caracteres, mayúsculas, minúsculas y números." });
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(state.password)) {
+      Swal.fire({
+        icon: "error",
+        title: "Contraseña insegura",
+        text: "Debe tener mínimo 8 caracteres, mayúsculas, minúsculas y números."
+      });
       return;
     }
 
