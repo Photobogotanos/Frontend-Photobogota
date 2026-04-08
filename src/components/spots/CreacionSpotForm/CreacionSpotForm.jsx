@@ -195,11 +195,11 @@ export default function CrearSpot() {
   };
 
   const handlePublicar = async () => {
-    if (!state.nombreLugar || !state.direccion || !state.categoria || !state.localidad || !state.descripcionImagen) {
+    if (!state.nombreLugar || !state.direccion || !state.categoria || !state.localidad || !state.descripcionImagen || state.imagenes.length === 0) {
       Swal.fire({
         icon: "warning",
         title: "Faltan campos obligatorios",
-        text: "Completa todos los campos requeridos antes de publicar.",
+        text: "Completa todos los campos requeridos y sube al menos una imagen antes de publicar.",
         confirmButtonColor: "#806fbe",
       });
       return;
