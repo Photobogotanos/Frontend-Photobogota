@@ -1,48 +1,111 @@
 import { checkBackendHealth } from "../api/baseApi";
 
-// Cuanto tiempo guardar el estado del servidor en cache para evitar múltiples llamadas seguidas al servidor
-const CACHE_DURACION_MS = 2000; // 2 segundos
+// Configuración del cache
+const CACHE_DURACION_MS = 2000;
+const POLLING_INTERVAL_MS = 3000; // 3 segundos para polling
 
-// Estas dos variables "recuerdan" el último resultado entre llamadas.
-// Viven fuera de la función para que no se reinicien cada vez que la llamas.
-
-// null = "todavía no sabemos si el servidor está disponible"
-// true/false = ya lo verificamos
 let servidorDisponible = null;
-
-// Guarda el momento exacto de la última verificación (en milisegundos)
-// null = nunca hemos verificado
 let ultimaVerificacion = null;
+let pollingInterval = null;
+let listeners = new Set(); // Para notificar cambios de estado
 
+// Notificar a todos los listeners
+const notificarCambio = (estado) => {
+    listeners.forEach(listener => listener(estado));
+};
+
+// Función interna para verificar el servidor
+const verificarServidor = async () => {
+    try {
+        const online = await checkBackendHealth();
+        
+        if (servidorDisponible !== online) {
+            servidorDisponible = online;
+            notificarCambio(online);
+        }
+        
+        ultimaVerificacion = Date.now();
+        return online;
+    } catch {
+        if (servidorDisponible !== false) {
+            servidorDisponible = false;
+            notificarCambio(false);
+        }
+        ultimaVerificacion = Date.now();
+        return false;
+    }
+};
+
+// Iniciar polling cuando el servidor está offline
+const iniciarPolling = () => {
+    if (pollingInterval) return;
+    
+    pollingInterval = setInterval(async () => {
+        const online = await verificarServidor();
+        if (online) {
+            detenerPolling();
+        }
+    }, POLLING_INTERVAL_MS);
+};
+
+const detenerPolling = () => {
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+    }
+};
+
+// Obtener estado del servidor (con cache)
 export const obtenerEstadoServidor = async () => {
     const ahora = Date.now();
-
-    // Calculamos si el caché sigue siendo válido verificando 3 condiciones:
-    const cacheValido =
-        servidorDisponible !== null &&   // 1. Ya tenemos un resultado previo
-        ultimaVerificacion !== null &&   // 2. Tenemos registrado cuándo fue
-        ahora - ultimaVerificacion < CACHE_DURACION_MS; // 3. Han pasado menos de 30 segundos
-    // Ejemplo: ahora=1000, ultimaVerificacion=980, diferencia=20ms < 30000ms = válido
-
-    if (cacheValido) return servidorDisponible;
-
-    try {
-        const res = await checkBackendHealth();
-
-        // Si el status es exactamente "UP", guardamos true. Si no, false.
-        servidorDisponible = res.data?.status === "UP";
-    } catch {
-        servidorDisponible = false;
+    
+    const cacheValido = 
+        servidorDisponible !== null &&
+        ultimaVerificacion !== null &&
+        ahora - ultimaVerificacion < CACHE_DURACION_MS;
+    
+    if (cacheValido) {
+        return servidorDisponible;
     }
+    
+    return await verificarServidor();
+};
 
-    // Guardamos el momento en que hicimos esta verificación
-    // La próxima vez que alguien llame esta función, sabremos cuándo fue la última vez
-    ultimaVerificacion = Date.now();
+// Iniciar monitoreo continuo del servidor
+export const iniciarMonitoreoServidor = () => {
+    // Hacer verificación inicial
+    obtenerEstadoServidor().then(online => {
+        if (!online) {
+            iniciarPolling();
+        }
+    });
+    
+    // Retornar función de limpieza
+    return () => {
+        detenerPolling();
+        listeners.clear();
+    };
+};
+
+// Suscribirse a cambios de estado del servidor
+export const suscribirEstadoServidor = (callback) => {
+    listeners.add(callback);
+    
+    // Retornar función para desuscribirse
+    return () => {
+        listeners.delete(callback);
+    };
+};
+
+// Obtener estado actual sincrónicamente (útil para componentes)
+export const getCurrentServerStatus = () => {
     return servidorDisponible;
 };
 
-// Forzar una re-verificación (ej. al hacer refresh o reintento de login)
+// Resetear todo el estado
 export const resetEstadoServidor = () => {
     servidorDisponible = null;
     ultimaVerificacion = null;
+    detenerPolling();
+    listeners.clear();
 };

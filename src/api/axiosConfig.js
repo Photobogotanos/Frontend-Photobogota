@@ -94,15 +94,15 @@ clienteApi.interceptors.response.use(
                 const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, { refreshToken });
 
                 // Guarda los nuevos tokens y notifica al usuario.
-                guardarTokens(data.accessToken, data.refreshToken);
+                guardarTokens(data.token, data.refreshToken);
                 toast.success("Sesión renovada", { id: idToast });
 
                 // Libera el bloqueo, despacha las peticiones encoladas
                 // y reintenta la petición original.
                 estaRenovando = false;
-                procesarCola(data.accessToken);
+                procesarCola(data.token);
 
-                config.headers.Authorization = `Bearer ${data.accessToken}`;
+                config.headers.Authorization = `Bearer ${data.token}`;
                 return clienteApi(config);
 
             } catch (err) {
