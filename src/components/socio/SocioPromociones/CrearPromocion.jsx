@@ -224,6 +224,7 @@ export default function CrearPromocion(){
                        onNavigate={handleNavigate}
                        onSelectIndice={(idx) => dispatch({ type : "SET_INDICE_IMAGEN", payload: idx })}
                       />
+                      
 
 
                     </Col>
