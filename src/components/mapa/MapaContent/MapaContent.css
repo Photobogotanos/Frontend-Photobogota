@@ -30,40 +30,93 @@
 
 .mapa-content-container {
   position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .filtros-row {
   margin-bottom: 0 !important;
 }
 
-@media (max-width: 576px) {
+.mapa-row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.mapa-row .col {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+@media (max-width: 768px) {
   .toggle-filtros-btn {
-    top: 302px;
+    top: 70px;
     padding: 8px 14px;
     font-size: 13px;
-    border-radius: 25px;
   }
 
   .mapa-content-container:not(:has(.filtros-row)) .toggle-filtros-btn {
-    top: 44px;
+    top: 16px;
+  }
+
+  .mapa-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .mapa-row .col {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .toggle-filtros-btn {
+    top: 60px;
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 20px;
+  }
+
+  .mapa-content-container:not(:has(.filtros-row)) .toggle-filtros-btn {
+    top: 12px;
+  }
+
+  .mapa-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .mapa-row .col {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }
 
 @media (max-width: 420px) {
   .toggle-filtros-btn {
-    width: 90%;
+    top: 50px;
+    width: 85%;
     left: 50%;
     transform: translateX(-50%);
     justify-content: center;
-    font-size: 12px;
-    padding: 10px;
+    font-size: 11px;
+    padding: 8px 10px;
+    border-radius: 18px;
   }
-}
 
-@media (min-width: 577px) and (max-width: 768px) {
-  .toggle-filtros-btn {
-    top: 78px;
-    font-size: 14px;
+  .mapa-content-container:not(:has(.filtros-row)) .toggle-filtros-btn {
+    top: 10px;
+  }
+
+  .filtros-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .filtros-row .col {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }
 

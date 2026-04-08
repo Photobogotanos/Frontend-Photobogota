@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -13,20 +13,18 @@ import "./MapaBogota.css";
 import camaraIcon from "@/assets/images/icons/camara.jpg";
 import { FaPlus, FaMinus, FaLocationArrow } from "react-icons/fa";
 import SpotPreviewModal from "@/components/spots/SpotPreviewModal/SpotPreviewModal";
-import { getSpots } from "@/mocks/spots.helpers";
+import { obtenerSpots } from "@/services/spot.service";
+import { toast } from "react-hot-toast";
 
-// === CONFIGURACIÓN ICONO DEFAULT ===
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// === ÍCONO PERSONALIZADO ===
-const createCustomIcon = () => {
-  return new L.Icon({
+const createCustomIcon = () =>
+  new L.Icon({
     iconUrl: camaraIcon,
     iconRetinaUrl: camaraIcon,
     iconSize: [40, 40],
@@ -35,46 +33,36 @@ const createCustomIcon = () => {
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
     shadowSize: [41, 41],
   });
-};
 
-// === BOTÓN DE UBICACIÓN ===
+const createUserLocationIcon = () => new L.Icon.Default();
+
 function BotonUbicacion() {
   const map = useMap();
 
-  const handleClick = () => {
-    map.locate({ setView: true, maxZoom: 16 });
-  };
-
   useMapEvents({
     locationfound(e) {
-      L.marker(e.latlng).addTo(map).bindPopup("Estás aquí").openPopup();
+      map.setView(e.latlng, 16);
+      L.marker(e.latlng, { icon: createUserLocationIcon() }).addTo(map).bindPopup("Estás aquí").openPopup();
     },
   });
 
   return (
-    <button className="btn-ubicacion" onClick={handleClick}>
+    <button className="btn-ubicacion" onClick={() => map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true })}>
       <FaLocationArrow />
     </button>
   );
 }
 
-// === BOTONES DE ZOOM MODERNOS ===
 function ControlesZoom() {
   const map = useMap();
-
   return (
     <div className="zoom-buttons">
-      <button onClick={() => map.zoomIn()}>
-        <FaPlus />
-      </button>
-      <button onClick={() => map.zoomOut()}>
-        <FaMinus />
-      </button>
+      <button onClick={() => map.zoomIn()}><FaPlus /></button>
+      <button onClick={() => map.zoomOut()}><FaMinus /></button>
     </div>
   );
 }
 
-// === RESTRICCIÓN DEL MAPA A BOGOTÁ ===
 function MapBounds() {
   const map = useMapEvents({
     drag: () => {
@@ -85,21 +73,32 @@ function MapBounds() {
     },
   });
 
-  map.setMaxBounds([
-    [4.2, -74.6],
-    [5.1, -73.6],
-  ]);
-
+  map.setMaxBounds([[4.2, -74.6], [5.1, -73.6]]);
   map.setMinZoom(10);
   map.setMaxZoom(18);
 
   return null;
 }
 
-const MapaBogota = () => {
+const MapaBogota = ({ filtros = {} }) => {
+  const [spots, setSpots] = useState([]);
+  const [cargando, setCargando] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
-  const [spots, setSpots] = useState(() => getSpots());
+
+  useEffect(() => {
+    const cargar = async () => {
+      setCargando(true);
+      const resultado = await obtenerSpots(filtros);
+      if (resultado.exitoso) {
+        setSpots(resultado.datos);
+      } else {
+        toast.error(resultado.mensaje ?? "Error al cargar el mapa.");
+      }
+      setCargando(false);
+    };
+    cargar();
+  }, [JSON.stringify(filtros)]);
 
   const handleMarkerClick = (lugar) => {
     setLugarSeleccionado(lugar);
@@ -109,6 +108,12 @@ const MapaBogota = () => {
   return (
     <>
       <div className="mapa-wrapper">
+        {cargando && (
+          <div className="mapa-cargando">
+            <span>Cargando spots...</span>
+          </div>
+        )}
+
         <MapContainer
           center={[4.6529, -74.075]}
           zoom={12}
