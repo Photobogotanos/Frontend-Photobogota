@@ -61,7 +61,7 @@ export const getUsuarioAutenticado = () =>
  * @returns {Promise<{ data: { mensaje: string } }>}
  */
 export const postSolicitarRecuperacion = (body) =>
-    clienteApi.post("/auth/passwords/recovery-request", body);
+    clienteApi.post("/auth/recuperar-password", body);
 
 /**
  * Verificar el código recibido por correo y establecer la nueva contraseña.
@@ -69,4 +69,4 @@ export const postSolicitarRecuperacion = (body) =>
  * @returns {Promise<{ data: { mensaje: string } }>}
  */
 export const postVerificarCodigo = (body) =>
-    clienteApi.post("/auth/passwords/reset", body);
+    clienteApi.post("/auth/verificar-codigo", body);
