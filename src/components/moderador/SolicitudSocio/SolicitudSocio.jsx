@@ -5,6 +5,7 @@ import SolicitudCard from "./SolicitudCard";
 import SolicitudFiltros from "./SolicitudFiltros";
 import SolicitudModal from "./SolicitudModal";
 import ModalRechazo from "./ModalRechazo";
+import toast from "react-hot-toast";
 
 // Estos son datos de prueba mientras conectamos el backend real.
 // Cuando haya API, esto se reemplaza por una llamada a fetch o axios.
@@ -204,7 +205,7 @@ export default function SolicitudSocio() {
       type: "ACTUALIZAR_ESTADO",
       payload: { id: solicitudId, estado: "aprobada" },
     });
-    alert(`Solicitud ${solicitudId} aprobada`);
+    toast.success("Solicitud Aprobada")
   };
 
   // En vez de rechazar directo, abre el modal para pedir el motivo primero.
@@ -226,7 +227,7 @@ export default function SolicitudSocio() {
     });
     setSolicitudArechazar(null);
     setShowModalRechazo(false);
-    alert(`Solicitud ${solicitudArechazar} rechazada`);
+    toast.error("Solicitud rechazada")
   };
 
   // Agrega un comentario interno a la solicitud con autor y fecha automáticos.

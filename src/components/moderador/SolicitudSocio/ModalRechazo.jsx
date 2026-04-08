@@ -2,6 +2,7 @@ import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import toast from "react-hot-toast";
 
 // Este modal aparece cuando el moderador hace clic en "Rechazar".
 // En vez de rechazar directo, pedimos el motivo primero
@@ -13,7 +14,12 @@ export default function ModalRechazo({ show, onCerrar, onConfirmar }) {
   // rechazar sin dar una razón.
   const handleConfirmar = () => {
     if (!motivo.trim()) {
-      alert("Debes escribir un motivo de rechazo");
+      toast(
+        "Para poder confirmar un rechazo de solicitud, es necesario que des una razón valida",
+        {
+          duration: 6000,
+        }
+      );
       return;
     }
     onConfirmar(motivo);
@@ -28,9 +34,9 @@ export default function ModalRechazo({ show, onCerrar, onConfirmar }) {
   };
 
   return (
-    <Modal show={show} onHide={handleCerrar} centered>
+    <Modal show={show} onHide={handleCerrar}   centered className="solicitud-modal">
       <Modal.Header closeButton>
-        <Modal.Title>Motivo de rechazo</Modal.Title>
+        <Modal.Title className="modal-title-top">Motivo de rechazo</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form.Group>
@@ -41,7 +47,6 @@ export default function ModalRechazo({ show, onCerrar, onConfirmar }) {
             id="motivo-rechazo"
             as="textarea"
             rows={4}
-            placeholder="Ej: Documentación incompleta, RUT vencido..."
             value={motivo}
             onChange={(e) => setMotivo(e.target.value)}
           />
