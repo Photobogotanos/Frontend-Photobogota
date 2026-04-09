@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { getSpots } from "@/mocks/spots.helpers";
 
-// Configuración de iconos de Leaflet
+// Configuración de iconos de Leaflet (una sola vez)
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -13,9 +13,21 @@ L.Icon.Default.mergeOptions({
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-const spotsMapa = getSpots();
-
 export default function GuiaMapaSection({ onMarkerClick }) {
+    const spotsMapa = getSpots();
+
+    // Filtramos y formateamos los spots para que tengan "coord"
+    const spotsFormateados = spotsMapa
+        .filter(spot => {
+            const lat = parseFloat(spot.latitud);
+            const lng = parseFloat(spot.longitud);
+            return !isNaN(lat) && !isNaN(lng);
+        })
+        .map(spot => ({
+            ...spot,
+            coord: [parseFloat(spot.latitud), parseFloat(spot.longitud)]
+        }));
+
     return (
         <LazyMotion features={domAnimation}>
             <div className="guia-container pb-5">
@@ -95,12 +107,14 @@ export default function GuiaMapaSection({ onMarkerClick }) {
                                         url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
                                     />
 
-                                    {/* Un marcador por cada spot del mock */}
-                                    {spotsMapa.map((spot) => (
+                                    {/* Marcadores seguros */}
+                                    {spotsFormateados.map((spot) => (
                                         <Marker
                                             key={spot.id}
                                             position={spot.coord}
-                                            eventHandlers={{ click: onMarkerClick }}
+                                            eventHandlers={{
+                                                click: () => onMarkerClick?.(spot)
+                                            }}
                                         >
                                             <Popup>
                                                 <div className="popup-demo">

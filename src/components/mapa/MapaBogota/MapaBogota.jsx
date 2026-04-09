@@ -89,28 +89,35 @@ function MapBounds() {
 const MapaBogota = ({ filtros = {} }) => {
   const [spots, setSpots] = useState([]);
   const [cargando, setCargando] = useState(true);
-  const [usandoMock, setUsandoMock] = useState(false); // ✅ Declarado aquí
+  const [usandoMock, setUsandoMock] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
 
   useEffect(() => {
     const cargar = async () => {
       setCargando(true);
-      
+
       const resultado = await obtenerSpots(filtros);
 
       if (resultado.exitoso) {
+        // Filtro MUCHO más estricto
         const spotsValidos = resultado.datos.filter(spot => {
-          const tieneCoordenadas = spot.latitud && spot.longitud &&
-            !isNaN(spot.latitud) && !isNaN(spot.longitud);
-          return tieneCoordenadas;
+          const lat = parseFloat(spot.latitud);
+          const lng = parseFloat(spot.longitud);
+
+          return (
+            !isNaN(lat) &&
+            !isNaN(lng) &&
+            lat >= -90 && lat <= 90 &&
+            lng >= -180 && lng <= 180
+          );
         });
 
         const spotsFormateados = spotsValidos.map(spot => ({
           id: spot.id,
-          nombre: spot.nombre,
-          direccion: spot.direccion,
-          coord: [spot.latitud, spot.longitud],
+          nombre: spot.nombre || "Sin nombre",
+          direccion: spot.direccion || "",
+          coord: [parseFloat(spot.latitud), parseFloat(spot.longitud)], // ← Asegura números
           categoria: spot.categoria,
           localidad: spot.localidad,
           descripcion: spot.descripcion,
@@ -122,16 +129,19 @@ const MapaBogota = ({ filtros = {} }) => {
         }));
 
         setSpots(spotsFormateados);
-        setUsandoMock(resultado.esMock || false); // ✅ Ahora funciona
+        setUsandoMock(resultado.esMock || false);
 
         if (spotsValidos.length !== resultado.datos.length) {
-          toast.error(`${resultado.datos.length - spotsValidos.length} spots no se pudieron mostrar por falta de coordenadas`);
+          toast.error(
+            `${resultado.datos.length - spotsValidos.length} spots no se pudieron mostrar por coordenadas inválidas`
+          );
         }
       } else {
         toast.error(resultado.mensaje ?? "Error al cargar el mapa.");
         setSpots([]);
         setUsandoMock(false);
       }
+
       setCargando(false);
     };
 
@@ -168,22 +178,26 @@ const MapaBogota = ({ filtros = {} }) => {
           <BotonUbicacion />
           <ControlesZoom />
 
-          {spots.map((lugar) => (
-            <Marker
-              key={lugar.id}
-              position={lugar.coord}
-              icon={createCustomIcon()}
-              eventHandlers={{
-                click: () => handleMarkerClick(lugar),
-              }}
-            >
-              <Popup>
-                <strong>{lugar.nombre}</strong>
-                <br />
-                {lugar.direccion}
-              </Popup>
-            </Marker>
-          ))}
+          {spots.map((lugar) => {
+            if (!lugar.coord || lugar.coord.length !== 2) return null;
+
+            return (
+              <Marker
+                key={lugar.id}
+                position={lugar.coord}
+                icon={createCustomIcon()}
+                eventHandlers={{
+                  click: () => handleMarkerClick(lugar),
+                }}
+              >
+                <Popup>
+                  <strong>{lugar.nombre}</strong>
+                  <br />
+                  {lugar.direccion}
+                </Popup>
+              </Marker>
+            );
+          })}
         </MapContainer>
       </div>
 
