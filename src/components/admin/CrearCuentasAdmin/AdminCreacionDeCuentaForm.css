@@ -1,0 +1,397 @@
+/* AdminCreacionDeCuentaForm.css */
+
+/* Contenedor principal */
+.admin-creacion-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Formulario */
+.admin-creacion-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Sección de campos */
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Labels */
+.admin-creacion-container .form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+    display: block;
+}
+
+/* Inputs con fondo blanco */
+.admin-creacion-container .form-control {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.admin-creacion-container .form-control:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.1);
+    background: white;
+}
+
+.admin-creacion-container .form-control:hover:not(:focus) {
+    border-color: #cbd5e1;
+    background: white;
+}
+
+/* Selector de roles */
+.roles-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.role-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.role-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    background: white;
+}
+
+.role-card.selected {
+    border-color: var(--color-primary);
+    background: white;
+    box-shadow: 0 4px 16px rgba(128, 111, 190, 0.12);
+}
+
+.role-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    background: rgba(128, 111, 190, 0.1);
+}
+
+.role-info {
+    flex: 1;
+}
+
+.role-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 6px 0;
+    color: #1f2937;
+}
+
+.role-info p {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.role-radio {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.role-radio.checked {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.2);
+}
+
+.role-radio-inner {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+}
+
+.error-message-role {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 8px;
+    display: block;
+    font-weight: 500;
+}
+
+/* Contenedor de contraseña con ícono */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper .form-control {
+    padding-right: 45px;
+    background: white;
+}
+
+.password-toggle-icon {
+    position: absolute;
+    right: 14px;
+    cursor: pointer;
+    color: #9ca3af;
+    transition: color 0.3s ease;
+    font-size: 1.2rem;
+    background: white;
+    padding: 0;
+}
+
+.password-toggle-icon:hover {
+    color: var(--color-primary);
+}
+
+/* Indicadores de validación */
+.password-requirements {
+    margin-top: 12px;
+    padding: 12px 0 4px 0;
+    border-top: 1px solid #f3f4f6;
+}
+
+.requirement-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.7rem;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.requirement-item.valid {
+    color: #10b981;
+}
+
+.requirement-icon {
+    font-size: 0.7rem;
+}
+
+/* Botones con fondo blanco/sólido */
+.admin-form-buttons {
+    display: flex;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+    margin-top: 8px;
+}
+
+.admin-btn-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #5a4a9d 100%);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex: 1;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(128, 111, 190, 0.25);
+}
+
+.admin-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(128, 111, 190, 0.35);
+}
+
+.admin-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.admin-btn-secondary {
+    background: white;
+    color: #4b5563;
+    border: 1px solid #e5e7eb;
+    padding: 14px 28px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex: 1;
+    letter-spacing: 0.5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.admin-btn-secondary:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Header del formulario */
+.admin-account-header {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.admin-account-header h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.admin-account-header p {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+/* Overlay de carga */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* Layout responsivo */
+@media (max-width: 768px) {
+    .admin-creacion-container {
+        padding: 20px 16px;
+    }
+
+    .roles-selector-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .role-card {
+        padding: 14px;
+    }
+
+    .role-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.3rem;
+    }
+
+    .admin-form-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .admin-btn-primary,
+    .admin-btn-secondary {
+        padding: 12px 20px;
+    }
+
+    .admin-account-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Campos de tipo date */
+input[type="date"] {
+    color-scheme: light;
+    background: white;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Placeholder styling */
+.admin-creacion-container .form-control::placeholder {
+    color: #cbd5e1;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+/* Ajustes para el componente PersonalInfoFields */
+.info-fields-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+@media (max-width: 640px) {
+    .info-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}

@@ -16,8 +16,10 @@ import CreacionSpotPage from "@/pages/spots/CreacionSpotPage/CreacionSpotPage.js
 import EstadisticasSocioPage from "@/pages/socio/EstadisticasSocioPage/EstadisticasSocioPage.jsx";
 import Error404Page from "@/pages/common/Error404Page/Error404Page.jsx";
 import SocioPromocionesPage from "@/pages/socio/SocioPromocionesPage/SocioPromocionesPage.jsx";
-import CrearPromocionPage from "../pages/socio/SocioPromocionesPage/CrearPromocionPage";
-import ContrasenaNuevaPage from "../pages/auth/ContrasenaNuevaPage/ContrasenaNuevaPage";
+import CrearPromocionPage from "@/pages/socio/SocioPromocionesPage/CrearPromocionPage";
+import ContrasenaNuevaPage from "@/pages/auth/ContrasenaNuevaPage/ContrasenaNuevaPage";
+import CrearCuentasAdminPage from "@/pages/admin/CrearCuentasAdmin/CrearCuentasAdminPage";
+import AdminUsuariosPage from "@/pages/admin/AdminUsuarios/AdminUsuariosPage";
 
 const AppRouter = () => {
   return (
@@ -56,6 +58,8 @@ const AppRouter = () => {
         
         <Route path="/spot/:id" element={<SpotPage />} />
         <Route path="/estadisticas" element={<EstadisticasSocioPage />} />
+        <Route path="/admin/crear-cuentas" element={<CrearCuentasAdminPage />} />
+        <Route path="/admin/usuarios" element={<AdminUsuariosPage />} />
         
         {/* Ruta para página 404 */}
         <Route path="*" element={<Error404Page />} />
