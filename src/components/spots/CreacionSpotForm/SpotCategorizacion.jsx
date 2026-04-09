@@ -4,17 +4,38 @@ import Col from "react-bootstrap/Col";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 const categorias = [
-  { value: "naturaleza", label: "Naturaleza" },
-  { value: "urbano", label: "Urbano" },
-  { value: "historico", label: "Histórico" },
-  { value: "gastronomia", label: "Gastronomía" },
+  { value: "RESTAURANTE", label: "Restaurante" },
+  { value: "CAFETERIA", label: "Cafetería" },
+  { value: "PARQUE", label: "Parque" },
+  { value: "MUSEO", label: "Museo" },
+  { value: "MONUMENTO", label: "Monumento" },
+  { value: "CENTRO_COMERCIAL", label: "Centro Comercial" },
+  { value: "TEATRO", label: "Teatro" },
+  { value: "OTRO", label: "Otro" }
 ];
 
+
 const localidades = [
-  { value: "chapinero", label: "Chapinero" },
-  { value: "usaquen", label: "Usaquén" },
-  { value: "suba", label: "Suba" },
-  { value: "kennedy", label: "Kennedy" },
+  { value: "USAQUEN", label: "Usaquén" },
+  { value: "CHAPINERO", label: "Chapinero" },
+  { value: "SANTA_FE", label: "Santa Fe" },
+  { value: "SAN_CRISTOBAL", label: "San Cristóbal" },
+  { value: "USME", label: "Usme" },
+  { value: "TUNJUELITO", label: "Tunjuelito" },
+  { value: "BOSA", label: "Bosa" },
+  { value: "KENNEDY", label: "Kennedy" },
+  { value: "FONTIBON", label: "Fontibón" },
+  { value: "ENGATIVA", label: "Engativá" },
+  { value: "SUBA", label: "Subá" },
+  { value: "BARRIOS_UNIDOS", label: "Barrios Unidos" },
+  { value: "TEUSAQUILLO", label: "Teusaquillo" },
+  { value: "LOS_MARTIRES", label: "Los Mártires" },
+  { value: "ANTONIO_NARINO", label: "Antonio Nariño" },
+  { value: "PUENTE_ARANDA", label: "Puente Aranda" },
+  { value: "LA_CANDELARIA", label: "La Candelaria" },
+  { value: "RAFAEL_URIBE", label: "Rafael Uribe" },
+  { value: "CIUDAD_BOLIVAR", label: "Ciudad Bolívar" },
+  { value: "SUMAPAZ", label: "Sumapaz" }
 ];
 
 export default function SpotCategorizacion({ categoria, localidad, onCategoriaChange, onLocalidadChange }) {

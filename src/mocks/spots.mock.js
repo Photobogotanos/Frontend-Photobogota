@@ -9,7 +9,8 @@ export const SPOTS = [
   {
     id: 1,
     nombre: "Estación Aguas",
-    coord: [4.601, -74.069],
+    latitud: 4.601,
+    longitud: -74.069,
     direccion: "Carrera 3 #19-00, Bogotá",
     imagen: spotDemo1,
     rating: 4.4,
@@ -27,7 +28,8 @@ export const SPOTS = [
   {
     id: 2,
     nombre: "Monserrate",
-    coord: [4.605, -74.056],
+    latitud: 4.605,
+    longitud: -74.056,
     direccion: "Carrera 2 Este #21-48, Bogotá",
     imagen: spotDemo2,
     rating: 4.7,
@@ -45,7 +47,8 @@ export const SPOTS = [
   {
     id: 3,
     nombre: "Parque El Jazmín",
-    coord: [4.69, -74.086],
+    latitud: 4.69,
+    longitud: -74.086,
     direccion: "Barrio El Jazmín, Bogotá",
     imagen: spotDemo3,
     rating: 4.3,
@@ -63,7 +66,8 @@ export const SPOTS = [
   {
     id: 4,
     nombre: "Parque Timiza",
-    coord: [4.595, -74.155],
+    latitud: 4.595,
+    longitud: -74.155,
     direccion: "Localidad de Kennedy, Bogotá",
     imagen: spotDemo4,
     rating: 4.6,
@@ -81,7 +85,8 @@ export const SPOTS = [
   {
     id: 5,
     nombre: "Estación Minuto de Dios",
-    coord: [4.711, -74.071],
+    latitud: 4.711,
+    longitud: -74.071,
     direccion: "Av. Calle 80, Bogotá",
     imagen: spotDemo5,
     rating: 4.2,
