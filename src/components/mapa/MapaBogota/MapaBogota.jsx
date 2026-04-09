@@ -42,12 +42,18 @@ function BotonUbicacion() {
   useMapEvents({
     locationfound(e) {
       map.setView(e.latlng, 16);
-      L.marker(e.latlng, { icon: createUserLocationIcon() }).addTo(map).bindPopup("Estás aquí").openPopup();
+      L.marker(e.latlng, { icon: createUserLocationIcon() })
+        .addTo(map)
+        .bindPopup("Estás aquí")
+        .openPopup();
     },
   });
 
   return (
-    <button className="btn-ubicacion" onClick={() => map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true })}>
+    <button
+      className="btn-ubicacion"
+      onClick={() => map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true })}
+    >
       <FaLocationArrow />
     </button>
   );
@@ -83,20 +89,52 @@ function MapBounds() {
 const MapaBogota = ({ filtros = {} }) => {
   const [spots, setSpots] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [usandoMock, setUsandoMock] = useState(false); // ✅ Declarado aquí
   const [showModal, setShowModal] = useState(false);
   const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
 
   useEffect(() => {
     const cargar = async () => {
       setCargando(true);
+      
       const resultado = await obtenerSpots(filtros);
+
       if (resultado.exitoso) {
-        setSpots(resultado.datos);
+        const spotsValidos = resultado.datos.filter(spot => {
+          const tieneCoordenadas = spot.latitud && spot.longitud &&
+            !isNaN(spot.latitud) && !isNaN(spot.longitud);
+          return tieneCoordenadas;
+        });
+
+        const spotsFormateados = spotsValidos.map(spot => ({
+          id: spot.id,
+          nombre: spot.nombre,
+          direccion: spot.direccion,
+          coord: [spot.latitud, spot.longitud],
+          categoria: spot.categoria,
+          localidad: spot.localidad,
+          descripcion: spot.descripcion,
+          rating: spot.rating,
+          totalResenas: spot.totalResenas,
+          imagen: spot.imagen || spot.imagenes?.[0],
+          recomendacion: spot.recomendacion,
+          tipsFoto: spot.tipsFoto,
+        }));
+
+        setSpots(spotsFormateados);
+        setUsandoMock(resultado.esMock || false); // ✅ Ahora funciona
+
+        if (spotsValidos.length !== resultado.datos.length) {
+          toast.error(`${resultado.datos.length - spotsValidos.length} spots no se pudieron mostrar por falta de coordenadas`);
+        }
       } else {
         toast.error(resultado.mensaje ?? "Error al cargar el mapa.");
+        setSpots([]);
+        setUsandoMock(false);
       }
       setCargando(false);
     };
+
     cargar();
   }, [JSON.stringify(filtros)]);
 
@@ -153,6 +191,7 @@ const MapaBogota = ({ filtros = {} }) => {
         show={showModal}
         onHide={() => setShowModal(false)}
         lugar={lugarSeleccionado}
+        usandoMock={usandoMock}
       />
     </>
   );

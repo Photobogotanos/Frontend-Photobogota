@@ -1,104 +1,225 @@
 import { getSpots, getSpotById, postCrearSpot, postCrearResena } from "@/api/spotApi";
-import { obtenerEstadoServidor } from "@/utils/serverStatus";
+import { obtenerAccessToken, obtenerSesion } from "@/utils/sessionHelper";
 import { getSpots as getMockSpots, getSpotById as getMockSpotById } from "@/mocks/spots.helpers";
 
-const adaptarSpot = (dto) => ({
-  ...dto,
-  coord: [dto.latitud, dto.longitud],
-  resenas: dto.resenas ?? [],
-});
-
+/**
+ * Obtener todos los spots con filtros opcionales
+ * Con fallback a mocks si el servidor no está disponible
+ */
 export const obtenerSpots = async (filtros = {}) => {
-  const isOnline = await obtenerEstadoServidor();
-
-  if (!isOnline) {
-    let spots = getMockSpots();
-    if (filtros.categoria)
-      spots = spots.filter(s => s.categoria?.toLowerCase() === filtros.categoria.toLowerCase());
-    if (filtros.localidad)
-      spots = spots.filter(s => s.localidad?.toLowerCase() === filtros.localidad.toLowerCase());
-    return { exitoso: true, esDemo: true, datos: spots };
-  }
-
   try {
-    const { data } = await getSpots(filtros);
-    return { exitoso: true, esDemo: false, datos: data.map(adaptarSpot) };
-  } catch (error) {
-    return {
-      exitoso: false,
-      mensaje: error.response?.data?.mensaje ?? "Error al cargar los spots.",
-    };
-  }
-};
-
-export const obtenerSpotPorId = async (id) => {
-  const isOnline = await obtenerEstadoServidor();
-
-  if (!isOnline) {
-    const spot = getMockSpotById(id);
-    return spot
-      ? { exitoso: true, esDemo: true, datos: spot }
-      : { exitoso: false, mensaje: "Spot no encontrado." };
-  }
-
-  try {
-    const { data } = await getSpotById(id);
-    return { exitoso: true, esDemo: false, datos: adaptarSpot(data) };
-  } catch (error) {
-    const status = error.response?.status;
-    return {
-      exitoso: false,
-      mensaje: status === 404 ? "Spot no encontrado." : "Error al cargar el spot.",
-    };
-  }
-};
-
-export const crearSpot = async (formState) => {
-  const isOnline = await obtenerEstadoServidor();
-
-  if (!isOnline)
-    return { exitoso: false, esDemo: true, mensaje: "Debes estar conectado para publicar un spot." };
-
-  try {
-    const formData = new FormData();
-    formData.append("nombre", formState.nombreLugar);
-    formData.append("latitud", formState.latitud);
-    formData.append("longitud", formState.longitud);
-    formData.append("direccion", formState.direccion);
-    formData.append("categoria", formState.categoria?.value ?? "");
-    formData.append("localidad", formState.localidad?.value ?? "");
-    formData.append("descripcion", formState.descripcionImagen);
-    if (formState.recomendacion) formData.append("recomendacion", formState.recomendacion);
-    if (formState.tipsFoto) formData.append("tipsFoto", formState.tipsFoto);
+    console.log("Obteniendo spots con filtros:", filtros);
     
-    formState.imagenes.forEach((img) => formData.append("imagenes", img));
-
-    const { data } = await postCrearSpot(formData);
-    return { exitoso: true, datos: data };
+    const response = await getSpots(filtros);
+    
+    console.log("Spots obtenidos del backend:", response.data?.length || 0);
+    
+    return {
+      exitoso: true,
+      datos: response.data || [],
+      mensaje: "Spots obtenidos exitosamente",
+      esMock: false,
+    };
   } catch (error) {
-    const status = error.response?.status;
+    console.warn("Error al obtener spots del backend, usando mocks:", error);
+    
+    // Fallback a datos mock
+    let spotsMock = getMockSpots();
+    
+    // Aplicar filtros a los mocks
+    if (filtros.categoria) {
+      spotsMock = spotsMock.filter(spot => 
+        spot.categoria?.toLowerCase() === filtros.categoria.toLowerCase()
+      );
+    }
+    if (filtros.localidad) {
+      spotsMock = spotsMock.filter(spot => 
+        spot.localidad?.toLowerCase() === filtros.localidad.toLowerCase()
+      );
+    }
+    
+    console.log("Spots obtenidos de mocks:", spotsMock.length);
+    
+    return {
+      exitoso: true,
+      datos: spotsMock,
+      mensaje: "Mostrando datos de demostración",
+      esMock: true,
+    };
+  }
+};
+
+/**
+ * Obtener un spot por su ID
+ * Con fallback a mocks si el servidor no está disponible
+ */
+export const obtenerSpotPorId = async (id) => {
+  try {
+    console.log("Obteniendo spot por ID:", id);
+    
+    const response = await getSpotById(id);
+    
+    console.log("Spot obtenido del backend:", response.data?.nombre);
+    
+    return {
+      exitoso: true,
+      datos: response.data || null,
+      mensaje: "Spot obtenido exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    console.warn("Error al obtener spot del backend, usando mocks:", error);
+    
+    // Fallback a datos mock
+    const spotMock = getMockSpotById(id);
+    
+    if (spotMock) {
+      console.log("Spot obtenido de mocks:", spotMock.nombre);
+      return {
+        exitoso: true,
+        datos: spotMock,
+        mensaje: "Mostrando datos de demostración",
+        esMock: true,
+      };
+    }
+    
+    let mensaje = "Error al obtener el spot";
+    
+    if (error.response?.status === 404) {
+      mensaje = "El spot no existe";
+    } else if (error.response) {
+      mensaje = error.response.data?.message || error.response.data?.mensaje || mensaje;
+    } else if (error.request) {
+      mensaje = "No se pudo conectar con el servidor";
+    }
+    
+    return {
+      exitoso: false,
+      datos: null,
+      mensaje: mensaje,
+      esMock: false,
+    };
+  }
+};
+
+/**
+ * Crear un nuevo spot
+ * (No tiene fallback a mock porque requiere autenticación)
+ */
+export const crearSpot = async (spotData) => {
+  try {
+    const token = obtenerAccessToken();
+    
+    if (!token) {
+      const sesion = obtenerSesion();
+      console.log("Sesión activa:", sesion ? `Sí (${sesion.username})` : "No");
+      
+      if (!sesion) {
+        return {
+          exitoso: false,
+          datos: null,
+          mensaje: "No hay sesión activa. Por favor inicia sesión nuevamente.",
+        };
+      }
+      
       return {
         exitoso: false,
-        mensaje: status === 403
-          ? "Solo los miembros activos pueden publicar spots."
-          : error.response?.data?.mensaje ?? "Error al publicar el spot.",
+        datos: null,
+        mensaje: "No se encontró token de autenticación. Por favor inicia sesión nuevamente.",
       };
+    }
+
+    console.log("Enviando spot al backend:", spotData);
+
+    const response = await postCrearSpot(spotData);
+
+    console.log("Respuesta del backend:", response.data);
+
+    return {
+      exitoso: true,
+      datos: response.data,
+      mensaje: "Spot creado exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    console.error("Error en crearSpot:", error);
+
+    let mensaje = "Error al crear el spot";
+
+    if (error.response) {
+      mensaje = error.response.data?.message || error.response.data?.mensaje || mensaje;
+      console.error("Error response:", error.response.status, error.response.data);
+      
+      if (error.response.status === 401) {
+        mensaje = "Tu sesión ha expirado. Por favor inicia sesión nuevamente.";
+      } else if (error.response.status === 403) {
+        mensaje = "No tienes permiso para crear spots.";
+      } else if (error.response.status === 400) {
+        mensaje = error.response.data?.message || "Datos inválidos. Verifica todos los campos.";
+      }
+    } else if (error.request) {
+      mensaje = "No se pudo conectar con el servidor. Verifica tu conexión.";
+    }
+
+    return {
+      exitoso: false,
+      datos: null,
+      mensaje: mensaje,
+      esMock: false,
+    };
   }
 };
 
-export const agregarResena = async (spotId, resena) => {
-  const isOnline = await obtenerEstadoServidor();
-
-  if (!isOnline)
-    return { exitoso: false, esDemo: true, mensaje: "Debes estar conectado para dejar una reseña." };
-
+/**
+ * Agregar una reseña a un spot
+ * (No tiene fallback a mock porque requiere autenticación)
+ */
+export const agregarResena = async (spotId, resenaData) => {
   try {
-    const { data } = await postCrearResena(spotId, resena);
-    return { exitoso: true, datos: adaptarSpot(data) };
+    const token = obtenerAccessToken();
+    
+    if (!token) {
+      return {
+        exitoso: false,
+        datos: null,
+        mensaje: "Debes iniciar sesión para agregar una reseña",
+      };
+    }
+
+    console.log("Agregando reseña al spot:", spotId, resenaData);
+
+    const response = await postCrearResena(spotId, resenaData);
+
+    console.log("Respuesta del backend:", response.data);
+
+    return {
+      exitoso: true,
+      datos: response.data,
+      mensaje: "Reseña agregada exitosamente",
+      esMock: false,
+    };
   } catch (error) {
+    console.error("Error al agregar reseña:", error);
+
+    let mensaje = "Error al agregar la reseña";
+
+    if (error.response) {
+      mensaje = error.response.data?.message || error.response.data?.mensaje || mensaje;
+      
+      if (error.response.status === 401) {
+        mensaje = "Tu sesión ha expirado. Por favor inicia sesión nuevamente.";
+      } else if (error.response.status === 404) {
+        mensaje = "El spot no existe";
+      }
+    } else if (error.request) {
+      mensaje = "No se pudo conectar con el servidor";
+    }
+
     return {
       exitoso: false,
-      mensaje: error.response?.data?.mensaje ?? "Error al enviar la reseña.",
+      datos: null,
+      mensaje: mensaje,
+      esMock: false,
     };
   }
 };
