@@ -137,9 +137,9 @@ export default function MenuItems({ rol, cerrar }) {
           <SidebarLink
             icon={<FaUserPlus />}
             texto="Crear Cuentas"
-            to="/crear-cuentas"
+            to="/admin/usuarios"
             onClick={cerrar}
-            activo={esRutaActiva("/crear-cuentas")}
+            activo={esRutaActiva("/admin/usuarios")}
           />
           <SidebarLink
             icon={<FaCreditCard />}
