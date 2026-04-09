@@ -51,8 +51,8 @@
 }
 
 .filtro-limpiar {
-  color: var(--color-light);
-  background: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-bg);
   border: none;
   font-size: 15px;
   font-weight: bold;
@@ -63,7 +63,7 @@
 }
 
 .filtro-limpiar:hover {
-  background: var(--color-hover);
+  background: var(--color-secondary);
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }

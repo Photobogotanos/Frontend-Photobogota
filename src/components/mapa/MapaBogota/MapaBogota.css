@@ -1,12 +1,13 @@
 .btn-ubicacion {
+  color: white;
   position: absolute;
   bottom: 90px;
   right: 15px;
   z-index: 500;
-  background: white;
+  background: var(--color-primary);
   border: none;
   padding: 10px;
-  border-radius: 12px;
+  border-radius: 15px;
   font-size: 18px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
   cursor: pointer;
@@ -14,7 +15,9 @@
 }
 
 .btn-ubicacion:hover {
-  background: #eaeaea;
+  color: black;
+  background: var(--color-hover);
+  transform: scale(1.05);
 }
 
 .zoom-buttons {
@@ -28,7 +31,8 @@
 }
 
 .zoom-buttons button {
-  background: white;
+  color: white;
+  background: var(--color-primary);
   border: none;
   padding: 10px;
   border-radius: 12px;
@@ -39,7 +43,9 @@
 }
 
 .zoom-buttons button:hover {
-  background: #f0f0f0;
+  color: black;
+  transform: scale(1.05);
+  background: var(--color-hover);
 }
 
 .mapa-bogota {
