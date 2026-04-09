@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Offcanvas } from "react-bootstrap";
 import { FaSignOutAlt } from "react-icons/fa";
 import SidebarHeader from "./SidebarHeader";
@@ -10,6 +10,13 @@ import { obtenerSesion } from "@/utils/sessionHelper";
 
 export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
   const [usuario, setUsuario] = useState(null);
+
+  // Limpiar usuario cuando se cierra el menú
+  useEffect(() => {
+    if (!mostrar) {
+      setUsuario(null);
+    }
+  }, [mostrar]);
 
   const handleShow = () => {
     const datosUsuario = obtenerSesion();
@@ -27,6 +34,12 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
   // Normalizar rol a mayúsculas para comparaciones consistentes
   const rol = (usuario?.rol || "MIEMBRO").toUpperCase();
 
+  // Manejar cierre de sesión
+  const handleCerrarSesion = async () => {
+    await cerrarSesion();
+    cerrar(); // Cerrar el menú lateral
+  };
+
   return (
     <Offcanvas
       show={mostrar}
@@ -34,6 +47,8 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
       onShow={handleShow}
       placement="start"
       className="sidebar-moderna"
+      backdrop={true}
+      keyboard={true}
     >
       <SidebarHeader />
 
@@ -48,7 +63,7 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
             <SidebarLink
               icon={<FaSignOutAlt />}
               texto="Cerrar Sesión"
-              onClick={cerrarSesion}
+              onClick={handleCerrarSesion}
               esBoton={true}
               className="sidebar-logout"
             />
