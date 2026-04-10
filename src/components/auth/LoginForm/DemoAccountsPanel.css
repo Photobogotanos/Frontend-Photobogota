@@ -1,0 +1,437 @@
+/* DemoAccountsPanel.css - Versión ultra compacta con colores por rol */
+.demo-accounts-modern {
+    width: 100%;
+    margin: 0.5rem 0;
+}
+
+/* Botón toggle moderno compacto */
+.demo-toggle-modern {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 16px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+}
+
+.demo-toggle-modern:hover {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0.08) 100%);
+    border-color: rgba(139, 92, 246, 0.4);
+    transform: translateY(-1px);
+}
+
+.demo-toggle-modern.open {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0.08) 100%);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.demo-toggle-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.demo-toggle-icon {
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.demo-toggle-text {
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #1e293b;
+}
+
+.demo-toggle-badge {
+    font-size: 0.55rem;
+    font-weight: 600;
+    padding: 0.1rem 0.45rem;
+    background: #ef4444;
+    color: white;
+    border-radius: 20px;
+}
+
+.demo-toggle-arrow {
+    color: #64748b;
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+}
+
+/* Panel colapsable */
+.demo-panel-modern {
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.demo-panel-modern.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+}
+
+.demo-panel-modern.expanded {
+    max-height: 480px;
+    opacity: 1;
+    padding: 0.75rem;
+}
+
+/* Header del panel */
+.demo-panel-header {
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.demo-panel-description {
+    font-size: 0.7rem;
+    color: #64748b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.info-icon {
+    font-size: 0.7rem;
+    color: #8b5cf6;
+}
+
+/* Grid de tarjetas - 2 columnas fijas */
+.demo-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+}
+
+/* Tarjeta moderna ultra compacta */
+.demo-card-modern {
+    position: relative;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.demo-card-modern:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Borde superior de color según rol en hover */
+.demo-card-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--rol-color);
+    border-radius: 12px 12px 0 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.demo-card-modern:hover::before {
+    opacity: 1;
+}
+
+.demo-card-modern.selected {
+    border-color: var(--rol-color);
+    background: var(--rol-bg-light);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.demo-card-modern.selected::before {
+    opacity: 1;
+}
+
+/* Header de tarjeta compacto */
+.demo-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.demo-card-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: white;
+    background: var(--rol-color);
+}
+
+.demo-card-role {
+    font-size: 0.55rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    background: var(--rol-bg-light);
+    color: var(--rol-color);
+}
+
+/* Cuerpo de tarjeta compacto */
+.demo-card-body {
+    margin-bottom: 0.5rem;
+}
+
+.demo-card-username {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.3rem;
+    padding: 0.25rem 0.4rem;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.demo-card-username .username-icon {
+    color: #64748b;
+    font-size: 0.65rem;
+}
+
+.demo-card-password {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: #475569;
+    padding: 0.25rem 0.4rem;
+    background: #f1f5f9;
+    border-radius: 8px;
+    font-family: monospace;
+}
+
+.demo-card-password .password-icon {
+    color: #64748b;
+    font-size: 0.6rem;
+}
+
+/* Footer de tarjeta compacto */
+.demo-card-footer {
+    padding-top: 0.3rem;
+}
+
+.demo-card-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 500;
+    padding: 0.3rem;
+    border-radius: 20px;
+    background: #f1f5f9;
+    color: #475569;
+    transition: all 0.2s ease;
+}
+
+.demo-card-modern:hover .demo-card-action {
+    background: var(--rol-color);
+    color: white;
+}
+
+.demo-card-modern.selected .demo-card-action {
+    background: var(--rol-color);
+    color: white;
+}
+
+.copy-icon,
+.check-icon {
+    font-size: 0.6rem;
+}
+
+.check-icon {
+    animation: popIn 0.2s ease;
+}
+
+/* Badge de selección */
+.demo-card-selected-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    color: var(--rol-color);
+    font-size: 0.75rem;
+    animation: bounceIn 0.3s ease;
+}
+
+/* Footer del panel */
+.demo-panel-footer {
+    margin-top: 0.6rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.demo-footer-note {
+    font-size: 0.6rem;
+    color: #94a3b8;
+    text-align: center;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+.light-icon {
+    font-size: 0.55rem;
+    color: #f59e0b;
+}
+
+/* Animaciones */
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .demo-cards-grid {
+        gap: 0.5rem;
+    }
+
+    .demo-panel-modern.expanded {
+        padding: 0.6rem;
+    }
+
+    .demo-toggle-modern {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .demo-toggle-text {
+        font-size: 0.75rem;
+    }
+
+    .demo-card-username {
+        font-size: 0.7rem;
+    }
+
+    .demo-card-password {
+        font-size: 0.6rem;
+    }
+
+    .demo-card-avatar {
+        width: 26px;
+        height: 26px;
+        font-size: 0.8rem;
+    }
+
+    .demo-card-action {
+        font-size: 0.6rem;
+        padding: 0.25rem;
+    }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    .demo-toggle-modern {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    .demo-toggle-modern:hover {
+        background: #0f172a;
+        border-color: #475569;
+    }
+
+    .demo-toggle-text {
+        color: #e2e8f0;
+    }
+
+    .demo-toggle-icon,
+    .demo-toggle-arrow {
+        color: #94a3b8;
+    }
+
+    .demo-panel-modern {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    .demo-panel-header {
+        border-bottom-color: #334155;
+    }
+
+    .demo-panel-description {
+        color: #94a3b8;
+    }
+
+    .demo-card-modern {
+        background: #0f172a;
+        border-color: #334155;
+    }
+
+    .demo-card-modern:hover {
+        background: #1e293b;
+    }
+
+    .demo-card-username {
+        color: #e2e8f0;
+        background: #1e293b;
+    }
+
+    .demo-card-password {
+        background: #0f172a;
+        color: #94a3b8;
+    }
+
+    .demo-card-action {
+        background: #1e293b;
+        color: #94a3b8;
+    }
+
+    .demo-panel-footer {
+        border-top-color: #334155;
+    }
+
+    .demo-footer-note {
+        color: #64748b;
+    }
+}

@@ -15,6 +15,7 @@ import {
   suscribirEstadoServidor,
   getCurrentServerStatus
 } from "@/utils/serverStatus";
+import DemoAccountsPanel from "./DemoAccountsPanel";
 
 const CREDENCIALES_DEMO = {
   socio: "socio123",
@@ -320,59 +321,22 @@ export default function LoginForm() {
 
         {/* Panel de cuentas demo — solo visible si el servidor está offline */}
         {mostrarPanelDemo && (
-          <div className="demo-accounts-wrapper mt-4">
-            <button
-              type="button"
-              className="demo-toggle-btn"
-              onClick={() => dispatch({ type: "TOGGLE_MOSTRAR_CUENTAS_DEMO" })}
-            >
-              <span className="demo-toggle-icon">
-                {state.mostrarCuentasDemo ? "▲" : "▼"}
-              </span>
-              Cuentas demo disponibles
-            </button>
-
-            <div
-              className={`demo-panel ${state.mostrarCuentasDemo ? "demo-panel--open" : ""
-                }`}
-            >
-              <p className="demo-panel-info">
-                Haz clic en una cuenta para autocompletar las credenciales.
-              </p>
-
-              <div className="demo-cards">
-                {cuentasEspeciales.map((u) => {
-                  const etiqueta = etiquetaRol(u.rol);
-                  return (
-                    <button
-                      key={u.id}
-                      type="button"
-                      className={`demo-card ${state.copiado === u.nombreUsuario
-                          ? "demo-card--copiado"
-                          : ""
-                        }`}
-                      onClick={() => copiarCredenciales(u.nombreUsuario)}
-                      style={{ "--rol-color": etiqueta.color }}
-                    >
-                      <span
-                        className="demo-card-badge"
-                        style={{ backgroundColor: etiqueta.color }}
-                      >
-                        {etiqueta.texto}
-                      </span>
-                      <span className="demo-card-user">@{u.nombreUsuario}</span>
-                      <span className="demo-card-pass">
-                        {CREDENCIALES_DEMO[u.nombreUsuario] ?? "••••••••"}
-                      </span>
-                      {state.copiado === u.nombreUsuario && (
-                        <span className="demo-card-check">✓ Listo</span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+          <DemoAccountsPanel
+            cuentas={cuentasEspeciales}
+            onSelectAccount={(nombreUsuario, contrasena) => {
+              dispatch({
+                type: "SET_FIELD",
+                payload: { field: "usuarioOCorreo", value: nombreUsuario },
+              });
+              dispatch({
+                type: "SET_FIELD",
+                payload: { field: "contrasena", value: contrasena },
+              });
+              dispatch({ type: "SET_COPIADO", payload: nombreUsuario });
+              setTimeout(() => dispatch({ type: "CLEAR_COPIADO" }), 2000);
+            }}
+            selectedAccount={state.copiado}
+          />
         )}
 
         <div className="solicitud-form-submit mt-4">
