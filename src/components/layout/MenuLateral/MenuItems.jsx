@@ -128,13 +128,6 @@ export default function MenuItems({ rol, cerrar }) {
             activo={esRutaActiva("/generar-reportes")}
           />
           <SidebarLink
-            icon={<FaFileAlt />}
-            texto="Reportes Escalados"
-            to="/reportes-escalados"
-            onClick={cerrar}
-            activo={esRutaActiva("/reportes-escalados")}
-          />
-          <SidebarLink
             icon={<FaUserPlus />}
             texto="Crear Cuentas"
             to="/admin/usuarios"
@@ -147,13 +140,6 @@ export default function MenuItems({ rol, cerrar }) {
             to="/gestion-pagos"
             onClick={cerrar}
             activo={esRutaActiva("/gestion-pagos")}
-          />
-          <SidebarLink
-            icon={<FaCog />}
-            texto="Configurar Parámetros"
-            to="/configurar-parametros"
-            onClick={cerrar}
-            activo={esRutaActiva("/configurar-parametros")}
           />
           <SidebarLink
             icon={<FaBell />}
