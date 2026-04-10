@@ -74,4 +74,25 @@
   .solicitud-header-title {
     font-size: 1.6rem;
   }
+  
+  .solicitud-header-subtitle {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+  }
+  
+  .solicitud-header-desc {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .solicitud-header {
+    margin-bottom: 1rem;
+    text-align: center;
+    align-items: center;
+  }
+  
+  .solicitud-header-title {
+    font-size: 1.4rem;
+  }
 }

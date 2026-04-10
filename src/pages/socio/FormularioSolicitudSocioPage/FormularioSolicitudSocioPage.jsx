@@ -28,8 +28,8 @@ const FormularioSolicitudSocioPage = () => {
   }, [navigate]);
 
   return (
-    <div className="formulario-solicitud-socio-page mt-5">
-      <Container className="mt-3">
+    <div className="formulario-solicitud-socio-page">
+      <Container className=" ">
         <SolicitudSocioForm />
       </Container>
     </div>

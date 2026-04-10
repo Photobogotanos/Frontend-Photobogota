@@ -50,12 +50,14 @@
 .modal-terminos-seccion-texto {
   color: #6c757d;
   line-height: 1.7;
+  font-size: 14px;
 }
 
 .modal-terminos-lista {
   color: #6c757d;
   line-height: 1.8;
   margin-top: 10px;
+  font-size: 14px;
 }
 
 .modal-terminos-footer {
@@ -123,4 +125,43 @@
 
 .modal-terminos-btn-aceptar:active {
   transform: translateY(0);
+}
+
+@media (max-width: 576px) {
+  .modal-terminos-header {
+    padding: 15px 20px;
+  }
+  
+  .modal-terminos-titulo {
+    font-size: 1.2rem;
+  }
+  
+  .modal-terminos-body {
+    padding: 15px;
+    max-height: 55vh;
+  }
+  
+  .modal-terminos-contenido {
+    padding: 15px;
+  }
+  
+  .modal-terminos-seccion-titulo {
+    font-size: 15px;
+  }
+  
+  .modal-terminos-seccion-texto,
+  .modal-terminos-lista {
+    font-size: 13px;
+  }
+  
+  .modal-terminos-footer-botones {
+    padding: 15px;
+    flex-direction: column;
+  }
+  
+  .modal-terminos-btn-cerrar,
+  .modal-terminos-btn-aceptar {
+    width: 100%;
+    justify-content: center;
+  }
 }

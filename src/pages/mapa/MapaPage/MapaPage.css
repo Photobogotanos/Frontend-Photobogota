@@ -13,3 +13,15 @@
   width: 100%;
   height: 100%;  
 }
+
+@media (max-width: 768px) {
+  .mapa-page {
+    margin-top: 58px;
+  }
+}
+
+@media (max-width: 576px) {
+  .mapa-page {
+    margin-top: 50px;
+  }
+}
