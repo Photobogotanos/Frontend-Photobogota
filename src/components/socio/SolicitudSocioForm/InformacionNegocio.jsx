@@ -10,8 +10,6 @@ import "./InformacionNegocio.css";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormData }) => {
-    console.log("categoriaOptions:", categoriaOptions); // 👈 agrega esto
-    console.log("formData.categoria:", formData.categoria); // 👈 y esto
   return (
     <>
       <Form.Group className="mb-3">
