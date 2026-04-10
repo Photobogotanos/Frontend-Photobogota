@@ -20,6 +20,7 @@ import CrearPromocionPage from "@/pages/socio/SocioPromocionesPage/CrearPromocio
 import ContrasenaNuevaPage from "@/pages/auth/ContrasenaNuevaPage/ContrasenaNuevaPage";
 import CrearCuentasAdminPage from "@/pages/admin/CrearCuentasAdmin/CrearCuentasAdminPage";
 import AdminUsuariosPage from "@/pages/admin/AdminUsuarios/AdminUsuariosPage";
+import AdminLogsPage from "@/pages/admin/AdminLogs/AdminLogsPage";
 
 const AppRouter = () => {
   return (
@@ -58,8 +59,11 @@ const AppRouter = () => {
         
         <Route path="/spot/:id" element={<SpotPage />} />
         <Route path="/estadisticas" element={<EstadisticasSocioPage />} />
+
+        {/* Rutas para Administración - Admin */}
         <Route path="/admin/crear-cuentas" element={<CrearCuentasAdminPage />} />
         <Route path="/admin/usuarios" element={<AdminUsuariosPage />} />
+        <Route path="/admin/ver-logs" element={<AdminLogsPage />} />
         
         {/* Ruta para página 404 */}
         <Route path="*" element={<Error404Page />} />

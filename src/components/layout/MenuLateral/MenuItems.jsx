@@ -165,9 +165,9 @@ export default function MenuItems({ rol, cerrar }) {
           <SidebarLink
             icon={<FaFileAlt />}
             texto="Ver Logs"
-            to="/ver-logs"
+            to="/admin/ver-logs"
             onClick={cerrar}
-            activo={esRutaActiva("/ver-logs")}
+            activo={esRutaActiva("/admin/ver-logs")}
           />
         </>
       )}
