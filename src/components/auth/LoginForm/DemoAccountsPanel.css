@@ -369,7 +369,7 @@
     }
 }
 
-/* Modo oscuro */
+/* Modo oscuro 
 @media (prefers-color-scheme: dark) {
     .demo-toggle-modern {
         background: #1e293b;
@@ -435,3 +435,4 @@
         color: #64748b;
     }
 }
+*/
