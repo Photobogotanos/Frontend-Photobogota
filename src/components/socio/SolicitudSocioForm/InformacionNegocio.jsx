@@ -10,6 +10,8 @@ import "./InformacionNegocio.css";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormData }) => {
+    console.log("categoriaOptions:", categoriaOptions); // 👈 agrega esto
+    console.log("formData.categoria:", formData.categoria); // 👈 y esto
   return (
     <>
       <Form.Group className="mb-3">
@@ -81,20 +83,16 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
           <RequiredMark />
         </Form.Label>
         <Select
-          options={categoriaOptions}
-          value={
-            categoriaOptions.find(
-              (o) => o.value === formData.categoria
-            ) || null
-          }
-          onChange={(selected) =>
-            handleChange({
-              target: { name: "categoria", value: selected?.value || "" },
-            })
-          }
-          placeholder="Seleccione una categoría"
-          classNamePrefix="react-select"
-          className="react-select-container-solicitud"
+        options={categoriaOptions || []}
+        value={(categoriaOptions || []).find((o) => o.value === formData.categoria) || null}
+        onChange={(selected) =>
+          handleChange({
+            target: { name: "categoria", value: selected?.value || "" },
+          })
+        }
+        placeholder="Seleccione una categoria"
+        classNamePrefix="react-select"
+        className="react-select-container-solicitud"
         />
       </Form.Group>
 

@@ -1,31 +1,9 @@
 import { useState } from "react";
 import Select from "react-select";
 import "./FiltrosMapa.css";
+import { localidadOptions } from "../../../mocks/localidades.mock";
+import { categoriasOptions } from "../../../mocks/categoria.mock";
 
-const categoriasOptions = [
-  { value: "todas", label: "Todas las categorías" },
-  { value: "Atractivo turístico", label: "Atractivo turístico" },
-  { value: "Parque", label: "Parque" },
-  { value: "Estación TransMilenio", label: "Estación TransMilenio" },
-  { value: "Naturaleza", label: "Naturaleza" },
-  { value: "Histórico", label: "Histórico" },
-  { value: "Urbano", label: "Urbano" },
-  { value: "Gastronomía", label: "Gastronomía" },
-];
-
-const localidadOptions = [
-  { value: "todas", label: "Todas las localidades" },
-  { value: "Usaquén", label: "Usaquén" },
-  { value: "Chapinero", label: "Chapinero" },
-  { value: "Santa Fe", label: "Santa Fe" },
-  { value: "La Candelaria", label: "La Candelaria" },
-  { value: "Kennedy", label: "Kennedy" },
-  { value: "Engativá", label: "Engativá" },
-  { value: "Suba", label: "Suba" },
-  { value: "Teusaquillo", label: "Teusaquillo" },
-  { value: "Barrios Unidos", label: "Barrios Unidos" },
-  { value: "Fontibón", label: "Fontibón" },
-];
 
 const FiltrosMapa = ({ onFiltrar }) => {
   const [categoria, setCategoria] = useState(null);

@@ -1,4 +1,5 @@
 import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
@@ -11,7 +12,7 @@ import { PiCityDuotone } from "react-icons/pi";
 import "./InformacionPersonal.css";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
-const InformacionPersonal = ({ formData, handleChange }) => {
+const InformacionPersonal = ({ formData, handleChange, localidadOptions}) => {
   return (
     <>
       <Form.Group className="mb-3">
@@ -123,13 +124,17 @@ const InformacionPersonal = ({ formData, handleChange }) => {
           Localidad <PiCityDuotone />
           <RequiredMark />
         </Form.Label>
-        <Form.Control
-          id="localidad"
-          name="localidad"
-          value={formData.localidad}
-          onChange={handleChange}
-          className="input-solicitud-socio rounded-pill"
-          required
+        <Select
+        options={localidadOptions || []}
+        value={(localidadOptions || []).find((o) => o.value === formData.localidad) || null}
+        onChange={(selected) =>
+          handleChange({
+            target: { name: "localidad", value: selected?.value || "" },
+          })
+        }
+        placeholder="Seleccione una localidad"
+        classNamePrefix="react-select"
+        className="react-select-container-solicitud"
         />
       </Form.Group>
     </>
