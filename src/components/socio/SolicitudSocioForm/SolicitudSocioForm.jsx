@@ -28,7 +28,7 @@ import { crearAspirante } from "@/services/aspirante.service";
 import "./SolicitudSocioForm.css";
 
 // Constantes
-const CATEGORIAS = ["Restaurante", "Cafetería", "Comercio", "Empresa", "Otro"];
+
 
 const INITIAL_FORM_STATE = {
   nombres: "",
@@ -165,6 +165,7 @@ const SolicitudSocioForm = () => {
             <InformacionPersonal
               formData={formData}
               handleChange={handleChange}
+              localidadOptions={localidadOptions}
             />
           </Col>
 
