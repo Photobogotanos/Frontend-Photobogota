@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
@@ -6,6 +6,9 @@ import Col from "react-bootstrap/Col";
 import Swal from "sweetalert2";
 import { IoIosSend } from "react-icons/io";
 import { FaSearch } from "react-icons/fa";
+
+import { getCategoriasActivas } from "../../../api/categoriaApi";
+import { getLocalidadesActivas } from "../../../api/localidadApi";
 
 // Importar componentes
 import HeaderSolicitudSocio from "./HeaderSolicitudSocio";
@@ -49,11 +52,13 @@ const SolicitudSocioForm = () => {
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [showModal, setShowModal] = useState(false);
   const [cargando, setCargando] = useState(false);
+  const [categoriaOptions, setCategoriaOptions] = useState([]);
+  const [localidadOptions, setLocalidadOptions] = useState([]);
 
-  const categoriaOptions = CATEGORIAS.map((cat) => ({
-    value: cat,
-    label: cat,
-  }));
+  useEffect(() => {
+    getCategoriasActivas().then(setCategoriaOptions);
+    getLocalidadesActivas().then(setLocalidadOptions);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({

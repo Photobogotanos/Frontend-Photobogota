@@ -1,44 +1,20 @@
+import { useState, useEffect } from "react";
 import Select from "react-select";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
-
-const categorias = [
-  { value: "RESTAURANTE", label: "Restaurante" },
-  { value: "CAFETERIA", label: "Cafetería" },
-  { value: "PARQUE", label: "Parque" },
-  { value: "MUSEO", label: "Museo" },
-  { value: "MONUMENTO", label: "Monumento" },
-  { value: "CENTRO_COMERCIAL", label: "Centro Comercial" },
-  { value: "TEATRO", label: "Teatro" },
-  { value: "OTRO", label: "Otro" }
-];
-
-
-const localidades = [
-  { value: "USAQUEN", label: "Usaquén" },
-  { value: "CHAPINERO", label: "Chapinero" },
-  { value: "SANTA_FE", label: "Santa Fe" },
-  { value: "SAN_CRISTOBAL", label: "San Cristóbal" },
-  { value: "USME", label: "Usme" },
-  { value: "TUNJUELITO", label: "Tunjuelito" },
-  { value: "BOSA", label: "Bosa" },
-  { value: "KENNEDY", label: "Kennedy" },
-  { value: "FONTIBON", label: "Fontibón" },
-  { value: "ENGATIVA", label: "Engativá" },
-  { value: "SUBA", label: "Subá" },
-  { value: "BARRIOS_UNIDOS", label: "Barrios Unidos" },
-  { value: "TEUSAQUILLO", label: "Teusaquillo" },
-  { value: "LOS_MARTIRES", label: "Los Mártires" },
-  { value: "ANTONIO_NARINO", label: "Antonio Nariño" },
-  { value: "PUENTE_ARANDA", label: "Puente Aranda" },
-  { value: "LA_CANDELARIA", label: "La Candelaria" },
-  { value: "RAFAEL_URIBE", label: "Rafael Uribe" },
-  { value: "CIUDAD_BOLIVAR", label: "Ciudad Bolívar" },
-  { value: "SUMAPAZ", label: "Sumapaz" }
-];
+import { getCategoriasActivas } from "@/api/categoriaApi";
+import { getLocalidadesActivas } from "@/api/localidadApi";
 
 export default function SpotCategorizacion({ categoria, localidad, onCategoriaChange, onLocalidadChange }) {
+  const [categoriaOptions, setCategoriaOptions] = useState([]);
+  const [localidadOptions, setLocalidadOptions] = useState([]);
+
+  useEffect(() => {
+    getCategoriasActivas().then(setCategoriaOptions);
+    getLocalidadesActivas().then(setLocalidadOptions);
+  }, []);
+
   return (
     <Row className="g-3 mb-3">
       <Col xs={12} md={6}>
@@ -47,7 +23,7 @@ export default function SpotCategorizacion({ categoria, localidad, onCategoriaCh
         </label>
         <Select
           inputId="categoria-spot"
-          options={categorias}
+          options={categoriaOptions}
           classNamePrefix="spot-select"
           value={categoria}
           onChange={onCategoriaChange}
@@ -60,7 +36,7 @@ export default function SpotCategorizacion({ categoria, localidad, onCategoriaCh
         </label>
         <Select
           inputId="localidad-spot"
-          options={localidades}
+          options={localidadOptions}
           classNamePrefix="spot-select"
           value={localidad}
           onChange={onLocalidadChange}
