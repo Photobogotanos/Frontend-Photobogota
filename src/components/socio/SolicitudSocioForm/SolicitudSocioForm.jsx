@@ -7,6 +7,9 @@ import Swal from "sweetalert2";
 import { IoIosSend } from "react-icons/io";
 import { FaSearch } from "react-icons/fa";
 
+import { categoriasOptions } from "../../../mocks/categoria.mock";
+import { localidadOptions } from "../../../mocks/localidades.mock";
+
 // Importar componentes
 import HeaderSolicitudSocio from "./HeaderSolicitudSocio";
 import InformacionPersonal from "./InformacionPersonal";
@@ -25,7 +28,7 @@ import { crearAspirante } from "@/services/aspirante.service";
 import "./SolicitudSocioForm.css";
 
 // Constantes
-const CATEGORIAS = ["Restaurante", "Cafetería", "Comercio", "Empresa", "Otro"];
+
 
 const INITIAL_FORM_STATE = {
   nombres: "",
@@ -50,10 +53,7 @@ const SolicitudSocioForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [cargando, setCargando] = useState(false);
 
-  const categoriaOptions = CATEGORIAS.map((cat) => ({
-    value: cat,
-    label: cat,
-  }));
+  const categoriaOptions = categoriasOptions;
 
   const handleChange = (e) => {
     setFormData({
@@ -160,6 +160,7 @@ const SolicitudSocioForm = () => {
             <InformacionPersonal
               formData={formData}
               handleChange={handleChange}
+              localidadOptions={localidadOptions}
             />
           </Col>
 

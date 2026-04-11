@@ -81,20 +81,16 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
           <RequiredMark />
         </Form.Label>
         <Select
-          options={categoriaOptions}
-          value={
-            categoriaOptions.find(
-              (o) => o.value === formData.categoria
-            ) || null
-          }
-          onChange={(selected) =>
-            handleChange({
-              target: { name: "categoria", value: selected?.value || "" },
-            })
-          }
-          placeholder="Seleccione una categoría"
-          classNamePrefix="react-select"
-          className="react-select-container-solicitud"
+        options={categoriaOptions || []}
+        value={(categoriaOptions || []).find((o) => o.value === formData.categoria) || null}
+        onChange={(selected) =>
+          handleChange({
+            target: { name: "categoria", value: selected?.value || "" },
+          })
+        }
+        placeholder="Seleccione una categoria"
+        classNamePrefix="react-select"
+        className="react-select-container-solicitud"
         />
       </Form.Group>
 
