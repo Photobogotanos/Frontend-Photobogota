@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { IoIosSend } from "react-icons/io";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaExclamationTriangle } from "react-icons/fa";
 
 import "./AdminCreacionDeCuentaForm.css";
 import SpinnerLoader from "@/components/common/SpinnerLoader/SpinnerLoader";
@@ -11,18 +11,8 @@ import AdminAccountHeader from "./AdminAccountHeader";
 import PersonalInfoFields from "@/components/auth/CreacionDeCuentaForm/PersonalInfoFields";
 import PasswordFields from "@/components/auth/CreacionDeCuentaForm/PasswordFields";
 import RoleSelector from "./RoleSelector";
-
-// --- FUNCIÓN MOCK (MODO DEMO) ---
-// Esta función simula la llamada a la API que harás más adelante.
-const registrarUsuarioAdminDemo = async (datos) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            console.log("Datos recibidos en el servidor (Demo):", datos);
-            // Simulamos un éxito el 100% de las veces para tus pruebas
-            resolve({ exitoso: true, mensaje: "Usuario creado en modo demo" });
-        }, 1500); // Simula latencia de red
-    });
-};
+import { crearUsuarioAdmin } from "@/services/admin.service";
+import { obtenerEstadoServidor } from "@/utils/serverStatus";
 
 const initialState = {
     email: "",
@@ -30,9 +20,11 @@ const initialState = {
     apellidos: "",
     nombreUsuario: "",
     fecha: "",
+    telefono: "",
+    biografia: "",
     password: "",
     password2: "",
-    rol: "miembro",
+    rol: "MIEMBRO",
     mostrarContrasena: false,
     mostrarContrasena2: false,
     passwordMatch: null,
@@ -65,6 +57,8 @@ function AdminCreacionDeCuentaForm() {
     const navegar = useNavigate();
     const [state, dispatch] = useReducer(formReducer, initialState);
     const [errorRol, setErrorRol] = useState("");
+    // eslint-disable-next-line no-unused-vars
+    const [modoDemo, setModoDemo] = useState(false);
 
     const handlePasswordChange = (valor, esConfirmacion) => {
         const nuevoPassword = esConfirmacion ? state.password : valor;
@@ -76,7 +70,6 @@ function AdminCreacionDeCuentaForm() {
             value: valor,
         });
 
-        // Corregido: Solo validar match si ambos campos tienen contenido
         dispatch({
             type: "SET_PASSWORD_MATCH",
             payload: (nuevoPassword && nuevoPassword2)
@@ -117,6 +110,26 @@ function AdminCreacionDeCuentaForm() {
             return;
         }
 
+        // Validar email
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) {
+            Swal.fire({
+                icon: "error",
+                title: "Correo inválido",
+                text: "Por favor ingresa un correo electrónico válido."
+            });
+            return;
+        }
+
+        // Validar contraseña
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(state.password)) {
+            Swal.fire({
+                icon: "error",
+                title: "Contraseña insegura",
+                text: "Debe tener mínimo 8 caracteres, mayúsculas, minúsculas y números."
+            });
+            return;
+        }
+
         if (!validarRol()) {
             Swal.fire({ icon: "error", title: "Rol no seleccionado", text: "Debes seleccionar un rol." });
             return;
@@ -130,23 +143,32 @@ function AdminCreacionDeCuentaForm() {
         try {
             dispatch({ type: "SET_LOADING", payload: true });
 
-            // Usamos la función Demo definida arriba
-            const resultado = await registrarUsuarioAdminDemo({
-                email: state.email,
-                nombres: state.nombres,
-                apellidos: state.apellidos,
+            // Verificar modo offline
+            const isOnline = await obtenerEstadoServidor();
+            setModoDemo(!isOnline);
+
+            const resultado = await crearUsuarioAdmin({
+                nombresCompletos: `${state.nombres} ${state.apellidos}`,
                 nombreUsuario: state.nombreUsuario,
-                fechaNacimiento: state.fecha,
+                email: state.email,
                 contrasena: state.password,
+                fechaNacimiento: state.fecha,
                 rol: state.rol,
-                creadoPor: "admin",
+                telefono: state.telefono || null,
+                biografia: state.biografia || null
             });
 
             if (resultado.exitoso) {
+                let mensaje = `<p>Se ha creado la cuenta para <b>${state.nombres} ${state.apellidos}</b> con el rol <b>${state.rol}</b></p>`;
+                
+                if (resultado.esDemo) {
+                    mensaje += `<p class="text-warning mt-2"><small>⚠️ Modo Demo: Los datos se guardan localmente</small></p>`;
+                }
+
                 Swal.fire({
-                    icon: "success",
-                    title: "¡Usuario creado!",
-                    html: `<p>Se ha creado la cuenta para <b>${state.nombres}</b> con el rol <b>${state.rol.toUpperCase()}</b></p>`,
+                    icon: resultado.esDemo ? "info" : "success",
+                    title: resultado.esDemo ? "Usuario creado (Modo Demo)" : "¡Usuario creado!",
+                    html: mensaje,
                     confirmButtonColor: "#806fbe",
                     showCancelButton: true,
                     confirmButtonText: "Crear otro",
@@ -158,13 +180,25 @@ function AdminCreacionDeCuentaForm() {
                         navegar("/admin/usuarios");
                     }
                 });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: resultado.mensaje || "No se pudo crear el usuario"
+                });
             }
         } catch (error) {
-            Swal.fire({ icon: "error", title: "Error", text: "Ocurrió un error en el simulador." });
+            console.error("Error en creación:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Ocurrió un error inesperado. Por favor intenta de nuevo."
+            });
         } finally {
             dispatch({ type: "SET_LOADING", payload: false });
         }
     };
+
 
     return (
         <div className="admin-creacion-container">
