@@ -1,8 +1,8 @@
 import { checkBackendHealth } from "../api/baseApi";
 
 // Configuración del cache
-const CACHE_DURACION_MS = 2000;
-const POLLING_INTERVAL_MS = 3000; // 3 segundos para polling
+const CACHE_DURACION_MS = 3000;
+const POLLING_INTERVAL_MS = 4000; // 4 segundos para polling
 
 let servidorDisponible = null;
 let ultimaVerificacion = null;

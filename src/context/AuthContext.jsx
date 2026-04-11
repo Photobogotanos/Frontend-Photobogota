@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 import { obtenerSesion, estaLogueado, cerrarSesion as cerrarSesionHelper, actualizarSesion } from "@/utils/sessionHelper";
 import { postLogout, getUsuarioAutenticado } from "@/api/usuarioApi";
