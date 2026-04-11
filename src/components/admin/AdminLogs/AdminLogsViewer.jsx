@@ -7,96 +7,9 @@ import {
 } from 'react-icons/fa';
 import SpinnerLoader from "@/components/common/SpinnerLoader/SpinnerLoader";
 import LogDetailModal from './LogDetailModal';
+import { obtenerLogs, obtenerArchivosLog, generarLogDemo } from '@/services/log.service';
 
-// --- GENERADOR DE LOGS QUE COINCIDE CON EL FORMATO DE LOGBACK ---
-const generarLogAleatorio = () => {
-    const niveles = ['INFO', 'WARN', 'ERROR', 'DEBUG'];
-    const nivelesPadding = {
-        'INFO': 'INFO ',
-        'WARN': 'WARN ',
-        'ERROR': 'ERROR',
-        'DEBUG': 'DEBUG'
-    };
-
-    const threads = [
-        'http-nio-8080-exec-1',
-        'http-nio-8080-exec-2',
-        'http-nio-8080-exec-3',
-        'scheduling-1',
-        'task-executor-1',
-        'http-nio-8080-exec-5'
-    ];
-
-    const loggers = [
-        'com.photobogota.api.controller.AdminController',
-        'com.photobogota.api.service.ImageService',
-        'com.photobogota.api.security.JwtAuthenticationFilter',
-        'com.photobogota.api.repository.UserRepository',
-        'com.photobogota.api.service.AuditService',
-        'com.photobogota.api.exception.GlobalExceptionHandler',
-        'org.springframework.security.web.FilterChainProxy',
-        'org.springframework.web.servlet.DispatcherServlet',
-        'org.mongodb.driver.connection',
-        'com.photobogota.api.controller.PhotoController'
-    ];
-
-    const mensajes = {
-        INFO: [
-            "Iniciando aplicación PhotoBogotaApplication...",
-            "Conexión establecida con MongoDB en puerto 27017",
-            "JWT Token validado exitosamente para el usuario admin@photobogota.com",
-            "Petición GET /api/usuarios recibida",
-            "Cache de imágenes limpiado correctamente",
-            "Usuario autenticado: admin@photobogota.com",
-            "Endpoint /api/photos invocado con parámetros page=1, size=20",
-            "Generando reporte de auditoría semanal...",
-            "Servicio iniciado en puerto 8080",
-            "Application context loaded successfully"
-        ],
-        WARN: [
-            "Memoria del sistema: 78% en uso",
-            "Tiempo de respuesta lento: 2.5s en /api/imagenes",
-            "Pool de conexiones cerca del límite: 45/50",
-            "Token JWT próximo a expirar: 5 minutos restantes",
-            "Usuario no tiene permisos completos para esta operación",
-            "Archivo de configuración application.yml tiene propiedades deprecadas",
-            "Caché de imágenes alcanzó 80% de capacidad",
-            "Request rate limit: 95/100 requests por minuto"
-        ],
-        ERROR: [
-            "Error al intentar cargar imagen: photobogota_01.jpg - Timeout",
-            "Spring Security: Acceso denegado para /api/admin/logs",
-            "MongoDB: Conexión perdida - Reconectando...",
-            "NullPointerException al procesar imagen sin metadatos",
-            "FileNotFoundException: /uploads/photobogota_02.jpg",
-            "SQLException: Cannot get JDBC Connection",
-            "JWT verification failed: Token expired",
-            "IOException: Failed to write image to disk"
-        ],
-        DEBUG: [
-            "Hibernate: select u1_0.id,u1_0.email from usuarios u1_0",
-            "Entering JwtAuthenticationFilter.doFilterInternal()",
-            "UserDetails loaded: admin@photobogota.com with authorities [ROLE_ADMIN]",
-            "Cache hit for key: 'image_12345'",
-            "Query executed in 45ms: find({status: 'ACTIVE'})",
-            "Authentication success for user: admin@photobogota.com",
-            "Processing request with headers: {Authorization: Bearer...}",
-            "Exiting GlobalExceptionHandler with response status 500"
-        ]
-    };
-
-    const nivel = niveles[Math.floor(Math.random() * niveles.length)];
-    const thread = threads[Math.floor(Math.random() * threads.length)];
-    const logger = loggers[Math.floor(Math.random() * loggers.length)];
-    const mensaje = mensajes[nivel][Math.floor(Math.random() * mensajes[nivel].length)];
-
-    const now = new Date();
-    const timestamp = now.toISOString().replace('T', ' ').substring(0, 23);
-
-    return `${timestamp} [${thread}] ${nivelesPadding[nivel]} ${logger} - ${mensaje}`;
-};
-
-// --- PARSEADOR DE LOGS PARA EL FORMATO LOGBACK ---
+// ─── PARSEADOR ────────────────────────────────────────────────────────────────
 const parseLogLine = (linea) => {
     const patronLogback = /(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3})\s\[([^\]]+)\]\s+(INFO|WARN|ERROR|DEBUG)\s+([^\s]+)\s+-\s+(.+)/;
     const match = linea.match(patronLogback);
@@ -114,27 +27,18 @@ const parseLogLine = (linea) => {
     }
 
     return {
-        timestamp: null,
-        thread: null,
-        level: null,
-        logger: null,
-        message: linea,
-        fullLine: linea,
-        isValid: false
+        timestamp: null, thread: null, level: null, logger: null,
+        message: linea, fullLine: linea, isValid: false
     };
 };
 
+// ─── COMPONENTE ───────────────────────────────────────────────────────────────
 const AdminLogsViewer = () => {
     const [logs, setLogs] = useState([]);
-    const [archivos, setArchivos] = useState([
-        { nombre: 'photobogota.log', tamaño: 102450, fecha: '2024-01-15 10:30:00' },
-        { nombre: 'photobogota-error.log', tamaño: 5420, fecha: '2024-01-15 10:30:00' },
-        { nombre: 'spring.log', tamaño: 85400, fecha: '2024-01-15 09:00:00' },
-        { nombre: 'access.log', tamaño: 125600, fecha: '2024-01-15 10:30:00' }
-    ]);
-
+    const [archivos, setArchivos] = useState([]);
     const [cargando, setCargando] = useState(false);
     const [error, setError] = useState(null);
+    const [modoDemo, setModoDemo] = useState(false);
     const [filtros, setFiltros] = useState({
         lines: 100,
         errorsOnly: false,
@@ -153,28 +57,74 @@ const AdminLogsViewer = () => {
 
     const nivelesLog = {
         ERROR: { icon: <FaExclamationTriangle />, color: '#ef4444', bg: '#fee2e2', label: 'Error' },
-        WARN: { icon: <FaExclamationTriangle />, color: '#f59e0b', bg: '#fef3c7', label: 'Warning' },
-        INFO: { icon: <FaInfoCircle />, color: '#3b82f6', bg: '#dbeafe', label: 'Info' },
-        DEBUG: { icon: <FaBug />, color: '#8b5cf6', bg: '#ede9fe', label: 'Debug' }
+        WARN:  { icon: <FaExclamationTriangle />, color: '#f59e0b', bg: '#fef3c7', label: 'Warning' },
+        INFO:  { icon: <FaInfoCircle />,          color: '#3b82f6', bg: '#dbeafe', label: 'Info' },
+        DEBUG: { icon: <FaBug />,                 color: '#8b5cf6', bg: '#ede9fe', label: 'Debug' }
     };
 
+    // ── Cargar archivos disponibles al montar ──────────────────────────────────
+    useEffect(() => {
+        const cargarArchivos = async () => {
+            const resultado = await obtenerArchivosLog();
+            if (resultado.exitoso && resultado.data.length > 0) {
+                setArchivos(resultado.data);
+                // Preseleccionar el primer archivo si el actual no está en la lista
+                const nombres = resultado.data.map(a => a.nombre);
+                if (!nombres.includes(filtros.archivo)) {
+                    setFiltros(prev => ({ ...prev, archivo: resultado.data[0].nombre }));
+                }
+            }
+        };
+        cargarArchivos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // ── Cargar logs ────────────────────────────────────────────────────────────
     const cargarLogs = useCallback(async () => {
         setCargando(true);
         setError(null);
 
-        try {
-            // TODO: Conexión con API real
-            await new Promise(resolve => setTimeout(resolve, 800));
-            const nuevosLogs = Array.from({ length: filtros.lines }, () => generarLogAleatorio());
-            setLogs(nuevosLogs);
-        } catch (err) {
-            setError(err.message);
-            console.error('Error cargando logs:', err);
-        } finally {
-            setCargando(false);
-        }
-    }, [filtros.archivo, filtros.lines]);
+        // El backend filtra por archivo con el param errorsOnly;
+        // si el archivo seleccionado es el de errores, lo forzamos.
+        const esArchivoError = filtros.archivo.includes('error');
+        const resultado = await obtenerLogs(
+            filtros.lines,
+            filtros.errorsOnly || esArchivoError
+        );
 
+        if (resultado.exitoso) {
+            setLogs(resultado.data);
+            setModoDemo(resultado.esDemo);
+        } else {
+            setError('No se pudieron cargar los logs.');
+        }
+
+        setCargando(false);
+    }, [filtros.archivo, filtros.lines, filtros.errorsOnly]);
+
+    useEffect(() => {
+        cargarLogs();
+    }, [cargarLogs]);
+
+    // ── Auto-refresh ───────────────────────────────────────────────────────────
+    useEffect(() => {
+        if (autoRefresh) {
+            intervaloRef.current = setInterval(() => {
+                if (modoDemo) {
+                    // En modo demo añadimos logs ficticios
+                    setLogs(prev => [generarLogDemo(), ...prev.slice(0, filtros.lines - 1)]);
+                } else {
+                    // En modo real recargamos del servidor
+                    cargarLogs();
+                }
+            }, 3000);
+        } else {
+            if (intervaloRef.current) clearInterval(intervaloRef.current);
+        }
+        return () => { if (intervaloRef.current) clearInterval(intervaloRef.current); };
+    }, [autoRefresh, filtros.lines, modoDemo, cargarLogs]);
+
+    // ── Estadísticas ───────────────────────────────────────────────────────────
     const calcularEstadisticas = useCallback((logsData) => {
         const stats = { ERROR: 0, WARN: 0, INFO: 0, DEBUG: 0 };
         logsData.forEach(log => {
@@ -186,19 +136,16 @@ const AdminLogsViewer = () => {
         setEstadisticas(stats);
     }, []);
 
+    // ── Filtrado local ─────────────────────────────────────────────────────────
     const logsFiltrados = React.useMemo(() => {
         const filtrados = logs
-            .map(log => ({
-                raw: log,
-                parsed: parseLogLine(log)
-            }))
+            .map(log => ({ raw: log, parsed: parseLogLine(log) }))
             .filter(({ raw, parsed }) => {
                 const matchesBusqueda = !filtros.busqueda ||
                     raw.toLowerCase().includes(filtros.busqueda.toLowerCase());
                 const matchesNivel = filtros.nivel === 'todos' ||
                     (parsed.level && parsed.level === filtros.nivel);
-                const matchesSoloError = !filtros.errorsOnly ||
-                    (parsed.level === 'ERROR');
+                const matchesSoloError = !filtros.errorsOnly || parsed.level === 'ERROR';
                 const matchesLogger = !filtros.logger ||
                     (parsed.logger && parsed.logger.toLowerCase().includes(filtros.logger.toLowerCase()));
 
@@ -210,35 +157,10 @@ const AdminLogsViewer = () => {
         return filtrados;
     }, [logs, filtros, calcularEstadisticas]);
 
-    useEffect(() => {
-        if (autoRefresh) {
-            intervaloRef.current = setInterval(() => {
-                setLogs(prev => {
-                    const nuevoLog = generarLogAleatorio();
-                    return [nuevoLog, ...prev.slice(0, filtros.lines - 1)];
-                });
-            }, 3000);
-        } else {
-            if (intervaloRef.current) clearInterval(intervaloRef.current);
-        }
-        return () => {
-            if (intervaloRef.current) clearInterval(intervaloRef.current);
-        };
-    }, [autoRefresh, filtros.lines]);
-
-    useEffect(() => {
-        cargarLogs();
-    }, [cargarLogs, filtros.archivo]);
-
-    const limpiarFiltros = () => {
-        setFiltros({
-            ...filtros,
-            busqueda: '',
-            nivel: 'todos',
-            errorsOnly: false,
-            logger: ''
-        });
-    };
+    // ── Utilidades ─────────────────────────────────────────────────────────────
+    const limpiarFiltros = () => setFiltros(prev => ({
+        ...prev, busqueda: '', nivel: 'todos', errorsOnly: false, logger: ''
+    }));
 
     const copiarLogs = async () => {
         try {
@@ -261,6 +183,7 @@ const AdminLogsViewer = () => {
         URL.revokeObjectURL(url);
     };
 
+    // ── Render de línea ────────────────────────────────────────────────────────
     const formatearLineaLog = (linea, index) => {
         const parsed = parseLogLine(linea);
         const nivel = parsed.level;
@@ -270,10 +193,7 @@ const AdminLogsViewer = () => {
             nivelVisual = nivel;
         } else {
             for (const key of Object.keys(nivelesLog)) {
-                if (linea.includes(key)) {
-                    nivelVisual = key;
-                    break;
-                }
+                if (linea.includes(key)) { nivelVisual = key; break; }
             }
         }
 
@@ -281,7 +201,7 @@ const AdminLogsViewer = () => {
             <div
                 key={index}
                 className={`log-line ${nivelVisual ? `log-${nivelVisual.toLowerCase()}` : ''}`}
-                onClick={() => setLogSeleccionado({ raw: linea, parsed })}
+                onClick={() => setLogSeleccionado({ raw: linea, parsed, id: index })}
             >
                 <div className="log-line-number">{index + 1}</div>
                 {nivelVisual && (
@@ -290,33 +210,37 @@ const AdminLogsViewer = () => {
                     </div>
                 )}
                 <div className="log-content">
-                    {parsed.timestamp && (
-                        <span className="log-timestamp">{parsed.timestamp}</span>
-                    )}
-                    {parsed.thread && (
-                        <span className="log-thread">[{parsed.thread}]</span>
-                    )}
-                    {parsed.logger && (
-                        <span className="log-logger">{parsed.logger}</span>
-                    )}
+                    {parsed.timestamp && <span className="log-timestamp">{parsed.timestamp}</span>}
+                    {parsed.thread  && <span className="log-thread">[{parsed.thread}]</span>}
+                    {parsed.logger  && <span className="log-logger">{parsed.logger}</span>}
                     <span className="log-message">- {parsed.message}</span>
                 </div>
             </div>
         );
     };
 
+    // ── JSX ────────────────────────────────────────────────────────────────────
     return (
         <div className={`log-viewer-container ${expandido ? 'expandido' : ''}`}>
             <div className="log-viewer-header">
                 <div className="header-info">
                     <h1 className="header-titulo">
                         <FaTerminal /> Visualizador de Logs
+                        {modoDemo && (
+                            <span style={{
+                                fontSize: '0.75rem', fontWeight: 500,
+                                background: '#fef3c7', color: '#92400e',
+                                padding: '2px 10px', borderRadius: 20, marginLeft: 8
+                            }}>
+                                DEMO
+                            </span>
+                        )}
                     </h1>
                     <div className="log-stats-badges">
                         <span className="stat-badge">
-                            <FaFileAlt /> Total: {logsFiltrados.length} lineas
+                            <FaFileAlt /> Total: {logsFiltrados.length} líneas
                         </span>
-                        {Object.entries(estadisticas).map(([nivel, count]) => (
+                        {Object.entries(estadisticas).map(([nivel, count]) =>
                             count > 0 && (
                                 <span
                                     key={nivel}
@@ -326,7 +250,7 @@ const AdminLogsViewer = () => {
                                     {nivelesLog[nivel].icon} {nivel}: {count}
                                 </span>
                             )
-                        ))}
+                        )}
                     </div>
                 </div>
                 <div className="log-stats">
@@ -358,16 +282,16 @@ const AdminLogsViewer = () => {
                     </div>
 
                     <div className="lines-selector">
-                        <label>Lineas:</label>
+                        <label>Líneas:</label>
                         <select
                             value={filtros.lines}
                             onChange={(e) => setFiltros({ ...filtros, lines: parseInt(e.target.value) })}
                             disabled={cargando}
                         >
-                            <option value={50}>50 lineas</option>
-                            <option value={100}>100 lineas</option>
-                            <option value={200}>200 lineas</option>
-                            <option value={500}>500 lineas</option>
+                            <option value={50}>50 líneas</option>
+                            <option value={100}>100 líneas</option>
+                            <option value={200}>200 líneas</option>
+                            <option value={500}>500 líneas</option>
                         </select>
                     </div>
 
@@ -439,7 +363,7 @@ const AdminLogsViewer = () => {
 
             <div className="logs-container" ref={containerRef}>
                 {cargando ? (
-                    <div className="logs-loading">
+                    <div className="loading-overlay">
                         <SpinnerLoader texto="Cargando logs..." />
                     </div>
                 ) : error ? (
@@ -466,6 +390,8 @@ const AdminLogsViewer = () => {
                     log={logSeleccionado}
                     onClose={() => setLogSeleccionado(null)}
                     nivelesLog={nivelesLog}
+                    logs={logsFiltrados.map((raw, i) => ({ raw, parsed: parseLogLine(raw), id: i }))}
+                    onNavigate={(nuevoLog) => setLogSeleccionado(nuevoLog)}
                 />
             )}
         </div>
