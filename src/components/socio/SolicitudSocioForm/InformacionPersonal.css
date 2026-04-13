@@ -2,6 +2,7 @@
   text-align: start;
   width: 100%;
   font-weight: bold;
+  font-size: 14px;
 }
 
 .label-solicitud-socio span {
@@ -12,10 +13,22 @@
 .input-solicitud-socio {
   border-radius: 50px;
   padding-left: 15px;
+  font-size: 14px;
 }
 
 .input-solicitud-socio:focus {
   box-shadow: none !important;
   border-color: #d9d9d9 !important;
   outline: none !important;
+}
+
+@media (max-width: 576px) {
+  .label-solicitud-socio {
+    font-size: 13px;
+  }
+  
+  .input-solicitud-socio {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
 }

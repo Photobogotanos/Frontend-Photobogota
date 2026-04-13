@@ -19,3 +19,13 @@
 .react-select__menu {
   border-radius: 12px;
 }
+
+@media (max-width: 576px) {
+  .react-select__control {
+    min-height: 38px;
+  }
+  
+  .react-select-container-solicitud {
+    font-size: 13px;
+  }
+}

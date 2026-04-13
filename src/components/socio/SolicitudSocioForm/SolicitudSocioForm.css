@@ -7,10 +7,11 @@
   margin: 0 auto;
 }
 
-/* Responsive */
 @media (max-width: 576px) {
   .solicitud-form-submit {
     flex-direction: column;
+    gap: 12px;
+    padding: 0 10px;
   }
 
   .solicitud-form-submit button {
@@ -21,6 +22,23 @@
 @media (max-width: 768px) {
   .solicitud-socio-form {
     margin-top: 74px;
+    padding: 0 15px;
+  }
+  
+  .solicitud-socio-form .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .solicitud-socio-form .col-md-6 {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .solicitud-socio-form {
+    margin-top: 70px;
   }
 }
 
@@ -73,4 +91,16 @@
 
 .btn-icon {
   font-size: 16px;
+}
+
+@media (max-width: 576px) {
+  .btn-consultar,
+  .solicitud-form-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .btn-icon {
+    font-size: 14px;
+  }
 }

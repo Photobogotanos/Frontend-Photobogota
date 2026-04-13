@@ -16,3 +16,9 @@
 .terminos-link-solicitud:hover {
   color: #0056b3;
 }
+
+@media (max-width: 576px) {
+  .terminos-label-solicitud {
+    font-size: 0.85rem;
+  }
+}

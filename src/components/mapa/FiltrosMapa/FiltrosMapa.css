@@ -8,8 +8,8 @@
   background: #ffffff;
   border-bottom: 1px solid #e0e0e0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  position: sticky;  
-  top: 66px; 
+  position: sticky;
+  top: 66px;
   z-index: 900;
   width: 100%;
 }
@@ -23,8 +23,8 @@
 }
 
 .filtro-select {
-  min-width: 180px;  
-  flex: 1;  
+  min-width: 180px;
+  flex: 1;
 }
 
 .filtros-acciones {
@@ -71,11 +71,12 @@
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .filtros-container {
-    padding: 14px 16px;
-    gap: 12px;
-    margin-top: 1rem !important;
+    padding: 12px 16px;
+    gap: 10px;
+    margin-top: 0 !important;
     position: relative;
-    top: 0;
+    top: auto;
+    z-index: 900;
   }
 
   .filtros-izquierda {
@@ -88,19 +89,30 @@
   }
 }
 
+@media (max-width: 768px) {
+  .filtros-container {
+    position: relative;
+    top: auto;
+    padding: 10px 12px;
+  }
+}
+
 @media (max-width: 600px) {
   .filtros-container {
     flex-direction: column;
-    padding: 12px;
+    padding: 10px;
     gap: 8px;
     position: relative;
-    top: 0;
+    top: auto;
+    z-index: 900;
+    border-radius: 0;
   }
 
   .filtros-izquierda {
     width: 100%;
     justify-content: stretch;
     flex-direction: column;
+    gap: 8px;
   }
 
   .filtro-select {
@@ -111,6 +123,7 @@
   .filtros-acciones {
     width: 100%;
     flex-direction: column;
+    gap: 8px;
   }
 
   .filtro-limpiar {
@@ -131,11 +144,11 @@
 
 @media (max-width: 420px) {
   .filtros-container {
-    padding: 10px;
+    padding: 8px;
     gap: 6px;
   }
 
   .filtros-izquierda {
-    gap: 8px;
+    gap: 6px;
   }
 }

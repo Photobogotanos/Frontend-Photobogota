@@ -50,7 +50,7 @@
 
 @media (max-width: 768px) {
   .toggle-filtros-btn {
-    top: 70px;
+    top: 62px;
     padding: 8px 14px;
     font-size: 13px;
   }
@@ -72,7 +72,7 @@
 
 @media (max-width: 576px) {
   .toggle-filtros-btn {
-    top: 60px;
+    top: 56px;
     padding: 8px 12px;
     font-size: 12px;
     border-radius: 20px;
@@ -95,7 +95,7 @@
 
 @media (max-width: 420px) {
   .toggle-filtros-btn {
-    top: 50px;
+    top: 54px;
     width: 85%;
     left: 50%;
     transform: translateX(-50%);

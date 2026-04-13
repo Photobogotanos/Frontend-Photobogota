@@ -14,7 +14,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
     <>
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="apellidos">
-          Apellidos <MdDriveFileRenameOutline />
+          <MdDriveFileRenameOutline /> Apellidos
           <RequiredMark />
         </Form.Label>
         <Form.Control
@@ -29,7 +29,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
 
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="direccion">
-          Dirección <FaStreetView />
+          <FaStreetView /> Dirección 
           <RequiredMark />
         </Form.Label>
         <Form.Control
@@ -44,7 +44,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
 
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="nit">
-          NIT o RUT <FaIdCard />
+          <FaIdCard /> NIT o RUT 
           <RequiredMark />
         </Form.Label>
         <Form.Control
@@ -62,7 +62,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
           className="label-solicitud-socio"
           htmlFor="propietario"
         >
-          Nombre del propietario <FaUserCircle />
+          <FaUserCircle /> Nombre del propietario 
           <RequiredMark />
         </Form.Label>
         <Form.Control
@@ -77,7 +77,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
 
       <Form.Group className="mb-3">
         <Form.Label className="label-solicitud-socio" htmlFor="categoria">
-          Categoría <BiSolidCategoryAlt />
+          <BiSolidCategoryAlt /> Categoría 
           <RequiredMark />
         </Form.Label>
         <Select
