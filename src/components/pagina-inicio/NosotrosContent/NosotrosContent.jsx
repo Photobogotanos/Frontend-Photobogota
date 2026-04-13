@@ -72,7 +72,7 @@ const teamMembers = [
   {
     id: "juan-marin",
     name: "Juan Marin",
-    role: "PowerApps Developer",
+    role: "Software Developer",
     photo: fotoYanpol,
     education: "Tecnólogo SENA - Análisis y Desarrollo de Software",
     expertise: "Desarrollador de aplicaciones web y automatización | React, Java & Power Platform",
