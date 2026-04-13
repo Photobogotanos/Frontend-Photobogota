@@ -470,6 +470,10 @@
   background: linear-gradient(135deg, #0077b5 0%, #005885 100%);
 }
 
+.github-btn {
+  background: linear-gradient(135deg, #24292e 0%, #1a1f23 100%);
+}
+
 .social-btn:hover {
   transform: translateY(-5px) scale(1.1);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
