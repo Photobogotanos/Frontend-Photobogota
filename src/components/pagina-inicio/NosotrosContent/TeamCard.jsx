@@ -6,6 +6,7 @@ import {
   FaGraduationCap,
   FaPlay,
   FaPause,
+  FaGithub,
 } from "react-icons/fa";
 
 export default function TeamCard({ member, index, flipped, playing, onCardClick, onToggleAudio }) {
@@ -79,6 +80,17 @@ export default function TeamCard({ member, index, flipped, playing, onCardClick,
                     onClick={(e) => e.stopPropagation()}
                   >
                     <FaLinkedin size={18} />
+                  </a>
+                )}
+                {member.github && (
+                  <a
+                    href={member.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-btn github-btn"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaGithub size={18} />
                   </a>
                 )}
               </div>
