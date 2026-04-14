@@ -25,21 +25,17 @@ export const getLocalidadesActivas = async () => {
 };
 
 export const getTodasLocalidades = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error("No autenticado");
-  }
   const respuesta = await clienteApi.get("/moderador/localidades");
   return respuesta.data;
 };
 
-export const crearLocalidad = async (nombre) => {
-  const respuesta = await clienteApi.post("/moderador/localidades", { nombre });
+export const crearLocalidad = async (data) => {
+  const respuesta = await clienteApi.post("/moderador/localidades", data);
   return respuesta.data;
 };
 
-export const actualizarLocalidad = async (id, nombre) => {
-  const respuesta = await clienteApi.put(`/moderador/localidades/${id}`, { nombre });
+export const actualizarLocalidad = async (id, data) => {
+  const respuesta = await clienteApi.put(`/moderador/localidades/${id}`, data);
   return respuesta.data;
 };
 

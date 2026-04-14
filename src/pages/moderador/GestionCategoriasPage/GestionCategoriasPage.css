@@ -1,0 +1,152 @@
+.gestion-categorias-page{
+  margin: 0 auto;
+  padding: 5rem 1.5rem 3rem; 
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  width: 100%;
+  display: block;
+  animation: fadeIn 0.5s ease forwards;
+}
+.gestion-categorias-page .container {  
+  width: 100%;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  padding: 0 0.5rem;
+  position: relative;
+}
+
+.page-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--color-primary), #9b8dcf);
+  border-radius: 4px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+  padding-left: 1rem;
+}
+
+/* ==================== TABS ==================== */
+.tabs-container {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.custom-tabs {
+  border-bottom: 1px solid #f4f4f5;
+  padding: 0 24px;
+  background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+}
+
+.custom-tabs .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 28px;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.custom-tabs .nav-link:hover {
+  color: var(--color-primary);
+  background: rgba(128, 111, 190, 0.05);
+}
+
+.custom-tabs .nav-link.active {
+  color: var(--color-primary);
+  background: transparent;
+  border-bottom-color: var(--color-primary);
+}
+
+.custom-tabs .nav-link svg {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.custom-tabs .nav-link.active svg {
+  transform: scale(1.1);
+}
+
+/* ==================== TAB CONTENT ==================== */
+.tab-content-categorias {
+  padding: 28px;
+  background: white;
+  min-height: 500px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .gestion-categorias-page {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .custom-tabs .nav-link {
+    padding: 16px 14px;
+    font-size: 0.85rem;
+  }
+
+  .custom-tabs .nav-link svg {
+    display: none;
+  }
+
+  .tab-content-categorias {
+    padding: 16px;
+  }
+
+  .page-header::before {
+    width: 3px;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-title {
+    font-size: 1.3rem;
+    padding-left: 0.75rem;
+  }
+
+  .page-subtitle {
+    padding-left: 0.75rem;
+  }
+}

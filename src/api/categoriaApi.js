@@ -25,21 +25,17 @@ export const getCategoriasActivas = async () => {
 };
 
 export const getTodasCategorias = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error("No autenticado");
-  }
   const respuesta = await clienteApi.get("/moderador/categorias");
   return respuesta.data;
 };
 
-export const crearCategoria = async (nombre) => {
-  const respuesta = await clienteApi.post("/moderador/categorias", { nombre });
+export const crearCategoria = async (data) => {
+  const respuesta = await clienteApi.post("/moderador/categorias", data);
   return respuesta.data;
 };
 
-export const actualizarCategoria = async (id, nombre) => {
-  const respuesta = await clienteApi.put(`/moderador/categorias/${id}`, { nombre });
+export const actualizarCategoria = async (id, data) => {
+  const respuesta = await clienteApi.put(`/moderador/categorias/${id}`, data);
   return respuesta.data;
 };
 

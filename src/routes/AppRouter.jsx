@@ -21,6 +21,7 @@ import ContrasenaNuevaPage from "@/pages/auth/ContrasenaNuevaPage/ContrasenaNuev
 import CrearCuentasAdminPage from "@/pages/admin/CrearCuentasAdmin/CrearCuentasAdminPage";
 import AdminUsuariosPage from "@/pages/admin/AdminUsuarios/AdminUsuariosPage";
 import AdminLogsPage from "@/pages/admin/AdminLogs/AdminLogsPage";
+import GestionCategoriasPage from "../pages/moderador/GestionCategoriasPage/GestionCategoriasPage";
 
 const AppRouter = () => {
   return (
@@ -41,6 +42,7 @@ const AppRouter = () => {
         {/* Rutas para Revisión de Solicitudes - Moderador */}
         <Route path="/moderador/revision-solicitudes" element={<RevisionSolicitudesSocioPage />} />
         <Route path="/solicitudes-socios" element={<RevisionSolicitudesSocioPage />} />
+        <Route path= "categorias" element={<GestionCategoriasPage/>} />
         
         <Route path="/recuperar-contrasena" element={<RecuperarContraPage />} />
         <Route path="/nueva-contrasena" element={<ContrasenaNuevaPage/>} />
