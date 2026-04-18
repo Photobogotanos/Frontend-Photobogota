@@ -12,7 +12,7 @@ export const getLocalidadesActivas = async () => {
     const respuesta = await clienteApi.get("/localidades");
     const activas = respuesta.data.filter((l) => l.activa !== false);
     if (activas.length > 0) {
-      return [localidadOptions[0], ...activas.map(mapLocalidadToOption)];
+      return activas.map(mapLocalidadToOption);
     }
     return [];
   } catch (error) {

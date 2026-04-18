@@ -12,7 +12,7 @@ export const getCategoriasActivas = async () => {
     const respuesta = await clienteApi.get("/categorias");
     const activas = respuesta.data.filter((c) => c.activa !== false);
     if (activas.length > 0) {
-      return [categoriasOptions[0], ...activas.map(mapCategoriaToOption)];
+      return activas.map(mapCategoriaToOption);
     }
     return [];
   } catch (error) {

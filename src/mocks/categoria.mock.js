@@ -1,5 +1,4 @@
 export const categoriasOptions = [
-  { value: "todas", label: "Todas las categorías" },
   { value: "Atractivo turístico", label: "Atractivo turístico" },
   { value: "Parque", label: "Parque" },
   { value: "Estación TransMilenio", label: "Estación TransMilenio" },
@@ -7,4 +6,12 @@ export const categoriasOptions = [
   { value: "Histórico", label: "Histórico" },
   { value: "Urbano", label: "Urbano" },
   { value: "Gastronomía", label: "Gastronomía" },
+  { value: "Arquitectura moderna", label: "Arquitectura moderna" },
+  { value: "Arte urbano / Graffiti", label: "Arte urbano / Graffiti" },
+  { value: "Mirador", label: "Mirador" },
+  { value: "Religioso", label: "Religioso" },
+  { value: "Centro comercial", label: "Centro comercial" },
+  { value: "Cultura / Museos", label: "Cultura / Museos" },
+  { value: "Industrial", label: "Industrial" },
+  { value: "Vida nocturna", label: "Vida nocturna" },
 ];
