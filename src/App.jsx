@@ -7,6 +7,8 @@ import SecurityAnimation from "@/assets/animations/SecurityLock.json";
 import { useRefreshLimit } from "@/hooks/useRefreshLimit";
 import "@/hooks/useRefreshLimit.css";
 
+import { MotionConfig } from "framer-motion";
+
 function App() {
   const { isBlocked, remainingCooldown, manualReset } = useRefreshLimit();
 
@@ -33,10 +35,12 @@ function App() {
   }
 
   return (
-    <BrowserRouter basename="/Frontend-Photobogota">
-      <ScrollToTop />
-      <AppRouter />
-    </BrowserRouter>
+    <MotionConfig reducedMotion="user">
+      <BrowserRouter basename="/Frontend-Photobogota">
+        <ScrollToTop />
+        <AppRouter />
+      </BrowserRouter>
+    </MotionConfig>
   );
 }
 
