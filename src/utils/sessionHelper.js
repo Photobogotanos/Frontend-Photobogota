@@ -46,6 +46,15 @@ export const actualizarSesion = (datosActualizados) => {
   }
 };
 
+export const obtenerRolVerificado = async () => {
+  try {
+    const { data } = await clienteApi.get('/auth/verify-session');
+    return data.rol; // viene del JWT firmado en el servidor
+  } catch {
+    return null;
+  }
+};
+
 export const cerrarSesion = () => {
   localStorage.removeItem("logueado");
   localStorage.removeItem("miembro");

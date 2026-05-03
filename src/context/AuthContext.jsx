@@ -1,6 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
-import { obtenerSesion, estaLogueado, cerrarSesion as cerrarSesionHelper, actualizarSesion } from "@/utils/sessionHelper";
+import {
+  obtenerSesion,
+  estaLogueado,
+  cerrarSesion as cerrarSesionHelper,
+  actualizarSesion,
+} from "@/utils/sessionHelper";
 import { postLogout, getUsuarioAutenticado } from "@/api/usuarioApi";
 import SpinnerLoader from "@/components/common/SpinnerLoader/SpinnerLoader";
 import { toast } from "react-hot-toast";
@@ -11,8 +16,10 @@ const AuthContext = createContext(null);
  * Verificar si estamos en modo demo
  */
 const isModoDemo = () => {
-  return localStorage.getItem('modoDemo') === 'true' ||
-    sessionStorage.getItem('modoDemo') === 'true';
+  return (
+    localStorage.getItem("modoDemo") === "true" ||
+    sessionStorage.getItem("modoDemo") === "true"
+  );
 };
 
 /**
@@ -39,25 +46,32 @@ export function AuthProvider({ children }) {
 
       if (estaLogueado()) {
         try {
-          // Intentamos obtener datos frescos del backend primero
-          const response = await getUsuarioAutenticado();
-          setUsuario(response.data);
-          setLogueado(true);
-          actualizarSesion(response.data);
-        } catch (error) {
-          console.error("Error al cargar datos del usuario:", error);
+          const response = await getUsuarioAutenticado(); // GET /auth/me
+          const datosBackend = response.data;
 
-          // Si el error es 401 (No autorizado) o 403 (Prohibido)
-          // significa que el token guardado ya no sirve.
-          if (error.response?.status === 401 || error.response?.status === 403) {
-            cerrarSesionHelper(); // Limpia cookies y storage
+          const sesionLocal = obtenerSesion();
+          const usuarioVerificado = {
+            ...sesionLocal,
+            ...datosBackend,
+            rol: datosBackend.rol, 
+          };
+
+          setUsuario(usuarioVerificado);
+          setLogueado(true);
+          actualizarSesion(usuarioVerificado); 
+        } catch (error) {
+          if (
+            error.response?.status === 401 ||
+            error.response?.status === 403
+          ) {
+            cerrarSesionHelper();
             setUsuario(null);
             setLogueado(false);
           } else {
-            // Si es otro error (ej. server caído), usamos lo que tenemos en local
+            // servidor caído, usar localStorage
             const sesion = obtenerSesion();
             setUsuario(sesion);
-            setLogueado(true);
+            setLogueado(!!sesion);
           }
         }
       }
@@ -93,7 +107,9 @@ export function AuthProvider({ children }) {
         } catch (backendError) {
           // Si el backend falla pero no es modo demo, mostramos advertencia
           console.error("Error al cerrar sesión en el backend:", backendError);
-          toast.error("Error al cerrar sesión en el servidor, pero se limpió la sesión local");
+          toast.error(
+            "Error al cerrar sesión en el servidor, pero se limpió la sesión local",
+          );
         }
       } else {
         console.log("Modo demo activo - Cerrando sesión localmente");
@@ -101,9 +117,8 @@ export function AuthProvider({ children }) {
       }
 
       // Limpiar bandera de modo demo
-      localStorage.removeItem('modoDemo');
-      sessionStorage.removeItem('modoDemo');
-
+      localStorage.removeItem("modoDemo");
+      sessionStorage.removeItem("modoDemo");
     } catch (error) {
       console.error("Error inesperado al cerrar sesión:", error);
       toast.error("Error al cerrar sesión, pero se limpió la sesión local");
@@ -162,7 +177,11 @@ export function AuthProvider({ children }) {
     isModoDemo: isModoDemo(), // Exponer estado de modo demo
   };
 
-  return <AuthContext.Provider value={valor}>{cargando ? <SpinnerLoader texto="Cargando..." /> : children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={valor}>
+      {cargando ? <SpinnerLoader texto="Cargando..." /> : children}
+    </AuthContext.Provider>
+  );
 }
 
 /**

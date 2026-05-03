@@ -22,56 +22,151 @@ import CrearCuentasAdminPage from "@/pages/admin/CrearCuentasAdmin/CrearCuentasA
 import AdminUsuariosPage from "@/pages/admin/AdminUsuarios/AdminUsuariosPage";
 import AdminLogsPage from "@/pages/admin/AdminLogs/AdminLogsPage";
 import GestionCategoriasPage from "../pages/moderador/GestionCategoriasPage/GestionCategoriasPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 const AppRouter = () => {
   return (
     <Routes>
       <Route element={<MainLayout />}>
+        {/* ── RUTAS PÚBLICAS (sin cambios) ── */}
         <Route path="/" element={<PaginaInicioPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/creacion-cuenta" element={<CreacionDeCuentaPage />} />
-        
-        {/* Rutas para Solicitud de Socio - Usuario */}  
-        <Route path="/solicitud-socio/formulario" element={<FormularioSolicitudSocioPage />} />
-        <Route path="/solicitud-enviada" element={<SolicitudEnviadaPage />} />
-        
-        {/* Rutas para Socio Promociones */}
-        <Route path="/socio-promociones" element={<SocioPromocionesPage/>}/>
-        <Route path="/crear-promocion" element={<CrearPromocionPage/>}/>
-
-        {/* Rutas para Revisión de Solicitudes - Moderador */}
-        <Route path="/moderador/revision-solicitudes" element={<RevisionSolicitudesSocioPage />} />
-        <Route path="/solicitudes-socios" element={<RevisionSolicitudesSocioPage />} />
-        <Route path= "categorias" element={<GestionCategoriasPage/>} />
-        
         <Route path="/recuperar-contrasena" element={<RecuperarContraPage />} />
-        <Route path="/nueva-contrasena" element={<ContrasenaNuevaPage/>} />
-        <Route path="/perfil" element={<MiPerfil />} />
-        <Route path="/mapa" element={<Mapa />} />
-        <Route path="/crear-spot" element={<CreacionSpotPage />} />
-        <Route
-          path="/notificaciones"
-          element={<div>Página de Notificaciones (en construcción)</div>}
-        />
-        <Route path="/nosotros" element={<Nosotros />} />
+        <Route path="/nueva-contrasena" element={<ContrasenaNuevaPage />} />
         <Route
           path="/confirmacion-codigo"
           element={<ConfirmacionCodigoPage />}
         />
-        
-        <Route path="/spot/:id" element={<SpotPage />} />
-        <Route path="/estadisticas" element={<EstadisticasSocioPage />} />
+        <Route path="/nosotros" element={<Nosotros />} />
+        <Route
+          path="/solicitud-socio/formulario"
+          element={<FormularioSolicitudSocioPage />}
+        />
+        <Route path="/solicitud-enviada" element={<SolicitudEnviadaPage />} />
 
-        {/* Rutas para Administración - Admin */}
-        <Route path="/admin/crear-cuentas" element={<CrearCuentasAdminPage />} />
-        <Route path="/admin/usuarios" element={<AdminUsuariosPage />} />
-        <Route path="/admin/ver-logs" element={<AdminLogsPage />} />
-        
-        {/* Ruta para página 404 */}
+        {/* ── RUTAS AUTENTICADAS (cualquier rol) ── */}
+        <Route
+          path="/perfil"
+          element={
+            <ProtectedRoute>
+              <MiPerfil />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/crear-spot"
+          element={
+            <ProtectedRoute>
+              <CreacionSpotPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notificaciones"
+          element={
+            <ProtectedRoute>
+              <div>Página de Notificaciones (en construcción)</div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mapa"
+          element={
+            <ProtectedRoute>
+              <Mapa />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/spot/:id"
+          element={
+            <ProtectedRoute>
+              <SpotPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ── RUTAS DE SOCIO ── */}
+        <Route
+          path="/estadisticas"
+          element={
+            <ProtectedRoute roles={["SOCIO"]}>
+              <EstadisticasSocioPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/socio-promociones"
+          element={
+            <ProtectedRoute roles={["SOCIO"]}>
+              <SocioPromocionesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/crear-promocion"
+          element={
+            <ProtectedRoute roles={["SOCIO"]}>
+              <CrearPromocionPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ── RUTAS DE MODERADOR ── */}
+        <Route
+          path="/moderador/revision-solicitudes"
+          element={
+            <ProtectedRoute roles={["MOD"]}>
+              <RevisionSolicitudesSocioPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/solicitudes-socios"
+          element={
+            <ProtectedRoute roles={["MOD"]}>
+              <RevisionSolicitudesSocioPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/categorias"
+          element={
+            <ProtectedRoute roles={["MOD"]}>
+              <GestionCategoriasPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ── RUTAS DE ADMIN ── */}
+        <Route
+          path="/admin/crear-cuentas"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <CrearCuentasAdminPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/usuarios"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <AdminUsuariosPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/ver-logs"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <AdminLogsPage />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="*" element={<Error404Page />} />
       </Route>
-
-
     </Routes>
   );
 };
