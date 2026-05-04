@@ -2,7 +2,12 @@ import { useReducer, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
-import { FaCamera, FaChevronLeft, FaChevronRight, FaTrash } from "react-icons/fa";
+import {
+  FaCamera,
+  FaChevronLeft,
+  FaChevronRight,
+  FaTrash,
+} from "react-icons/fa";
 import "./CreacionSpotForm.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -15,6 +20,7 @@ import SpotCategorizacion from "./SpotCategorizacion";
 import SpotDescripcion from "./SpotDescripcion";
 import SpotBotones from "./SpotBotones";
 import { crearSpot } from "@/services/spot.service";
+import { subirImagenesSpot } from "@/services/imagen.service";
 
 // ============================================================
 // REDUCER
@@ -79,14 +85,23 @@ const initialState = {
 // ============================================================
 // COMPONENTE IMAGE UPLOADER
 // ============================================================
-function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, onSelectIndice }) {
+function ImageUploader({
+  previews,
+  onImageChange,
+  onRemove,
+  onNavigate,
+  indice,
+  onSelectIndice,
+}) {
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef();
 
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-    const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith("image/"));
+    const files = Array.from(e.dataTransfer.files).filter((f) =>
+      f.type.startsWith("image/"),
+    );
     if (files.length) onImageChange(files);
   };
 
@@ -116,7 +131,11 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
           aria-label="Subir imágenes"
         >
           <div className="drop-zone-lottie">
-            <Lottie animationData={uploadAnimation} loop style={{ width: 110, height: 110 }} />
+            <Lottie
+              animationData={uploadAnimation}
+              loop
+              style={{ width: 110, height: 110 }}
+            />
           </div>
           <p className="drop-zone-title">Arrastra tus fotos aquí</p>
           <p className="drop-zone-sub">o haz clic para seleccionar</p>
@@ -133,7 +152,11 @@ function ImageUploader({ previews, onImageChange, onRemove, onNavigate, indice, 
             onKeyDown={(e) => e.key === "Enter" && onNavigate("next")}
             aria-label="Avanzar imagen"
           >
-            <img src={previews[indice]} alt={`Preview ${indice + 1}`} className="preview-img" />
+            <img
+              src={previews[indice]}
+              alt={`Preview ${indice + 1}`}
+              className="preview-img"
+            />
             <span className="preview-counter">
               {indice + 1} / {total}
             </span>
@@ -246,7 +269,10 @@ export default function CrearSpot() {
   const handleImagen = (files) => {
     const newPreviews = files.map((f) => URL.createObjectURL(f));
     dispatch({ type: "SET_IMAGENES", payload: [...state.imagenes, ...files] });
-    dispatch({ type: "SET_PREVIEWS", payload: [...state.previews, ...newPreviews] });
+    dispatch({
+      type: "SET_PREVIEWS",
+      payload: [...state.previews, ...newPreviews],
+    });
     dispatch({ type: "SET_INDICE_IMAGEN", payload: 0 });
   };
 
@@ -351,24 +377,35 @@ export default function CrearSpot() {
   // HANDLER DE PUBLICACIÓN
   // ============================================================
   const handlePublicar = async () => {
-    // Validar formulario
-    if (!validarFormulario()) {
-      return;
-    }
+    if (!validarFormulario()) return;
 
     dispatch({ type: "SET_CARGANDO", payload: true });
 
-    // Mostrar loading
-    const loadingSwal = Swal.fire({
-      title: "Publicando spot...",
+    Swal.fire({
+      title: "Subiendo imágenes...",
       allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
+      didOpen: () => Swal.showLoading(),
     });
 
     try {
-      // Preparar datos para el backend según el DTO CrearSpotRequestDTO
+      // 1. Subir imágenes usando el service
+      const resultadoImagenes = await subirImagenesSpot(state.imagenes);
+
+      if (!resultadoImagenes.exitoso) {
+        Swal.close();
+        dispatch({ type: "SET_CARGANDO", payload: false });
+        Swal.fire({
+          icon: "error",
+          title: "Error al subir imágenes",
+          text: resultadoImagenes.mensaje,
+          confirmButtonColor: "#806fbe",
+        });
+        return;
+      }
+
+      // 2. Crear el spot con las URLs reales
+      Swal.update({ title: "Publicando spot..." });
+
       const spotParaEnviar = {
         nombre: state.nombreLugar,
         latitud: parseFloat(state.latitud),
@@ -379,14 +416,12 @@ export default function CrearSpot() {
         descripcion: state.descripcionImagen,
         recomendacion: state.recomendacion || "",
         tipsFoto: state.tipsFoto || "",
-        imagenes: [], // TODO: Implementar subida de imágenes a Cloudinary
+        imagenes: resultadoImagenes.urls,
       };
-
-      console.log("Enviando spot:", spotParaEnviar);
 
       const resultado = await crearSpot(spotParaEnviar);
 
-      await loadingSwal.close();
+      Swal.close();
       dispatch({ type: "SET_CARGANDO", payload: false });
 
       if (resultado.exitoso) {
@@ -408,14 +443,18 @@ export default function CrearSpot() {
         });
       }
     } catch (error) {
-      await loadingSwal.close();
+      Swal.close();
       dispatch({ type: "SET_CARGANDO", payload: false });
 
-      console.error("Error inesperado:", error);
+      const mensaje =
+        error.response?.data?.mensaje ||
+        error.response?.data?.message ||
+        "Ocurrió un error al publicar el spot.";
+
       Swal.fire({
         icon: "error",
         title: "Error inesperado",
-        text: "Ocurrió un error al publicar el spot. Por favor intenta nuevamente.",
+        text: mensaje,
         confirmButtonColor: "#806fbe",
       });
     }

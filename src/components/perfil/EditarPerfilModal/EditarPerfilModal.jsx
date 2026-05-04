@@ -1,17 +1,18 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Modal, Form, Row, Col } from "react-bootstrap";
-import {
-  FaUser, FaEnvelope, FaPhone,
-  FaShieldAlt,
-} from "react-icons/fa";
+import { FaUser, FaEnvelope, FaPhone, FaShieldAlt } from "react-icons/fa";
 import { FiEdit3 } from "react-icons/fi";
 import "./EditarPerfilModal.css";
 import Swal from "sweetalert2";
 import FotoPerfil from "./FotoPerfil";
 import BotonesAccion from "./BotonesAccion";
 import PassField from "./PassField";
-import { putEditarPerfil, patchCambiarContrasena } from "../../../api/usuarioApi";
+import {
+  putEditarPerfil,
+  patchCambiarContrasena,
+} from "../../../api/usuarioApi";
 import { useAuth } from "../../../context/AuthContext";
+import { subirAvatar } from "@/services/imagen.service";
 
 export default function EditarPerfilModal({
   show,
@@ -36,19 +37,22 @@ export default function EditarPerfilModal({
   });
 
   const [fotoPerfil, setFotoPerfil] = useState(
-    perfilData?.fotoPerfil || "/images/user-pfp/default-avatar.jpg"
+    perfilData?.fotoPerfil || "/images/user-pfp/default-avatar.jpg",
   );
   const [verActual, setVerActual] = useState(false);
   const [verNueva, setVerNueva] = useState(false);
   const [verConfirmar, setVerConfirmar] = useState(false);
 
   // ─── validación de contraseña ──────────────────────────
-  const validationRules = useMemo(() => ({
-    length: formData.contrasenaNueva.length >= 8,
-    upper: /[A-Z]/.test(formData.contrasenaNueva),
-    lower: /[a-z]/.test(formData.contrasenaNueva),
-    number: /[0-9]/.test(formData.contrasenaNueva),
-  }), [formData.contrasenaNueva]);
+  const validationRules = useMemo(
+    () => ({
+      length: formData.contrasenaNueva.length >= 8,
+      upper: /[A-Z]/.test(formData.contrasenaNueva),
+      lower: /[a-z]/.test(formData.contrasenaNueva),
+      number: /[0-9]/.test(formData.contrasenaNueva),
+    }),
+    [formData.contrasenaNueva],
+  );
 
   const passwordIsValid = Object.values(validationRules).every(Boolean);
 
@@ -58,16 +62,22 @@ export default function EditarPerfilModal({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFotoChange = (e) => {
+  const handleFotoChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      Swal.fire({ icon: "error", title: "Archivo demasiado grande", text: "Máximo 5MB." });
-      return;
+
+    const previewUrl = URL.createObjectURL(file);
+    setFotoPerfil(previewUrl); // preview inmediato
+
+    const resultado = await subirAvatar(file);
+    if (resultado.exitoso) {
+      setFotoPerfil(resultado.url); 
+    } else {
+      Swal.fire({ icon: "error", title: "Error", text: resultado.mensaje });
+      setFotoPerfil(
+        perfilData?.fotoPerfil || "/images/user-pfp/default-avatar.jpg",
+      );
     }
-    const reader = new FileReader();
-    reader.onload = (ev) => setFotoPerfil(ev.target.result);
-    reader.readAsDataURL(file);
   };
 
   const handleEliminarFoto = () => {
@@ -88,7 +98,7 @@ export default function EditarPerfilModal({
         icon: "info",
         title: "Modo demostración",
         text: "Los cambios no se guardarán porque no hay conexión con el servidor.",
-        confirmButtonColor: "var(--color-primary)"
+        confirmButtonColor: "var(--color-primary)",
       });
       // Simular actualización local
       if (onPerfilActualizado) {
@@ -119,11 +129,12 @@ export default function EditarPerfilModal({
       Swal.fire({
         icon: "success",
         title: "¡Perfil actualizado!",
-        confirmButtonColor: "var(--color-primary)"
+        confirmButtonColor: "var(--color-primary)",
       });
       onHide();
     } catch (error) {
-      const mensaje = error.response?.data?.mensaje || "Error al actualizar el perfil";
+      const mensaje =
+        error.response?.data?.mensaje || "Error al actualizar el perfil";
       Swal.fire({ icon: "error", title: "Error", text: mensaje });
     }
   };
@@ -138,7 +149,7 @@ export default function EditarPerfilModal({
         icon: "info",
         title: "Modo demostración",
         text: "En modo demo no se puede cambiar la contraseña.",
-        confirmButtonColor: "var(--color-primary)"
+        confirmButtonColor: "var(--color-primary)",
       });
       onHide();
       return;
@@ -152,7 +163,7 @@ export default function EditarPerfilModal({
       Swal.fire({
         icon: "error",
         title: "Contraseña no válida",
-        text: "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula y un número."
+        text: "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula y un número.",
       });
       return;
     }
@@ -164,23 +175,24 @@ export default function EditarPerfilModal({
       await patchCambiarContrasena({
         contrasenaActual: formData.contrasenaActual,
         nuevaContrasena: formData.contrasenaNueva,
-        confirmarContrasena: formData.confirmarContrasena
+        confirmarContrasena: formData.confirmarContrasena,
       });
       await recargarUsuario();
       Swal.fire({
         icon: "success",
         title: "¡Contraseña actualizada!",
-        confirmButtonColor: "var(--color-primary)"
+        confirmButtonColor: "var(--color-primary)",
       });
       setFormData((p) => ({
         ...p,
         contrasenaActual: "",
         contrasenaNueva: "",
-        confirmarContrasena: ""
+        confirmarContrasena: "",
       }));
       onHide();
     } catch (error) {
-      const mensaje = error.response?.data?.mensaje || "Error al cambiar la contraseña";
+      const mensaje =
+        error.response?.data?.mensaje || "Error al cambiar la contraseña";
       Swal.fire({ icon: "error", title: "Error", text: mensaje });
     }
   };
@@ -197,7 +209,9 @@ export default function EditarPerfilModal({
       {/* HEADER */}
       <Modal.Header closeButton className="modal-header-custom">
         <div className="modal-title-custom">
-          <span className="mh-icon-box"><FiEdit3 /></span>
+          <span className="mh-icon-box">
+            <FiEdit3 />
+          </span>
           Editar perfil
         </div>
       </Modal.Header>
@@ -223,11 +237,9 @@ export default function EditarPerfilModal({
       </div>
 
       <Modal.Body className="modal-body-custom">
-
         {/* ══ TAB: PERFIL ══════════════════════════════════ */}
         {tabActiva === "perfil" && (
           <Form onSubmit={handleSubmitPerfil}>
-
             {/* Hero foto */}
             <div className="profile-hero">
               <FotoPerfil
@@ -236,8 +248,12 @@ export default function EditarPerfilModal({
                 onEliminarFoto={handleEliminarFoto}
               />
               <div className="hero-info">
-                <p className="hero-name">{formData.nombresCompletos || "Usuario"}</p>
-                <p className="hero-user">@{formData.nombreUsuario || "usuario"}</p>
+                <p className="hero-name">
+                  {formData.nombresCompletos || "Usuario"}
+                </p>
+                <p className="hero-user">
+                  @{formData.nombreUsuario || "usuario"}
+                </p>
                 <div className="hero-pills">
                   <span className="hpill">Miembro</span>
                   <span className="hpill accent">
@@ -280,7 +296,9 @@ export default function EditarPerfilModal({
                       placeholder="Cuéntanos sobre ti..."
                       maxLength={160}
                     />
-                    <span className="char-hint">{formData.biografia?.length || 0}/160</span>
+                    <span className="char-hint">
+                      {formData.biografia?.length || 0}/160
+                    </span>
                   </div>
                 </Col>
               </Row>
@@ -336,13 +354,15 @@ export default function EditarPerfilModal({
         {tabActiva === "contrasena" && (
           <Form onSubmit={handleSubmitContrasena}>
             <div className="form-block pass-tab-block">
-
               {/* Ilustración / ícono decorativo */}
               <div className="pass-hero">
-                <span className="pass-hero-icon"><FaShieldAlt /></span>
+                <span className="pass-hero-icon">
+                  <FaShieldAlt />
+                </span>
                 <p className="pass-hero-title">Cambiar contraseña</p>
                 <p className="pass-hero-sub">
-                  Elige una contraseña segura con al menos 8 caracteres, una mayúscula, una minúscula y un número.
+                  Elige una contraseña segura con al menos 8 caracteres, una
+                  mayúscula, una minúscula y un número.
                 </p>
               </div>
 
@@ -388,7 +408,6 @@ export default function EditarPerfilModal({
             <BotonesAccion onCancelar={onHide} />
           </Form>
         )}
-
       </Modal.Body>
     </Modal>
   );
