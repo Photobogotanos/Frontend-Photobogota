@@ -1,9 +1,10 @@
 import Cookies from "js-cookie";
+import { clienteApi } from "@/api/axiosConfig";
 
 const COOKIE_EXPIRY_DAYS = 7;
 const COOKIE_OPTIONS = { expires: COOKIE_EXPIRY_DAYS, sameSite: "Strict" };
 
-// Tokens 
+// Tokens
 
 export const guardarTokens = (token, refreshToken) => {
   Cookies.set("token", token, COOKIE_OPTIONS);
@@ -20,8 +21,7 @@ const eliminarTokens = () => {
   sessionStorage.clear();
 };
 
-// Sesión de usuario 
-
+// Sesión de usuario
 export const guardarSesion = (usuario) => {
   localStorage.setItem("logueado", "true");
   localStorage.setItem("miembro", JSON.stringify(usuario));
@@ -48,7 +48,7 @@ export const actualizarSesion = (datosActualizados) => {
 
 export const obtenerRolVerificado = async () => {
   try {
-    const { data } = await clienteApi.get('/auth/verify-session');
+    const { data } = await clienteApi.get("/auth/verify-session");
     return data.rol; // viene del JWT firmado en el servidor
   } catch {
     return null;

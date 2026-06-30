@@ -1,68 +1,90 @@
 import { postRegistrarUsuario, postLogin } from "@/api/usuarioApi";
-import { registrarUsuarioDemo, USUARIOS_DEMO, hashearContrasena } from "@/mocks/usuario.mock";
+import {
+  registrarUsuarioDemo,
+  USUARIOS_DEMO,
+  hashearContrasena,
+} from "@/mocks/usuario.mock";
 import { obtenerEstadoServidor } from "@/utils/serverStatus";
 import { guardarTokens, guardarSesion } from "@/utils/sessionHelper";
 
 export const iniciarSesion = async (login, contrasena) => {
-  const isOnline = await obtenerEstadoServidor();
-
-  if (!isOnline) {
-
-    const contrasenaHash = await hashearContrasena(contrasena);
-
-    const usuarioEncontrado = USUARIOS_DEMO.find(
-      (u) =>
-        (u.nombreUsuario === login || u.correo === login) &&
-        u.contrasenaHash === contrasenaHash
-    );
-
-    if (!usuarioEncontrado) {
-      return { exitoso: false, esDemo: false, mensaje: "Credenciales incorrectas." };
-    }
-
-    const usuarioFinal = {
-      nombre: usuarioEncontrado.nombreUsuario, // nombreUsuario del DTO
-      username: "@" + usuarioEncontrado.nombreUsuario,
-      email: usuarioEncontrado.correo,
-      rol: usuarioEncontrado.rol,
-      ...(usuarioEncontrado.rol === "MIEMBRO" && usuarioEncontrado.nivel !== undefined && { nivel: usuarioEncontrado.nivel }),
-    };
-
-    guardarSesion(usuarioFinal);
-    return { exitoso: true, esDemo: true, datos: usuarioFinal };
-  }
-
   try {
     const respuesta = await postLogin({ login, contrasena });
-    const { token, refreshToken, nombreUsuario, email, rol, nivel, mensaje } = respuesta.data;
+    const { token, refreshToken, nombreUsuario, email, rol, nivel, mensaje } =
+      respuesta.data;
 
-    // Guardar tokens
     guardarTokens(token, refreshToken);
-    
-    // Crear objeto de sesión según LoginResponseDTO
-    // El nivel solo se usa para miembros
+
     const usuario = {
       nombre: nombreUsuario,
       username: "@" + nombreUsuario,
-      email: email,
-      rol: rol,
-      ...(rol === "MIEMBRO" && nivel !== undefined && { nivel: nivel }),
+      email,
+      rol,
+      ...(rol === "MIEMBRO" && nivel !== undefined && { nivel }),
     };
-    
+
     guardarSesion(usuario);
 
     return { exitoso: true, esDemo: false, datos: usuario, mensaje };
   } catch (error) {
-    const status = error.response?.status;
+    const huboRespuestaDelServidor = !!error.response;
+
+    // Solo vamos a modo demo si el servidor realmente no respondió
+    // (caído, error de red, timeout, CORS, etc.)
+    if (!huboRespuestaDelServidor) {
+      return await intentarLoginDemo(login, contrasena);
+    }
+
+    // Hubo respuesta del backend: es un error real, no un problema de disponibilidad.
+    const status = error.response.status;
     let mensaje = "Error al conectar con el servidor.";
 
     if (status === 401) mensaje = "El usuario o contraseña no son correctos.";
-    else if (status === 404) mensaje = "No existe una cuenta con ese usuario o correo.";
+    else if (status === 404)
+      mensaje = "No existe una cuenta con ese usuario o correo.";
     else if (status === 400)
-      mensaje = error.response?.data?.message || "Por favor verifica los datos ingresados.";
+      mensaje =
+        error.response?.data?.message ||
+        "Por favor verifica los datos ingresados.";
 
     return { exitoso: false, esDemo: false, mensaje };
   }
+};
+
+/**
+ * Lógica de login contra los usuarios demo (mock local).
+ * Extraída a su propia función para mantener iniciarSesion() legible.
+ */
+const intentarLoginDemo = async (login, contrasena) => {
+  const contrasenaHash = await hashearContrasena(contrasena);
+
+  const usuarioEncontrado = USUARIOS_DEMO.find(
+    (u) =>
+      (u.nombreUsuario === login || u.correo === login) &&
+      u.contrasenaHash === contrasenaHash,
+  );
+
+  if (!usuarioEncontrado) {
+    return {
+      exitoso: false,
+      esDemo: false,
+      mensaje: "Credenciales incorrectas.",
+    };
+  }
+
+  const usuarioFinal = {
+    nombre: usuarioEncontrado.nombreUsuario,
+    username: "@" + usuarioEncontrado.nombreUsuario,
+    email: usuarioEncontrado.correo,
+    rol: usuarioEncontrado.rol,
+    ...(usuarioEncontrado.rol === "MIEMBRO" &&
+      usuarioEncontrado.nivel !== undefined && {
+        nivel: usuarioEncontrado.nivel,
+      }),
+  };
+
+  guardarSesion(usuarioFinal);
+  return { exitoso: true, esDemo: true, datos: usuarioFinal };
 };
 
 export const registrarUsuario = async (datos) => {
@@ -88,7 +110,8 @@ export const registrarUsuario = async (datos) => {
     return {
       exitoso: false,
       esDemo: false,
-      mensaje: error.response?.data?.mensaje || "Error al conectar con el servidor.",
+      mensaje:
+        error.response?.data?.mensaje || "Error al conectar con el servidor.",
     };
   }
 };

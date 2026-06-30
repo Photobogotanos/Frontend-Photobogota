@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useState } from "react";
+import { useReducer, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import "./LoginForm.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,16 +13,9 @@ import { validarLogin } from "@/utils/validacionesLogin";
 import {
   iniciarMonitoreoServidor,
   suscribirEstadoServidor,
-  getCurrentServerStatus
+  getCurrentServerStatus,
 } from "@/utils/serverStatus";
 import DemoAccountsPanel from "./DemoAccountsPanel";
-
-const CREDENCIALES_DEMO = {
-  socio: "socio123",
-  perro: "encerrado",
-  moderador: "mod123",
-  miembro: "miembro123",
-};
 
 const CUENTAS_ESPECIALES = ["SOCIO", "MOD", "ADMIN", "MIEMBRO"];
 const MAX_INTENTOS = 5;
@@ -101,7 +94,7 @@ export default function LoginForm() {
   const estaBloqueado = () => {
     if (state.bloqueadoHasta && new Date() < new Date(state.bloqueadoHasta)) {
       const tiempoRestante = Math.ceil(
-        (new Date(state.bloqueadoHasta) - new Date()) / 1000 / 60
+        (new Date(state.bloqueadoHasta) - new Date()) / 1000 / 60,
       );
       toast.error(`Demasiados intentos. Espera ${tiempoRestante} minutos.`);
       return true;
@@ -112,22 +105,8 @@ export default function LoginForm() {
   // Ordenar por rol: MIEMBRO, SOCIO, MOD, ADMIN
   const ordenRol = { MIEMBRO: 1, SOCIO: 2, MOD: 3, ADMIN: 4 };
   const cuentasEspeciales = USUARIOS_DEMO.filter((u) =>
-    CUENTAS_ESPECIALES.includes(u.rol)
+    CUENTAS_ESPECIALES.includes(u.rol),
   ).sort((a, b) => ordenRol[a.rol] - ordenRol[b.rol]);
-
-  const copiarCredenciales = (nombreUsuario) => {
-    const pass = CREDENCIALES_DEMO[nombreUsuario] ?? "";
-    dispatch({
-      type: "SET_FIELD",
-      payload: { field: "usuarioOCorreo", value: nombreUsuario },
-    });
-    dispatch({
-      type: "SET_FIELD",
-      payload: { field: "contrasena", value: pass },
-    });
-    dispatch({ type: "SET_COPIADO", payload: nombreUsuario });
-    setTimeout(() => dispatch({ type: "CLEAR_COPIADO" }), 2000);
-  };
 
   const manejarEnvio = async (e) => {
     e.preventDefault();
@@ -147,7 +126,7 @@ export default function LoginForm() {
     try {
       const resultado = await iniciarSesionService(
         state.usuarioOCorreo.trim(),
-        state.contrasena
+        state.contrasena,
       );
 
       if (!resultado.exitoso) {
@@ -158,11 +137,11 @@ export default function LoginForm() {
           const bloqueoHasta = new Date(Date.now() + TIEMPO_BLOQUEO);
           dispatch({ type: "SET_BLOQUEADO", payload: bloqueoHasta });
           toast.error(
-            `Demasiados intentos fallidos. Cuenta bloqueada por 5 minutos.`
+            `Demasiados intentos fallidos. Cuenta bloqueada por 5 minutos.`,
           );
         } else {
           toast.error(
-            `${resultado.mensaje} (Intento ${nuevosIntentos}/${MAX_INTENTOS})`
+            `${resultado.mensaje} (Intento ${nuevosIntentos}/${MAX_INTENTOS})`,
           );
         }
         return;
@@ -171,7 +150,8 @@ export default function LoginForm() {
       // Resetear intentos al iniciar sesión exitosamente
       dispatch({ type: "RESET_INTENTOS" });
 
-      const esModoDemo = resultado.esDemo === true || state.servidorOnline === false;
+      const esModoDemo =
+        resultado.esDemo === true || state.servidorOnline === false;
 
       if (esModoDemo) {
         localStorage.setItem("modoDemo", "true");
@@ -197,7 +177,7 @@ export default function LoginForm() {
             padding: "14px 20px",
             minWidth: "280px",
           },
-        }
+        },
       );
 
       navegar("/mapa");
@@ -218,16 +198,6 @@ export default function LoginForm() {
     }
   };
 
-  const etiquetaRol = (rol) => {
-    const mapa = {
-      SOCIO: { texto: "Socio", color: "#806fbe" },
-      ADMIN: { texto: "Admin", color: "#e07b54" },
-      MOD: { texto: "Mod", color: "#4a9b7f" },
-      MIEMBRO: { texto: "Miembro", color: "#888" },
-    };
-    return mapa[rol] || { texto: rol, color: "#888" };
-  };
-
   // Mostrar panel demo SOLO cuando el servidor está offline (estado claro)
   const mostrarPanelDemo = state.servidorOnline === false;
 
@@ -246,12 +216,13 @@ export default function LoginForm() {
         </div>
 
         {/* Indicador de bloqueo */}
-        {state.bloqueadoHasta && new Date() < new Date(state.bloqueadoHasta) && (
-          <div className="alert alert-warning mt-3 text-center" role="alert">
-            Cuenta temporalmente bloqueada. Espera {tiempoBloqueoRestante}{" "}
-            minutos.
-          </div>
-        )}
+        {state.bloqueadoHasta &&
+          new Date() < new Date(state.bloqueadoHasta) && (
+            <div className="alert alert-warning mt-3 text-center" role="alert">
+              Cuenta temporalmente bloqueada. Espera {tiempoBloqueoRestante}{" "}
+              minutos.
+            </div>
+          )}
 
         <Form.Group className="mt-5">
           <Form.Label className="login-form-label">
@@ -342,8 +313,9 @@ export default function LoginForm() {
         <div className="solicitud-form-submit mt-4">
           <button
             type="submit"
-            className={`lf-submit-btn ${state.cargando ? "lf-submit-btn--loading" : ""
-              }`}
+            className={`lf-submit-btn ${
+              state.cargando ? "lf-submit-btn--loading" : ""
+            }`}
             disabled={
               state.cargando ||
               (state.bloqueadoHasta &&

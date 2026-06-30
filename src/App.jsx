@@ -10,25 +10,20 @@ import "@/hooks/useRefreshLimit.css";
 import { MotionConfig } from "framer-motion";
 
 function App() {
-  const { isBlocked, remainingCooldown, manualReset } = useRefreshLimit();
+  const { isBlocked, remainingCooldown } = useRefreshLimit();
 
   if (isBlocked) {
     return (
       <div className="limit-screen-container">
         <div className="limit-card">
-          <Lottie
-            animationData={SecurityAnimation}
-            className="limit-lottie"
-          />
+          <Lottie animationData={SecurityAnimation} className="limit-lottie" />
           <h1 className="limit-title">¡Acceso temporalmente pausado!</h1>
           <p className="limit-text">
-            Has refrescado la página demasiadas veces.<br />
-            Espera un momento para continuar:
+            Has refrescado la página demasiadas veces.
+            <br />
+            Vuelve a intentarlo en:
           </p>
           <div className="limit-timer">{remainingCooldown}s</div>
-          <button className="limit-btn" onClick={manualReset}>
-            Reintentar ahora
-          </button>
         </div>
       </div>
     );
