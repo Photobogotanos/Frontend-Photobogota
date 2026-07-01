@@ -49,6 +49,15 @@ export function AuthProvider({ children }) {
           const response = await getUsuarioAutenticado(); // GET /auth/me
           const datosBackend = response.data;
 
+          if (datosBackend.estadoCuenta === false) {
+            toast.error("Usuario inactivo. Contacta al administrador para activar tu cuenta.");
+            cerrarSesionHelper();
+            setUsuario(null);
+            setLogueado(false);
+            setCargando(false);
+            return;
+          }
+
           const sesionLocal = obtenerSesion();
           const usuarioVerificado = {
             ...sesionLocal,

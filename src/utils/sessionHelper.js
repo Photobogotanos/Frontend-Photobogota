@@ -49,6 +49,9 @@ export const actualizarSesion = (datosActualizados) => {
 export const obtenerRolVerificado = async () => {
   try {
     const { data } = await clienteApi.get("/auth/verify-session");
+    if (data.estadoCuenta === false) {
+      throw new Error("Usuario inactivo");
+    }
     return data.rol; // viene del JWT firmado en el servidor
   } catch {
     return null;
