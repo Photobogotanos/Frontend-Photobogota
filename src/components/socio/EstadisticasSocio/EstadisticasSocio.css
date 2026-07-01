@@ -111,9 +111,10 @@
   flex-shrink: 0;
 }
 
-.stat-info {
+.stat-info-socio {
   display: flex;
   flex-direction: column;
+  background-color: none;
 }
 
 .stat-titulo {

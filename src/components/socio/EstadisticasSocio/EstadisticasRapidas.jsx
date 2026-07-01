@@ -92,7 +92,7 @@ const EstadisticasRapidas = ({ periodo }) => {
               <div className="stat-icon" style={{ backgroundColor: `${stat.color}15`, color: stat.color }}>
                 {stat.icono}
               </div>
-              <div className="stat-info">
+              <div className="stat-info-socio">
                 <span className="stat-titulo">{stat.titulo}</span>
                 <span className="stat-valor">{stat.valor}</span>
                 <span className={`stat-cambio ${stat.positivo ? "positivo" : "negativo"}`}>

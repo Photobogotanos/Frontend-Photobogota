@@ -45,7 +45,7 @@ export default function MenuItems({ rol, cerrar }) {
       {/* Menú para socios */}
       {rol === "SOCIO" && (
         <>
-          <SidebarLink
+          {/*<SidebarLink
             icon={<FaStore />}
             texto="Locales"
             to="/locales"
@@ -58,7 +58,7 @@ export default function MenuItems({ rol, cerrar }) {
             to="/socio-promociones"
             onClick={cerrar}
             activo={esRutaActiva("/socio-promociones")}
-          />
+          />*/}
           <SidebarLink
             icon={<FaChartBar />}
             texto="Estadísticas"
