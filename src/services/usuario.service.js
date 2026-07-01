@@ -10,8 +10,16 @@ import { guardarTokens, guardarSesion } from "@/utils/sessionHelper";
 export const iniciarSesion = async (login, contrasena) => {
   try {
     const respuesta = await postLogin({ login, contrasena });
-    const { token, refreshToken, nombreUsuario, email, rol, nivel, mensaje } =
+    const { token, refreshToken, nombreUsuario, email, rol, nivel, mensaje, estadoCuenta } =
       respuesta.data;
+
+    if (estadoCuenta === false) {
+      return { 
+        exitoso: false, 
+        esDemo: false, 
+        mensaje: "Usuario inactivo. Contacta al administrador para activar tu cuenta." 
+      };
+    }
 
     guardarTokens(token, refreshToken);
 
@@ -20,6 +28,7 @@ export const iniciarSesion = async (login, contrasena) => {
       username: "@" + nombreUsuario,
       email,
       rol,
+      estadoCuenta,
       ...(rol === "MIEMBRO" && nivel !== undefined && { nivel }),
     };
 
