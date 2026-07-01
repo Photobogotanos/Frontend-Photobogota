@@ -11,6 +11,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./MapaBogota.css";
 import camaraIcon from "@/assets/images/icons/camara.jpg";
+import localIcon from "@/assets/images/icons/local.jpg";
 import { FaPlus, FaMinus, FaLocationArrow } from "react-icons/fa";
 import SpotPreviewModal from "@/components/spots/SpotPreviewModal/SpotPreviewModal";
 import { obtenerSpots } from "@/services/spot.service";
@@ -23,16 +24,18 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-const createCustomIcon = () =>
-  new L.Icon({
-    iconUrl: camaraIcon,
-    iconRetinaUrl: camaraIcon,
+const createCustomIcon = (esLocal) => {
+  const iconUrl = esLocal ? localIcon : camaraIcon;
+  return new L.Icon({
+    iconUrl,
+    iconRetinaUrl: iconUrl,
     iconSize: [40, 40],
     iconAnchor: [20, 40],
     popupAnchor: [0, -40],
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
     shadowSize: [41, 41],
   });
+};
 
 const createUserLocationIcon = () => new L.Icon.Default();
 
@@ -113,20 +116,22 @@ const MapaBogota = ({ filtros = {} }) => {
           );
         });
 
-        const spotsFormateados = spotsValidos.map(spot => ({
-          id: spot.id,
-          nombre: spot.nombre || "Sin nombre",
-          direccion: spot.direccion || "",
-          coord: [parseFloat(spot.latitud), parseFloat(spot.longitud)], // ← Asegura números
-          categoria: spot.categoria,
-          localidad: spot.localidad,
-          descripcion: spot.descripcion,
-          rating: spot.rating,
-          totalResenas: spot.totalResenas,
-          imagen: spot.imagen || spot.imagenes?.[0],
-          recomendacion: spot.recomendacion,
-          tipsFoto: spot.tipsFoto,
-        }));
+const spotsFormateados = spotsValidos.map(spot => ({
+           id: spot.id,
+           nombre: spot.nombre || "Sin nombre",
+           direccion: spot.direccion || "",
+           coord: [parseFloat(spot.latitud), parseFloat(spot.longitud)], // ← Asegura números
+           categoria: spot.categoria,
+           localidad: spot.localidad,
+           descripcion: spot.descripcion,
+           rating: spot.rating,
+           totalResenas: spot.totalResenas,
+           imagen: spot.imagen || spot.imagenes?.[0],
+           recomendacion: spot.recomendacion,
+           tipsFoto: spot.tipsFoto,
+           creadorId: spot.creadorId,
+           rol: spot.rol || spot.creador?.rol,
+         }));
 
         setSpots(spotsFormateados);
         setUsandoMock(resultado.esMock || false);
@@ -180,12 +185,13 @@ const MapaBogota = ({ filtros = {} }) => {
 
           {spots.map((lugar) => {
             if (!lugar.coord || lugar.coord.length !== 2) return null;
+            const esLocal = lugar.rol?.toUpperCase() === "SOCIO";
 
             return (
               <Marker
                 key={lugar.id}
                 position={lugar.coord}
-                icon={createCustomIcon()}
+                icon={createCustomIcon(esLocal)}
                 eventHandlers={{
                   click: () => handleMarkerClick(lugar),
                 }}

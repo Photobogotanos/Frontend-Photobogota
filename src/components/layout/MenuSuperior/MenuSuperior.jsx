@@ -30,7 +30,8 @@ export default function MenuSuperior() {
   const [state, dispatch] = useReducer(menuReducer, initialState);
   const { mostrarSidebar, pulsando } = state;
 
-  const { logueado, cerrarSesion } = useAuth();
+  const { logueado, cerrarSesion, usuario } = useAuth();
+  const esSocio = usuario?.rol === "SOCIO" || usuario?.rol === "Socio";
 
   const navegar = useNavigate();
   const location = useLocation();
@@ -150,11 +151,11 @@ export default function MenuSuperior() {
                 className={`btn-crear-publicacion ${pulsando ? "pulsing" : ""}`}
                 onMouseEnter={() => dispatch({ type: "SET_PULSANDO", payload: false })}
                 onClick={cerrarMenuResponsive}
-                aria-label="Crear nuevo spot"
+                aria-label={esSocio ? "Crear nuevo local" : "Crear nuevo spot"}
               >
                 <FaPlus />
-                <span className="texto-completo">Crear Spot</span>
-                <span className="texto-corto">Crear</span>
+                <span className="texto-completo">{esSocio ? "Crear Local" : "Crear Spot"}</span>
+                <span className="texto-corto">{esSocio ? "Local" : "Crear"}</span>
               </Link>
 
               <Notificaciones notificaciones={3} />
