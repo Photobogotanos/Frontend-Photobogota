@@ -22,6 +22,7 @@ import CrearCuentasAdminPage from "@/pages/admin/CrearCuentasAdmin/CrearCuentasA
 import AdminUsuariosPage from "@/pages/admin/AdminUsuarios/AdminUsuariosPage";
 import AdminLogsPage from "@/pages/admin/AdminLogs/AdminLogsPage";
 import GestionCategoriasPage from "../pages/moderador/GestionCategoriasPage/GestionCategoriasPage";
+import PreferenciasNotificacionesPage from "@/pages/notificaciones/PreferenciasNotificaciones/PreferenciasNotificacionesPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 const AppRouter = () => {
@@ -51,6 +52,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute>
               <MiPerfil />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/perfil/preferencias-notificaciones"
+          element={
+            <ProtectedRoute>
+              <PreferenciasNotificacionesPage />
             </ProtectedRoute>
           }
         />

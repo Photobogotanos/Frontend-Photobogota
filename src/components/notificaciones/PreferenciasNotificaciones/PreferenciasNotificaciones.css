@@ -1,0 +1,268 @@
+/* PreferenciasNotificaciones.css */
+.preferencias-container {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.preferencias-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+
+.preferencias-subtitle {
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+}
+
+.preferencias-title {
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 2.4rem;
+  letter-spacing: -0.03em;
+  color: #0a0a0a;
+  line-height: 1.1;
+}
+
+.preferencias-line {
+  height: 2px;
+  width: 80px;
+  background: linear-gradient(90deg, var(--color-primary), #a294d0);
+  margin-top: 12px;
+  border-radius: 2px;
+}
+
+/* Card */
+.preferencias-card {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 15px 35px rgba(128, 111, 190, 0.15);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.preferencias-card .card-body {
+  padding: 2.25rem;
+}
+
+@media (max-width: 576px) {
+  .preferencias-card .card-body {
+    padding: 1.75rem 1.25rem;
+  }
+  .preferencias-title {
+    font-size: 2.05rem;
+  }
+}
+
+/* Toggle morado personalizado */
+.custom-switch .form-check-input {
+  width: 52px;
+  height: 28px;
+  background-color: #e9ecef;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-switch .form-check-input:checked {
+  background-color: var(--color-primary);
+  box-shadow: 0 0 0 0.25rem rgba(128, 111, 190, 0.25);
+}
+
+/* Secciones más compactas */
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-dark);
+  margin-bottom: 1.1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Checkboxes más compactos */
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem 1.5rem;
+}
+
+.checkbox-grid .form-check {
+  margin-bottom: 0;
+}
+
+@media (max-width: 576px) {
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+}
+
+/* React Select */
+.select-container .react-select__control {
+  border-radius: 50px;
+  border: 1.5px solid #e0e0e0;
+  padding: 4px 12px;
+  min-height: 52px;
+}
+
+.select-container .react-select__control:hover,
+.select-container .react-select__control--is-focused {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem rgba(128, 111, 190, 0.15);
+}
+
+/* Botón */
+.preferencias-btn {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #5a4a9d 100%);
+  color: white;
+  border: none;
+  padding: 14px 40px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border-radius: 50px;
+  box-shadow: 0 6px 20px rgba(128, 111, 190, 0.32);
+  transition: all 0.3s ease;
+  min-width: 220px;
+}
+
+.preferencias-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(128, 111, 190, 0.4);
+}
+
+.preferencias-btn:active {
+  transform: scale(0.97);
+}
+
+@media (max-width: 576px) {
+  .preferencias-btn {
+    width: 100%;
+  }
+}
+
+/* Toggle morado + animación de campana */
+.custom-switch .form-check-input {
+  width: 52px !important;
+  height: 28px !important;
+  min-width: 52px !important; /* Asegura el ancho mínimo */
+  max-width: 52px !important; /* Evita que se estire */
+  background-color: #e9ecef;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none !important; /* Importante: resetea estilos nativos */
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  border-radius: 50px !important; /* Bordes redondeados */
+  position: relative;
+  flex-shrink: 0; /* Evita que se encoja en flex */
+}
+
+/* Fondo del toggle cuando está activado */
+.custom-switch .form-check-input:checked {
+  background-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(128, 111, 190, 0.25);
+}
+
+/* Círculo interior (el "botón" que se desliza) */
+.custom-switch .form-check-input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background-color: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Cuando está activado, el círculo se mueve a la derecha */
+.custom-switch .form-check-input:checked::after {
+  transform: translateX(24px);
+}
+
+/* Asegura que el switch y la label estén alineados */
+.form-check.custom-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 0;
+}
+
+.form-check.custom-switch .form-check-input {
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Para la label que contiene el ícono */
+.form-check-label.d-flex.align-items-center {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Asegura que el contenedor padre no restrinja el tamaño */
+.preferencias-card .card-body {
+  padding: 2.25rem;
+  overflow: visible !important; /* Evita que corte el toggle */
+}
+
+@media (max-width: 576px) {
+  .preferencias-card .card-body {
+    padding: 1.75rem 1.25rem;
+  }
+  .preferencias-title {
+    font-size: 2.05rem;
+  }
+}
+
+/* Animación de la campana */
+@keyframes bellRing {
+  0% {
+    transform: rotate(0deg);
+  }
+  10% {
+    transform: rotate(18deg);
+  }
+  20% {
+    transform: rotate(-15deg);
+  }
+  30% {
+    transform: rotate(12deg);
+  }
+  40% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+  60% {
+    transform: rotate(-4deg);
+  }
+  70% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.bell-icon {
+  font-size: 1.35rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.bell-ringing {
+  animation: bellRing 0.7s ease-in-out;
+  color: var(--color-primary);
+}

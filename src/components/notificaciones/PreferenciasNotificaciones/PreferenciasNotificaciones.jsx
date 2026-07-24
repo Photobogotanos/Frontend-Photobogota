@@ -1,0 +1,189 @@
+import { useState, useEffect } from "react";
+import Select from "react-select";
+import { useAuth } from "@/context/AuthContext";
+import {
+  obtenerPreferenciasNotificaciones,
+  actualizarPreferenciasNotificaciones,
+} from "@/services/notificacion.service";
+import toast from "react-hot-toast";
+import { FaBell, FaSave } from "react-icons/fa";
+import "./PreferenciasNotificaciones.css";
+
+const canalOptions = [
+  { value: "APP", label: "Solo en la aplicación" },
+  { value: "EMAIL", label: "Solo por correo electrónico" },
+  { value: "AMBOS", label: "Aplicación + Correo electrónico" },
+];
+
+const PreferenciasNotificaciones = () => {
+  const { usuario } = useAuth();
+  const [preferencias, setPreferencias] = useState({
+    notificacionesActivas: true,
+    canalPreferido: "APP",
+    tiposSilenciados: [],
+  });
+  const [cargando, setCargando] = useState(false);
+  const [guardando, setGuardando] = useState(false);
+
+  const tiposNotificacion = [
+    {
+      value: "NUEVO_SPOT_INTERES",
+      label: "Nuevos spots en mis zonas/categorías",
+    },
+    { value: "NUEVA_RESENA", label: "Nuevas reseñas en mis spots" },
+    { value: "ANUNCIO_ADMIN", label: "Anuncios de administradores" },
+    { value: "ANUNCIO_MODERADOR", label: "Anuncios de moderadores" },
+  ];
+
+  useEffect(() => {
+    if (usuario) cargarPreferencias();
+  }, [usuario]);
+
+  const cargarPreferencias = async () => {
+    setCargando(true);
+    try {
+      const res = await obtenerPreferenciasNotificaciones();
+      if (res.exitoso && res.data) {
+        setPreferencias(res.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const handleCanalChange = (selected) => {
+    setPreferencias((prev) => ({ ...prev, canalPreferido: selected.value }));
+  };
+
+  const toggleTipoSilenciado = (tipo) => {
+    setPreferencias((prev) => ({
+      ...prev,
+      tiposSilenciados: prev.tiposSilenciados.includes(tipo)
+        ? prev.tiposSilenciados.filter((t) => t !== tipo)
+        : [...prev.tiposSilenciados, tipo],
+    }));
+  };
+
+  const guardarPreferencias = async () => {
+    setGuardando(true);
+    try {
+      const res = await actualizarPreferenciasNotificaciones(preferencias);
+      if (res.exitoso) {
+        toast.success("✅ Preferencias guardadas correctamente");
+      } else {
+        toast.error("❌ Error al guardar");
+      }
+    } catch {
+      toast.error("❌ Error de conexión");
+    } finally {
+      setGuardando(false);
+    }
+  };
+
+  if (cargando) {
+    return <div className="text-center py-5">Cargando...</div>;
+  }
+
+  return (
+    <div className="preferencias-container">
+      <div className="page-container">
+        <div className="preferencias-header">
+          <span className="preferencias-subtitle">Configuración</span>
+          <h2 className="preferencias-title">Preferencias de Notificaciones</h2>
+          <div className="preferencias-line" />
+        </div>
+
+        <div className="preferencias-card">
+          <div className="card-body">
+            <div className="mb-1">
+              {" "}
+              <div className="form-check form-switch custom-switch d-flex align-items-center gap-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="notificacionesActivas"
+                  checked={preferencias.notificacionesActivas}
+                  onChange={(e) =>
+                    setPreferencias((prev) => ({
+                      ...prev,
+                      notificacionesActivas: e.target.checked,
+                    }))
+                  }
+                  id="notificacionesActivas"
+                />
+                <label
+                  className="form-check-label fw-bold fs-5 d-flex align-items-center gap-2"
+                  htmlFor="notificacionesActivas"
+                >
+                  <FaBell
+                    className={`bell-icon ${preferencias.notificacionesActivas ? "bell-ringing" : ""}`}
+                  />
+                  Recibir notificaciones
+                </label>
+              </div>
+            </div>
+
+            {/* Canal preferido con react-select */}
+            <div className="mb-1 select-container">
+              <label className="form-label fw-bold section-title">
+                Canal preferido
+              </label>
+              <Select
+                options={canalOptions}
+                value={canalOptions.find(
+                  (opt) => opt.value === preferencias.canalPreferido,
+                )}
+                onChange={handleCanalChange}
+                classNamePrefix="react-select"
+                isSearchable={false}
+              />
+            </div>
+            {/* Tipos a silenciar */}
+            <div className="mb-1">
+              <label className="form-label fw-bold section-title">
+                Silenciar tipos específicos
+              </label>
+              <div className="checkbox-grid">
+                {tiposNotificacion.map((tipo) => (
+                  <div key={tipo.value} className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      checked={preferencias.tiposSilenciados.includes(
+                        tipo.value,
+                      )}
+                      onChange={() => toggleTipoSilenciado(tipo.value)}
+                      id={tipo.value}
+                    />
+                    <label className="form-check-label" htmlFor={tipo.value}>
+                      {tipo.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Botón */}
+            <div className="d-flex justify-content-end pt-4">
+              <button
+                className="preferencias-btn d-flex align-items-center justify-content-center gap-2"
+                onClick={guardarPreferencias}
+                disabled={guardando}
+              >
+                {guardando ? (
+                  <span className="spinner-border spinner-border-sm" />
+                ) : (
+                  <FaSave />
+                )}
+                {guardando ? "Guardando..." : "Guardar Preferencias"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PreferenciasNotificaciones;
