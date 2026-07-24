@@ -1,4 +1,4 @@
-import { useReducer, useRef, useState } from "react";
+import { useReducer, useRef, useState, useMemo } from "react";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
 import "./CrearPromocion.css";
@@ -11,32 +11,45 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaTrash,
+  FaStore,
 } from "react-icons/fa";
 import HeaderPromo from "./HeaderPromo";
 import { div } from "framer-motion/client";
+import Select from "react-select/base";
+import PromoInfoBasica from "./PromoInfoBasica";
+import PromoDisponibilidad from "./PromoDisponibilidad";
+import PromoEstado from "./PromoEstado";
+import PromoBotones from "./PromoBotones";
 
 const promoFormReducer = (state, action) => {
   switch (action.type) {
     case "SET_IMAGENES":
-      return { ...state, imagenes: action.playload };
+      return { ...state, imagenes: action.payload };
     case "SET_PREVIEWS":
-      return { ...state, previews: action.playload };
+      return { ...state, previews: action.payload };
     case "SET_INDICE_IMAGEN":
-      return { ...state, indiceImagenActual: action.playload };
+      return { ...state, indiceImagenActual: action.payload };
     case "SET_TITULO_PROMO":
-      return { ...state, tituloPromo: action.playload };
-    case "SET_DIRECCION":
-      return { ...state, direccion: action.playload };
+      return { ...state, tituloPromo: action.payload };
     case "SET_DESCRIPCION_PROMO":
-      return { ...state, descripcionPromo: action.playload };
-    case "SET_ESTADO":
-      return { ...state, estado: action.playload };
+      return { ...state, descripcionPromo: action.payload };
+    case "SET_TIPO_PROMO":
+      return { ...state, tipoPromo: action.payload };
+    case "SET_LOCAL_PROMO":
+      return { ...state, localPromo: action.payload };
+    case "SET_LIMITE_USOS":
+  return { ...state, limiteUsos: action.payload };
+    case "SET_ESTADO_INICIAL":
+      return { ...state, estadoInicial: action.payload };
     case "SET_FECHA_INICIO":
-      return { ...state, fechaInicio: action.playload };
+      return { ...state, fechaInicio: action.payload };
     case "SET_FECHA_FIN":
-      return { ...state, fechaFin: action.playload };
+      return { ...state, fechaFin: action.payload };
     case "SET_SHOW_MODAL":
-      return { ...state, showModal: action.playload };
+      return { ...state, showModal: action.payload };
+    case "RESET_FORM":
+      default:
+      return state;
   }
 };
 
@@ -45,11 +58,13 @@ const initialState = {
   previews: [],
   indiceImagenActual: 0,
   tituloPromo: "",
-  direccion: "",
   descripcionPromo: "",
-  estado: null,
-  fechaInicio: null,
-  fechaFin: null,
+  tipoPromo: "",
+  localPromo: null,
+  limiteUsos: null,
+  estadoInicial: "Activa",
+  fechaInicio: "",
+  fechaFin: "",
   showModal: false,
 };
 
@@ -224,23 +239,36 @@ function ImageUploader({
 export default function CrearPromocion() {
   const [state, dispatch] = useReducer(promoFormReducer, initialState);
 
+  const today =useMemo(() => new Date().toISOString().split("T")[0], []);
+
+  const estadoActual = useMemo(() => {
+    if (!state.fechaFin) return state.estadoInicial;
+
+    const hoy = new Date();
+    const fin = new Date(state.fechaFin);
+
+    if (fin < hoy) return "Expirada";
+    return state.estadoInicial;
+  }, [state.fechaFin, state.estadoInicial]);
+
+
   const handleImagen = (files) => {
     const newPreviews = files.map((f) => URL.createObjectURL(f));
-    dispatch({ type: "SET_IMAGENES", playload: [...state.imagenes, ...files] });
+    dispatch({ type: "SET_IMAGENES", payload: [...state.imagenes, ...files] });
     dispatch({
       type: "SET_PREVIEWS",
-      playload: [...state.previews, ...newPreviews],
+      payload: [...state.previews, ...newPreviews],
     });
-    dispatch({ type: "SET_INDICE_IMAGEN", playload: 0 });
+    dispatch({ type: "SET_INDICE_IMAGEN", payload: 0 });
   };
 
   const handleRemoveImagen = (idx) => {
     const newImagenes = state.imagenes.filter((_, i) => i !== idx);
     const newPreviews = state.previews.filter((_, i) => i !== idx);
-    dispatch({ type: "SET_IMAGENES", playload: newImagenes });
-    dispatch({ type: "SET_PREVIEWS", playload: newPreviews });
+    dispatch({ type: "SET_IMAGENES", payload: newImagenes });
+    dispatch({ type: "SET_PREVIEWS", payload: newPreviews });
     const nuevoIdx = Math.min(state.indiceImagenActual, newPreviews.length - 1);
-    dispatch({ type: "SET_INDICE_IMAGEN", playload: Math.max(0, nuevoIdx) });
+    dispatch({ type: "SET_INDICE_IMAGEN", payload: Math.max(0, nuevoIdx) });
   };
 
   const handleNavigate = (dir) => {
@@ -249,21 +277,29 @@ export default function CrearPromocion() {
       dir === "next"
         ? (state.indiceImagenActual + 1) % total
         : (state.indiceImagenActual - 1 + total) % total;
-    dispatch({ type: "SET_INDICE_IMAGEN", playload: next });
+    dispatch({ type: "SET_INDICE_IMAGEN", payload: next });
   };
 
+ 
+
+//Validación de campos y creación del objeto de promoción
+
+//Handle Enviar
+  const handlePublicar = async () => {}
+
+
+
+
   const promoData = {
-    titulo: state.nombreLugar || "Nombre del lugar",
-    direccion: state.direccion || "Dirección del lugar",
+    titulo: state.tituloPromo || "Nombre de la promoción",
+    local: state.localPromo || "Local de la promoción",
+    limiteUsos: state.limiteUsos ? `${state.limiteUsos} usos` : "Ilimitado",
     imagen: state.previews[0] || null,
-    rating: 0,
-    totalResenas: 0,
-    categoria: state.categoria?.label || "Categoría",
-    localidad: state.localidad?.label || null,
-    descripcion: state.descripcionImagen || "Descripción del lugar...",
-    recomendacion: state.recomendacion || null,
-    tipsFoto: state.tipsFoto || null,
-    resenas: [],
+    tipoPromo: state.tipo?.label || "Tipo de promoción", 
+    descripcion: state.descripcionPromo || "Descripción de la promoción...",
+    fechaInicio: state.fechaInicio || "Fecha de inicio",
+    fechaFin: state.fechaFin || "Fecha de fin",
+    estado: state.estadoActual || "Estado de la promoción",
   };
 
   return (
@@ -273,6 +309,43 @@ export default function CrearPromocion() {
         <HeaderPromo />
 
         <Row className="g-4">
+          <PromoInfoBasica
+            tituloPromo={state.tituloPromo}
+            descripcionPromo={state.descripcionPromo}
+            localPromo={state.localPromo}
+            onTituloChange={(value) =>
+              dispatch({ type: "SET_TITULO_PROMO", payload: value })
+            }
+            onDescripcionPromoChange={(value) =>
+              dispatch({ type: "SET_DESCRIPCION_PROMO", payload: value })
+            }
+            onLocalChange={(value) =>
+              dispatch({ type: "SET_LOCAL_PROMO", payload: value })
+            }
+          />
+
+          <PromoDisponibilidad
+            fechaInicio={state.fechaInicio}
+            fechaFin={state.fechaFin}
+            limiteUsos={state.limiteUsos}
+            onFechaInicioChange={(value) =>
+              dispatch({ type: "SET_FECHA_INICIO", payload: value })
+            }
+            onFechaFinChange={(value) =>
+              dispatch({ type: "SET_FECHA_FIN", payload: value })
+            }
+            onLimiteUsosChange={(value) =>
+              dispatch({ type: "SET_LIMITE_USOS", payload: value })
+            }
+          />
+
+          <PromoEstado
+            estado={estadoActual}
+            onEstadoChange={(value) =>
+              dispatch({ type: "SET_ESTADO_INICIAL", payload: value })
+            }
+          />
+
           <Col xs={12}>
             {/* Uploader */}
             <label className="promo-label mb-2" htmlFor="foto-promocion">
@@ -291,6 +364,10 @@ export default function CrearPromocion() {
             />
           </Col>
         </Row>
+        <PromoBotones
+          onPreview={() => dispatch({ type: "SET_SHOW_MODAL", playload: true })}
+          onPublish={handlePublicar}
+        />
       </div>
     </div>
   );
