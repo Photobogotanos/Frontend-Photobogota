@@ -301,12 +301,26 @@
   transition: all 0.2s ease;
 }
 
+button.star {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+}
+
 .star.interactive {
   cursor: pointer;
 }
 
 .star.interactive:hover {
   transform: scale(1.2);
+}
+
+.star.interactive:focus-visible {
+  outline: 2px solid #7c6fdb;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .star-filled {
@@ -507,7 +521,8 @@
 
 .resena-rating {
   display: flex;
-  gap: 3px;
+  align-items: center;
+  gap: 8px;
 }
 
 .resena-rating .star {
