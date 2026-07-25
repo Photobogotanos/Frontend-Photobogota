@@ -292,6 +292,7 @@
 .stars-input {
   display: flex;
   gap: 8px;
+  border-bottom: none;
 }
 
 .star {
@@ -337,6 +338,39 @@
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.1);
+}
+
+.comentario-contador {
+  display: block;
+  text-align: right;
+  font-size: 11px;
+  color: #999;
+  margin-top: 4px;
+}
+
+.mi-resena-badge {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.resenas-nota-vacia {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  padding: 10px 0 4px;
+}
+
+.btn-submit-resena:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-login-resena {
+  text-decoration: none;
 }
 
 .btn-submit-resena {
