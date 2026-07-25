@@ -1,19 +1,61 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect, useReducer, useCallback } from "react";
+import { useParams, Link } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 import FiltrosMapa from "@/components/mapa/FiltrosMapa/FiltrosMapa";
 import MapaBogota from "@/components/mapa/MapaBogota/MapaBogota";
-import { FaChevronUp, FaChevronDown, FaMapMarkerAlt, FaStar, FaTag, FaHeart, FaCamera } from "react-icons/fa";
+import StarRating from "./StarRating";
+import { resenaReducer, initialResenaState } from "./ResenaReducer";
+import {
+  FaChevronUp,
+  FaChevronDown,
+  FaMapMarkerAlt,
+  FaStar,
+  FaTag,
+  FaHeart,
+  FaCamera,
+  FaCommentDots,
+  FaSignInAlt,
+  FaPaperPlane,
+  FaRegCalendarAlt,
+} from "react-icons/fa";
 import { obtenerSpotPorId } from "@/services/spot.service";
+import {
+  obtenerCalificacionesDelSpot,
+  crearCalificacion,
+  actualizarCalificacion,
+} from "@/services/calificacion.service";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-hot-toast";
 import "./SpotContent.css";
 
+const MAX_COMENTARIO = 500;
+
+// Extrae el id del autor de una calificación, sin importar la forma exacta
+// en la que el backend lo haya serializado (usuario, usuario.id, usuarioId...)
+const obtenerIdAutorCalificacion = (calificacion) =>
+  calificacion?.usuario?.id ?? calificacion?.usuario ?? calificacion?.usuarioId ?? calificacion?.idUsuario;
+
+const obtenerNombreAutorCalificacion = (calificacion) =>
+  calificacion?.usuario?.nombreUsuario ||
+  calificacion?.usuario?.nombre ||
+  calificacion?.nombreUsuario ||
+  calificacion?.usuarioNombre ||
+  "Usuario";
+
 const MapaContent = () => {
   const { id } = useParams();
+  const { usuario, logueado } = useAuth();
   const [spot, setSpot] = useState(null);
   const [cargandoSpot, setCargandoSpot] = useState(false);
   const [filtrosVisibles, setFiltrosVisibles] = useState(true);
   const [filtrosActivos, setFiltrosActivos] = useState({});
+
+  // Calificaciones (estrellas) del spot
+  const [calificaciones, setCalificaciones] = useState([]);
+  const [cargandoCalificaciones, setCargandoCalificaciones] = useState(false);
+  const [miCalificacion, setMiCalificacion] = useState(null);
+  const [enviandoCalificacion, setEnviandoCalificacion] = useState(false);
+  const [estadoResena, dispatchResena] = useReducer(resenaReducer, initialResenaState);
 
   useEffect(() => {
     if (id) {
@@ -30,6 +72,84 @@ const MapaContent = () => {
       cargarSpot();
     }
   }, [id]);
+
+  // Trae todas las calificaciones del spot y detecta si el usuario logueado
+  // ya tiene una entrada propia, para pasar el formulario a modo edición.
+  const cargarCalificaciones = useCallback(
+    async (spotId) => {
+      setCargandoCalificaciones(true);
+      const resultado = await obtenerCalificacionesDelSpot(spotId);
+
+      if (resultado.exitoso) {
+        setCalificaciones(resultado.datos);
+
+        const propia = usuario
+          ? resultado.datos.find(
+              (calificacion) => obtenerIdAutorCalificacion(calificacion) === usuario.id,
+            )
+          : null;
+
+        if (propia) {
+          setMiCalificacion(propia);
+          dispatchResena({ type: "SET_RATING", payload: propia.estrellas });
+          dispatchResena({ type: "SET_COMENTARIO", payload: propia.comentario || "" });
+        } else {
+          setMiCalificacion(null);
+          dispatchResena({ type: "RESET_FORM" });
+        }
+      } else {
+        toast.error(resultado.mensaje);
+      }
+
+      setCargandoCalificaciones(false);
+    },
+    [usuario],
+  );
+
+  useEffect(() => {
+    if (id) {
+      cargarCalificaciones(id);
+    }
+  }, [id, cargarCalificaciones]);
+
+  const handleSubmitCalificacion = async (evento) => {
+    evento.preventDefault();
+
+    if (!logueado) {
+      toast.error("Debes iniciar sesión para calificar este spot");
+      return;
+    }
+
+    const estrellas = estadoResena.nuevaResena.rating;
+    const comentario = estadoResena.nuevaResena.comentario.trim();
+
+    if (!Number.isInteger(estrellas) || estrellas < 1 || estrellas > 5) {
+      toast.error("Seleccioná una calificación entre 1 y 5 estrellas");
+      return;
+    }
+
+    if (comentario.length > MAX_COMENTARIO) {
+      toast.error(`El comentario no puede superar los ${MAX_COMENTARIO} caracteres`);
+      return;
+    }
+
+    setEnviandoCalificacion(true);
+
+    const body = { estrellas, comentario };
+
+    const resultado = miCalificacion
+      ? await actualizarCalificacion(id, miCalificacion.id, body)
+      : await crearCalificacion(id, body);
+
+    if (resultado.exitoso) {
+      toast.success(resultado.mensaje);
+      await cargarCalificaciones(id);
+    } else {
+      toast.error(resultado.mensaje);
+    }
+
+    setEnviandoCalificacion(false);
+  };
 
   if (cargandoSpot) {
     return (
@@ -100,6 +220,128 @@ const MapaContent = () => {
               <h3><FaCamera className="section-icon" /> Tips de fotografía</h3>
               <p>{spot.tipsFoto}</p>
             </div>
+          )}
+        </div>
+
+        <div className="resenas-container">
+          <h3 className="resenas-titulo">
+            <FaCommentDots className="section-icon" /> Calificaciones
+          </h3>
+
+          {logueado ? (
+            <div className="nueva-resena-card">
+              <h4>
+                <FaStar className="form-icon" />
+                {miCalificacion ? "Tu calificación" : "Calificá este spot"}
+              </h4>
+              <form onSubmit={handleSubmitCalificacion}>
+                <div className="rating-input">
+                  <label>Estrellas</label>
+                  <div className="stars-input">
+                    <StarRating
+                      rating={estadoResena.nuevaResena.rating}
+                      hoverRating={estadoResena.hoverRating}
+                      isInteractive
+                      onSelect={(valor) => dispatchResena({ type: "SET_RATING", payload: valor })}
+                      onHover={(valor) => dispatchResena({ type: "SET_HOVER", payload: valor })}
+                      onLeave={() => dispatchResena({ type: "SET_HOVER", payload: 0 })}
+                    />
+                  </div>
+                </div>
+
+                <div className="comentario-input">
+                  <textarea
+                    placeholder="Contanos tu experiencia en este spot (opcional)..."
+                    rows="3"
+                    maxLength={MAX_COMENTARIO}
+                    value={estadoResena.nuevaResena.comentario}
+                    onChange={(e) =>
+                      dispatchResena({ type: "SET_COMENTARIO", payload: e.target.value })
+                    }
+                  />
+                  <span className="comentario-contador">
+                    {estadoResena.nuevaResena.comentario.length}/{MAX_COMENTARIO}
+                  </span>
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn-submit-resena"
+                  disabled={enviandoCalificacion || estadoResena.nuevaResena.rating < 1}
+                >
+                  <FaPaperPlane className="btn-icon" />
+                  {enviandoCalificacion
+                    ? "Enviando..."
+                    : miCalificacion
+                    ? "Actualizar calificación"
+                    : "Enviar calificación"}
+                </button>
+              </form>
+            </div>
+          ) : (
+            <div className="nueva-resena-card">
+              <h4>
+                <FaSignInAlt className="form-icon" /> Iniciá sesión para calificar
+              </h4>
+              <p className="text-muted mb-3">
+                Necesitás una cuenta para dejar tu calificación en este spot.
+              </p>
+              <Link to="/login" className="btn-submit-resena btn-login-resena">
+                <FaSignInAlt className="btn-icon" /> Iniciar sesión
+              </Link>
+            </div>
+          )}
+
+          {cargandoCalificaciones ? (
+            <div className="lugar-loading">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+          ) : calificaciones.length > 0 ? (
+            <div className="resenas-lista">
+              {calificaciones.map((calificacion) => {
+                const esPropia = usuario && obtenerIdAutorCalificacion(calificacion) === usuario.id;
+                const nombreAutor = obtenerNombreAutorCalificacion(calificacion);
+                const fecha = calificacion.fechaCreacion || calificacion.fecha || calificacion.createdAt;
+
+                return (
+                  <div key={calificacion.id} className="resena-card">
+                    <div className="resena-header">
+                      <div className="resena-usuario">
+                        <div className="usuario-avatar">
+                          <div className="avatar-placeholder">
+                            {nombreAutor.charAt(0).toUpperCase()}
+                          </div>
+                        </div>
+                        <div className="usuario-info">
+                          <span className="usuario-nombre">
+                            {nombreAutor}
+                            {esPropia && <span className="mi-resena-badge">(Tú)</span>}
+                          </span>
+                          {fecha && (
+                            <span className="resena-fecha">
+                              <FaRegCalendarAlt className="date-icon" />
+                              {new Date(fecha).toLocaleDateString("es-CO")}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="resena-rating">
+                        <StarRating rating={calificacion.estrellas} />
+                      </div>
+                    </div>
+                    {calificacion.comentario && (
+                      <p className="resena-comentario">{calificacion.comentario}</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="resenas-nota-vacia">
+              Todavía no hay calificaciones para este spot. ¡Sé el primero en calificar!
+            </p>
           )}
         </div>
       </div>

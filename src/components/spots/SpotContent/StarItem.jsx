@@ -11,7 +11,7 @@ const StarItem = ({
   
   if (!isInteractive) {
     return (
-      <span className="star" aria-hidden="true">
+      <span className={`star ${isFilled ? "star-filled" : "star-empty"}`} aria-hidden="true">
         {isFilled ? <FaStar /> : <FaRegStar />}
       </span>
     );
@@ -20,7 +20,7 @@ const StarItem = ({
   return (
     <button
       type="button"
-      className={`star interactive ${isFilled ? "filled" : "empty"}`}
+      className={`star interactive ${isFilled ? "star-filled" : "star-empty"}`}
       onClick={() => onSelect(starValue)}
       onMouseEnter={() => onHover(starValue)}
       onMouseLeave={onLeave}
