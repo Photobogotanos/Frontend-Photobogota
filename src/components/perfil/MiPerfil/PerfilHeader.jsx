@@ -1,19 +1,13 @@
 import { FiEdit3 } from "react-icons/fi";
 import { FaUser, FaCrown, FaUserShield, FaStore } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
-// Componente BadgeRol definido dentro del mismo archivo
 const BadgeRol = ({ rol }) => {
   const getBadgeConfig = () => {
     switch (rol) {
       case "ADMIN":
         return { clase: "badge-admin", icono: <FaCrown />, texto: "Admin" };
       case "MOD":
-        return {
-          clase: "badge-mod",
-          icono: <FaUserShield />,
-          texto: "Moderador",
-        };
+        return { clase: "badge-mod", icono: <FaUserShield />, texto: "Moderador" };
       case "SOCIO":
         return { clase: "badge-socio", icono: <FaStore />, texto: "Socio" };
       case "MIEMBRO":
@@ -31,19 +25,9 @@ const BadgeRol = ({ rol }) => {
   );
 };
 
-const PerfilHeader = ({
-  perfilData,
-  dispatch,
-  rol = "MIEMBRO",
-  nivel = null,
-  usandoMock = false,
-}) => {
-  const mostrarNivel =
-    rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
-
 const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) => {
   const mostrarNivel = rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
-  
+
   return (
     <div className="perfil-header">
       <img
@@ -89,12 +73,6 @@ const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) =
         >
           <FiEdit3 size={18} /> Editar perfil
         </button>
-        <Link
-          to="/perfil/preferencias-notificaciones"
-          className="btn btn-outline-primary rounded-pill px-4 py-2"
-        >
-          <FaBell className="me-2" /> Notificaciones
-        </Link>
       </div>
     </div>
   );
