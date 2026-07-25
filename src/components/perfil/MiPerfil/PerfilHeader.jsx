@@ -88,9 +88,9 @@ const PerfilHeader = ({
         </button>
         <Link
           to="/perfil/preferencias-notificaciones"
-          className="btn btn-outline-primary"
+          className="btn btn-outline-primary rounded-pill px-4 py-2"
         >
-          Configurar Notificaciones
+          <FaBell className="me-2" /> Notificaciones
         </Link>
       </div>
     </div>
