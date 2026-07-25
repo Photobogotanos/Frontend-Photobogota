@@ -1,13 +1,32 @@
-import { FaMarketAlt } from "react-icons/fa";
+import { FaStore } from "react-icons/fa";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
-export default function PromoInfoBasica({
-    tituloPromocion,
-    descripcionPromo,
-    localexistente
+function TextAreaField({ label, htmlFor, required, icon, value, onChange, rows, placeholder }) {
+  return (
+    <div className="mb-3">
+      <label className="promo-label" htmlFor={htmlFor}>
+        {icon && <span className="me-2">{icon}</span>}
+        {label}
+        {required && <RequiredMark />}
+      </label>
+      <textarea
+        id={htmlFor}
+        className="promo-textarea"
+        rows={rows}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
+}
 
+export default function PromoInfoBasica({
+    tituloPromo,
+    descripcionPromo,
+    localPromo,
 }){
   const usarUbicacionActual = () => {
     if (!navigator.geolocation) return alert("Geolocalización no disponible");
@@ -32,7 +51,7 @@ export default function PromoInfoBasica({
             type="text"
             className="promo-input"
             placeholder="Ej: Mirador de Monserrate"
-            value={nombreLugar}
+            value={tituloPromo}
             onChange={(e) => onNombreChange(e.target.value)}
           />
         </Col>
@@ -42,8 +61,8 @@ export default function PromoInfoBasica({
       <Row className="g-3 mb-2">
         <Col xs={12}>
           <label className="promo-label" htmlFor="ubicacion-lugar">
-            <FaMapMarkerAlt className="me-2" />
-            Ubicación <RequiredMark />
+            <FaStore className="me-2" />
+            Local para aplicar promoción  <RequiredMark />
           </label>
           <div className="d-flex gap-2">
             <input
@@ -51,19 +70,23 @@ export default function PromoInfoBasica({
               type="text"
               className="promo-input"
               placeholder="Dirección o referencia"
-              value={direccion}
+              value={localPromo}
               onChange={(e) => onDireccionChange(e.target.value)}
             />
-            <button
-              type="button"
-              className="promo-location-btn"
-              onClick={usarUbicacionActual}
-              aria-label="Obtener ubicación actual"
-            >
-              <FaMapMarkerAlt />
-            </button>
+              <FaStore />
           </div>
         </Col>
+      </Row>
+
+      <Row>
+        <TextAreaField
+          rows={2}
+          placeholder="Describe tu promoción"
+          value={descripcionPromo}
+          onChange={(e) => onDescripcionChange(e.target.value)}
+          label="Descripción de la promoción"
+          required
+        />
       </Row>
     </>
   )

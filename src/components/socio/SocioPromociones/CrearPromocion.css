@@ -1,9 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
 
 .formulario-contenedor {
+  padding: 24px;
   max-width: 900px;
   margin: 0 auto;
   padding: 0 20px;
+  
 }
 
 /* ── Header editorial ── */
