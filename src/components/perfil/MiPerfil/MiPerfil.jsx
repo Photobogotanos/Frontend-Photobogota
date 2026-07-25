@@ -7,20 +7,8 @@ import PerfilStats from "./PerfilStats";
 import PerfilTabs from "./PerfilTabs";
 import "./MiPerfil.css";
 import { useAuth } from "../../../context/AuthContext";
-import { getPerfilUsuario } from "../../../api/usuarioApi";
+import { obtenerPerfil } from "../../../services/usuario.service";
 import defaultAvatar from "/images/user-pfp/default-avatar.jpg?url";
-
-// ========== DATOS MOCK PARA FALLBACK ==========
-const getMockPerfilData = (nombreUsuario = "usuario") => ({
-  nombresCompletos: "Juan Sebastian Romero",
-  nombreUsuario: nombreUsuario,
-  email: "photobogota123@gmail.com",
-  biografia: "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
-  telefono: "3138529778",
-  fotoPerfil: defaultAvatar,
-  tipoUsuario: "MIEMBRO",
-  nivel: 5,
-});
 
 // Tabs por rol
 const PRIMERA_TAB_POR_ROL = {
@@ -54,8 +42,8 @@ const perfilReducer = (state, action) => {
     case "SET_MOSTRAR_FOTO_PERFIL":
       return { ...state, mostrarFotoPerfil: action.payload };
     case "UPDATE_PERFIL_DATA": {
-      const nuevoRol = (action.payload.rol || action.payload.tipoUsuario || "MIEMBRO").toUpperCase();
-      const rolAnterior = (state.perfilData.rol || state.perfilData.tipoUsuario || "MIEMBRO").toUpperCase();
+      const nuevoRol = (action.payload.rol || "MIEMBRO").toUpperCase();
+      const rolAnterior = (state.perfilData.rol || "MIEMBRO").toUpperCase();
       const nuevaTab = nuevoRol !== rolAnterior
         ? (PRIMERA_TAB_POR_ROL[nuevoRol] ?? "publicaciones")
         : state.tab;
@@ -91,6 +79,9 @@ const crearEstadoInicial = () => {
       fotoPerfil: defaultAvatar,
       rol: "MIEMBRO",
       nivel: null,
+      totalSpots: 0,
+      totalResenas: 0,
+      totalGuardados: 0,
     },
   };
 };
@@ -99,12 +90,11 @@ export default function MiPerfil() {
   const [state, dispatch] = useReducer(perfilReducer, null, crearEstadoInicial);
   const { user, recargarUsuario } = useAuth();
 
-  // Cargar datos del backend con fallback a mock
+  // Cargar datos del backend con fallback a mock (manejado en el service)
   useEffect(() => {
     const cargarPerfil = async () => {
-      // Obtener nombre de usuario de diferentes fuentes
       let nombreUsuario = user?.nombreUsuario;
-      
+
       if (!nombreUsuario) {
         try {
           const miembroStorage = localStorage.getItem("miembro");
@@ -116,59 +106,54 @@ export default function MiPerfil() {
           console.warn("Error leyendo localStorage:", e);
         }
       }
-      
+
       nombreUsuario = nombreUsuario || "demo_user";
-      
+
       dispatch({ type: "SET_LOADING", payload: true });
       dispatch({ type: "SET_ERROR", payload: null });
 
       try {
-        // Intentar cargar del backend
-        const response = await getPerfilUsuario(nombreUsuario);
-        const data = response.data;
+        const resultado = await obtenerPerfil(nombreUsuario);
 
-        dispatch({
-          type: "SET_PERFIL_DATA",
-          payload: {
-            nombresCompletos: data.nombresCompletos || "",
-            nombreUsuario: data.nombreUsuario || nombreUsuario,
-            email: data.email || "",
-            biografia: data.biografia || "",
-            telefono: data.telefono || "",
-            fotoPerfil: data.fotoPerfil || defaultAvatar,
-            rol: data.tipoUsuario || "MIEMBRO",
-            nivel: data.nivel || null,
+        if (resultado.exitoso && resultado.datos) {
+          const data = resultado.datos;
+          dispatch({
+            type: "SET_PERFIL_DATA",
+            payload: {
+              nombresCompletos: data.nombresCompletos || "",
+              nombreUsuario: data.nombreUsuario || nombreUsuario,
+              email: data.email || "",
+              biografia: data.biografia || "",
+              telefono: data.telefono || "",
+              fotoPerfil: data.fotoPerfil || defaultAvatar,
+              rol: data.rol || "MIEMBRO",
+              nivel: data.nivel ?? null,
+              totalSpots: data.totalSpots ?? 0,
+              totalResenas: data.totalResenas ?? 0,
+              totalGuardados: data.totalGuardados ?? 0,
+            },
+          });
+          dispatch({ type: "SET_USANDO_MOCK", payload: resultado.esMock || false });
+
+          if (resultado.esMock) {
+            dispatch({
+              type: "SET_ERROR",
+              payload: "Servidor no disponible. Mostrando datos de demostración.",
+            });
           }
+        } else {
+          dispatch({
+            type: "SET_ERROR",
+            payload: resultado.mensaje || "Error al cargar perfil",
+          });
+          dispatch({ type: "SET_USANDO_MOCK", payload: false });
+        }
+      } catch {
+        dispatch({
+          type: "SET_ERROR",
+          payload: "Error inesperado al cargar el perfil",
         });
         dispatch({ type: "SET_USANDO_MOCK", payload: false });
-
-      } catch (error) {
-
-        const isNetworkError = !error.response || error.code === 'ECONNABORTED' || error.message === 'Network Error';
-        
-        if (isNetworkError) {
-          console.warn("Servidor no disponible, usando modo demo:", error.message);
-        } else {
-          console.warn("Error del backend:", error.response?.status, error.response?.data);
-        }
-        
-        const mockData = getMockPerfilData(nombreUsuario);
-        dispatch({
-          type: "SET_PERFIL_DATA",
-          payload: {
-            nombresCompletos: mockData.nombresCompletos,
-            nombreUsuario: mockData.nombreUsuario,
-            email: mockData.email,
-            biografia: mockData.biografia,
-            telefono: mockData.telefono,
-            fotoPerfil: mockData.fotoPerfil,
-            rol: mockData.tipoUsuario,
-            nivel: mockData.nivel,
-          }
-        });
-        dispatch({ type: "SET_USANDO_MOCK", payload: true });
-        dispatch({ type: "SET_ERROR", payload: isNetworkError ? "Servidor no disponible" : "Error al cargar perfil" });
-
       } finally {
         dispatch({ type: "SET_LOADING", payload: false });
       }
@@ -197,6 +182,12 @@ export default function MiPerfil() {
     );
   }
 
+  const stats = {
+    totalSpots: state.perfilData.totalSpots,
+    totalResenas: state.perfilData.totalResenas,
+    totalGuardados: state.perfilData.totalGuardados,
+  };
+
   return (
     <Container fluid className="perfil-container">
 
@@ -215,6 +206,7 @@ export default function MiPerfil() {
         tieneResenas={state.tieneResenas}
         tieneGuardados={state.tieneGuardados}
         rol={state.perfilData.rol}
+        stats={stats}
       />
 
       <div className="line-divider" />
@@ -226,6 +218,7 @@ export default function MiPerfil() {
         tieneResenas={state.tieneResenas}
         tieneGuardados={state.tieneGuardados}
         rol={state.perfilData.rol}
+        nombreUsuario={state.perfilData.nombreUsuario}
         usandoMock={state.usandoMock}
       />
 

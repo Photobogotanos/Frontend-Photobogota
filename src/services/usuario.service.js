@@ -1,11 +1,64 @@
-import { postRegistrarUsuario, postLogin } from "@/api/usuarioApi";
+import {
+  postRegistrarUsuario,
+  postLogin,
+  getPerfilUsuario,
+  putEditarPerfil,
+  patchCambiarContrasena,
+  getSpotsUsuario,
+  getResenasUsuario,
+  getSpotsGuardados,
+} from "@/api/usuarioApi";
 import {
   registrarUsuarioDemo,
   USUARIOS_DEMO,
   hashearContrasena,
 } from "@/mocks/usuario.mock";
+import { SPOTS } from "@/mocks/spots.mock";
 import { obtenerEstadoServidor } from "@/utils/serverStatus";
 import { guardarTokens, guardarSesion } from "@/utils/sessionHelper";
+
+const obtenerPerfilDemo = (nombreUsuario = "demo_user") => {
+  const usuarioDemo = USUARIOS_DEMO.find(
+    (u) => u.nombreUsuario === nombreUsuario,
+  );
+
+  if (usuarioDemo) {
+    return {
+      id: usuarioDemo.id,
+      nombresCompletos:
+        `${usuarioDemo.nombre} ${usuarioDemo.apellido}`,
+      nombreUsuario: usuarioDemo.nombreUsuario,
+      email: usuarioDemo.correo,
+      biografia:
+        "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
+      telefono: "3138529778",
+      fotoPerfil: "/images/user-pfp/default-avatar.jpg",
+      rol: usuarioDemo.rol,
+      nivel: usuarioDemo.nivel ?? null,
+      totalSpots: SPOTS.filter((s) => s.creadorId === usuarioDemo.nombreUsuario)
+        .length,
+      totalResenas: SPOTS.filter((s) => s.creadorId === usuarioDemo.nombreUsuario)
+        .reduce((acc, s) => acc + (s.resenas?.length || 0), 0),
+      totalGuardados: 0,
+    };
+  }
+
+  return {
+    id: 0,
+    nombresCompletos: "Juan Sebastian Romero",
+    nombreUsuario: nombreUsuario,
+    email: "photobogota123@gmail.com",
+    biografia:
+      "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
+    telefono: "3138529778",
+    fotoPerfil: "/images/user-pfp/default-avatar.jpg",
+    rol: "MIEMBRO",
+    nivel: 5,
+    totalSpots: 5,
+    totalResenas: 6,
+    totalGuardados: 12,
+  };
+};
 
 export const iniciarSesion = async (login, contrasena) => {
   try {
@@ -14,10 +67,11 @@ export const iniciarSesion = async (login, contrasena) => {
       respuesta.data;
 
     if (estadoCuenta === false) {
-      return { 
-        exitoso: false, 
-        esDemo: false, 
-        mensaje: "Usuario inactivo. Contacta al administrador para activar tu cuenta." 
+      return {
+        exitoso: false,
+        esDemo: false,
+        mensaje:
+          "Usuario inactivo. Contacta al administrador para activar tu cuenta.",
       };
     }
 
@@ -27,9 +81,9 @@ export const iniciarSesion = async (login, contrasena) => {
       nombre: nombreUsuario,
       username: "@" + nombreUsuario,
       email,
-      rol,
+      rol: (rol || "").toUpperCase(),
       estadoCuenta,
-      ...(rol === "MIEMBRO" && nivel !== undefined && { nivel }),
+      ...((rol || "").toUpperCase() === "MIEMBRO" && nivel !== undefined && { nivel }),
     };
 
     guardarSesion(usuario);
@@ -38,13 +92,10 @@ export const iniciarSesion = async (login, contrasena) => {
   } catch (error) {
     const huboRespuestaDelServidor = !!error.response;
 
-    // Solo vamos a modo demo si el servidor realmente no respondió
-    // (caído, error de red, timeout, CORS, etc.)
     if (!huboRespuestaDelServidor) {
       return await intentarLoginDemo(login, contrasena);
     }
 
-    // Hubo respuesta del backend: es un error real, no un problema de disponibilidad.
     const status = error.response.status;
     let mensaje = "Error al conectar con el servidor.";
 
@@ -60,10 +111,6 @@ export const iniciarSesion = async (login, contrasena) => {
   }
 };
 
-/**
- * Lógica de login contra los usuarios demo (mock local).
- * Extraída a su propia función para mantener iniciarSesion() legible.
- */
 const intentarLoginDemo = async (login, contrasena) => {
   const contrasenaHash = await hashearContrasena(contrasena);
 
@@ -85,7 +132,7 @@ const intentarLoginDemo = async (login, contrasena) => {
     nombre: usuarioEncontrado.nombreUsuario,
     username: "@" + usuarioEncontrado.nombreUsuario,
     email: usuarioEncontrado.correo,
-    rol: usuarioEncontrado.rol,
+    rol: usuarioEncontrado.rol.toUpperCase(),
     ...(usuarioEncontrado.rol === "MIEMBRO" &&
       usuarioEncontrado.nivel !== undefined && {
         nivel: usuarioEncontrado.nivel,
@@ -121,6 +168,213 @@ export const registrarUsuario = async (datos) => {
       esDemo: false,
       mensaje:
         error.response?.data?.mensaje || "Error al conectar con el servidor.",
+    };
+  }
+};
+
+export const obtenerPerfil = async (nombreUsuario) => {
+  try {
+    const response = await getPerfilUsuario(nombreUsuario);
+    return {
+      exitoso: true,
+      datos: response.data,
+      mensaje: "Perfil obtenido exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    const isNetworkError = !error.response;
+
+    if (!isNetworkError) {
+      let mensaje = "Error al cargar el perfil";
+      if (error.response?.status === 404) {
+        mensaje = "El usuario no existe";
+      } else if (error.response?.data?.mensaje) {
+        mensaje = error.response.data.mensaje;
+      } else if (error.response?.data?.message) {
+        mensaje = error.response.data.message;
+      }
+      return { exitoso: false, datos: null, mensaje, esMock: false };
+    }
+
+    const mockData = obtenerPerfilDemo(nombreUsuario);
+    return {
+      exitoso: true,
+      datos: mockData,
+      mensaje: "Mostrando datos de demostración",
+      esMock: true,
+    };
+  }
+};
+
+export const editarPerfil = async (body) => {
+  try {
+    const response = await putEditarPerfil(body);
+    return {
+      exitoso: true,
+      datos: response.data,
+      mensaje: "Perfil actualizado exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    let mensaje = "Error al actualizar el perfil";
+
+    if (error.response) {
+      mensaje =
+        error.response.data?.mensaje ||
+        error.response.data?.message ||
+        mensaje;
+    } else if (error.request) {
+      mensaje = "No se pudo conectar con el servidor";
+    }
+
+    return {
+      exitoso: false,
+      datos: null,
+      mensaje,
+      esMock: false,
+    };
+  }
+};
+
+export const cambiarContrasena = async (body) => {
+  try {
+    const response = await patchCambiarContrasena(body);
+    return {
+      exitoso: true,
+      datos: response.data,
+      mensaje: response.data?.mensaje || "Contraseña actualizada exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    let mensaje = "Error al cambiar la contraseña";
+
+    if (error.response) {
+      mensaje =
+        error.response.data?.mensaje ||
+        error.response.data?.message ||
+        mensaje;
+    } else if (error.request) {
+      mensaje = "No se pudo conectar con el servidor";
+    }
+
+    return {
+      exitoso: false,
+      datos: null,
+      mensaje,
+      esMock: false,
+    };
+  }
+};
+
+export const obtenerSpotsUsuario = async (nombreUsuario) => {
+  try {
+    const response = await getSpotsUsuario(nombreUsuario);
+    return {
+      exitoso: true,
+      datos: response.data || [],
+      mensaje: "Spots del usuario obtenidos exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    const isNetworkError = !error.response;
+
+    if (!isNetworkError) {
+      let mensaje = "Error al obtener los spots del usuario";
+      if (error.response?.data?.mensaje) {
+        mensaje = error.response.data.mensaje;
+      } else if (error.response?.data?.message) {
+        mensaje = error.response.data.message;
+      }
+      return { exitoso: false, datos: [], mensaje, esMock: false };
+    }
+
+    const mockSpots = SPOTS.filter(
+      (spot) => spot.creadorId === nombreUsuario,
+    );
+
+    return {
+      exitoso: true,
+      datos: mockSpots,
+      mensaje: "Mostrando datos de demostración",
+      esMock: true,
+    };
+  }
+};
+
+export const obtenerResenasUsuario = async (nombreUsuario) => {
+  try {
+    const response = await getResenasUsuario(nombreUsuario);
+    return {
+      exitoso: true,
+      datos: response.data || [],
+      mensaje: "Reseñas del usuario obtenidas exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    const isNetworkError = !error.response;
+
+    if (!isNetworkError) {
+      let mensaje = "Error al obtener las reseñas del usuario";
+      if (error.response?.data?.mensaje) {
+        mensaje = error.response.data.mensaje;
+      } else if (error.response?.data?.message) {
+        mensaje = error.response.data.message;
+      }
+      return { exitoso: false, datos: [], mensaje, esMock: false };
+    }
+
+    const spotsUsuario = SPOTS.filter(
+      (spot) => spot.creadorId === nombreUsuario,
+    );
+
+    const resenas = spotsUsuario.flatMap((spot) =>
+      (spot.resenas || []).map((resena) => ({
+        id: resena.id,
+        spotId: spot.id,
+        tituloSpot: spot.nombre,
+        rating: resena.rating,
+        texto: resena.comentario,
+        likes: 0,
+        fechaCreacion: resena.fecha,
+      })),
+    );
+
+    return {
+      exitoso: true,
+      datos: resenas,
+      mensaje: "Mostrando datos de demostración",
+      esMock: true,
+    };
+  }
+};
+
+export const obtenerSpotsGuardados = async () => {
+  try {
+    const response = await getSpotsGuardados();
+    return {
+      exitoso: true,
+      datos: response.data || [],
+      mensaje: "Spots guardados obtenidos exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    const isNetworkError = !error.response;
+
+    if (!isNetworkError) {
+      let mensaje = "Error al obtener los spots guardados";
+      if (error.response?.data?.mensaje) {
+        mensaje = error.response.data.mensaje;
+      } else if (error.response?.data?.message) {
+        mensaje = error.response.data.message;
+      }
+      return { exitoso: false, datos: [], mensaje, esMock: false };
+    }
+
+    return {
+      exitoso: true,
+      datos: SPOTS.slice(0, 3),
+      mensaje: "Mostrando datos de demostración",
+      esMock: true,
     };
   }
 };

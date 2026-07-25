@@ -64,9 +64,32 @@ export const postSolicitarRecuperacion = (body) =>
     clienteApi.post("/auth/passwords/recovery-request", body);
 
 /**
+ * Obtener spots de un usuario
+ * @param {string} nombreUsuario
+ * @returns {Promise<{ data: Spot[] }>}
+ */
+export const getSpotsUsuario = (nombreUsuario) =>
+  clienteApi.get(`/usuarios/${nombreUsuario}/spots`);
+
+/**
+ * Obtener reseñas de un usuario
+ * @param {string} nombreUsuario
+ * @returns {Promise<{ data: ResenaUsuarioDTO[] }>}
+ */
+export const getResenasUsuario = (nombreUsuario) =>
+  clienteApi.get(`/usuarios/${nombreUsuario}/resenas`);
+
+/**
+ * Obtener spots guardados del usuario autenticado
+ * @returns {Promise<{ data: Spot[] }>}
+ */
+export const getSpotsGuardados = () =>
+  clienteApi.get("/usuarios/me/guardados");
+
+/**
  * Verificar el código recibido por correo y establecer la nueva contraseña.
  * @param {{ email: string, codigo: string, nuevaContrasena: string }} body
  * @returns {Promise<{ data: { mensaje: string } }>}
  */
 export const postVerificarCodigo = (body) =>
-    clienteApi.post("/auth/passwords/reset", body);
+  clienteApi.post("/auth/passwords/reset", body);

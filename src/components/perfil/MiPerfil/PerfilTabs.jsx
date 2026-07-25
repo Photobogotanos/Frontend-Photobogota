@@ -1,5 +1,4 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useNavigate, useEffect, useState } from "react";
 import {
   FaMapMarkerAlt, FaRegEdit, FaShieldAlt, FaStore,
   FaBookmark, FaFlag, FaHistory, FaUsers, FaBan
@@ -7,7 +6,11 @@ import {
 import { GrMapLocation } from "react-icons/gr";
 import SpotCard from "../../spots/SpotCard/SpotCard";
 import ReviewCard from "../ReviewCard/ReviewCard";
-import { getSpots } from "@/mocks/spots.helpers";
+import {
+  obtenerSpotsUsuario,
+  obtenerResenasUsuario,
+  obtenerSpotsGuardados,
+} from "@/services/usuario.service";
 
 // ─── TRANSFORMACIONES ────────────────────────────────────────────────────────
 
@@ -19,18 +22,6 @@ const transformarSpotParaCard = (spot) => ({
   likes: spot.totalResenas.toString(),
   img: spot.imagen,
 });
-
-const spotsDatos = getSpots().map(transformarSpotParaCard);
-
-const resenasEjemplo = [
-  { title: "Estación Aguas", rating: 5, likes: 850, date: "Hace 1 mes", placeId: 1, text: "Es una estación muy bien ubicada para moverse por el centro. A veces es concurrida, pero el acceso es rápido." },
-  { title: "Monserrate", rating: 5, likes: 2340, date: "Hace 2 semanas", placeId: 2, text: "Un lugar imperdible en Bogotá. La vista es increíble y el recorrido vale totalmente la pena." },
-  { title: "Parque El Jazmín", rating: 4, likes: 420, date: "Hace 3 semanas", placeId: 3, text: "Buen parque para caminar y hacer deporte. Es tranquilo y bien cuidado." },
-  { title: "Parque Timiza", rating: 5, likes: 1800, date: "Hace 1 semana", placeId: 4, text: "Excelente parque para hacer ejercicio y pasar el día. Muy amplio y con buenas zonas verdes." },
-  { title: "Estación Minuto de Dios", rating: 4, likes: 950, date: "Hace 1 mes", placeId: 5, text: "Funcional y bien ubicada, aunque en horas pico suele llenarse bastante." },
-];
-
-const guardadosEjemplo = spotsDatos.slice(0, 6);
 
 // ─── REPORTES MOCK (para MOD/ADMIN) ─────────────────────────────────────────
 
@@ -151,25 +142,19 @@ const UsuarioRow = ({ usuario }) => {
 };
 
 const TABS_POR_ROL = {
-  // MIEMBRO: contenido personal del perfil
   MIEMBRO: [
     { id: "publicaciones", label: "Mis Spots", icon: <FaMapMarkerAlt /> },
     { id: "resenas", label: "Mis Reseñas", icon: <FaRegEdit /> },
     { id: "guardados", label: "Guardados", icon: <FaBookmark /> },
   ],
-  // SOCIO: spots propios + acceso rápido a locales (gestión profunda → menú lateral /locales)
   SOCIO: [
     { id: "publicaciones", label: "Mis Spots", icon: <FaMapMarkerAlt /> },
     { id: "mis-locales", label: "Mis Locales", icon: <FaStore /> },
   ],
-  // MOD: historial de acciones propias del moderador en su perfil
-  // (Dashboard y Gestionar Reportes completos → menú lateral)
   MOD: [
     { id: "reportes", label: "Reportes", icon: <FaFlag /> },
     { id: "historial", label: "Historial", icon: <FaHistory /> },
   ],
-  // ADMIN: resumen rápido + gestión de usuarios inline en el perfil
-  // (Dashboard, Generar Reportes, Configurar Parámetros → menú lateral)
   ADMIN: [
     { id: "usuarios", label: "Usuarios", icon: <FaUsers /> },
     { id: "moderacion", label: "Moderación", icon: <FaShieldAlt /> },
@@ -178,25 +163,58 @@ const TABS_POR_ROL = {
 
 // ─── COMPONENTE PRINCIPAL ────────────────────────────────────────────────────
 
-const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuardados, rol = "MIEMBRO" }) => {
-  // El rol ya llega en mayúsculas acortado desde la API o el modo demo: MIEMBRO, SOCIO, MOD, ADMIN
+const PerfilTabs = ({ tab, dispatch, rol = "MIEMBRO", nombreUsuario = "demo_user" }) => {
   const rolNormalizado = (rol || "MIEMBRO").toUpperCase();
   const tabs = TABS_POR_ROL[rolNormalizado] || TABS_POR_ROL.MIEMBRO;
-
-  // Si la tab activa no existe en el rol actual, auto-seleccionar la primera
-  const tabValida = tabs.find(t => t.id === tab) ? tab : tabs[0].id;
-
-  // Usar useEffect para evitar setState durante el render
-  useEffect(() => {
-    if (tabValida !== tab) {
-      dispatch({ type: "SET_TAB", payload: tabValida });
-    }
-  }, [tabValida, tab, dispatch]);
 
   const esSocio = rolNormalizado === "SOCIO";
   const esMod = rolNormalizado === "MOD";
   const esAdmin = rolNormalizado === "ADMIN";
   const esMiembro = rolNormalizado === "MIEMBRO";
+
+  const tabValida = tabs.find(t => t.id === tab) ? tab : tabs[0].id;
+
+  useEffect(() => {
+    if (tabValida !== tab) {
+      dispatch({ type: "SET_TAB", payload: tabValida });
+    }
+  }, [tabValida, tab, dispatch, esMiembro, esSocio]);
+
+  const [spotsUsuario, setSpotsUsuario] = useState([]);
+  const [resenasUsuario, setResenasUsuario] = useState([]);
+  const [guardadosUsuario, setGuardadosUsuario] = useState([]);
+  const [cargandoDatos, setCargandoDatos] = useState(true);
+
+  useEffect(() => {
+    const cargarDatos = async () => {
+      setCargandoDatos(true);
+
+      if (esMiembro || esSocio) {
+        const resSpots = await obtenerSpotsUsuario(nombreUsuario);
+        if (resSpots.exitoso) {
+          setSpotsUsuario(resSpots.datos);
+        }
+      }
+
+      if (esMiembro) {
+        const resResenas = await obtenerResenasUsuario(nombreUsuario);
+        if (resResenas.exitoso) {
+          setResenasUsuario(resResenas.datos);
+        }
+
+        const resGuardados = await obtenerSpotsGuardados();
+        if (resGuardados.exitoso) {
+          setGuardadosUsuario(resGuardados.datos);
+        }
+      }
+
+      setCargandoDatos(false);
+    };
+
+    cargarDatos();
+  }, [nombreUsuario, rolNormalizado, esMiembro, esSocio]);
+
+  const spotsFormateados = spotsUsuario.map(transformarSpotParaCard);
 
   return (
     <>
@@ -220,17 +238,23 @@ const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuar
 
         {/* MIS SPOTS */}
         {tabValida === "publicaciones" && (esMiembro || esSocio) && (
-          tienePublicaciones ? (
+          cargandoDatos ? (
+            <div className="text-center py-4">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+          ) : spotsFormateados.length > 0 ? (
             <div className="publicaciones-grid">
-              {spotsDatos.map((spot) => (
+              {spotsFormateados.map((spot) => (
                 <SpotCard
                   key={spot.id}
                   id={spot.id}
                   img={spot.img}
                   title={spot.title}
                   rating={spot.rating}
-                  likes={spot.totalResenas}
-                  tags={[spot.categoria]}
+                  likes={spot.likes}
+                  tags={[spot.tags]}
                 />
               ))}
             </div>
@@ -240,24 +264,30 @@ const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuar
               titulo="No tienes publicaciones"
               descripcion="Comparte tus lugares favoritos para que otros los descubran"
               textBoton="¡Crea tu primera publicación!"
-              rutaBoton="/crear-publicacion"
+              rutaBoton="/crear-spot"
             />
           )
         )}
 
         {/* MIS RESEÑAS (solo MIEMBRO) */}
         {tabValida === "resenas" && esMiembro && (
-          tieneResenas ? (
+          cargandoDatos ? (
+            <div className="text-center py-4">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+          ) : resenasUsuario.length > 0 ? (
             <div className="reviews-grid">
-              {resenasEjemplo.map((resena) => (
+              {resenasUsuario.map((resena) => (
                 <ReviewCard
-                  key={resena.placeId}
-                  title={resena.title}
+                  key={resena.id}
+                  title={resena.tituloSpot}
                   rating={resena.rating}
-                  text={resena.text}
+                  text={resena.texto}
                   likes={resena.likes}
-                  date={resena.date}
-                  placeId={resena.placeId}
+                  date={resena.fechaCreacion}
+                  placeId={resena.spotId}
                 />
               ))}
             </div>
@@ -274,18 +304,28 @@ const PerfilTabs = ({ tab, dispatch, tienePublicaciones, tieneResenas, tieneGuar
 
         {/* GUARDADOS (solo MIEMBRO) */}
         {tabValida === "guardados" && esMiembro && (
-          tieneGuardados ? (
+          cargandoDatos ? (
+            <div className="text-center py-4">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+          ) : guardadosUsuario.length > 0 ? (
             <div className="guardados-grid">
-              {guardadosEjemplo.map((spot) => (
-                <SpotCard
-                  key={spot.id}
-                  img="public/images/publicaciones/default-post.jpg"
-                  title={spot.title}
-                  tags={spot.tags}
-                  rating={spot.rating}
-                  likes={spot.likes}
-                />
-              ))}
+              {guardadosUsuario.map((spot) => {
+                const spotCard = transformarSpotParaCard(spot);
+                return (
+                  <SpotCard
+                    key={spot.id}
+                    id={spot.id}
+                    img={spotCard.img}
+                    title={spotCard.title}
+                    tags={spotCard.tags}
+                    rating={spotCard.rating}
+                    likes={spotCard.likes}
+                  />
+                );
+              })}
             </div>
           ) : (
             <SinContenido

@@ -8,23 +8,21 @@ import FotoPerfil from "./FotoPerfil";
 import BotonesAccion from "./BotonesAccion";
 import PassField from "./PassField";
 import {
-  putEditarPerfil,
-  patchCambiarContrasena,
-} from "../../../api/usuarioApi";
+  editarPerfil,
+  cambiarContrasena,
+} from "../../../services/usuario.service";
 import { useAuth } from "../../../context/AuthContext";
 import { subirAvatar } from "@/services/imagen.service";
 
-export default function EditarPerfilModal({
-  show,
-  onHide,
+function PerfilFormulario({
   perfilData,
+  usandoMock,
   onPerfilActualizado,
-  usandoMock = false,
+  onHide,
 }) {
   const { recargarUsuario } = useAuth();
   const [tabActiva, setTabActiva] = useState("perfil");
 
-  // Inicializar con datos reales del perfil (sin datos quemados)
   const [formData, setFormData] = useState({
     nombresCompletos: perfilData?.nombresCompletos || "",
     nombreUsuario: perfilData?.nombreUsuario || "",
@@ -43,7 +41,6 @@ export default function EditarPerfilModal({
   const [verNueva, setVerNueva] = useState(false);
   const [verConfirmar, setVerConfirmar] = useState(false);
 
-  // ─── validación de contraseña ──────────────────────────
   const validationRules = useMemo(
     () => ({
       length: formData.contrasenaNueva.length >= 8,
@@ -56,7 +53,6 @@ export default function EditarPerfilModal({
 
   const passwordIsValid = Object.values(validationRules).every(Boolean);
 
-  // ─── handlers ──────────────────────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -67,11 +63,11 @@ export default function EditarPerfilModal({
     if (!file) return;
 
     const previewUrl = URL.createObjectURL(file);
-    setFotoPerfil(previewUrl); // preview inmediato
+    setFotoPerfil(previewUrl);
 
     const resultado = await subirAvatar(file);
     if (resultado.exitoso) {
-      setFotoPerfil(resultado.url); 
+      setFotoPerfil(resultado.url);
     } else {
       Swal.fire({ icon: "error", title: "Error", text: resultado.mensaje });
       setFotoPerfil(
@@ -88,11 +84,9 @@ export default function EditarPerfilModal({
     formData.contrasenaNueva.length > 0 &&
     formData.contrasenaNueva === formData.confirmarContrasena;
 
-  // submit tab Perfil
   const handleSubmitPerfil = async (e) => {
     e.preventDefault();
 
-    // Si está en modo mock, simular éxito sin llamar al backend
     if (usandoMock) {
       Swal.fire({
         icon: "info",
@@ -100,7 +94,6 @@ export default function EditarPerfilModal({
         text: "Los cambios no se guardarán porque no hay conexión con el servidor.",
         confirmButtonColor: "var(--color-primary)",
       });
-      // Simular actualización local
       if (onPerfilActualizado) {
         onPerfilActualizado({
           ...perfilData,
@@ -114,7 +107,6 @@ export default function EditarPerfilModal({
       return;
     }
 
-    // Lógica normal con backend
     const datosActualizados = {
       nombresCompletos: formData.nombresCompletos,
       telefono: formData.telefono,
@@ -123,8 +115,16 @@ export default function EditarPerfilModal({
     };
 
     try {
-      await putEditarPerfil(datosActualizados);
-      if (onPerfilActualizado) onPerfilActualizado(datosActualizados);
+      const resultado = await editarPerfil(datosActualizados);
+
+      if (!resultado.exitoso) {
+        Swal.fire({ icon: "error", title: "Error", text: resultado.mensaje });
+        return;
+      }
+
+      if (onPerfilActualizado) {
+        onPerfilActualizado(resultado.datos || datosActualizados);
+      }
       await recargarUsuario();
       Swal.fire({
         icon: "success",
@@ -139,11 +139,9 @@ export default function EditarPerfilModal({
     }
   };
 
-  // submit tab Contraseña
   const handleSubmitContrasena = async (e) => {
     e.preventDefault();
 
-    // Modo mock para contraseña
     if (usandoMock) {
       Swal.fire({
         icon: "info",
@@ -172,11 +170,17 @@ export default function EditarPerfilModal({
       return;
     }
     try {
-      await patchCambiarContrasena({
+      const resultado = await cambiarContrasena({
         contrasenaActual: formData.contrasenaActual,
         nuevaContrasena: formData.contrasenaNueva,
         confirmarContrasena: formData.confirmarContrasena,
       });
+
+      if (!resultado.exitoso) {
+        Swal.fire({ icon: "error", title: "Error", text: resultado.mensaje });
+        return;
+      }
+
       await recargarUsuario();
       Swal.fire({
         icon: "success",
@@ -197,15 +201,10 @@ export default function EditarPerfilModal({
     }
   };
 
+  const rolMostrar = perfilData?.rol || "MIEMBRO";
+
   return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      size="lg"
-      centered
-      backdrop="static"
-      className="editar-perfil-modal"
-    >
+    <>
       {/* HEADER */}
       <Modal.Header closeButton className="modal-header-custom">
         <div className="modal-title-custom">
@@ -255,7 +254,7 @@ export default function EditarPerfilModal({
                   @{formData.nombreUsuario || "usuario"}
                 </p>
                 <div className="hero-pills">
-                  <span className="hpill">Miembro</span>
+                  <span className="hpill">{rolMostrar}</span>
                   <span className="hpill accent">
                     Nivel {perfilData?.nivel || 1}
                   </span>
@@ -409,6 +408,35 @@ export default function EditarPerfilModal({
           </Form>
         )}
       </Modal.Body>
+    </>
+  );
+}
+
+export default function EditarPerfilModal({
+  show,
+  onHide,
+  perfilData,
+  onPerfilActualizado,
+  usandoMock = false,
+}) {
+  return (
+    <Modal
+      key={show ? `editar-perfil-${perfilData?.nombreUsuario || "open"}` : "editar-perfil-closed"}
+      show={show}
+      onHide={onHide}
+      size="lg"
+      centered
+      backdrop="static"
+      className="editar-perfil-modal"
+    >
+      {show && (
+        <PerfilFormulario
+          perfilData={perfilData}
+          usandoMock={usandoMock}
+          onPerfilActualizado={onPerfilActualizado}
+          onHide={onHide}
+        />
+      )}
     </Modal>
   );
 }

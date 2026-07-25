@@ -41,6 +41,9 @@ const PerfilHeader = ({
   const mostrarNivel =
     rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
 
+const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) => {
+  const mostrarNivel = rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
+  
   return (
     <div className="perfil-header">
       <img
