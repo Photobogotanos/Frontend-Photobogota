@@ -1,93 +1,47 @@
-import { FaStore } from "react-icons/fa";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
-function TextAreaField({ label, htmlFor, required, icon, value, onChange, rows, placeholder }) {
+export default function PromoInfoBasica({ state, dispatch }) {
   return (
-    <div className="mb-3">
-      <label className="promo-label" htmlFor={htmlFor}>
-        {icon && <span className="me-2">{icon}</span>}
-        {label}
-        {required && <RequiredMark />}
-      </label>
-      <textarea
-        id={htmlFor}
-        className="promo-textarea"
-        rows={rows}
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
-  );
-}
-
-export default function PromoInfoBasica({
-    tituloPromo,
-    descripcionPromo,
-    localPromo,
-}){
-  const usarUbicacionActual = () => {
-    if (!navigator.geolocation) return alert("Geolocalización no disponible");
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => onDireccionChange(
-        `${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)}`
-      ),
-      () => alert("No se pudo obtener tu ubicación") 
-    );
-  };
-
-  return(
-    <>
-      {/* Nombre */ }
-      <Row className="g-3 mb-2 mt-1">
-        <Col xs={12}>
-          <label className="promo-label" htmlFor="titulo-promo">
-            Titulo de la promoción <RequiredMark/>
-          </label>
+    <div className="promo-section mb-4">
+      <h5 className="section-title">Información Básica</h5>
+      <Row className="g-3">
+        <Col md={8}>
+          <label className="promo-label">Título <RequiredMark /></label>
           <input
-            id="nombre-lugar"
             type="text"
-            className="promo-input"
-            placeholder="Ej: Mirador de Monserrate"
-            value={tituloPromo}
-            onChange={(e) => onNombreChange(e.target.value)}
+            className="form-control"
+            value={state.titulo}
+            onChange={(e) => dispatch({ type: "SET_TITULO", payload: e.target.value })}
+            placeholder="Ej: 50% de descuento en sesión de fotos"
+            maxLength={100}
           />
         </Col>
-      </Row> 
-
-      {/* Ubicación */}
-      <Row className="g-3 mb-2">
+        <Col md={4}>
+          <label className="promo-label">Tipo de promoción</label>
+          <select
+            className="form-control"
+            value={state.tipo}
+            onChange={(e) => dispatch({ type: "SET_TIPO", payload: e.target.value })}
+          >
+            <option value="descuento">Descuento %</option>
+            <option value="pack">Pack / Combo</option>
+            <option value="gratis">Servicio gratis</option>
+            <option value="otro">Otro</option>
+          </select>
+        </Col>
         <Col xs={12}>
-          <label className="promo-label" htmlFor="ubicacion-lugar">
-            <FaStore className="me-2" />
-            Local para aplicar promoción  <RequiredMark />
-          </label>
-          <div className="d-flex gap-2">
-            <input
-              id="ubicacion-lugar"
-              type="text"
-              className="promo-input"
-              placeholder="Dirección o referencia"
-              value={localPromo}
-              onChange={(e) => onDireccionChange(e.target.value)}
-            />
-              <FaStore />
-          </div>
+          <label className="promo-label">Descripción <RequiredMark /></label>
+          <textarea
+            className="form-control"
+            rows={4}
+            value={state.descripcion}
+            onChange={(e) => dispatch({ type: "SET_DESCRIPCION", payload: e.target.value })}
+            placeholder="Describe los beneficios, condiciones, etc."
+          />
         </Col>
       </Row>
-
-      <Row>
-        <TextAreaField
-          rows={2}
-          placeholder="Describe tu promoción"
-          value={descripcionPromo}
-          onChange={(e) => onDescripcionChange(e.target.value)}
-          label="Descripción de la promoción"
-          required
-        />
-      </Row>
-    </>
-  )
+    </div>
+  );
 }

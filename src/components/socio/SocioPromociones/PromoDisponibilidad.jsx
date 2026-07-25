@@ -1,78 +1,79 @@
-import { useState, useEffect } from "react";
-import Flatpickr from "react-flatpickr";
-import { MdDateRange } from "react-icons/md";
-import Select from "react-select";
+import { useEffect, useRef } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+import { Spanish } from "flatpickr/dist/l10n/es.js";
 
-export default function PromoDisponibilidad({
-  fechaInicio,
-  fechaFin,
-  limiteUsos,
-  onFechaInicioChange,
-  onFechaFinChange,
-  onLimiteUsosChange,
-}) {
+flatpickr.localize(Spanish);
+
+export default function PromoDisponibilidad({ state, dispatch }) {
+  const startRef = useRef(null);
+  const endRef = useRef(null);
+
+  useEffect(() => {
+    const startPicker = flatpickr(startRef.current, {
+      dateFormat: "Y-m-d",
+      minDate: "today",
+      defaultDate: state.fechaInicio || null,
+      onChange: ([date]) => {
+        dispatch({
+          type: "SET_FECHA_INICIO",
+          payload: date ? date.toISOString().split("T")[0] : "",
+        });
+      },
+    });
+
+    const endPicker = flatpickr(endRef.current, {
+      dateFormat: "Y-m-d",
+      minDate: state.fechaInicio || "today",
+      defaultDate: state.fechaFin || null,
+      onChange: ([date]) => {
+        dispatch({
+          type: "SET_FECHA_FIN",
+          payload: date ? date.toISOString().split("T")[0] : "",
+        });
+      },
+    });
+
+    return () => {
+      startPicker.destroy();
+      endPicker.destroy();
+    };
+  }, [state.fechaInicio]);
+
   return (
-    <Row className="g-3 mb-3">
-      <Col xs={12} md={6}>
-        <label className="promo-label" htmlFor="fecha-inicio">
-          Fecha de inicio <RequiredMark />
-        </label>
-        <Flatpickr
-          id="fecha-inicio"
-          className="form-control"
-          placeholder="Seleccionar fecha"
-          value={fechaInicio}
-          onChange={onFechaInicioChange}
-          options={{
-            dateFormat: "Y-m-d",
-            locale: "es",
-            minDate: "today",
-          }}
-        />
-      </Col>
-      <Col xs={12} md={6}>
-        <label className="promo-label" htmlFor="fecha-fin">
-          Fecha de fin <RequiredMark />
-        </label>
-        <Flatpickr
-          id="fecha-fin"
-          className="form-control"
-          placeholder="Seleccionar fecha"
-          value={fechaFin}
-          onChange={onFechaFinChange}
-          options={{
-            dateFormat: "Y-m-d",
-            locale: "es",
-            minDate: "today",
-          }}
-        />
-      </Col>
-      <Col md={6}>
-          <label className="promo-label mb-2">
-            Límite de códigos / usos
-          </label>
+    <div className="promo-section mb-4">
+      <h5 className="section-title">Disponibilidad y Límite</h5>
+      <Row className="g-3">
+        <Col md={6}>
+          <label className="promo-label">Fecha de inicio <RequiredMark /></label>
+          <input ref={startRef} className="form-control" placeholder="Selecciona fecha" readOnly />
+        </Col>
+        <Col md={6}>
+          <label className="promo-label">Fecha de fin <RequiredMark /></label>
+          <input ref={endRef} className="form-control" placeholder="Selecciona fecha" readOnly />
+        </Col>
+        <Col md={6}>
+          <label className="promo-label">Límite de códigos / usos</label>
           <input
             type="number"
             min="5"
             max="1000"
-            step="1"
             className="form-control"
-            value={limiteUsos}
+            value={state.limiteUsos}
             onChange={(e) => {
               const val = e.target.value;
               if (val === "" || (/^\d+$/.test(val) && +val >= 5 && +val <= 1000)) {
-                onLimiteUsosChange(val);
+                dispatch({ type: "SET_LIMITE_USOS", payload: val });
               }
             }}
             placeholder="Ej: 50 (vacío = ilimitado)"
           />
-          <small className="text-muted">
-            Mínimo 5 • Máximo 1000 • Dejar vacío para ilimitado
-          </small>
+          <small className="text-muted">Mínimo 5 • Máximo 1000 • Vacío = ilimitado</small>
         </Col>
-    </Row>
+      </Row>
+    </div>
   );
 }
