@@ -4,8 +4,8 @@ import "./CrearPromocionPage.css";
 
 const  CrearPromocionPage = () => {
     return(
-        <div className="crear-promocion">
-            <Container className="mt-3">
+        <div className="crear-promocion mt-3">
+            <Container fluid className="mt-3">
                 <CrearPromocion></CrearPromocion>
             </Container>
         </div>

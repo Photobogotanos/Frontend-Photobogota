@@ -1,10 +1,18 @@
-import { useReducer, useMemo } from "react";
+import { useReducer, useMemo, useState, useRef } from "react";
+import Lottie from "lottie-react";
+import uploadAnimation from "@/assets/animations/Upload.json";
+import {
+  FaCamera,
+  FaChevronLeft,
+  FaChevronRight,
+  FaTrash,
+} from "react-icons/fa";
+
 import HeaderPromo from "./HeaderPromo";
 import PromoInfoBasica from "./PromoInfoBasica";
 import PromoLocal from "./PromoLocal";
 import PromoDisponibilidad from "./PromoDisponibilidad";
 import PromoPreview from "./PromoPreview";
-import ImageUploader from "./ImageUploader"; // Ajusta la ruta si lo tienes en otro lado
 
 import "./CrearPromocion.css";
 
@@ -48,6 +56,179 @@ const initialState = {
   indiceImagen: 0,
 };
 
+// ============================================================
+// ImageUploader
+// ============================================================
+function ImageUploader({
+  previews,
+  onImageChange,
+  onRemove,
+  onNavigate,
+  indice,
+  onSelectIndice,
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+  const inputRef = useRef();
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files).filter((f) =>
+      f.type.startsWith("image/")
+    );
+    if (files.length) onImageChange(files);
+  };
+
+  const handleFileInput = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length) onImageChange(files);
+  };
+
+  const total = previews.length;
+
+  return (
+    <div className="uploader-wrapper">
+      {total === 0 ? (
+        <div
+          className={`drop-zone${isDragging ? " dragging" : ""}`}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={handleDrop}
+          onClick={() => inputRef.current.click()}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
+          aria-label="Subir imágenes"
+        >
+          <div className="drop-zone-lottie">
+            <Lottie
+              animationData={uploadAnimation}
+              loop
+              style={{ width: 110, height: 110 }}
+            />
+          </div>
+          <p className="drop-zone-title">Arrastra tus fotos aquí</p>
+          <p className="drop-zone-sub">o haz clic para seleccionar</p>
+          <span className="drop-zone-badge">JPG · PNG · WEBP · múltiples</span>
+        </div>
+      ) : (
+        <div className="uploader-con-imagenes">
+          <div
+            className="preview-carousel"
+            onClick={() => onNavigate("next")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && onNavigate("next")}
+            aria-label="Avanzar imagen"
+          >
+            <img
+              src={previews[indice]}
+              alt={`Preview ${indice + 1}`}
+              className="preview-img"
+            />
+            <span className="preview-counter">
+              {indice + 1} / {total}
+            </span>
+
+            {total > 1 && (
+              <>
+                <button
+                  type="button"
+                  className="preview-nav prev"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNavigate("prev");
+                  }}
+                  aria-label="Anterior"
+                >
+                  <FaChevronLeft />
+                </button>
+                <button
+                  type="button"
+                  className="preview-nav next"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNavigate("next");
+                  }}
+                  aria-label="Siguiente"
+                >
+                  <FaChevronRight />
+                </button>
+              </>
+            )}
+
+            <button
+              type="button"
+              className="preview-remove"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove(indice);
+              }}
+              aria-label="Eliminar imagen"
+            >
+              <FaTrash />
+            </button>
+          </div>
+
+          <div className="thumbnails-strip">
+            {previews.map((src, idx) => (
+              <div
+                key={src}
+                className={`thumbnail-item${idx === indice ? " active" : ""}`}
+                onClick={() => onSelectIndice(idx)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === "Enter" && onSelectIndice(idx)}
+                aria-label={`Ver imagen ${idx + 1}`}
+              >
+                <img src={src} alt={`Thumb ${idx + 1}`} />
+                <button
+                  type="button"
+                  className="thumb-remove"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemove(idx);
+                  }}
+                  aria-label={`Eliminar imagen ${idx + 1}`}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+
+            <div
+              className="thumbnail-add"
+              onClick={() => inputRef.current.click()}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
+              aria-label="Agregar más fotos"
+            >
+              <span className="thumbnail-add-icon">+</span>
+              <span className="thumbnail-add-text">Añadir</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        style={{ display: "none" }}
+        onChange={handleFileInput}
+      />
+    </div>
+  );
+}
+
+// ============================================================
+// Componente principal
+// ============================================================
 export default function CrearPromocion() {
   const [state, dispatch] = useReducer(promoFormReducer, initialState);
 
@@ -55,6 +236,32 @@ export default function CrearPromocion() {
     if (!state.fechaFin) return "activa";
     return new Date(state.fechaFin) < new Date() ? "expirada" : "activa";
   }, [state.fechaFin]);
+
+  const handleImagen = (files) => {
+    const newPreviews = files.map((f) => URL.createObjectURL(f));
+    dispatch({ type: "SET_IMAGENES", payload: [...state.imagenes, ...files] });
+    dispatch({ type: "SET_PREVIEWS", payload: [...state.previews, ...newPreviews] });
+    dispatch({ type: "SET_INDICE_IMAGEN", payload: 0 });
+  };
+
+  const handleRemoveImagen = (idx) => {
+    const newImagenes = state.imagenes.filter((_, i) => i !== idx);
+    const newPreviews = state.previews.filter((_, i) => i !== idx);
+    dispatch({ type: "SET_IMAGENES", payload: newImagenes });
+    dispatch({ type: "SET_PREVIEWS", payload: newPreviews });
+    const nuevoIdx = Math.min(state.indiceImagen, newPreviews.length - 1);
+    dispatch({ type: "SET_INDICE_IMAGEN", payload: Math.max(0, nuevoIdx) });
+  };
+
+  const handleNavigate = (dir) => {
+    const total = state.previews.length;
+    if (total === 0) return;
+    const next =
+      dir === "next"
+        ? (state.indiceImagen + 1) % total
+        : (state.indiceImagen - 1 + total) % total;
+    dispatch({ type: "SET_INDICE_IMAGEN", payload: next });
+  };
 
   const handleSubmit = () => {
     const payload = {
@@ -66,14 +273,13 @@ export default function CrearPromocion() {
       fechaFin: state.fechaFin,
       limiteUsos: state.limiteUsos === "" ? null : parseInt(state.limiteUsos),
       estado: estadoCalculado,
-      // imagenes se envían por separado o como FormData
     };
     console.log("Payload a enviar:", payload);
     // Aquí va tu llamada a la API
   };
 
   return (
-    <div className="pb-5">
+    <div className="promociones-container">
       <div className="formulario-contenedor">
         <HeaderPromo />
 
@@ -82,44 +288,16 @@ export default function CrearPromocion() {
         <PromoDisponibilidad state={state} dispatch={dispatch} />
 
         <div className="mt-4">
-          <label className="promo-label mb-2">Imágenes de la promoción</label>
+          <label className="promo-label mb-2">
+            <FaCamera className="me-2" />
+            Imágenes de la promoción
+          </label>
           <ImageUploader
             previews={state.previews}
             indice={state.indiceImagen}
-            onImageChange={(files) => {
-              const newPreviews = files.map((f) => URL.createObjectURL(f));
-              dispatch({
-                type: "SET_IMAGENES",
-                payload: [...state.imagenes, ...files],
-              });
-              dispatch({
-                type: "SET_PREVIEWS",
-                payload: [...state.previews, ...newPreviews],
-              });
-              dispatch({ type: "SET_INDICE_IMAGEN", payload: 0 });
-            }}
-            onRemove={(idx) => {
-              const newImagenes = state.imagenes.filter((_, i) => i !== idx);
-              const newPreviews = state.previews.filter((_, i) => i !== idx);
-              dispatch({ type: "SET_IMAGENES", payload: newImagenes });
-              dispatch({ type: "SET_PREVIEWS", payload: newPreviews });
-              dispatch({
-                type: "SET_INDICE_IMAGEN",
-                payload: Math.max(
-                  0,
-                  Math.min(state.indiceImagen, newPreviews.length - 1),
-                ),
-              });
-            }}
-            onNavigate={(dir) => {
-              const total = state.previews.length;
-              if (total === 0) return;
-              const next =
-                dir === "next"
-                  ? (state.indiceImagen + 1) % total
-                  : (state.indiceImagen - 1 + total) % total;
-              dispatch({ type: "SET_INDICE_IMAGEN", payload: next });
-            }}
+            onImageChange={handleImagen}
+            onRemove={handleRemoveImagen}
+            onNavigate={handleNavigate}
             onSelectIndice={(idx) =>
               dispatch({ type: "SET_INDICE_IMAGEN", payload: idx })
             }

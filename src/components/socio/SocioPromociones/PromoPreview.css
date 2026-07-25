@@ -1,0 +1,51 @@
+.promo-preview {
+  border-top: 1px solid #eee;
+  padding-top: 1.5rem;
+}
+
+.preview-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.preview-image img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.preview-body {
+  padding: 1.25rem;
+}
+
+.preview-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.preview-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.badge.estado-activa {
+  background: #28a745;
+  color: white;
+}
+
+.badge.estado-expirada {
+  background: #dc3545;
+  color: white;
+}
+
+.badge.estado-proximamente {
+  background: #ffc107;
+  color: #212529;
+}
