@@ -101,3 +101,4 @@ const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) =
 };
 
 export default PerfilHeader;
+}
