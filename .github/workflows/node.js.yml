@@ -22,22 +22,26 @@ jobs:
     - name: Checkout del código
       uses: actions/checkout@v4
 
+    - name: Instalar pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9          # o la versión que estén usando
+
     - name: Configurar Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        cache: 'pnpm'       # ← ahora usa pnpm
 
     - name: Instalar dependencias
-      run: npm install
+      run: pnpm install
 
     - name: Construir proyecto (Vite)
-      run: npm run build
+      run: pnpm run build
 
-    # Paso nuevo para el despliegue automático
     - name: Deploy
-      if: github.event_name == 'push' # Solo despliega cuando haces push a main
+      if: github.event_name == 'push'
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        folder: dist # Vite genera la salida en esta carpeta
+        folder: dist
         branch: gh-pages
