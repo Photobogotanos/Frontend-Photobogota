@@ -122,6 +122,13 @@ export default function MenuItems({ rol, cerrar }) {
           />
           <SidebarLink
             icon={<FaFileAlt />}
+            texto="Reportes"
+            to="/admin/reportes"
+            onClick={cerrar}
+            activo={esRutaActiva("/admin/reportes")}
+          />
+          <SidebarLink
+            icon={<FaFileAlt />}
             texto="Generar Reportes del Sistema"
             to="/generar-reportes"
             onClick={cerrar}

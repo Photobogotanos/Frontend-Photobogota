@@ -1,0 +1,15 @@
+.admin-reportes-page {
+  background-color: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  margin-top: 68px;
+  min-height: calc(100vh - 68px);
+}
+
+.admin-reportes-page .container {
+  max-width: 100%;
+  width: 100%;
+}
