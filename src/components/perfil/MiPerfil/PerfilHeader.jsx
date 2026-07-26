@@ -37,11 +37,11 @@ const PerfilHeader = ({
   rol = "MIEMBRO",
   nivel = null,
   usandoMock = false,
-}) => {
+}) => { 
   const mostrarNivel =
     rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
 
-const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) => {
+  const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) => {
   const mostrarNivel = rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
   
   return (
@@ -98,6 +98,7 @@ const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) =
       </div>
     </div>
   );
+  };
 };
 
 export default PerfilHeader;
