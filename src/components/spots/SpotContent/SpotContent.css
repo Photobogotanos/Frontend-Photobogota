@@ -55,6 +55,23 @@
   line-height: 1.3;
 }
 
+.lugar-nombre-fila {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lugar-nombre-fila .lugar-nombre {
+  margin-bottom: 12px;
+}
+
+.resena-acciones {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
 .lugar-direccion {
   font-size: 14px;
   color: #666;

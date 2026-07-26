@@ -4,6 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import FiltrosMapa from "@/components/mapa/FiltrosMapa/FiltrosMapa";
 import MapaBogota from "@/components/mapa/MapaBogota/MapaBogota";
 import StarRating from "./StarRating";
+import ReportarModal from "./ReportarModal";
 import { resenaReducer, initialResenaState } from "./ResenaReducer";
 import {
   FaChevronUp,
@@ -17,6 +18,7 @@ import {
   FaSignInAlt,
   FaPaperPlane,
   FaRegCalendarAlt,
+  FaFlag,
 } from "react-icons/fa";
 import { obtenerSpotPorId } from "@/services/spot.service";
 import {
@@ -65,6 +67,34 @@ const MapaContent = () => {
     resenaReducer,
     initialResenaState,
   );
+
+  // Popup de reporte: puede abrirse desde una reseña puntual
+  // (contextoReporte con resenaId) o desde el spot en general (contextoReporte null).
+  const [modalReporteAbierto, setModalReporteAbierto] = useState(false);
+  const [contextoReporte, setContextoReporte] = useState(null);
+
+  const abrirReporteSpot = () => {
+    if (!logueado) {
+      toast.error("Debes iniciar sesión para reportar");
+      return;
+    }
+    setContextoReporte(null);
+    setModalReporteAbierto(true);
+  };
+
+  const abrirReporteResena = (resenaId, nombreAutorResena) => {
+    if (!logueado) {
+      toast.error("Debes iniciar sesión para reportar");
+      return;
+    }
+    setContextoReporte({ resenaId, nombreAutorResena });
+    setModalReporteAbierto(true);
+  };
+
+  const cerrarReporte = () => {
+    setModalReporteAbierto(false);
+    setContextoReporte(null);
+  };
 
   useEffect(() => {
     if (id) {
@@ -199,7 +229,17 @@ const MapaContent = () => {
         </div>
 
         <div className="lugar-info-container">
-          <h1 className="lugar-nombre">{spot.nombre}</h1>
+          <div className="lugar-nombre-fila">
+            <h1 className="lugar-nombre">{spot.nombre}</h1>
+            <button
+              type="button"
+              className="btn-reportar-spot"
+              onClick={abrirReporteSpot}
+            >
+              <FaFlag className="btn-icon" />
+              Reportar
+            </button>
+          </div>
           <p className="lugar-direccion">
             <FaMapMarkerAlt className="location-icon" />
             {spot.direccion}
@@ -391,6 +431,20 @@ const MapaContent = () => {
                         {calificacion.comentario}
                       </p>
                     )}
+                    {!esPropia && (
+                      <div className="resena-acciones">
+                        <button
+                          type="button"
+                          className="btn-reportar-resena"
+                          onClick={() =>
+                            abrirReporteResena(calificacion.id, nombreAutor)
+                          }
+                        >
+                          <FaFlag className="btn-icon" />
+                          Reportar
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -402,6 +456,14 @@ const MapaContent = () => {
             </p>
           )}
         </div>
+
+        <ReportarModal
+          show={modalReporteAbierto}
+          onCerrar={cerrarReporte}
+          spotId={spot.id}
+          resenaId={contextoReporte?.resenaId ?? null}
+          nombreAutorResena={contextoReporte?.nombreAutorResena ?? null}
+        />
       </div>
     );
   }

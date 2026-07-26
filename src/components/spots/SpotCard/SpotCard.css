@@ -10,6 +10,32 @@
   transition: all 0.2s ease-in-out;
   cursor: pointer;
   align-items: center;
+  position: relative;
+}
+
+.btn-reportar-spot-card {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s ease;
+}
+
+.btn-reportar-spot-card:hover {
+  color: white;
+  background: #dc3545;
 }
 
 .spot-card-horizontal:hover {
