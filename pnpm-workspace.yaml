@@ -2,3 +2,6 @@ allowBuilds:
   esbuild: true
 minimumReleaseAgeExclude:
   - eslint@10.8.0
+
+packages:
+  - '.'
