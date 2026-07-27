@@ -176,6 +176,15 @@
   background: #fafafa;
 }
 
+.lugar-preview-modal .btn-reportar-preview {
+  margin-right: auto;
+  border-radius: 25px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .lugar-preview-modal .btn-primary {
   background-color: var(--color-primary);
   border: none;

@@ -23,6 +23,8 @@ import AdminUsuariosPage from "@/pages/admin/AdminUsuarios/AdminUsuariosPage";
 import AdminLogsPage from "@/pages/admin/AdminLogs/AdminLogsPage";
 import GestionCategoriasPage from "../pages/moderador/GestionCategoriasPage/GestionCategoriasPage";
 import PreferenciasNotificacionesPage from "@/pages/notificaciones/PreferenciasNotificaciones/PreferenciasNotificacionesPage";
+import DashboardReportesPage from "@/pages/moderador/DashboardReportesPage/DashboardReportesPage";
+import AdminReportesPage from "@/pages/admin/AdminReportesPage/AdminReportesPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 const AppRouter = () => {
@@ -147,6 +149,22 @@ const AppRouter = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/dashboard-reportes"
+          element={
+            <ProtectedRoute roles={["MOD"]}>
+              <DashboardReportesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/gestionar-reportes"
+          element={
+            <ProtectedRoute roles={["MOD"]}>
+              <DashboardReportesPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ── RUTAS DE ADMIN ── */}
         <Route
@@ -170,6 +188,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <AdminLogsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/reportes"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <AdminReportesPage />
             </ProtectedRoute>
           }
         />
