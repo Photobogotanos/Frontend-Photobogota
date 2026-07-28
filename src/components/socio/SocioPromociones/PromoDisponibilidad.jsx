@@ -3,7 +3,9 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 import flatpickr from "flatpickr";
+import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import { MdDateRange } from "react-icons/md";
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 
 flatpickr.localize(Spanish);
@@ -48,24 +50,26 @@ export default function PromoDisponibilidad({ state, dispatch }) {
       <h5 className="section-title">Disponibilidad y Límite</h5>
       <Row className="g-3">
         <Col md={6}>
-          <label className="promo-label">Fecha de inicio <RequiredMark /></label>
-          <input ref={startRef} className="form-control" placeholder="Selecciona fecha" readOnly />
+          <label className="creacion-formulario-label" >
+            <MdDateRange/> Fecha de inicio <RequiredMark />
+          </label>
+          <input ref={startRef} className="rounded-pill form-control input-without-focus" placeholder="Selecciona fecha" readOnly />
         </Col>
         <Col md={6}>
-          <label className="promo-label">Fecha de fin <RequiredMark /></label>
-          <input ref={endRef} className="form-control" placeholder="Selecciona fecha" readOnly />
+          <label className="creacion-formulario-label">Fecha de fin <RequiredMark /></label>
+          <input ref={endRef} className="rounded-pill form-control input-without-focus" placeholder="Selecciona fecha" readOnly />
         </Col>
         <Col md={6}>
           <label className="promo-label">Límite de códigos / usos</label>
           <input
             type="number"
-            min="5"
+            min="1"
             max="1000"
             className="form-control"
             value={state.limiteUsos}
             onChange={(e) => {
               const val = e.target.value;
-              if (val === "" || (/^\d+$/.test(val) && +val >= 5 && +val <= 1000)) {
+              if (val === "" || (/^\d+$/.test(val) && +val >= 1 && +val <= 1000)) {
                 dispatch({ type: "SET_LIMITE_USOS", payload: val });
               }
             }}

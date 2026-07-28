@@ -1,14 +1,19 @@
-//import { useState } from "react";
+import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
-import { FaMapMarkerAlt, FaTag, FaStar, FaHeart, FaCamera } from "react-icons/fa";
+import { FaMapMarkerAlt, FaTag, FaStar, FaHeart, FaCamera, FaFlag } from "react-icons/fa";
+import { toast } from "react-hot-toast";
+import { useAuth } from "@/context/AuthContext";
+import ReportarModal from "@/components/spots/SpotContent/ReportarModal";
 import "./SpotPreviewModal.css";
 
 const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
   const navigate = useNavigate();
+  const { logueado } = useAuth();
+  const [modalReporteAbierto, setModalReporteAbierto] = useState(false);
 
   // Aceptar datos del spot desde spotData o lugar (compatibilidad hacia atrás)
   const data = spotData || lugar;
@@ -18,6 +23,14 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
     if (data?.id) {
       navigate(`/spot/${data.id}`);
     }
+  };
+
+  const handleReportar = () => {
+    if (!logueado) {
+      toast.error("Debes iniciar sesión para reportar");
+      return;
+    }
+    setModalReporteAbierto(true);
   };
 
   if (!data) return null;
@@ -88,6 +101,13 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
         </div>
       </Modal.Body>
       <Modal.Footer>
+        <Button
+          variant="outline-danger"
+          className="btn-reportar-preview"
+          onClick={handleReportar}
+        >
+          <FaFlag className="btn-icon" /> Reportar
+        </Button>
         <Button variant="secondary" onClick={onHide}>
           Cerrar
         </Button>
@@ -95,6 +115,12 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
           Ir al spot
         </Button>
       </Modal.Footer>
+
+      <ReportarModal
+        show={modalReporteAbierto}
+        onCerrar={() => setModalReporteAbierto(false)}
+        spotId={data.id}
+      />
     </Modal>
   );
 };

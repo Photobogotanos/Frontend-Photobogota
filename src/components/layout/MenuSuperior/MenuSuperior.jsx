@@ -32,6 +32,7 @@ export default function MenuSuperior() {
 
   const { logueado, cerrarSesion, usuario } = useAuth();
   const esSocio = usuario?.rol === "SOCIO" || usuario?.rol === "Socio";
+  const esAdmin = usuario?.rol === "ADMIN" || usuario?.rol === "admin";
 
   const navegar = useNavigate();
   const location = useLocation();
@@ -146,17 +147,19 @@ export default function MenuSuperior() {
           ) : (
             /* Menú para usuarios logueados */
             <div className="d-flex align-items-center ms-auto acciones-usuario">
-              <Link
-                to="/crear-spot"
-                className={`btn-crear-publicacion ${pulsando ? "pulsing" : ""}`}
-                onMouseEnter={() => dispatch({ type: "SET_PULSANDO", payload: false })}
-                onClick={cerrarMenuResponsive}
-                aria-label={esSocio ? "Crear nuevo local" : "Crear nuevo spot"}
-              >
-                <FaPlus />
-                <span className="texto-completo">{esSocio ? "Crear Local" : "Crear Spot"}</span>
-                <span className="texto-corto">{esSocio ? "Local" : "Crear"}</span>
-              </Link>
+              {!esAdmin && (
+                <Link
+                  to="/crear-spot"
+                  className={`btn-crear-publicacion ${pulsando ? "pulsing" : ""}`}
+                  onMouseEnter={() => dispatch({ type: "SET_PULSANDO", payload: false })}
+                  onClick={cerrarMenuResponsive}
+                  aria-label={esSocio ? "Crear nuevo local" : "Crear nuevo spot"}
+                >
+                  <FaPlus />
+                  <span className="texto-completo">{esSocio ? "Crear Local" : "Crear Spot"}</span>
+                  <span className="texto-corto">{esSocio ? "Local" : "Crear"}</span>
+                </Link>
+              )}
 
               <Notificaciones notificaciones={3} />
             </div>

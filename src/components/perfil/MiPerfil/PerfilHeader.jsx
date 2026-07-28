@@ -1,4 +1,4 @@
-import { FiEdit3 } from "react-icons/fi";
+import { FiEdit3, FiBell } from "react-icons/fi";
 import { FaUser, FaCrown, FaUserShield, FaStore } from "react-icons/fa";
 
 const BadgeRol = ({ rol }) => {
@@ -7,7 +7,11 @@ const BadgeRol = ({ rol }) => {
       case "ADMIN":
         return { clase: "badge-admin", icono: <FaCrown />, texto: "Admin" };
       case "MOD":
-        return { clase: "badge-mod", icono: <FaUserShield />, texto: "Moderador" };
+        return {
+          clase: "badge-mod",
+          icono: <FaUserShield />,
+          texto: "Moderador",
+        };
       case "SOCIO":
         return { clase: "badge-socio", icono: <FaStore />, texto: "Socio" };
       case "MIEMBRO":
@@ -25,8 +29,15 @@ const BadgeRol = ({ rol }) => {
   );
 };
 
-const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) => {
-  const mostrarNivel = rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
+const PerfilHeader = ({
+  perfilData,
+  dispatch,
+  rol = "MIEMBRO",
+  nivel = null,
+  usandoMock = false,
+}) => {
+  const mostrarNivel =
+    rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
 
   return (
     <div className="perfil-header">
@@ -44,18 +55,19 @@ const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) =
         style={{ cursor: "pointer" }}
         tabIndex={0}
         role="button"
-        aria-label="Cambiar foto de perfil"
+        aria-label="Ver foto de perfil"
       />
 
       <div className="perfil-info">
         <div className="perfil-badges">
           <BadgeRol rol={rol} />
-          {mostrarNivel && <span className="badge-nivel">Nivel: {nivel}</span>}
+          {mostrarNivel && <span className="badge-nivel">Nivel {nivel}</span>}
+          {usandoMock && <span className="badge-demo">Demo</span>}
         </div>
 
-        <h3 className="perfil-nombre">
+        <h2 className="perfil-nombre">
           {perfilData.nombresCompletos || "Usuario"}
-        </h3>
+        </h2>
         <p className="perfil-username">
           @{perfilData.nombreUsuario || "usuario"}
         </p>
@@ -72,6 +84,16 @@ const PerfilHeader = ({ perfilData, dispatch, rol = "MIEMBRO", nivel = null }) =
           }
         >
           <FiEdit3 size={18} /> Editar perfil
+        </button>
+        <button
+          className="btn-notificaciones"
+          type="button"
+          onClick={() =>
+            dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: true })
+          }
+          title="Configurar notificaciones"
+        >
+          <FiBell size={18} /> Notificaciones
         </button>
       </div>
     </div>
