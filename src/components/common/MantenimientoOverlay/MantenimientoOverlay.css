@@ -1,0 +1,61 @@
+.mantenimiento-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: var(--color-bg);
+  font-family: "SF Pro", sans-serif;
+}
+
+.mantenimiento-card {
+  background: white;
+  padding: 3rem 2.5rem;
+  border-radius: 28px;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.15);
+  text-align: center;
+  max-width: 440px;
+  border: 1px solid var(--border);
+}
+
+.mantenimiento-icono {
+  font-size: 3.5rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.mantenimiento-titulo {
+  color: var(--color-dark);
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0.5rem 0 1rem;
+  letter-spacing: -0.02em;
+}
+
+.mantenimiento-mensaje {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.mantenimiento-fecha {
+  color: var(--color-dark);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.mantenimiento-btn {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--pill);
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.mantenimiento-btn:hover {
+  background: var(--color-hover);
+}

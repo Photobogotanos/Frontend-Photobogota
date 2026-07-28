@@ -6,11 +6,16 @@ import Lottie from "lottie-react";
 import SecurityAnimation from "@/assets/animations/SecurityLock.json";
 import { useRefreshLimit } from "@/hooks/useRefreshLimit";
 import "@/hooks/useRefreshLimit.css";
+import { useMantenimientoEstado } from "@/hooks/useMantenimientoEstado";
+import MantenimientoOverlay from "@/components/common/MantenimientoOverlay/MantenimientoOverlay";
+import { useAuth } from "@/context/AuthContext";
 
 import { MotionConfig } from "framer-motion";
 
 function App() {
   const { isBlocked, remainingCooldown } = useRefreshLimit();
+  const { usuario } = useAuth();
+  const mantenimiento = useMantenimientoEstado();
 
   if (isBlocked) {
     return (
@@ -26,6 +31,20 @@ function App() {
           <div className="limit-timer">{remainingCooldown}s</div>
         </div>
       </div>
+    );
+  }
+
+  // El backend bloquea toda la API durante el mantenimiento excepto las
+  // rutas de /admin y de autenticación, así que aquí replicamos lo mismo:
+  // a cualquiera que no sea ADMIN se le muestra el overlay de mantenimiento.
+  const esAdmin = usuario?.rol === "ADMIN";
+  if (mantenimiento.enMantenimiento && !esAdmin) {
+    return (
+      <MantenimientoOverlay
+        mensaje={mantenimiento.mensaje}
+        fechaFin={mantenimiento.fechaFin}
+        onReintentar={mantenimiento.refrescar}
+      />
     );
   }
 

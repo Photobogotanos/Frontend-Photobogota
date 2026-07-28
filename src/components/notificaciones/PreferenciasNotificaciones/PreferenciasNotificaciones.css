@@ -5,6 +5,44 @@
   padding: 2rem 1rem;
 }
 
+/* Botón volver (dentro de la card) */
+.btn-volver-preferencias {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 35%, white);
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 14px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-volver-preferencias:hover {
+  background: color-mix(in srgb, var(--color-primary) 8%, white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(128, 111, 190, 0.15);
+}
+
+.preferencias-btn {
+  min-width: auto;
+}
+
+@media (max-width: 576px) {
+  .d-flex.justify-content-between.pt-4 {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .btn-volver-preferencias,
+  .preferencias-btn {
+    width: 100%;
+  }
+}
+
 .preferencias-header {
   display: flex;
   flex-direction: column;

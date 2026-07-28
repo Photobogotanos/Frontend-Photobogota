@@ -1,0 +1,175 @@
+.mantenimiento-admin {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.mantenimiento-admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.mantenimiento-admin-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-dark);
+  font-weight: 700;
+  margin: 0;
+}
+
+.btn-refrescar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--pill);
+  padding: 8px 16px;
+  color: var(--color-dark);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-refrescar:hover {
+  background: var(--color-bg);
+}
+
+.girando {
+  animation: girar 1s linear infinite;
+}
+
+@keyframes girar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.mantenimiento-form {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 576px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: var(--color-dark);
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.btn-programar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--pill);
+  padding: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-programar:hover:not(:disabled) {
+  background: var(--color-hover);
+}
+
+.btn-programar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mantenimiento-admin-subtitulo {
+  font-weight: 700;
+  color: var(--color-dark);
+  margin-bottom: 16px;
+}
+
+.tabla-mantenimientos-wrapper {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow-x: auto;
+}
+
+.tabla-mantenimientos {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla-mantenimientos th,
+.tabla-mantenimientos td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.tabla-mantenimientos th {
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tabla-mantenimientos tr:last-child td {
+  border-bottom: none;
+}
+
+.badge-estado {
+  padding: 4px 12px;
+  border-radius: var(--pill);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.badge-activo {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.badge-pendiente {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.btn-cancelar-mantenimiento {
+  background: #fee2e2;
+  color: #ef4444;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-cancelar-mantenimiento:hover {
+  background: #fecaca;
+}

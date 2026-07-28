@@ -209,37 +209,7 @@
   display: none;
 }
 
-/* Botón Notificaciones */
-.btn-notificaciones {
-  color: #4b5563;
-  font-size: 24px;
-  text-decoration: none;
-  padding: 10px 12px;
-  position: relative;
-  transition: all 0.3s ease;
-  background: transparent;
-  border-radius: 12px;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
 
-.btn-notificaciones:hover {
-  color: var(--color-primary);
-  background: rgba(128, 111, 190, 0.1);
-  transform: scale(1.05);
-}
-
-.btn-notificaciones:active {
-  transform: scale(0.95);
-}
-
-.btn-notificaciones:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.2);
-}
 
 /* Badge de Notificaciones */
 .badge-notificaciones {
@@ -324,19 +294,6 @@
     padding: 8px 10px;
   }
 
-  .btn-notificaciones {
-    font-size: 22px;
-    padding: 8px 10px;
-  }
-
-  .badge-notificaciones {
-    min-width: 18px;
-    height: 18px;
-    font-size: 10px;
-    top: 4px;
-    right: 4px;
-  }
-
   .acciones-usuario {
     gap: 8px;
   }
@@ -369,11 +326,6 @@
 
   .hamburger-btn {
     font-size: 22px;
-    padding: 8px 10px;
-  }
-
-  .btn-notificaciones {
-    font-size: 20px;
     padding: 8px 10px;
   }
 

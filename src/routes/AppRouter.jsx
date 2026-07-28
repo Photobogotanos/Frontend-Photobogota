@@ -21,10 +21,9 @@ import ContrasenaNuevaPage from "@/pages/auth/ContrasenaNuevaPage/ContrasenaNuev
 import CrearCuentasAdminPage from "@/pages/admin/CrearCuentasAdmin/CrearCuentasAdminPage";
 import AdminUsuariosPage from "@/pages/admin/AdminUsuarios/AdminUsuariosPage";
 import AdminLogsPage from "@/pages/admin/AdminLogs/AdminLogsPage";
+import MantenimientoPage from "@/pages/admin/Mantenimiento/MantenimientoPage";
 import GestionCategoriasPage from "../pages/moderador/GestionCategoriasPage/GestionCategoriasPage";
 import PreferenciasNotificacionesPage from "@/pages/notificaciones/PreferenciasNotificaciones/PreferenciasNotificacionesPage";
-import DashboardReportesPage from "@/pages/moderador/DashboardReportesPage/DashboardReportesPage";
-import AdminReportesPage from "@/pages/admin/AdminReportesPage/AdminReportesPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 const AppRouter = () => {
@@ -149,22 +148,6 @@ const AppRouter = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/dashboard-reportes"
-          element={
-            <ProtectedRoute roles={["MOD"]}>
-              <DashboardReportesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/gestionar-reportes"
-          element={
-            <ProtectedRoute roles={["MOD"]}>
-              <DashboardReportesPage />
-            </ProtectedRoute>
-          }
-        />
 
         {/* ── RUTAS DE ADMIN ── */}
         <Route
@@ -192,10 +175,10 @@ const AppRouter = () => {
           }
         />
         <Route
-          path="/admin/reportes"
+          path="/notificaciones-mantenimiento"
           element={
             <ProtectedRoute roles={["ADMIN"]}>
-              <AdminReportesPage />
+              <MantenimientoPage />
             </ProtectedRoute>
           }
         />
