@@ -5,10 +5,10 @@ export default function PromoBotones({ onPreview, onPublish }) {
   return (
     <div className="botones-contenedor mt-3">
       <BackButton />
-      <button className="btn btn-outline-primary me-2" onClick={onPreview}>
+      <button className="spot-btn-preview" onClick={onPreview}>
         <FaEye /> Vista previa
       </button>
-      <button className="btn btn-primary" onClick={onPublish}>
+      <button className="spot-btn-publish" onClick={onPublish}>
         <FaPaperPlane /> Publicar
       </button>
     </div>

@@ -13,6 +13,7 @@ import PromoInfoBasica from "./PromoInfoBasica";
 import PromoLocal from "./PromoLocal";
 import PromoDisponibilidad from "./PromoDisponibilidad";
 import PromoPreview from "./PromoPreview";
+import PromoBotones from "./PromoBotones";
 
 import "./CrearPromocion.css";
 
@@ -307,7 +308,8 @@ export default function CrearPromocion() {
         <PromoPreview state={state} estado={estadoCalculado} />
 
         <div className="d-flex justify-content-end gap-3 mt-4">
-          <button type="button" className="btn btn-secondary">
+          <PromoBotones></PromoBotones>
+          {/* <button type="button" className="btn btn-secondary">
             Guardar borrador
           </button>
           <button
@@ -316,7 +318,7 @@ export default function CrearPromocion() {
             onClick={handleSubmit}
           >
             Publicar Promoción
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
