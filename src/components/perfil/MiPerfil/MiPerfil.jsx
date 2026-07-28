@@ -10,12 +10,12 @@ import { useAuth } from "../../../context/AuthContext";
 import { obtenerPerfil } from "../../../services/usuario.service";
 import defaultAvatar from "/images/user-pfp/default-avatar.jpg?url";
 
-// Tabs por rol
+// Tabs por rol (alineado con PerfilTabs)
 const PRIMERA_TAB_POR_ROL = {
   MIEMBRO: "publicaciones",
-  SOCIO: "publicaciones",
-  MOD: "reportes",
-  ADMIN: "usuarios",
+  SOCIO: "locales",
+  MOD: "resenas",
+  ADMIN: "resenas",
 };
 
 // ─── REDUCER ────────────────────────────────────────────────────────────────
@@ -31,22 +31,23 @@ const perfilReducer = (state, action) => {
       return { ...state, usandoMock: action.payload };
     case "SET_ERROR":
       return { ...state, error: action.payload };
-    case "TOGGLE_PUBLICACIONES":
-      return { ...state, tienePublicaciones: !state.tienePublicaciones };
-    case "TOGGLE_RESENAS":
-      return { ...state, tieneResenas: !state.tieneResenas };
-    case "TOGGLE_GUARDADOS":
-      return { ...state, tieneGuardados: !state.tieneGuardados };
     case "SET_MOSTRAR_EDITAR_PERFIL":
       return { ...state, mostrarEditarPerfil: action.payload };
     case "SET_MOSTRAR_FOTO_PERFIL":
       return { ...state, mostrarFotoPerfil: action.payload };
+    case "SET_MOSTRAR_NOTIFICACIONES":
+      return { ...state, mostrarNotificaciones: action.payload };
     case "UPDATE_PERFIL_DATA": {
-      const nuevoRol = (action.payload.rol || "MIEMBRO").toUpperCase();
+      const nuevoRol = (
+        action.payload.rol ||
+        state.perfilData.rol ||
+        "MIEMBRO"
+      ).toUpperCase();
       const rolAnterior = (state.perfilData.rol || "MIEMBRO").toUpperCase();
-      const nuevaTab = nuevoRol !== rolAnterior
-        ? (PRIMERA_TAB_POR_ROL[nuevoRol] ?? "publicaciones")
-        : state.tab;
+      const nuevaTab =
+        nuevoRol !== rolAnterior
+          ? (PRIMERA_TAB_POR_ROL[nuevoRol] ?? "publicaciones")
+          : state.tab;
       return {
         ...state,
         perfilData: { ...state.perfilData, ...action.payload, rol: nuevoRol },
@@ -62,11 +63,9 @@ const perfilReducer = (state, action) => {
 const crearEstadoInicial = () => {
   return {
     tab: "publicaciones",
-    tienePublicaciones: true,
-    tieneResenas: true,
-    tieneGuardados: false,
     mostrarEditarPerfil: false,
     mostrarFotoPerfil: false,
+    mostrarNotificaciones: false,
     loading: true,
     usandoMock: false,
     error: null,
@@ -90,7 +89,7 @@ export default function MiPerfil() {
   const [state, dispatch] = useReducer(perfilReducer, null, crearEstadoInicial);
   const { user, recargarUsuario } = useAuth();
 
-  // Cargar datos del backend con fallback a mock (manejado en el service)
+  // Cargar datos del backend; si falla (500 u otro), no romper la UI
   useEffect(() => {
     const cargarPerfil = async () => {
       let nombreUsuario = user?.nombreUsuario;
@@ -100,7 +99,8 @@ export default function MiPerfil() {
           const miembroStorage = localStorage.getItem("miembro");
           if (miembroStorage) {
             const miembro = JSON.parse(miembroStorage);
-            nombreUsuario = miembro?.username?.replace(/^@/, "") || miembro?.nombreUsuario;
+            nombreUsuario =
+              miembro?.username?.replace(/^@/, "") || miembro?.nombreUsuario;
           }
         } catch (e) {
           console.warn("Error leyendo localStorage:", e);
@@ -115,8 +115,9 @@ export default function MiPerfil() {
       try {
         const resultado = await obtenerPerfil(nombreUsuario);
 
-        if (resultado.exitoso && resultado.datos) {
+        if (resultado?.exitoso && resultado.datos) {
           const data = resultado.datos;
+          const rol = (data.rol || "MIEMBRO").toUpperCase();
           dispatch({
             type: "SET_PERFIL_DATA",
             payload: {
@@ -126,46 +127,81 @@ export default function MiPerfil() {
               biografia: data.biografia || "",
               telefono: data.telefono || "",
               fotoPerfil: data.fotoPerfil || defaultAvatar,
-              rol: data.rol || "MIEMBRO",
+              rol,
               nivel: data.nivel ?? null,
               totalSpots: data.totalSpots ?? 0,
               totalResenas: data.totalResenas ?? 0,
               totalGuardados: data.totalGuardados ?? 0,
             },
           });
-          dispatch({ type: "SET_USANDO_MOCK", payload: resultado.esMock || false });
+          dispatch({
+            type: "SET_TAB",
+            payload: PRIMERA_TAB_POR_ROL[rol] ?? "publicaciones",
+          });
+          dispatch({
+            type: "SET_USANDO_MOCK",
+            payload: resultado.esMock || false,
+          });
 
           if (resultado.esMock) {
             dispatch({
               type: "SET_ERROR",
-              payload: "Servidor no disponible. Mostrando datos de demostración.",
+              payload:
+                "Servidor no disponible. Mostrando datos de demostración.",
             });
           }
         } else {
+          // Error de negocio / 500 manejado en el service: mostrar perfil mínimo
           dispatch({
             type: "SET_ERROR",
-            payload: resultado.mensaje || "Error al cargar perfil",
+            payload:
+              resultado?.mensaje ||
+              "No se pudo cargar el perfil. Intenta más tarde.",
           });
           dispatch({ type: "SET_USANDO_MOCK", payload: false });
+          // Mantener datos por defecto para no romper la UI
+          dispatch({
+            type: "SET_PERFIL_DATA",
+            payload: {
+              ...state.perfilData,
+              nombreUsuario,
+              nombresCompletos: user?.nombresCompletos || "Usuario",
+              fotoPerfil: user?.fotoPerfil || defaultAvatar,
+              rol: (user?.rol || "MIEMBRO").toUpperCase(),
+            },
+          });
         }
       } catch {
+        // Cualquier 500 / red: no cargar datos rotos
         dispatch({
           type: "SET_ERROR",
-          payload: "Error inesperado al cargar el perfil",
+          payload:
+            "Error al cargar el perfil. El servidor no respondió correctamente.",
         });
         dispatch({ type: "SET_USANDO_MOCK", payload: false });
+        dispatch({
+          type: "SET_PERFIL_DATA",
+          payload: {
+            ...crearEstadoInicial().perfilData,
+            nombreUsuario,
+            nombresCompletos: user?.nombresCompletos || "Usuario",
+            fotoPerfil: user?.fotoPerfil || defaultAvatar,
+            rol: (user?.rol || "MIEMBRO").toUpperCase(),
+          },
+        });
       } finally {
         dispatch({ type: "SET_LOADING", payload: false });
       }
     };
 
     cargarPerfil();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handlePerfilActualizado = (datosActualizados) => {
     dispatch({ type: "UPDATE_PERFIL_DATA", payload: datosActualizados });
     if (!state.usandoMock) {
-      recargarUsuario();
+      recargarUsuario?.();
     }
   };
 
@@ -190,6 +226,11 @@ export default function MiPerfil() {
 
   return (
     <Container fluid className="perfil-container">
+      {state.error && (
+        <div className="perfil-error-banner" role="alert">
+          {state.error}
+        </div>
+      )}
 
       <PerfilHeader
         perfilData={state.perfilData}
@@ -201,22 +242,13 @@ export default function MiPerfil() {
 
       <div className="line-divider" />
 
-      <PerfilStats
-        tienePublicaciones={state.tienePublicaciones}
-        tieneResenas={state.tieneResenas}
-        tieneGuardados={state.tieneGuardados}
-        rol={state.perfilData.rol}
-        stats={stats}
-      />
+      <PerfilStats rol={state.perfilData.rol} stats={stats} />
 
       <div className="line-divider" />
 
       <PerfilTabs
         tab={state.tab}
         dispatch={dispatch}
-        tienePublicaciones={state.tienePublicaciones}
-        tieneResenas={state.tieneResenas}
-        tieneGuardados={state.tieneGuardados}
         rol={state.perfilData.rol}
         nombreUsuario={state.perfilData.nombreUsuario}
         usandoMock={state.usandoMock}
@@ -224,7 +256,9 @@ export default function MiPerfil() {
 
       <EditarPerfilModal
         show={state.mostrarEditarPerfil}
-        onHide={() => dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: false })}
+        onHide={() =>
+          dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: false })
+        }
         perfilData={state.perfilData}
         onPerfilActualizado={handlePerfilActualizado}
         usandoMock={state.usandoMock}
@@ -232,11 +266,61 @@ export default function MiPerfil() {
 
       <FotoPerfilModal
         show={state.mostrarFotoPerfil}
-        onHide={() => dispatch({ type: "SET_MOSTRAR_FOTO_PERFIL", payload: false })}
+        onHide={() =>
+          dispatch({ type: "SET_MOSTRAR_FOTO_PERFIL", payload: false })
+        }
         foto={state.perfilData.fotoPerfil}
         nombre={state.perfilData.nombresCompletos}
       />
 
+      {/* Modal simple de notificaciones (placeholder) */}
+      {state.mostrarNotificaciones && (
+        <div
+          className="perfil-notif-overlay"
+          onClick={() =>
+            dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
+          }
+          role="presentation"
+        >
+          <div
+            className="perfil-notif-panel"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-label="Configurar notificaciones"
+          >
+            <h3 className="perfil-notif-title">Notificaciones</h3>
+            <p className="perfil-notif-sub">
+              Elige qué avisos quieres recibir.
+            </p>
+            <label className="perfil-notif-row">
+              <input type="checkbox" defaultChecked />
+              <span>Nuevas reseñas en tus spots</span>
+            </label>
+            <label className="perfil-notif-row">
+              <input type="checkbox" defaultChecked />
+              <span>Respuestas a tus reseñas</span>
+            </label>
+            <label className="perfil-notif-row">
+              <input type="checkbox" defaultChecked />
+              <span>Promociones de locales</span>
+            </label>
+            <label className="perfil-notif-row">
+              <input type="checkbox" />
+              <span>Novedades de la plataforma</span>
+            </label>
+            <button
+              type="button"
+              className="btn-editar-perfil"
+              style={{ width: "100%", justifyContent: "center", marginTop: 16 }}
+              onClick={() =>
+                dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
+              }
+            >
+              Guardar preferencias
+            </button>
+          </div>
+        </div>
+      )}
     </Container>
   );
 }
