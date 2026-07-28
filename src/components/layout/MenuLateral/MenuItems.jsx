@@ -14,6 +14,7 @@ import {
   FaCreditCard,
   FaCog,
   FaBell,
+  FaUserSlash,
 } from "react-icons/fa";
 import SidebarLink from "./SidebarLink";
 
@@ -122,6 +123,13 @@ export default function MenuItems({ rol, cerrar }) {
             to="/admin/reportes"
             onClick={cerrar}
             activo={esRutaActiva("/admin/reportes")}
+          />
+          <SidebarLink
+            icon={<FaUserSlash />}
+            texto="Eliminación de cuentas"
+            to="/admin/eliminaciones"
+            onClick={cerrar}
+            activo={esRutaActiva("/admin/eliminaciones")}
           />
           <SidebarLink
             icon={<FaUserPlus />}

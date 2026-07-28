@@ -282,18 +282,6 @@ export const obtenerSpotsUsuario = async (nombreUsuario) => {
       esMock: false,
     };
   } catch (error) {
-    const status = error.response?.status;
-    const es404o500 = status === 404 || status === 500;
-
-    if (es404o500) {
-      return {
-        exitoso: true,
-        datos: [],
-        mensaje: "Mostrando datos de demostración",
-        esMock: true,
-      };
-    }
-
     const isNetworkError = !error.response;
 
     if (!isNetworkError) {
@@ -329,18 +317,6 @@ export const obtenerResenasUsuario = async (nombreUsuario) => {
       esMock: false,
     };
   } catch (error) {
-    const status = error.response?.status;
-    const es404o500 = status === 404 || status === 500;
-
-    if (es404o500) {
-      return {
-        exitoso: true,
-        datos: [],
-        mensaje: "Mostrando datos de demostración",
-        esMock: true,
-      };
-    }
-
     const isNetworkError = !error.response;
 
     if (!isNetworkError) {
@@ -388,18 +364,6 @@ export const obtenerSpotsGuardados = async () => {
       esMock: false,
     };
   } catch (error) {
-    const status = error.response?.status;
-    const es404o500 = status === 404 || status === 500;
-
-    if (es404o500) {
-      return {
-        exitoso: true,
-        datos: [],
-        mensaje: "Mostrando datos de demostración",
-        esMock: true,
-      };
-    }
-
     const isNetworkError = !error.response;
 
     if (!isNetworkError) {

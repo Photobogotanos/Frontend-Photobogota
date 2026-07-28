@@ -25,6 +25,7 @@ import GestionCategoriasPage from "../pages/moderador/GestionCategoriasPage/Gest
 import PreferenciasNotificacionesPage from "@/pages/notificaciones/PreferenciasNotificaciones/PreferenciasNotificacionesPage";
 import DashboardReportesPage from "@/pages/moderador/DashboardReportesPage/DashboardReportesPage";
 import AdminReportesPage from "@/pages/admin/AdminReportesPage/AdminReportesPage";
+import AdminEliminacionesPage from "@/pages/admin/AdminEliminacionesPage/AdminEliminacionesPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 const AppRouter = () => {
@@ -196,6 +197,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <AdminReportesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/eliminaciones"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <AdminEliminacionesPage />
             </ProtectedRoute>
           }
         />
