@@ -84,7 +84,10 @@ export default function MenuItems({ rol, cerrar }) {
             texto="Revisar Solicitudes de Socios"
             to="/moderador/revision-solicitudes"
             onClick={cerrar}
-            activo={esRutaActiva("/moderador/revision-solicitudes") || esRutaActiva("/solicitudes-socios")}
+            activo={
+              esRutaActiva("/moderador/revision-solicitudes") ||
+              esRutaActiva("/solicitudes-socios")
+            }
           />
           <SidebarLink
             icon={<FaFileAlt />}
@@ -114,18 +117,11 @@ export default function MenuItems({ rol, cerrar }) {
       {rol === "ADMIN" && (
         <>
           <SidebarLink
-            icon={<FaTachometerAlt />}
-            texto="Dashboard"
-            to="/admin-dashboard"
-            onClick={cerrar}
-            activo={esRutaActiva("/admin-dashboard")}
-          />
-          <SidebarLink
             icon={<FaFileAlt />}
-            texto="Generar Reportes del Sistema"
-            to="/generar-reportes"
+            texto="Reportes"
+            to="/admin/reportes"
             onClick={cerrar}
-            activo={esRutaActiva("/generar-reportes")}
+            activo={esRutaActiva("/admin/reportes")}
           />
           <SidebarLink
             icon={<FaUserPlus />}
@@ -133,13 +129,6 @@ export default function MenuItems({ rol, cerrar }) {
             to="/admin/usuarios"
             onClick={cerrar}
             activo={esRutaActiva("/admin/usuarios")}
-          />
-          <SidebarLink
-            icon={<FaCreditCard />}
-            texto="Gestión Pago Socios"
-            to="/gestion-pagos"
-            onClick={cerrar}
-            activo={esRutaActiva("/gestion-pagos")}
           />
           <SidebarLink
             icon={<FaBell />}
@@ -165,7 +154,10 @@ export default function MenuItems({ rol, cerrar }) {
           texto="Ser Socio"
           to="/solicitud-socio/formulario"
           onClick={cerrar}
-          activo={esRutaActiva("/solicitud-socio/formulario") || esRutaActiva("/solicitud-socio")}
+          activo={
+            esRutaActiva("/solicitud-socio/formulario") ||
+            esRutaActiva("/solicitud-socio")
+          }
         />
       )}
     </>

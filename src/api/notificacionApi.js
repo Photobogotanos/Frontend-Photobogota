@@ -1,7 +1,5 @@
 import { clienteApi } from "./axiosConfig";
 
-const BASE_URL = "/api/v1/notificaciones";
-
 // Listar mis notificaciones (paginadas)
 export const getMisNotificaciones = (
   page = 0,
@@ -10,27 +8,28 @@ export const getMisNotificaciones = (
 ) => {
   const params = { page, size };
   if (soloNoLeidas !== null) params.soloNoLeidas = soloNoLeidas;
-  return clienteApi.get(BASE_URL, { params });
+  return clienteApi.get("/notificaciones", { params });
 };
 
 // Contador de no leídas (para badge)
 export const getContadorNoLeidas = () =>
-  clienteApi.get(`${BASE_URL}/no-leidas/contador`);
+  clienteApi.get("/notificaciones/no-leidas/contador");
 
 // Marcar como leída
-export const marcarLeida = (id) => clienteApi.patch(`${BASE_URL}/${id}/leida`);
+export const marcarLeida = (id) =>
+  clienteApi.patch(`/notificaciones/${id}/leida`);
 
 // Marcar todas como leídas
 export const marcarTodasLeidas = () =>
-  clienteApi.patch(`${BASE_URL}/leer-todas`);
+  clienteApi.patch("/notificaciones/leer-todas");
 
 // Eliminar notificación
 export const eliminarNotificacion = (id) =>
-  clienteApi.delete(`${BASE_URL}/${id}`);
+  clienteApi.delete(`/notificaciones/${id}`);
 
 // Preferencias
 export const getPreferenciasNotificaciones = () =>
-  clienteApi.get(`${BASE_URL}/preferencias`);
+  clienteApi.get("/notificaciones/preferencias");
 
 export const actualizarPreferenciasApi = (dto) =>
-  clienteApi.put(`${BASE_URL}/preferencias`, dto);
+  clienteApi.put("/notificaciones/preferencias", dto);

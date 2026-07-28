@@ -20,8 +20,8 @@
 }
 
 .btn-notificaciones:hover {
-  background-color: rgba(0, 123, 255, 0.1);
-  color: #0d6efd;
+  background-color: rgba(128, 111, 190, 0.1);
+  color: #806fbe;
   transform: scale(1.1);
 }
 

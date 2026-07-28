@@ -1,0 +1,245 @@
+.reportar-modal .modal-header .btn-close {
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  padding: 0.5rem;
+  opacity: 1;
+  background-size: 0.8rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.reportar-modal .modal-header {
+  border-bottom: none !important;
+  padding-bottom: 0.5rem;
+}
+
+.reportar-modal .modal-title-top {
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+.modal-title-icon {
+  color: #dc3545;
+  font-size: 0.95rem;
+}
+
+.reportar-modal .modal-footer {
+  border-top: 1px solid #dee2e6;
+  gap: 0.5rem;
+}
+
+.reportar-contexto {
+  background: #f5f2eb;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 16px;
+}
+
+.descripcion-contador {
+  display: block;
+  text-align: right;
+  font-size: 11px;
+  color: #999;
+  margin-top: 4px;
+}
+
+.evidencia-uploader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-adjuntar-evidencia {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-adjuntar-evidencia:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-adjuntar-evidencia:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.evidencia-hint {
+  font-size: 11px;
+  color: #888;
+}
+
+.evidencia-previews {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.evidencia-preview {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.evidencia-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-quitar-evidencia {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+/* Vista de confirmación con el ticket */
+.reportar-confirmacion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 24px 8px;
+}
+
+.confirmacion-icono {
+  font-size: 40px;
+  color: #2e7d32;
+  margin-bottom: 12px;
+}
+
+.confirmacion-texto {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 18px;
+}
+
+.ticket-box {
+  background: #f5f2eb;
+  border: 1px dashed var(--color-primary);
+  border-radius: 12px;
+  padding: 12px 20px;
+  width: 100%;
+}
+
+.ticket-label {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.ticket-valor-fila {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ticket-valor {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.03em;
+}
+
+.btn-copiar-ticket {
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-copiar-ticket:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.confirmacion-nota {
+  font-size: 12px;
+  color: #999;
+  margin-top: 12px;
+}
+
+/* Ícono/botón de reportar, ubicado junto a cada reseña */
+.btn-reportar-resena {
+  background: transparent;
+  border: none;
+  color: #999;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-reportar-resena:hover {
+  color: #dc3545;
+  background: rgba(220, 53, 69, 0.08);
+}
+
+.btn-reportar-spot {
+  background: transparent;
+  color: #888;
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: var(--pill);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+
+.btn-reportar-spot:hover {
+  color: #dc3545;
+  border-color: #dc3545;
+  background: rgba(220, 53, 69, 0.06);
+}

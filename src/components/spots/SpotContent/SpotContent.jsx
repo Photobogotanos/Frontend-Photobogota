@@ -4,6 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import FiltrosMapa from "@/components/mapa/FiltrosMapa/FiltrosMapa";
 import MapaBogota from "@/components/mapa/MapaBogota/MapaBogota";
 import StarRating from "./StarRating";
+import ReportarModal from "./ReportarModal";
 import { resenaReducer, initialResenaState } from "./ResenaReducer";
 import {
   FaChevronUp,
@@ -17,6 +18,7 @@ import {
   FaSignInAlt,
   FaPaperPlane,
   FaRegCalendarAlt,
+  FaFlag,
 } from "react-icons/fa";
 import { obtenerSpotPorId } from "@/services/spot.service";
 import {
@@ -33,15 +35,21 @@ const MAX_COMENTARIO = 500;
 // Extrae el id del autor de una calificación, sin importar la forma exacta
 // en la que el backend lo haya serializado (usuario, usuario.id, usuarioId...)
 const obtenerIdAutorCalificacion = (calificacion) =>
-  calificacion?.usuario?.id ?? calificacion?.usuario ?? calificacion?.usuarioId ?? calificacion?.idUsuario;
+  typeof calificacion?.usuario === "string"
+    ? calificacion.usuario
+    : (calificacion?.usuario?.login ??
+      calificacion?.usuario?.id ??
+      calificacion?.usuarioId ??
+      calificacion?.idUsuario);
 
 const obtenerNombreAutorCalificacion = (calificacion) =>
-  calificacion?.usuario?.nombreUsuario ||
-  calificacion?.usuario?.nombre ||
-  calificacion?.nombreUsuario ||
-  calificacion?.usuarioNombre ||
-  "Usuario";
-
+  typeof calificacion?.usuario === "string"
+    ? calificacion.usuario
+    : calificacion?.usuario?.nombreUsuario ||
+      calificacion?.usuario?.nombre ||
+      calificacion?.nombreUsuario ||
+      calificacion?.usuarioNombre ||
+      "Usuario";
 const MapaContent = () => {
   const { id } = useParams();
   const { usuario, logueado } = useAuth();
@@ -55,7 +63,38 @@ const MapaContent = () => {
   const [cargandoCalificaciones, setCargandoCalificaciones] = useState(false);
   const [miCalificacion, setMiCalificacion] = useState(null);
   const [enviandoCalificacion, setEnviandoCalificacion] = useState(false);
-  const [estadoResena, dispatchResena] = useReducer(resenaReducer, initialResenaState);
+  const [estadoResena, dispatchResena] = useReducer(
+    resenaReducer,
+    initialResenaState,
+  );
+
+  // Popup de reporte: puede abrirse desde una reseña puntual
+  // (contextoReporte con resenaId) o desde el spot en general (contextoReporte null).
+  const [modalReporteAbierto, setModalReporteAbierto] = useState(false);
+  const [contextoReporte, setContextoReporte] = useState(null);
+
+  const abrirReporteSpot = () => {
+    if (!logueado) {
+      toast.error("Debes iniciar sesión para reportar");
+      return;
+    }
+    setContextoReporte(null);
+    setModalReporteAbierto(true);
+  };
+
+  const abrirReporteResena = (resenaId, nombreAutorResena) => {
+    if (!logueado) {
+      toast.error("Debes iniciar sesión para reportar");
+      return;
+    }
+    setContextoReporte({ resenaId, nombreAutorResena });
+    setModalReporteAbierto(true);
+  };
+
+  const cerrarReporte = () => {
+    setModalReporteAbierto(false);
+    setContextoReporte(null);
+  };
 
   useEffect(() => {
     if (id) {
@@ -83,16 +122,21 @@ const MapaContent = () => {
       if (resultado.exitoso) {
         setCalificaciones(resultado.datos);
 
-        const propia = usuario
+        const idUsuarioLogueado = usuario?.nombreUsuario ?? usuario?.login ?? usuario?.id;
+        const propia = idUsuarioLogueado
           ? resultado.datos.find(
-              (calificacion) => obtenerIdAutorCalificacion(calificacion) === usuario.id,
+              (calificacion) =>
+                obtenerIdAutorCalificacion(calificacion) === idUsuarioLogueado,
             )
           : null;
 
         if (propia) {
           setMiCalificacion(propia);
           dispatchResena({ type: "SET_RATING", payload: propia.estrellas });
-          dispatchResena({ type: "SET_COMENTARIO", payload: propia.comentario || "" });
+          dispatchResena({
+            type: "SET_COMENTARIO",
+            payload: propia.comentario || "",
+          });
         } else {
           setMiCalificacion(null);
           dispatchResena({ type: "RESET_FORM" });
@@ -129,7 +173,9 @@ const MapaContent = () => {
     }
 
     if (comentario.length > MAX_COMENTARIO) {
-      toast.error(`El comentario no puede superar los ${MAX_COMENTARIO} caracteres`);
+      toast.error(
+        `El comentario no puede superar los ${MAX_COMENTARIO} caracteres`,
+      );
       return;
     }
 
@@ -168,14 +214,32 @@ const MapaContent = () => {
           {spot.imagen ? (
             <img src={spot.imagen} alt={spot.nombre} />
           ) : (
-            <div style={{ backgroundColor: '#ddd', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div
+              style={{
+                backgroundColor: "#ddd",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <span>Sin imagen</span>
             </div>
           )}
         </div>
 
         <div className="lugar-info-container">
-          <h1 className="lugar-nombre">{spot.nombre}</h1>
+          <div className="lugar-nombre-fila">
+            <h1 className="lugar-nombre">{spot.nombre}</h1>
+            <button
+              type="button"
+              className="btn-reportar-spot"
+              onClick={abrirReporteSpot}
+            >
+              <FaFlag className="btn-icon" />
+              Reportar
+            </button>
+          </div>
           <p className="lugar-direccion">
             <FaMapMarkerAlt className="location-icon" />
             {spot.direccion}
@@ -197,27 +261,35 @@ const MapaContent = () => {
             <div className="lugar-rating-badge">
               <FaStar className="star-icon" />
               <span className="rating-text">{spot.rating}</span>
-              <span className="reviews-text">({spot.totalResenas} reseñas)</span>
+              <span className="reviews-text">
+                ({spot.totalResenas} reseñas)
+              </span>
             </div>
           </div>
 
           {spot.descripcion && (
             <div className="lugar-descripcion">
-              <h3><FaMapMarkerAlt className="section-icon" /> Descripción</h3>
+              <h3>
+                <FaMapMarkerAlt className="section-icon" /> Descripción
+              </h3>
               <p>{spot.descripcion}</p>
             </div>
           )}
 
           {spot.recomendacion && (
             <div className="lugar-recomendacion">
-              <h3><FaHeart className="section-icon" /> ¿Por qué recomendarlo?</h3>
+              <h3>
+                <FaHeart className="section-icon" /> ¿Por qué recomendarlo?
+              </h3>
               <p>{spot.recomendacion}</p>
             </div>
           )}
 
           {spot.tipsFoto && (
             <div className="lugar-tips">
-              <h3><FaCamera className="section-icon" /> Tips de fotografía</h3>
+              <h3>
+                <FaCamera className="section-icon" /> Tips de fotografía
+              </h3>
               <p>{spot.tipsFoto}</p>
             </div>
           )}
@@ -228,7 +300,20 @@ const MapaContent = () => {
             <FaCommentDots className="section-icon" /> Calificaciones
           </h3>
 
-          {logueado ? (
+          {!logueado ? (
+            <div className="nueva-resena-card">
+              <h4>
+                <FaSignInAlt className="form-icon" /> Iniciá sesión para
+                calificar
+              </h4>
+              <p className="text-muted mb-3">
+                Necesitás una cuenta para dejar tu calificación en este spot.
+              </p>
+              <Link to="/login" className="btn-submit-resena btn-login-resena">
+                <FaSignInAlt className="btn-icon" /> Iniciar sesión
+              </Link>
+            </div>
+          ) : (
             <div className="nueva-resena-card">
               <h4>
                 <FaStar className="form-icon" />
@@ -242,9 +327,15 @@ const MapaContent = () => {
                       rating={estadoResena.nuevaResena.rating}
                       hoverRating={estadoResena.hoverRating}
                       isInteractive
-                      onSelect={(valor) => dispatchResena({ type: "SET_RATING", payload: valor })}
-                      onHover={(valor) => dispatchResena({ type: "SET_HOVER", payload: valor })}
-                      onLeave={() => dispatchResena({ type: "SET_HOVER", payload: 0 })}
+                      onSelect={(valor) =>
+                        dispatchResena({ type: "SET_RATING", payload: valor })
+                      }
+                      onHover={(valor) =>
+                        dispatchResena({ type: "SET_HOVER", payload: valor })
+                      }
+                      onLeave={() =>
+                        dispatchResena({ type: "SET_HOVER", payload: 0 })
+                      }
                     />
                   </div>
                 </div>
@@ -256,39 +347,33 @@ const MapaContent = () => {
                     maxLength={MAX_COMENTARIO}
                     value={estadoResena.nuevaResena.comentario}
                     onChange={(e) =>
-                      dispatchResena({ type: "SET_COMENTARIO", payload: e.target.value })
+                      dispatchResena({
+                        type: "SET_COMENTARIO",
+                        payload: e.target.value,
+                      })
                     }
                   />
                   <span className="comentario-contador">
-                    {estadoResena.nuevaResena.comentario.length}/{MAX_COMENTARIO}
+                    {estadoResena.nuevaResena.comentario.length}/
+                    {MAX_COMENTARIO}
                   </span>
                 </div>
 
                 <button
                   type="submit"
                   className="btn-submit-resena"
-                  disabled={enviandoCalificacion || estadoResena.nuevaResena.rating < 1}
+                  disabled={
+                    enviandoCalificacion || estadoResena.nuevaResena.rating < 1
+                  }
                 >
                   <FaPaperPlane className="btn-icon" />
                   {enviandoCalificacion
                     ? "Enviando..."
                     : miCalificacion
-                    ? "Actualizar calificación"
-                    : "Enviar calificación"}
+                      ? "Actualizar calificación"
+                      : "Enviar calificación"}
                 </button>
               </form>
-            </div>
-          ) : (
-            <div className="nueva-resena-card">
-              <h4>
-                <FaSignInAlt className="form-icon" /> Iniciá sesión para calificar
-              </h4>
-              <p className="text-muted mb-3">
-                Necesitás una cuenta para dejar tu calificación en este spot.
-              </p>
-              <Link to="/login" className="btn-submit-resena btn-login-resena">
-                <FaSignInAlt className="btn-icon" /> Iniciar sesión
-              </Link>
             </div>
           )}
 
@@ -301,9 +386,17 @@ const MapaContent = () => {
           ) : calificaciones.length > 0 ? (
             <div className="resenas-lista">
               {calificaciones.map((calificacion) => {
-                const esPropia = usuario && obtenerIdAutorCalificacion(calificacion) === usuario.id;
-                const nombreAutor = obtenerNombreAutorCalificacion(calificacion);
-                const fecha = calificacion.fechaCreacion || calificacion.fecha || calificacion.createdAt;
+                const idUsuarioLogueado = usuario?.nombreUsuario ?? usuario?.login ?? usuario?.id;
+                const esPropia =
+                  idUsuarioLogueado &&
+                  obtenerIdAutorCalificacion(calificacion) ===
+                    idUsuarioLogueado;
+                const nombreAutor =
+                  obtenerNombreAutorCalificacion(calificacion);
+                const fecha =
+                  calificacion.fechaCreacion ||
+                  calificacion.fecha ||
+                  calificacion.createdAt;
 
                 return (
                   <div key={calificacion.id} className="resena-card">
@@ -317,12 +410,14 @@ const MapaContent = () => {
                         <div className="usuario-info">
                           <span className="usuario-nombre">
                             {nombreAutor}
-                            {esPropia && <span className="mi-resena-badge">(Tú)</span>}
+                            {esPropia && (
+                              <span className="mi-resena-badge">(Tú)</span>
+                            )}
                           </span>
                           {fecha && (
                             <span className="resena-fecha">
                               <FaRegCalendarAlt className="date-icon" />
-                              {new Date(fecha).toLocaleDateString("es-CO")}
+                              {fecha}
                             </span>
                           )}
                         </div>
@@ -332,7 +427,23 @@ const MapaContent = () => {
                       </div>
                     </div>
                     {calificacion.comentario && (
-                      <p className="resena-comentario">{calificacion.comentario}</p>
+                      <p className="resena-comentario">
+                        {calificacion.comentario}
+                      </p>
+                    )}
+                    {!esPropia && (
+                      <div className="resena-acciones">
+                        <button
+                          type="button"
+                          className="btn-reportar-resena"
+                          onClick={() =>
+                            abrirReporteResena(calificacion.id, nombreAutor)
+                          }
+                        >
+                          <FaFlag className="btn-icon" />
+                          Reportar
+                        </button>
+                      </div>
                     )}
                   </div>
                 );
@@ -340,17 +451,25 @@ const MapaContent = () => {
             </div>
           ) : (
             <p className="resenas-nota-vacia">
-              Todavía no hay calificaciones para este spot. ¡Sé el primero en calificar!
+              Todavía no hay calificaciones para este spot. ¡Sé el primero en
+              calificar!
             </p>
           )}
         </div>
+
+        <ReportarModal
+          show={modalReporteAbierto}
+          onCerrar={cerrarReporte}
+          spotId={spot.id}
+          resenaId={contextoReporte?.resenaId ?? null}
+          nombreAutorResena={contextoReporte?.nombreAutorResena ?? null}
+        />
       </div>
     );
   }
 
   return (
     <div className="mapa-content-container">
-
       <button
         className="toggle-filtros-btn"
         onClick={() => setFiltrosVisibles(!filtrosVisibles)}

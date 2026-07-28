@@ -1,7 +1,11 @@
-import { useNavigate, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  FaMapMarkerAlt, FaRegEdit, FaShieldAlt, FaStore,
-  FaBookmark, FaFlag, FaHistory, FaUsers, FaBan
+  FaMapMarkerAlt,
+  FaRegEdit,
+  FaStore,
+  FaBookmark,
+  FaBullhorn,
 } from "react-icons/fa";
 import { GrMapLocation } from "react-icons/gr";
 import SpotCard from "../../spots/SpotCard/SpotCard";
@@ -15,37 +19,45 @@ import {
 // ─── TRANSFORMACIONES ────────────────────────────────────────────────────────
 
 const transformarSpotParaCard = (spot) => ({
-  id: spot.id,
-  title: spot.nombre,
-  tags: [spot.categoria],
-  rating: spot.rating.toString(),
-  likes: spot.totalResenas.toString(),
-  img: spot.imagen,
+  id: spot?.id,
+  title: spot?.nombre || "Sin nombre",
+  tags: spot?.categoria ? [spot.categoria] : [],
+  rating: (spot?.rating ?? 0).toString(),
+  likes: (spot?.totalResenas ?? 0).toString(),
+  img: spot?.imagen,
 });
 
-// ─── REPORTES MOCK (para MOD/ADMIN) ─────────────────────────────────────────
+// ─── TABS POR ROL ────────────────────────────────────────────────────────────
+// MIEMBRO: publicaciones, reseñas, guardados
+// SOCIO:   locales, promociones
+// MOD / ADMIN: reseñas, guardados (no suben publicaciones)
 
-const reportesMock = [
-  { id: 1, tipo: "Spot", contenido: "La Candelaria - Foto inapropiada", usuario: "@user_34", fecha: "Hace 10 min", estado: "pendiente" },
-  { id: 2, tipo: "Reseña", contenido: "Monserrate - Lenguaje ofensivo", usuario: "@viajero99", fecha: "Hace 1 hora", estado: "pendiente" },
-  { id: 3, tipo: "Spot", contenido: "Parque Timiza - Información falsa", usuario: "@carlos_m", fecha: "Hace 3 horas", estado: "pendiente" },
-  { id: 4, tipo: "Reseña", contenido: "Aguas - Spam publicitario", usuario: "@spam_bot", fecha: "Hace 5 horas", estado: "revisado" },
-];
+const TABS_POR_ROL = {
+  MIEMBRO: [
+    { id: "publicaciones", label: "Mis Spots", icon: <FaMapMarkerAlt /> },
+    { id: "resenas", label: "Mis Reseñas", icon: <FaRegEdit /> },
+    { id: "guardados", label: "Guardados", icon: <FaBookmark /> },
+  ],
+  SOCIO: [
+    { id: "locales", label: "Mis Locales", icon: <FaStore /> },
+    { id: "promociones", label: "Promociones", icon: <FaBullhorn /> },
+  ],
+  MOD: [
+    { id: "resenas", label: "Mis Reseñas", icon: <FaRegEdit /> },
+    { id: "guardados", label: "Guardados", icon: <FaBookmark /> },
+  ],
+  ADMIN: [
+    { id: "resenas", label: "Mis Reseñas", icon: <FaRegEdit /> },
+    { id: "guardados", label: "Guardados", icon: <FaBookmark /> },
+  ],
+};
 
-const historialMock = [
-  { id: 1, accion: "Spot eliminado", detalle: "Contenido duplicado - Chapinero", fecha: "Ayer", tipo: "eliminado" },
-  { id: 2, accion: "Reseña ocultada", detalle: "Lenguaje inapropiado", fecha: "Hace 2 días", tipo: "ocultado" },
-  { id: 3, accion: "Usuario advertido", detalle: "@troll_user - 2da advertencia", fecha: "Hace 3 días", tipo: "advertencia" },
-  { id: 4, accion: "Spot restaurado", detalle: "Apelación aceptada - Usaquén", fecha: "Hace 1 semana", tipo: "restaurado" },
-];
-
-const usuariosMock = [
-  { id: 1, nombre: "Ana García", username: "@ana_g", rol: "MIEMBRO", spots: 4, reportes: 0, estado: "activo" },
-  { id: 2, nombre: "Carlos M.", username: "@carlos_m", rol: "SOCIO", spots: 12, reportes: 1, estado: "activo" },
-  { id: 3, nombre: "Spam Bot", username: "@spam_bot", rol: "MIEMBRO", spots: 0, reportes: 5, estado: "advertido" },
-  { id: 4, nombre: "Laura Torres", username: "@laurat", rol: "MOD", spots: 8, reportes: 0, estado: "activo" },
-  { id: 5, nombre: "Troll User", username: "@troll_u", rol: "MIEMBRO", spots: 1, reportes: 8, estado: "suspendido" },
-];
+const PRIMERA_TAB_POR_ROL = {
+  MIEMBRO: "publicaciones",
+  SOCIO: "locales",
+  MOD: "resenas",
+  ADMIN: "resenas",
+};
 
 // ─── COMPONENTES AUXILIARES ──────────────────────────────────────────────────
 
@@ -56,173 +68,143 @@ const SinContenido = ({ icono, titulo, descripcion, textBoton, rutaBoton }) => {
       <div className="empty-icon">{icono}</div>
       <h4>{titulo}</h4>
       <p>{descripcion}</p>
-      <button className="btn-explorar" onClick={() => navigate(rutaBoton)}>
-        {textBoton}
-      </button>
-    </div>
-  );
-};
-
-// Tarjeta de reporte individual
-const ReporteCard = ({ reporte }) => (
-  <div className="reporte-card" style={{
-    background: reporte.estado === "pendiente" ? "#fff8e1" : "#f1f8e9",
-    border: `1px solid ${reporte.estado === "pendiente" ? "#ffe082" : "#a5d6a7"}`,
-    borderRadius: 10, padding: "14px 18px", display: "flex",
-    alignItems: "center", gap: 14, marginBottom: 10
-  }}>
-    <span style={{
-      background: reporte.tipo === "Spot" ? "#e3f2fd" : "#fce4ec",
-      color: reporte.tipo === "Spot" ? "#1565c0" : "#c62828",
-      borderRadius: 6, padding: "3px 10px", fontSize: "0.78rem", fontWeight: 700, whiteSpace: "nowrap"
-    }}>{reporte.tipo}</span>
-    <div style={{ flex: 1 }}>
-      <p style={{ margin: 0, fontWeight: 600, fontSize: "0.95rem" }}>{reporte.contenido}</p>
-      <p style={{ margin: 0, fontSize: "0.8rem", color: "#888" }}>por {reporte.usuario} · {reporte.fecha}</p>
-    </div>
-    {reporte.estado === "pendiente" && (
-      <div style={{ display: "flex", gap: 8 }}>
-        <button style={{ background: "#ef5350", color: "white", border: "none", borderRadius: 7, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
-          Eliminar
-        </button>
-        <button style={{ background: "#66bb6a", color: "white", border: "none", borderRadius: 7, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
-          Ignorar
-        </button>
-      </div>
-    )}
-    {reporte.estado === "revisado" && (
-      <span style={{ color: "#388e3c", fontWeight: 700, fontSize: "0.85rem" }}>✔ Revisado</span>
-    )}
-  </div>
-);
-
-// Fila de historial de moderación
-const HistorialRow = ({ item }) => {
-  const colores = { eliminado: "#ef5350", ocultado: "#ffa726", advertencia: "#ab47bc", restaurado: "#66bb6a" };
-  return (
-    <div style={{ display: "flex", gap: 14, alignItems: "center", padding: "12px 0", borderBottom: "1px solid #eee" }}>
-      <span style={{ width: 12, height: 12, borderRadius: "50%", background: colores[item.tipo] || "#ccc", flexShrink: 0 }} />
-      <div style={{ flex: 1 }}>
-        <p style={{ margin: 0, fontWeight: 600, fontSize: "0.9rem" }}>{item.accion}</p>
-        <p style={{ margin: 0, fontSize: "0.8rem", color: "#888" }}>{item.detalle}</p>
-      </div>
-      <span style={{ fontSize: "0.78rem", color: "#aaa", whiteSpace: "nowrap" }}>{item.fecha}</span>
-    </div>
-  );
-};
-
-// Fila de usuario para panel admin
-const UsuarioRow = ({ usuario }) => {
-  const estadoColor = { activo: "#388e3c", advertido: "#f57c00", suspendido: "#c62828" };
-  const rolColor = { MIEMBRO: "#555", SOCIO: "#e65100", MOD: "#1565c0", ADMIN: "#5d4000" };
-  return (
-    <div style={{ display: "flex", gap: 14, alignItems: "center", padding: "12px 0", borderBottom: "1px solid #eee" }}>
-      <div style={{ width: 38, height: 38, borderRadius: "50%", background: "#e0e0e0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#555" }}>
-        {usuario.nombre[0]}
-      </div>
-      <div style={{ flex: 1 }}>
-        <p style={{ margin: 0, fontWeight: 600, fontSize: "0.92rem" }}>{usuario.nombre}</p>
-        <p style={{ margin: 0, fontSize: "0.8rem", color: "#888" }}>{usuario.username} · <span style={{ color: rolColor[usuario.rol] }}>{usuario.rol}</span></p>
-      </div>
-      <div style={{ textAlign: "right", fontSize: "0.8rem", color: "#888" }}>
-        <p style={{ margin: 0 }}>{usuario.spots} spots · {usuario.reportes} reportes</p>
-        <p style={{ margin: 0, fontWeight: 700, color: estadoColor[usuario.estado] || "#555" }}>{usuario.estado}</p>
-      </div>
-      {usuario.estado !== "suspendido" ? (
-        <button style={{ background: "#ef5350", color: "white", border: "none", borderRadius: 7, padding: "5px 10px", cursor: "pointer", fontSize: "0.8rem" }}>
-          <FaBan />
-        </button>
-      ) : (
-        <button style={{ background: "#66bb6a", color: "white", border: "none", borderRadius: 7, padding: "5px 10px", cursor: "pointer", fontSize: "0.8rem" }}>
-          ✔
+      {textBoton && rutaBoton && (
+        <button className="btn-explorar" onClick={() => navigate(rutaBoton)}>
+          {textBoton}
         </button>
       )}
     </div>
   );
 };
 
-const TABS_POR_ROL = {
-  MIEMBRO: [
-    { id: "publicaciones", label: "Mis Spots", icon: <FaMapMarkerAlt /> },
-    { id: "resenas", label: "Mis Reseñas", icon: <FaRegEdit /> },
-    { id: "guardados", label: "Guardados", icon: <FaBookmark /> },
-  ],
-  SOCIO: [
-    { id: "publicaciones", label: "Mis Spots", icon: <FaMapMarkerAlt /> },
-    { id: "mis-locales", label: "Mis Locales", icon: <FaStore /> },
-  ],
-  MOD: [
-    { id: "reportes", label: "Reportes", icon: <FaFlag /> },
-    { id: "historial", label: "Historial", icon: <FaHistory /> },
-  ],
-  ADMIN: [
-    { id: "usuarios", label: "Usuarios", icon: <FaUsers /> },
-    { id: "moderacion", label: "Moderación", icon: <FaShieldAlt /> },
-  ],
-};
+const LoadingBlock = () => (
+  <div className="text-center py-4">
+    <div className="spinner-border text-primary" role="status">
+      <span className="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+);
 
 // ─── COMPONENTE PRINCIPAL ────────────────────────────────────────────────────
 
-const PerfilTabs = ({ tab, dispatch, rol = "MIEMBRO", nombreUsuario = "demo_user" }) => {
+const PerfilTabs = ({
+  tab,
+  dispatch,
+  rol = "MIEMBRO",
+  nombreUsuario = "demo_user",
+  usandoMock = false,
+}) => {
   const rolNormalizado = (rol || "MIEMBRO").toUpperCase();
   const tabs = TABS_POR_ROL[rolNormalizado] || TABS_POR_ROL.MIEMBRO;
 
   const esSocio = rolNormalizado === "SOCIO";
-  const esMod = rolNormalizado === "MOD";
-  const esAdmin = rolNormalizado === "ADMIN";
   const esMiembro = rolNormalizado === "MIEMBRO";
+  const esStaff = rolNormalizado === "MOD" || rolNormalizado === "ADMIN";
 
-  const tabValida = tabs.find(t => t.id === tab) ? tab : tabs[0].id;
+  const tabValida = tabs.find((t) => t.id === tab)
+    ? tab
+    : tabs[0]?.id || PRIMERA_TAB_POR_ROL[rolNormalizado] || "publicaciones";
 
   useEffect(() => {
     if (tabValida !== tab) {
       dispatch({ type: "SET_TAB", payload: tabValida });
     }
-  }, [tabValida, tab, dispatch, esMiembro, esSocio]);
+  }, [tabValida, tab, dispatch]);
 
   const [spotsUsuario, setSpotsUsuario] = useState([]);
   const [resenasUsuario, setResenasUsuario] = useState([]);
   const [guardadosUsuario, setGuardadosUsuario] = useState([]);
   const [cargandoDatos, setCargandoDatos] = useState(true);
+  const [errorCarga, setErrorCarga] = useState(null);
 
   useEffect(() => {
+    let cancelado = false;
+
     const cargarDatos = async () => {
       setCargandoDatos(true);
+      setErrorCarga(null);
 
-      if (esMiembro || esSocio) {
-        const resSpots = await obtenerSpotsUsuario(nombreUsuario);
-        if (resSpots.exitoso) {
-          setSpotsUsuario(resSpots.datos);
+      try {
+        // Spots / locales solo para miembro y socio
+        if (esMiembro || esSocio) {
+          try {
+            const resSpots = await obtenerSpotsUsuario(nombreUsuario);
+            if (
+              !cancelado &&
+              resSpots?.exitoso &&
+              Array.isArray(resSpots.datos)
+            ) {
+              setSpotsUsuario(resSpots.datos);
+            } else if (!cancelado) {
+              setSpotsUsuario([]);
+            }
+          } catch {
+            if (!cancelado) setSpotsUsuario([]);
+          }
         }
+
+        // Reseñas: miembro + staff
+        if (esMiembro || esStaff) {
+          try {
+            const resResenas = await obtenerResenasUsuario(nombreUsuario);
+            if (
+              !cancelado &&
+              resResenas?.exitoso &&
+              Array.isArray(resResenas.datos)
+            ) {
+              setResenasUsuario(resResenas.datos);
+            } else if (!cancelado) {
+              setResenasUsuario([]);
+            }
+          } catch {
+            if (!cancelado) setResenasUsuario([]);
+          }
+        }
+
+        // Guardados: miembro + staff
+        if (esMiembro || esStaff) {
+          try {
+            const resGuardados = await obtenerSpotsGuardados();
+            if (
+              !cancelado &&
+              resGuardados?.exitoso &&
+              Array.isArray(resGuardados.datos)
+            ) {
+              setGuardadosUsuario(resGuardados.datos);
+            } else if (!cancelado) {
+              setGuardadosUsuario([]);
+            }
+          } catch {
+            if (!cancelado) setGuardadosUsuario([]);
+          }
+        }
+      } catch {
+        if (!cancelado) {
+          setErrorCarga("No se pudo cargar el contenido. Intenta más tarde.");
+        }
+      } finally {
+        if (!cancelado) setCargandoDatos(false);
       }
-
-      if (esMiembro) {
-        const resResenas = await obtenerResenasUsuario(nombreUsuario);
-        if (resResenas.exitoso) {
-          setResenasUsuario(resResenas.datos);
-        }
-
-        const resGuardados = await obtenerSpotsGuardados();
-        if (resGuardados.exitoso) {
-          setGuardadosUsuario(resGuardados.datos);
-        }
-      }
-
-      setCargandoDatos(false);
     };
 
     cargarDatos();
-  }, [nombreUsuario, rolNormalizado, esMiembro, esSocio]);
+    return () => {
+      cancelado = true;
+    };
+  }, [nombreUsuario, rolNormalizado, esMiembro, esSocio, esStaff]);
 
-  const spotsFormateados = spotsUsuario.map(transformarSpotParaCard);
+  const spotsFormateados = spotsUsuario
+    .filter(Boolean)
+    .map(transformarSpotParaCard);
 
   return (
     <>
       {/* ── BOTONES DE NAVEGACIÓN ── */}
       <div className="perfil-tabs">
-        {tabs.map(t => (
+        {tabs.map((t) => (
           <button
             key={t.id}
+            type="button"
             className={tabValida === t.id ? "tab-activa" : ""}
             onClick={() => dispatch({ type: "SET_TAB", payload: t.id })}
           >
@@ -233,17 +215,13 @@ const PerfilTabs = ({ tab, dispatch, rol = "MIEMBRO", nombreUsuario = "demo_user
 
       {/* ── CONTENIDO ── */}
       <div className="perfil-tab-content">
+        {errorCarga && <div className="perfil-error-banner">{errorCarga}</div>}
 
-        {/* ══════════════ MIEMBRO + SOCIO ══════════════ */}
-
-        {/* MIS SPOTS */}
-        {tabValida === "publicaciones" && (esMiembro || esSocio) && (
-          cargandoDatos ? (
-            <div className="text-center py-4">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Cargando...</span>
-              </div>
-            </div>
+        {/* ══════════════ MIEMBRO: MIS SPOTS ══════════════ */}
+        {tabValida === "publicaciones" &&
+          esMiembro &&
+          (cargandoDatos ? (
+            <LoadingBlock />
           ) : spotsFormateados.length > 0 ? (
             <div className="publicaciones-grid">
               {spotsFormateados.map((spot) => (
@@ -254,7 +232,7 @@ const PerfilTabs = ({ tab, dispatch, rol = "MIEMBRO", nombreUsuario = "demo_user
                   title={spot.title}
                   rating={spot.rating}
                   likes={spot.likes}
-                  tags={[spot.tags]}
+                  tags={spot.tags}
                 />
               ))}
             </div>
@@ -266,17 +244,13 @@ const PerfilTabs = ({ tab, dispatch, rol = "MIEMBRO", nombreUsuario = "demo_user
               textBoton="¡Crea tu primera publicación!"
               rutaBoton="/crear-spot"
             />
-          )
-        )}
+          ))}
 
-        {/* MIS RESEÑAS (solo MIEMBRO) */}
-        {tabValida === "resenas" && esMiembro && (
-          cargandoDatos ? (
-            <div className="text-center py-4">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Cargando...</span>
-              </div>
-            </div>
+        {/* ══════════════ MIEMBRO + STAFF: RESEÑAS ══════════════ */}
+        {tabValida === "resenas" &&
+          (esMiembro || esStaff) &&
+          (cargandoDatos ? (
+            <LoadingBlock />
           ) : resenasUsuario.length > 0 ? (
             <div className="reviews-grid">
               {resenasUsuario.map((resena) => (
@@ -299,17 +273,13 @@ const PerfilTabs = ({ tab, dispatch, rol = "MIEMBRO", nombreUsuario = "demo_user
               textBoton="Escribir primera reseña"
               rutaBoton="/mapa"
             />
-          )
-        )}
+          ))}
 
-        {/* GUARDADOS (solo MIEMBRO) */}
-        {tabValida === "guardados" && esMiembro && (
-          cargandoDatos ? (
-            <div className="text-center py-4">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Cargando...</span>
-              </div>
-            </div>
+        {/* ══════════════ MIEMBRO + STAFF: GUARDADOS ══════════════ */}
+        {tabValida === "guardados" &&
+          (esMiembro || esStaff) &&
+          (cargandoDatos ? (
+            <LoadingBlock />
           ) : guardadosUsuario.length > 0 ? (
             <div className="guardados-grid">
               {guardadosUsuario.map((spot) => {
@@ -335,77 +305,73 @@ const PerfilTabs = ({ tab, dispatch, rol = "MIEMBRO", nombreUsuario = "demo_user
               textBoton="Explorar lugares"
               rutaBoton="/mapa"
             />
-          )
-        )}
+          ))}
 
-        {/* ══════════════ SOCIO ══════════════ */}
+        {/* ══════════════ SOCIO: MIS LOCALES ══════════════ */}
+        {tabValida === "locales" &&
+          esSocio &&
+          (cargandoDatos ? (
+            <LoadingBlock />
+          ) : spotsFormateados.length > 0 ? (
+            <div className="publicaciones-grid">
+              {spotsFormateados.map((spot) => (
+                <SpotCard
+                  key={spot.id}
+                  id={spot.id}
+                  img={spot.img}
+                  title={spot.title}
+                  rating={spot.rating}
+                  likes={spot.likes}
+                  tags={spot.tags}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="no-contenido no-contenido-socio">
+              <div className="empty-icon" style={{ color: "#e65100" }}>
+                <FaStore size={48} />
+              </div>
+              <h4 style={{ color: "#e65100" }}>Tus Locales</h4>
+              <p>
+                Administra los locales que tienes verificados en la plataforma.
+              </p>
+              <button
+                className="btn-explorar"
+                style={{ background: "#e65100" }}
+                type="button"
+                onClick={() => {
+                  /* navegación a /locales si existe en el router */
+                  window.location.href = "/locales";
+                }}
+              >
+                Gestionar mis locales
+              </button>
+            </div>
+          ))}
 
-        {/* MIS LOCALES — acceso rápido; gestión completa en /locales (menú lateral) */}
-        {tabValida === "mis-locales" && esSocio && (
-          <div className="no-contenido" style={{ border: "2px dashed #ffb74d", background: "#fff8e1" }}>
-            <div className="empty-icon" style={{ color: "#e65100" }}><FaStore size={48} /></div>
-            <h4 style={{ color: "#e65100" }}>Tus Locales</h4>
-            <p>Administra los locales que tienes verificados en la plataforma.</p>
-            <button className="btn-explorar" style={{ background: "#e65100" }}>
-              Gestionar mis locales
+        {/* ══════════════ SOCIO: PROMOCIONES ══════════════ */}
+        {tabValida === "promociones" && esSocio && (
+          <div className="no-contenido no-contenido-socio">
+            <div className="empty-icon" style={{ color: "#e65100" }}>
+              <FaBullhorn size={48} />
+            </div>
+            <h4 style={{ color: "#e65100" }}>Promociones</h4>
+            <p>
+              Crea y gestiona promociones para atraer más visitantes a tus
+              locales.
+            </p>
+            <button
+              className="btn-explorar"
+              style={{ background: "#e65100" }}
+              type="button"
+              onClick={() => {
+                window.location.href = "/locales";
+              }}
+            >
+              Crear promoción
             </button>
           </div>
         )}
-
-        {/* ══════════════ MOD ══════════════ */}
-
-        {/* REPORTES */}
-        {tabValida === "reportes" && esMod && (
-          <div style={{ padding: "0 4px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-              <FaFlag style={{ color: "#1565c0" }} />
-              <h5 style={{ margin: 0, color: "#1565c0" }}>
-                Reportes pendientes ({reportesMock.filter(r => r.estado === "pendiente").length})
-              </h5>
-            </div>
-            {reportesMock.map(r => <ReporteCard key={r.id} reporte={r} />)}
-          </div>
-        )}
-
-        {/* HISTORIAL MOD */}
-        {tabValida === "historial" && esMod && (
-          <div style={{ padding: "0 4px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-              <FaHistory style={{ color: "#1565c0" }} />
-              <h5 style={{ margin: 0, color: "#1565c0" }}>Tu historial de moderación</h5>
-            </div>
-            {historialMock.map(item => <HistorialRow key={item.id} item={item} />)}
-          </div>
-        )}
-
-        {/* ══════════════ ADMIN ══════════════ */}
-
-        {/* USUARIOS ADMIN */}
-        {tabValida === "usuarios" && esAdmin && (
-          <div style={{ padding: "0 4px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-              <FaUsers style={{ color: "#5d4000" }} />
-              <h5 style={{ margin: 0, color: "#5d4000" }}>Gestión de usuarios</h5>
-            </div>
-            {usuariosMock.map(u => <UsuarioRow key={u.id} usuario={u} />)}
-          </div>
-        )}
-
-        {/* MODERACIÓN ADMIN (ve todos los reportes + historial) */}
-        {tabValida === "moderacion" && esAdmin && (
-          <div style={{ padding: "0 4px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-              <FaShieldAlt style={{ color: "#5d4000" }} />
-              <h5 style={{ margin: 0, color: "#5d4000" }}>Cola de moderación global</h5>
-            </div>
-            {reportesMock.map(r => <ReporteCard key={r.id} reporte={r} />)}
-            <div style={{ marginTop: 20 }}>
-              <h6 style={{ color: "#888", marginBottom: 10 }}>Historial reciente</h6>
-              {historialMock.map(item => <HistorialRow key={item.id} item={item} />)}
-            </div>
-          </div>
-        )}
-
       </div>
     </>
   );
