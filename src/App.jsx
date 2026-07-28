@@ -8,9 +8,12 @@ import { useRefreshLimit } from "@/hooks/useRefreshLimit";
 import "@/hooks/useRefreshLimit.css";
 
 import { MotionConfig } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
+import CuentaInactivaPage from "@/pages/cuenta/CuentaInactivaPage/CuentaInactivaPage";
 
 function App() {
   const { isBlocked, remainingCooldown } = useRefreshLimit();
+  const { logueado, usuario, cargando } = useAuth();
 
   if (isBlocked) {
     return (
@@ -27,6 +30,13 @@ function App() {
         </div>
       </div>
     );
+  }
+
+  // Cuenta desactivada (suspendida por un admin, o dentro del período de 30 días
+  // de recuperación tras una autoeliminación): bloqueamos el resto de la app y
+  // mostramos únicamente la pantalla de recuperación / aviso correspondiente.
+  if (!cargando && logueado && usuario?.estadoCuenta === false) {
+    return <CuentaInactivaPage />;
   }
 
   return (

@@ -1,12 +1,14 @@
 import { useState, useMemo } from "react";
 import { Modal, Form, Row, Col } from "react-bootstrap";
-import { FaUser, FaEnvelope, FaPhone, FaShieldAlt } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaPhone, FaShieldAlt, FaUserSlash } from "react-icons/fa";
 import { FiEdit3 } from "react-icons/fi";
 import "./EditarPerfilModal.css";
+import "./EliminarCuenta.css";
 import Swal from "sweetalert2";
 import FotoPerfil from "./FotoPerfil";
 import BotonesAccion from "./BotonesAccion";
 import PassField from "./PassField";
+import EliminarCuenta from "./EliminarCuenta";
 import {
   editarPerfil,
   cambiarContrasena,
@@ -20,7 +22,7 @@ function PerfilFormulario({
   onPerfilActualizado,
   onHide,
 }) {
-  const { recargarUsuario } = useAuth();
+  const { recargarUsuario, usuario } = useAuth();
   const [tabActiva, setTabActiva] = useState("perfil");
 
   const [formData, setFormData] = useState({
@@ -202,6 +204,9 @@ function PerfilFormulario({
   };
 
   const rolMostrar = perfilData?.rol || "MIEMBRO";
+  // Usamos el rol del usuario autenticado (viene verificado del backend vía /auth/me)
+  // para decidir si mostrar la pestaña de eliminación, en vez de perfilData.rol.
+  const esMiembro = (usuario?.rol || "").toUpperCase() === "MIEMBRO";
 
   return (
     <>
@@ -233,6 +238,16 @@ function PerfilFormulario({
           <FaShieldAlt className="mtab-icon" />
           Contraseña
         </button>
+        {esMiembro && (
+          <button
+            type="button"
+            className={`mtab mtab-danger ${tabActiva === "eliminar" ? "active" : ""}`}
+            onClick={() => setTabActiva("eliminar")}
+          >
+            <FaUserSlash className="mtab-icon" />
+            Eliminar cuenta
+          </button>
+        )}
       </div>
 
       <Modal.Body className="modal-body-custom">
@@ -406,6 +421,11 @@ function PerfilFormulario({
             </div>
             <BotonesAccion onCancelar={onHide} />
           </Form>
+        )}
+
+        {/* ══ TAB: ELIMINAR CUENTA ═════════════════════════ */}
+        {tabActiva === "eliminar" && esMiembro && (
+          <EliminarCuenta onHide={onHide} />
         )}
       </Modal.Body>
     </>

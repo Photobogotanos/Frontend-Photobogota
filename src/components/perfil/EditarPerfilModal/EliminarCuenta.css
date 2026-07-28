@@ -1,0 +1,249 @@
+/* ── CONTENEDOR ─────────────────────────────────────────── */
+.elim-block {
+  padding: 26px 26px 28px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.elim-loading {
+  align-items: center;
+  text-align: center;
+  padding: 60px 26px;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.elim-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #ece9e1;
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: elim-spin 0.8s linear infinite;
+  margin: 0 auto 14px;
+}
+
+@keyframes elim-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── HERO ────────────────────────────────────────────────── */
+.elim-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 6px 10px 4px;
+}
+
+.elim-hero-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: color-mix(in srgb, var(--color-primary) 10%, white);
+  border: 2px solid color-mix(in srgb, var(--color-primary) 22%, white);
+  border-radius: 18px;
+  color: var(--color-primary);
+  font-size: 1.5rem;
+  margin-bottom: 14px;
+}
+
+.elim-hero-danger .elim-hero-icon {
+  background: #fdf2f2;
+  border-color: #f3caca;
+  color: #c0392b;
+}
+
+.elim-hero-title {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 6px;
+}
+
+.elim-hero-sub {
+  font-size: 0.85rem;
+  color: #999;
+  margin: 0;
+  max-width: 400px;
+  line-height: 1.55;
+}
+
+/* ── CONSECUENCIAS ───────────────────────────────────────── */
+.elim-consecuencias {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: #fdfaf3;
+  border: 1px solid #f0e9d8;
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+
+.elim-consecuencia-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.elim-cons-icon {
+  flex-shrink: 0;
+  margin-top: 3px;
+  font-size: 0.95rem;
+  color: var(--color-primary);
+}
+
+.elim-consecuencia-item b {
+  display: block;
+  font-size: 0.87rem;
+  color: #1a1a2e;
+  margin-bottom: 2px;
+}
+
+.elim-consecuencia-item p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* ── FORMULARIO ──────────────────────────────────────────── */
+.elim-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.elim-form-fields select.finput {
+  cursor: pointer;
+}
+
+.elim-detalle {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #888;
+  margin: -8px 0 0;
+}
+
+/* ── BOTONES ─────────────────────────────────────────────── */
+.elim-btn-danger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 0;
+  border: none;
+  border-radius: 12px;
+  background: #c0392b;
+  color: white;
+  font-weight: 700;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all 0.22s;
+}
+
+.elim-btn-danger:hover:not(:disabled) {
+  background: #a93226;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(192, 57, 43, 0.3);
+}
+
+.elim-btn-danger:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.elim-btn-recover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 0;
+  border: none;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all 0.22s;
+}
+
+.elim-btn-recover:hover:not(:disabled) {
+  background: var(--color-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(128, 111, 190, 0.32);
+}
+
+.elim-btn-recover:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.elim-link-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  padding: 2px;
+}
+
+.elim-link-btn:hover {
+  text-decoration: underline;
+}
+
+.elim-link-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── OTP ─────────────────────────────────────────────────── */
+.elim-otp-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.elim-otp-digit {
+  width: 48px;
+  height: 58px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1.5px solid #e6e2da;
+  border-radius: 12px;
+  background: #fbf9f5;
+  color: #1a1a2e;
+  outline: none;
+  transition: all 0.2s;
+  caret-color: transparent;
+}
+
+.elim-otp-digit:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  background: white;
+}
+
+.elim-otp-digit.filled {
+  border-color: #a294d0;
+  background: #f5f2ff;
+  color: var(--color-primary);
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .elim-block { padding: 20px 16px 22px; }
+  .elim-otp-digit { width: 40px; height: 50px; font-size: 1.25rem; }
+  .elim-consecuencias { padding: 14px 16px; }
+}

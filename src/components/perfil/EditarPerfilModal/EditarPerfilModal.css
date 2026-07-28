@@ -89,6 +89,15 @@
   font-size: 0.82rem;
 }
 
+.mtab-danger:hover {
+  color: #c0392b;
+}
+
+.mtab-danger.active {
+  color: #c0392b;
+  border-bottom-color: #c0392b;
+}
+
 /* ── BODY SCROLL ─────────────────────────────────────────── */
 .modal-body-custom {
   padding: 0;
