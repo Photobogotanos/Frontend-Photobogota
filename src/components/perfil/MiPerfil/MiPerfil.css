@@ -1,12 +1,14 @@
-/* MiPerfil.css - Estilo Premium Moderno */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap");
 
 .perfil-container {
   background-color: var(--color-bg);
   padding: 2rem 1rem;
   min-height: 100vh;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
-/* HEADER */
+/* ── HEADER ─────────────────────────────────────────────── */
 .perfil-header {
   display: flex;
   align-items: flex-start;
@@ -27,6 +29,7 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .perfil-avatar:hover {
@@ -36,21 +39,27 @@
 
 .perfil-info {
   flex: 1;
+  min-width: 0;
 }
 
 .perfil-badges {
   display: flex;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .badge-nivel,
-.badge-rol {
+.badge-rol,
+.badge-demo {
   padding: 6px 16px;
   border-radius: 50px;
   font-size: 0.85rem;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .badge-miembro {
@@ -72,43 +81,65 @@
   color: #e65100;
   border: 1px solid #ffb74d;
 }
+.badge-nivel {
+  background: color-mix(in srgb, var(--color-primary) 12%, white);
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, white);
+}
+.badge-demo {
+  background: #f5f5f5;
+  color: #888;
+  border: 1px solid #ddd;
+  font-size: 0.75rem;
+}
 
 .perfil-nombre {
+  font-family: "Playfair Display", serif;
   font-size: 1.85rem;
   font-weight: 700;
   margin-bottom: 4px;
   color: #0a0a0a;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
 }
 
 .perfil-username {
   color: #666;
   font-size: 1.05rem;
   margin-bottom: 12px;
+  font-weight: 500;
 }
 
 .perfil-descripcion {
   color: #444;
-  line-height: 1.5;
+  line-height: 1.55;
   max-width: 580px;
+  font-size: 0.95rem;
 }
 
 /* Botones */
 .perfil-edit-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-end;
+  flex-shrink: 0;
 }
 
 .btn-editar-perfil {
   background: linear-gradient(135deg, var(--color-primary), #5a4a9d);
   color: white;
   border: none;
-  padding: 12px 32px;
+  padding: 12px 28px;
   border-radius: 50px;
   font-weight: 600;
   box-shadow: 0 6px 20px rgba(128, 111, 190, 0.3);
   transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.92rem;
 }
 
 .btn-editar-perfil:hover {
@@ -116,7 +147,28 @@
   box-shadow: 0 10px 28px rgba(128, 111, 190, 0.4);
 }
 
-/* Estadísticas */
+.btn-notificaciones {
+  background: white;
+  color: var(--color-primary);
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 35%, white);
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.btn-notificaciones:hover {
+  background: color-mix(in srgb, var(--color-primary) 8%, white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(128, 111, 190, 0.15);
+}
+
+/* ── Estadísticas ───────────────────────────────────────── */
 .perfil-stats {
   background: white;
   padding: 1.75rem;
@@ -127,21 +179,26 @@
   justify-content: center;
   gap: 3rem;
   text-align: center;
+  border: 1px solid var(--border);
 }
 
 .perfil-stat h4 {
+  font-family: "Playfair Display", serif;
   font-size: 2rem;
   font-weight: 700;
   color: var(--color-primary);
   margin-bottom: 4px;
+  letter-spacing: -0.02em;
 }
 
 .perfil-stat p {
   color: #555;
   font-weight: 500;
+  font-size: 0.9rem;
+  margin: 0;
 }
 
-/* Tabs */
+/* ── Tabs ───────────────────────────────────────────────── */
 .perfil-tabs {
   display: flex;
   background: white;
@@ -149,20 +206,30 @@
   padding: 6px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
   margin-bottom: 20px;
+  border: 1px solid var(--border);
+  gap: 4px;
 }
 
 .perfil-tabs button {
   flex: 1;
-  padding: 14px 20px;
+  padding: 14px 16px;
   border: none;
   background: transparent;
   border-radius: 12px;
   font-weight: 600;
   transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.9rem;
 }
 
 .perfil-tabs button:hover {
   background: #f8f5ff;
+  color: var(--color-primary);
 }
 
 .perfil-tabs .tab-activa {
@@ -171,12 +238,95 @@
   color: var(--color-primary);
 }
 
-/* Responsive */
+/* ── Contenido de tabs ──────────────────────────────────── */
+.perfil-tab-content {
+  min-height: 200px;
+}
+
+.publicaciones-grid,
+.guardados-grid,
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.no-contenido {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px dashed #e0ddd8;
+}
+
+.no-contenido-socio {
+  border: 2px dashed #ffb74d;
+  background: #fff8e1;
+}
+
+.no-contenido .empty-icon {
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  opacity: 0.85;
+}
+
+.no-contenido h4 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.35rem;
+  color: #1a1a2e;
+  margin-bottom: 0.5rem;
+}
+
+.no-contenido p {
+  color: #666;
+  margin-bottom: 1.5rem;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-explorar {
+  background: linear-gradient(135deg, var(--color-primary), #5a4a9d);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 18px rgba(128, 111, 190, 0.28);
+}
+
+.btn-explorar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(128, 111, 190, 0.38);
+}
+
+.perfil-error-banner {
+  background: #fff5f5;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 12px 18px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.line-divider {
+  height: 1px;
+  background: transparent;
+  margin: 4px 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 768px) {
   .perfil-header {
     flex-direction: column;
     text-align: center;
     padding: 1.75rem;
+    align-items: center;
   }
 
   .perfil-edit-wrapper {
@@ -184,13 +334,47 @@
     width: 100%;
   }
 
+  .btn-editar-perfil,
+  .btn-notificaciones {
+    width: 100%;
+    justify-content: center;
+  }
+
   .perfil-stats {
     gap: 1.5rem;
     padding: 1.5rem;
+    flex-wrap: wrap;
   }
 
   .perfil-avatar {
     width: 100px;
     height: 100px;
+  }
+
+  .perfil-nombre {
+    font-size: 1.5rem;
+  }
+
+  .perfil-tabs {
+    flex-direction: column;
+  }
+
+  .perfil-tabs button {
+    justify-content: flex-start;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .perfil-container {
+    padding: 1rem 0.75rem;
+  }
+
+  .perfil-stats {
+    gap: 1rem;
+  }
+
+  .perfil-stat h4 {
+    font-size: 1.5rem;
   }
 }

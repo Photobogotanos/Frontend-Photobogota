@@ -1,32 +1,60 @@
-import { Row, Col } from "react-bootstrap";
+const PerfilStats = ({ rol, stats = {} }) => {
+  const rolNormalizado = (rol || "MIEMBRO").toUpperCase();
+  const esSocio = rolNormalizado === "SOCIO";
+  const esMiembro = rolNormalizado === "MIEMBRO";
+  // ADMIN y MOD: solo reseñas y guardados (sin spots/publicaciones)
+  const esStaff = rolNormalizado === "ADMIN" || rolNormalizado === "MOD";
 
-const PerfilStats = ({ tienePublicaciones, tieneResenas, tieneGuardados, rol, stats = {} }) => {
-  const esSocio = rol === "SOCIO";
-  const esModOAdmin = rol === "MOD" || rol === "ADMIN";
+  const totalSpots = stats.totalSpots ?? 0;
+  const totalResenas = stats.totalResenas ?? 0;
+  const totalGuardados = stats.totalGuardados ?? 0;
 
-  const totalSpots = stats.totalSpots ?? (tienePublicaciones ? 5 : 0);
-  const totalResenas = stats.totalResenas ?? (tieneResenas ? 6 : 0);
-  const totalGuardados = stats.totalGuardados ?? (tieneGuardados ? 12 : 0);
+  if (esSocio) {
+    return (
+      <div className="perfil-stats">
+        <div className="perfil-stat">
+          <h4>{totalSpots}</h4>
+          <p>Locales</p>
+        </div>
+        <div className="perfil-stat">
+          <h4>{totalResenas}</h4>
+          <p>Reseñas recibidas</p>
+        </div>
+      </div>
+    );
+  }
 
-  return (
-    <Row className="perfil-stats">
-      <Col xs={esSocio || esModOAdmin ? 6 : 4} className="perfil-stat">
-        <h4>{totalSpots}</h4>
-        <p>Spots</p>
-      </Col>
-
-      <Col xs={esSocio || esModOAdmin ? 6 : 4} className="perfil-stat">
-        <h4>{totalResenas}</h4>
-        <p>{esSocio ? "Reseñas Recibidas" : "Reseñas"}</p>
-      </Col>
-
-      {!esSocio && !esModOAdmin && (
-        <Col xs={4} className="perfil-stat">
+  if (esStaff) {
+    return (
+      <div className="perfil-stats">
+        <div className="perfil-stat">
+          <h4>{totalResenas}</h4>
+          <p>Reseñas</p>
+        </div>
+        <div className="perfil-stat">
           <h4>{totalGuardados}</h4>
           <p>Guardados</p>
-        </Col>
-      )}
-    </Row>
+        </div>
+      </div>
+    );
+  }
+
+  // MIEMBRO
+  return (
+    <div className="perfil-stats">
+      <div className="perfil-stat">
+        <h4>{totalSpots}</h4>
+        <p>Spots</p>
+      </div>
+      <div className="perfil-stat">
+        <h4>{totalResenas}</h4>
+        <p>Reseñas</p>
+      </div>
+      <div className="perfil-stat">
+        <h4>{totalGuardados}</h4>
+        <p>Guardados</p>
+      </div>
+    </div>
   );
 };
 
