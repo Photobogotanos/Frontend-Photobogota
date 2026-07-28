@@ -63,19 +63,19 @@ export default function PromoDisponibilidad({ state, dispatch }) {
           <label className="promo-label">Límite de códigos / usos</label>
           <input
             type="number"
-            min="1"
+            min="10"
             max="1000"
             className="form-control"
             value={state.limiteUsos}
             onChange={(e) => {
               const val = e.target.value;
-              if (val === "" || (/^\d+$/.test(val) && +val >= 1 && +val <= 1000)) {
+              if (val === "" || (/^\d+$/.test(val) && +val >= 10 && +val <= 1000)) {
                 dispatch({ type: "SET_LIMITE_USOS", payload: val });
               }
             }}
             placeholder="Ej: 50 (vacío = ilimitado)"
           />
-          <small className="text-muted">Mínimo 5 • Máximo 1000 • Vacío = ilimitado</small>
+          <small className="text-muted">Mínimo 10 • Máximo 1000 • Vacío = ilimitado</small>
         </Col>
       </Row>
     </div>
