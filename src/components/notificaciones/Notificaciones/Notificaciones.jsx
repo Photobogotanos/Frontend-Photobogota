@@ -61,7 +61,7 @@ export default function Notificaciones() {
   return (
     <div className="notificaciones-wrapper position-relative">
       <button
-        className={`btn-notificaciones ${contador > 0 ? "shake-bell" : ""}`}
+        className={`btn-campana ${contador > 0 ? "shake-bell" : ""}`}
         onClick={() => {
           setMostrarPanel(!mostrarPanel);
           if (!mostrarPanel) cargarDatos();

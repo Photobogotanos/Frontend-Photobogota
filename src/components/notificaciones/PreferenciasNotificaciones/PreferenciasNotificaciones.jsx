@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import {
   obtenerPreferenciasNotificaciones,
   actualizarPreferenciasNotificaciones,
 } from "@/services/notificacion.service";
 import toast from "react-hot-toast";
-import { FaBell, FaSave } from "react-icons/fa";
+import { FaBell, FaSave, FaArrowLeft } from "react-icons/fa";
 import "./PreferenciasNotificaciones.css";
 
 const canalOptions = [
@@ -16,6 +17,7 @@ const canalOptions = [
 ];
 
 const PreferenciasNotificaciones = () => {
+  const navigate = useNavigate();
   const { usuario } = useAuth();
   const [preferencias, setPreferencias] = useState({
     notificacionesActivas: true,
@@ -35,10 +37,6 @@ const PreferenciasNotificaciones = () => {
     { value: "ANUNCIO_MODERADOR", label: "Anuncios de moderadores" },
   ];
 
-  useEffect(() => {
-    if (usuario) cargarPreferencias();
-  }, [usuario]);
-
   const cargarPreferencias = async () => {
     setCargando(true);
     try {
@@ -52,6 +50,10 @@ const PreferenciasNotificaciones = () => {
       setCargando(false);
     }
   };
+
+  useEffect(() => {
+    if (usuario) cargarPreferencias();
+  }, [usuario]);
 
   const handleCanalChange = (selected) => {
     setPreferencias((prev) => ({ ...prev, canalPreferido: selected.value }));
@@ -164,8 +166,16 @@ const PreferenciasNotificaciones = () => {
                 ))}
               </div>
             </div>
-            {/* Botón */}
-            <div className="d-flex justify-content-end pt-4">
+            {/* Botones */}
+            <div className="d-flex justify-content-between pt-4">
+              <button
+                type="button"
+                className="btn-volver-preferencias d-flex align-items-center justify-content-center gap-2"
+                onClick={() => navigate(-1)}
+              >
+                <FaArrowLeft /> Volver
+              </button>
+
               <button
                 className="preferencias-btn d-flex align-items-center justify-content-center gap-2"
                 onClick={guardarPreferencias}
