@@ -37,6 +37,29 @@ const perfilReducer = (state, action) => {
       return { ...state, mostrarFotoPerfil: action.payload };
     case "SET_MOSTRAR_NOTIFICACIONES":
       return { ...state, mostrarNotificaciones: action.payload };
+    case "RECONCILIAR_CONTEOS": {
+      // Si el backend reportó 0 en un contador pero sí cargamos datos reales
+      // para esa lista, preferimos el conteo real (evita stats en 0 falsos).
+      const { totalSpots, totalResenas, totalGuardados } = action.payload;
+      return {
+        ...state,
+        perfilData: {
+          ...state.perfilData,
+          totalSpots:
+            state.perfilData.totalSpots > 0
+              ? state.perfilData.totalSpots
+              : (totalSpots ?? state.perfilData.totalSpots),
+          totalResenas:
+            state.perfilData.totalResenas > 0
+              ? state.perfilData.totalResenas
+              : (totalResenas ?? state.perfilData.totalResenas),
+          totalGuardados:
+            state.perfilData.totalGuardados > 0
+              ? state.perfilData.totalGuardados
+              : (totalGuardados ?? state.perfilData.totalGuardados),
+        },
+      };
+    }
     case "UPDATE_PERFIL_DATA": {
       const nuevoRol = (
         action.payload.rol ||
@@ -87,12 +110,16 @@ const crearEstadoInicial = () => {
 
 export default function MiPerfil() {
   const [state, dispatch] = useReducer(perfilReducer, null, crearEstadoInicial);
-  const { user, recargarUsuario } = useAuth();
+  const { usuario, recargarUsuario } = useAuth();
 
   // Cargar datos del backend; si falla (500 u otro), no romper la UI
   useEffect(() => {
     const cargarPerfil = async () => {
-      let nombreUsuario = user?.nombreUsuario;
+      // Resolver nombreUsuario: contexto (post /auth/me) → contexto (post login) → localStorage
+      let nombreUsuario =
+        usuario?.nombreUsuario ||
+        usuario?.nombre ||
+        usuario?.username?.replace(/^@/, "");
 
       if (!nombreUsuario) {
         try {
@@ -100,7 +127,9 @@ export default function MiPerfil() {
           if (miembroStorage) {
             const miembro = JSON.parse(miembroStorage);
             nombreUsuario =
-              miembro?.username?.replace(/^@/, "") || miembro?.nombreUsuario;
+              miembro?.nombreUsuario ||
+              miembro?.nombre ||
+              miembro?.username?.replace(/^@/, "");
           }
         } catch (e) {
           console.warn("Error leyendo localStorage:", e);
@@ -165,9 +194,9 @@ export default function MiPerfil() {
             payload: {
               ...state.perfilData,
               nombreUsuario,
-              nombresCompletos: user?.nombresCompletos || "Usuario",
-              fotoPerfil: user?.fotoPerfil || defaultAvatar,
-              rol: (user?.rol || "MIEMBRO").toUpperCase(),
+              nombresCompletos: usuario?.nombresCompletos || "Usuario",
+              fotoPerfil: usuario?.fotoPerfil || defaultAvatar,
+              rol: (usuario?.rol || "MIEMBRO").toUpperCase(),
             },
           });
         }
@@ -184,9 +213,9 @@ export default function MiPerfil() {
           payload: {
             ...crearEstadoInicial().perfilData,
             nombreUsuario,
-            nombresCompletos: user?.nombresCompletos || "Usuario",
-            fotoPerfil: user?.fotoPerfil || defaultAvatar,
-            rol: (user?.rol || "MIEMBRO").toUpperCase(),
+            nombresCompletos: usuario?.nombresCompletos || "Usuario",
+            fotoPerfil: usuario?.fotoPerfil || defaultAvatar,
+            rol: (usuario?.rol || "MIEMBRO").toUpperCase(),
           },
         });
       } finally {
@@ -196,7 +225,7 @@ export default function MiPerfil() {
 
     cargarPerfil();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [usuario]);
 
   const handlePerfilActualizado = (datosActualizados) => {
     dispatch({ type: "UPDATE_PERFIL_DATA", payload: datosActualizados });
@@ -252,6 +281,9 @@ export default function MiPerfil() {
         rol={state.perfilData.rol}
         nombreUsuario={state.perfilData.nombreUsuario}
         usandoMock={state.usandoMock}
+        onDatosCargados={(conteos) =>
+          dispatch({ type: "RECONCILIAR_CONTEOS", payload: conteos })
+        }
       />
 
       <EditarPerfilModal

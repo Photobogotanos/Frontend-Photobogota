@@ -25,7 +25,15 @@ export default function FotoPerfil({ fotoPerfil, onFotoChange, onEliminarFoto })
         <div className="foto-preview">
 
           {/* Muestra la foto actual. El valor viene del padre via prop */}
-          <img src={fotoPerfil} alt="Foto perfil" className="foto-perfil-img" />
+          <img
+            src={fotoPerfil}
+            alt="Foto perfil"
+            className="foto-perfil-img"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = "/images/user-pfp/default-avatar.jpg";
+            }}
+          />
 
           <div className="foto-actions">
             {/* Este label abre el input file al hacer click */}

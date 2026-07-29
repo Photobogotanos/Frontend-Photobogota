@@ -93,6 +93,7 @@ const PerfilTabs = ({
   rol = "MIEMBRO",
   nombreUsuario = "demo_user",
   usandoMock = false,
+  onDatosCargados,
 }) => {
   const rolNormalizado = (rol || "MIEMBRO").toUpperCase();
   const tabs = TABS_POR_ROL[rolNormalizado] || TABS_POR_ROL.MIEMBRO;
@@ -124,6 +125,8 @@ const PerfilTabs = ({
       setCargandoDatos(true);
       setErrorCarga(null);
 
+      const conteos = { totalSpots: 0, totalResenas: 0, totalGuardados: 0 };
+
       try {
         // Spots / locales solo para miembro y socio
         if (esMiembro || esSocio) {
@@ -135,6 +138,7 @@ const PerfilTabs = ({
               Array.isArray(resSpots.datos)
             ) {
               setSpotsUsuario(resSpots.datos);
+              conteos.totalSpots = resSpots.datos.length;
             } else if (!cancelado) {
               setSpotsUsuario([]);
             }
@@ -153,6 +157,7 @@ const PerfilTabs = ({
               Array.isArray(resResenas.datos)
             ) {
               setResenasUsuario(resResenas.datos);
+              conteos.totalResenas = resResenas.datos.length;
             } else if (!cancelado) {
               setResenasUsuario([]);
             }
@@ -171,12 +176,17 @@ const PerfilTabs = ({
               Array.isArray(resGuardados.datos)
             ) {
               setGuardadosUsuario(resGuardados.datos);
+              conteos.totalGuardados = resGuardados.datos.length;
             } else if (!cancelado) {
               setGuardadosUsuario([]);
             }
           } catch {
             if (!cancelado) setGuardadosUsuario([]);
           }
+        }
+
+        if (!cancelado) {
+          onDatosCargados?.(conteos);
         }
       } catch {
         if (!cancelado) {
@@ -191,6 +201,7 @@ const PerfilTabs = ({
     return () => {
       cancelado = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nombreUsuario, rolNormalizado, esMiembro, esSocio, esStaff]);
 
   const spotsFormateados = spotsUsuario
@@ -256,12 +267,12 @@ const PerfilTabs = ({
               {resenasUsuario.map((resena) => (
                 <ReviewCard
                   key={resena.id}
-                  title={resena.tituloSpot}
+                  title={resena.title}
                   rating={resena.rating}
-                  text={resena.texto}
+                  text={resena.text}
                   likes={resena.likes}
-                  date={resena.fechaCreacion}
-                  placeId={resena.spotId}
+                  date={resena.date}
+                  placeId={resena.placeId}
                 />
               ))}
             </div>
