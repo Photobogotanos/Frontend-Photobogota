@@ -146,3 +146,67 @@ button, input, select, textarea {
   opacity: 1;
   background: rgba(0, 0, 0, 0.06);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   GLOBAL REACT-SELECT STYLES (spot-select prefix from CreacionSpot)
+   Applied globally so every react-select in the app shares the same
+   visual treatment.
+   ═══════════════════════════════════════════════════════════════════ */
+.spot-select__control {
+  border-radius: 999px !important;
+  border: 1.5px solid #e8e8e8 !important;
+  background: #fafafa !important;
+  padding-left: 6px;
+  box-shadow: none !important;
+  min-height: 52px;
+  transition: border-color 0.2s ease !important;
+  cursor: pointer;
+}
+
+.spot-select__control--is-focused {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.12) !important;
+  background: #fff !important;
+  color: #4b5563 !important;
+}
+
+.spot-select__control:hover {
+  border-color: var(--color-primary) !important;
+  color: #4b5563 !important;
+}
+
+.spot-select__placeholder,
+.spot-select__single-value {
+  color: #4b5563;
+  font-size: 0.95rem;
+  padding-left: 2px;
+}
+
+.spot-select__menu {
+  border-radius: 16px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  border: none;
+  margin-top: 4px;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+.spot-select__option {
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.spot-select__option--is-focused {
+  background-color: #f3e8ff !important;
+  color: #4b5563 !important;
+}
+
+.spot-select__option--is-selected {
+  background: linear-gradient(135deg, var(--color-primary), #6a5acd) !important;
+  color: white !important;
+}
+
+.spot-select__indicator-separator {
+  display: none;
+}

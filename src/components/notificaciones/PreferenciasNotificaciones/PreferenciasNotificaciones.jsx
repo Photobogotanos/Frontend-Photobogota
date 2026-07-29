@@ -127,21 +127,21 @@ const PreferenciasNotificaciones = () => {
               </div>
             </div>
 
-            {/* Canal preferido con react-select */}
-            <div className="mb-1 select-container">
-              <label className="form-label fw-bold section-title">
-                Canal preferido
-              </label>
-              <Select
-                options={canalOptions}
-                value={canalOptions.find(
-                  (opt) => opt.value === preferencias.canalPreferido,
-                )}
-                onChange={handleCanalChange}
-                classNamePrefix="react-select"
-                isSearchable={false}
-              />
-            </div>
+              {/* Canal preferido con react-select */}
+              <div className="mb-1 select-container">
+                <label className="form-label fw-bold section-title">
+                  Canal preferido
+                </label>
+                <Select
+                  options={canalOptions}
+                  value={canalOptions.find(
+                    (opt) => opt.value === preferencias.canalPreferido,
+                  )}
+                  onChange={handleCanalChange}
+                  classNamePrefix="spot-select"
+                  isSearchable={false}
+                />
+              </div>
             {/* Tipos a silenciar */}
             <div className="mb-1">
               <label className="form-label fw-bold section-title">

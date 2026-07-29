@@ -8,7 +8,6 @@ import PerfilTabs from "./PerfilTabs";
 import "./MiPerfil.css";
 import { useAuth } from "../../../context/AuthContext";
 import { obtenerPerfil } from "../../../services/usuario.service";
-import defaultAvatar from "/images/user-pfp/default-avatar.jpg?url";
 
 // Tabs por rol (alineado con PerfilTabs)
 const PRIMERA_TAB_POR_ROL = {
@@ -98,7 +97,7 @@ const crearEstadoInicial = () => {
       email: "",
       biografia: "",
       telefono: "",
-      fotoPerfil: defaultAvatar,
+      fotoPerfil: null,
       rol: "MIEMBRO",
       nivel: null,
       totalSpots: 0,
@@ -155,7 +154,7 @@ export default function MiPerfil() {
               email: data.email || "",
               biografia: data.biografia || "",
               telefono: data.telefono || "",
-              fotoPerfil: data.fotoPerfil || defaultAvatar,
+              fotoPerfil: data.fotoPerfil || null,
               rol,
               nivel: data.nivel ?? null,
               totalSpots: data.totalSpots ?? 0,
@@ -195,7 +194,7 @@ export default function MiPerfil() {
               ...state.perfilData,
               nombreUsuario,
               nombresCompletos: usuario?.nombresCompletos || "Usuario",
-              fotoPerfil: usuario?.fotoPerfil || defaultAvatar,
+              fotoPerfil: usuario?.fotoPerfil || null,
               rol: (usuario?.rol || "MIEMBRO").toUpperCase(),
             },
           });
@@ -214,7 +213,7 @@ export default function MiPerfil() {
             ...crearEstadoInicial().perfilData,
             nombreUsuario,
             nombresCompletos: usuario?.nombresCompletos || "Usuario",
-            fotoPerfil: usuario?.fotoPerfil || defaultAvatar,
+            fotoPerfil: usuario?.fotoPerfil || null,
             rol: (usuario?.rol || "MIEMBRO").toUpperCase(),
           },
         });

@@ -44,12 +44,23 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
               src={data.imagen}
               alt={data.nombre}
               className="preview-image"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+                const fallback = e.currentTarget.nextElementSibling;
+                if (fallback) fallback.style.display = "flex";
+              }}
             />
-          ) : (
-            <div className="preview-upload-animation">
-              <Lottie animationData={uploadAnimation} loop style={{ width: 120, height: 120 }} />
-            </div>
-          )}
+          ) : null}
+          <div
+            className="preview-upload-animation"
+            style={{ display: data.imagen ? "none" : "flex" }}
+          >
+            <Lottie
+              animationData={uploadAnimation}
+              loop
+              style={{ width: 120, height: 120 }}
+            />
+          </div>
         </div>
         <div className="preview-content">
           <h3 className="preview-title">{data.nombre}</h3>

@@ -1,0 +1,20 @@
+.user-avatar-img {
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  flex-shrink: 0;
+}
+
+.user-avatar-letter {
+  border-radius: 50%;
+  background: linear-gradient(135deg, #806fbe 0%, #9b8bc9 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(128, 111, 190, 0.3);
+  user-select: none;
+  text-transform: uppercase;
+}

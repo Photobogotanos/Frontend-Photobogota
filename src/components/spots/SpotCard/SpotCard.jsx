@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { FaStar, FaHeart } from "react-icons/fa6";
 import { FaFlag } from "react-icons/fa";
 import { toast } from "react-hot-toast";
+import Lottie from "lottie-react";
+import uploadAnimation from "@/assets/animations/Upload.json";
 import { useAuth } from "@/context/AuthContext";
 import ReportarModal from "@/components/spots/SpotContent/ReportarModal";
 import "./SpotCard.css";
@@ -11,6 +13,7 @@ export default function SpotCard({ id, img, title, rating, tags }) {
   const navigate = useNavigate();
   const { logueado } = useAuth();
   const [modalReporteAbierto, setModalReporteAbierto] = useState(false);
+  const [imgRota, setImgRota] = useState(!img);
 
   const irAlSpot = () => navigate(`/spot/${id}`);
 
@@ -48,15 +51,22 @@ export default function SpotCard({ id, img, title, rating, tags }) {
         <FaFlag />
       </button>
 
-      <img
-        src={img || "/images/publicaciones/default-post.jpg"}
-        alt={title}
-        className="spot-img-h"
-        onError={(e) => {
-          e.currentTarget.onerror = null;
-          e.currentTarget.src = "/images/publicaciones/default-post.jpg";
-        }}
-      />
+      {imgRota ? (
+        <div className="spot-img-h spot-img-fallback">
+          <Lottie
+            animationData={uploadAnimation}
+            loop
+            style={{ width: 72, height: 72 }}
+          />
+        </div>
+      ) : (
+        <img
+          src={img}
+          alt={title}
+          className="spot-img-h"
+          onError={() => setImgRota(true)}
+        />
+      )}
 
       <div className="spot-content">
         <div className="spot-tags-h">

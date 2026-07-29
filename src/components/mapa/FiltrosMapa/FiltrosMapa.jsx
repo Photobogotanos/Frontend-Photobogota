@@ -38,7 +38,7 @@ const FiltrosMapa = ({ onFiltrar }) => {
           onChange={setCategoria}
           placeholder="Todas las categorías"
           className="filtro-select"
-          classNamePrefix="react-select"
+          classNamePrefix="spot-select"
           isClearable
         />
         <Select
@@ -47,7 +47,7 @@ const FiltrosMapa = ({ onFiltrar }) => {
           onChange={setLocalidad}
           placeholder="Todas las localidades"
           className="filtro-select"
-          classNamePrefix="react-select"
+          classNamePrefix="spot-select"
           isClearable
         />
       </div>

@@ -3,9 +3,15 @@ import { FaFacebookF, FaYoutube, FaInstagram } from "react-icons/fa";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { useLocation } from "react-router-dom";
 
 export default function Footer() {
+  const { pathname } = useLocation();
   const currentYear = new Date().getFullYear();
+
+  if (pathname.startsWith("/mapa")) {
+    return null;
+  }
 
   return (
     <footer className="footer-principal">

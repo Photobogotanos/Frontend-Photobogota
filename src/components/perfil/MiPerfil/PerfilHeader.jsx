@@ -1,6 +1,7 @@
 import { FiEdit3, FiBell } from "react-icons/fi";
 import { FaUser, FaCrown, FaUserShield, FaStore } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import UserAvatar from "@/components/common/UserAvatar/UserAvatar";
 
 const BadgeRol = ({ rol }) => {
   const getBadgeConfig = () => {
@@ -30,6 +31,14 @@ const BadgeRol = ({ rol }) => {
   );
 };
 
+const esFotoReal = (url) => {
+  if (!url || typeof url !== "string") return false;
+  const u = url.trim();
+  if (!u) return false;
+  if (u.includes("default-avatar")) return false;
+  return true;
+};
+
 const PerfilHeader = ({
   perfilData,
   dispatch,
@@ -40,27 +49,34 @@ const PerfilHeader = ({
   const mostrarNivel =
     rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
 
+  const fotoSrc = esFotoReal(perfilData?.fotoPerfil)
+    ? perfilData.fotoPerfil
+    : null;
+
+  const abrirFoto = () => {
+    if (fotoSrc) {
+      dispatch({ type: "SET_MOSTRAR_FOTO_PERFIL", payload: true });
+    }
+  };
+
   return (
     <div className="perfil-header">
-      <img
-        src={perfilData.fotoPerfil || "/images/user-pfp/default-avatar.jpg"}
+      <UserAvatar
+        src={fotoSrc}
+        nombreUsuario={perfilData?.nombreUsuario}
+        nombre={perfilData?.nombresCompletos}
         alt="Foto perfil"
         className="perfil-avatar"
-        onError={(e) => {
-          e.currentTarget.onerror = null;
-          e.currentTarget.src = "/images/user-pfp/default-avatar.jpg";
-        }}
-        onClick={() =>
-          dispatch({ type: "SET_MOSTRAR_FOTO_PERFIL", payload: true })
-        }
+        onClick={abrirFoto}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ")
-            dispatch({ type: "SET_MOSTRAR_FOTO_PERFIL", payload: true });
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            abrirFoto();
+          }
         }}
-        style={{ cursor: "pointer" }}
         tabIndex={0}
         role="button"
-        aria-label="Ver foto de perfil"
+        aria-label={fotoSrc ? "Ver foto de perfil" : "Sin foto de perfil"}
       />
 
       <div className="perfil-info">
@@ -91,7 +107,6 @@ const PerfilHeader = ({
           <FiEdit3 size={18} /> Editar perfil
         </button>
 
-        {/* Botón que redirige a Preferencias de Notificaciones */}
         <Link
           to="/perfil/preferencias-notificaciones"
           className="btn-notificaciones"

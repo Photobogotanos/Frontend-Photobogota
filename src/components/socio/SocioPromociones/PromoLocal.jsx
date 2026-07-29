@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
+import Select from "react-select";
 
 export default function PromoLocal({ state, dispatch }) {
   const [locales, setLocales] = useState([]);
 
   useEffect(() => {
-    // Aquí llamas a tu API para traer los locales del socio logueado
-    // Ejemplo:
     // getLocalesBySocio().then(setLocales);
   }, []);
+
+  const opcionesLocales = locales.map((local) => ({
+    value: local.id,
+    label: local.nombre,
+  }));
 
   if (locales.length === 0) {
     return (
@@ -23,18 +27,17 @@ export default function PromoLocal({ state, dispatch }) {
     <div className="promo-section mb-4">
       <h5 className="section-title">Local asociado</h5>
       <label className="promo-label">Selecciona el local <RequiredMark /></label>
-      <select
-        className="form-control"
-        value={state.localId || ""}
-        onChange={(e) => dispatch({ type: "SET_LOCAL_ID", payload: e.target.value })}
-      >
-        <option value="">Selecciona un local...</option>
-        {locales.map((local) => (
-          <option key={local.id} value={local.id}>
-            {local.nombre}
-          </option>
-        ))}
-      </select>
+      <Select
+        inputId="local-select"
+        classNamePrefix="spot-select"
+        options={opcionesLocales}
+        value={opcionesLocales.find((o) => o.value === state.localId) || null}
+        onChange={(opcion) =>
+          dispatch({ type: "SET_LOCAL_ID", payload: opcion ? opcion.value : "" })
+        }
+        isClearable
+        placeholder="Selecciona un local..."
+      />
     </div>
   );
 }

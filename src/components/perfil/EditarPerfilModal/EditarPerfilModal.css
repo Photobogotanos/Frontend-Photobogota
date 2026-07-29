@@ -190,6 +190,11 @@
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #e0ddd8;
+  font-size: 48px;
+}
+
+.foto-perfil-img.user-avatar-letter {
+  border-color: transparent;
 }
 
 .foto-actions {
@@ -259,6 +264,11 @@
   height: 90px;
   border: 3px solid white;
   box-shadow: 0 4px 18px rgba(128, 111, 190, 0.22);
+  font-size: 36px;
+}
+
+.profile-hero .foto-perfil-img.user-avatar-letter {
+  border-color: transparent;
 }
 .profile-hero .foto-actions { 
   flex-direction: row; 

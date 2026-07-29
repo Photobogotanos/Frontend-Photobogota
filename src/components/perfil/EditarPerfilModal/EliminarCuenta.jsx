@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import Select from "react-select";
 import Swal from "sweetalert2";
 import {
   FaExclamationTriangle,
@@ -392,17 +393,15 @@ export default function EliminarCuenta({ onHide }) {
       <div className="elim-form-fields">
         <div className="fgroup">
           <label className="flabel">¿Por qué te vas? (opcional)</label>
-          <select
-            className="finput"
-            value={motivo}
-            onChange={(e) => setMotivo(e.target.value)}
-          >
-            {MOTIVOS.map((m) => (
-              <option key={m.value || "ninguno"} value={m.value}>
-                {m.label}
-              </option>
-            ))}
-          </select>
+          <Select
+            inputId="motivo-eliminacion"
+            classNamePrefix="spot-select"
+            options={MOTIVOS}
+            value={MOTIVOS.find((m) => m.value === motivo) || null}
+            onChange={(opcion) => setMotivo(opcion ? opcion.value : "")}
+            isClearable
+            placeholder="Selecciona un motivo..."
+          />
         </div>
 
         <div className="fgroup">

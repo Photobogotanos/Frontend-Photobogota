@@ -7,8 +7,10 @@ import SidebarLink from "./SidebarLink";
 import MenuItems from "./MenuItems";
 import "./MenuLateral.css";
 import { obtenerSesion } from "@/utils/sessionHelper";
+import { useAuth } from "@/context/AuthContext";
 
 export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
+  const { usuario: usuarioAuth } = useAuth();
   const [usuario, setUsuario] = useState(null);
 
   // Limpiar usuario cuando se cierra el menú
@@ -20,13 +22,44 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
 
   const handleShow = () => {
     const datosUsuario = obtenerSesion();
-    if (datosUsuario) {
-      setUsuario(datosUsuario);
+    if (usuarioAuth || datosUsuario) {
+      setUsuario({
+        ...(datosUsuario || {}),
+        ...(usuarioAuth || {}),
+        nombre:
+          usuarioAuth?.nombre ||
+          usuarioAuth?.nombreUsuario ||
+          datosUsuario?.nombre ||
+          "Usuario",
+        username:
+          usuarioAuth?.username ||
+          (usuarioAuth?.nombreUsuario
+            ? `@${usuarioAuth.nombreUsuario}`
+            : null) ||
+          datosUsuario?.username ||
+          "@usuario",
+        nombreUsuario:
+          usuarioAuth?.nombreUsuario ||
+          datosUsuario?.nombreUsuario ||
+          (usuarioAuth?.username || datosUsuario?.username || "").replace(/^@/, "") ||
+          "",
+        fotoPerfil:
+          usuarioAuth?.fotoPerfil ||
+          datosUsuario?.fotoPerfil ||
+          null,
+        rol: (
+          usuarioAuth?.rol ||
+          datosUsuario?.rol ||
+          "MIEMBRO"
+        ).toUpperCase(),
+      });
     } else {
       setUsuario({
         nombre: "Usuario Demo",
         username: "@usuario_demo",
+        nombreUsuario: "usuario_demo",
         rol: "MIEMBRO",
+        fotoPerfil: null,
       });
     }
   };
