@@ -9,15 +9,12 @@ import "@/hooks/useRefreshLimit.css";
 import { useMantenimientoEstado } from "@/hooks/useMantenimientoEstado";
 import MantenimientoOverlay from "@/components/common/MantenimientoOverlay/MantenimientoOverlay";
 import { useAuth } from "@/context/AuthContext";
-
 import { MotionConfig } from "framer-motion";
-import { useAuth } from "@/context/AuthContext";
 import CuentaInactivaPage from "@/pages/cuenta/CuentaInactivaPage/CuentaInactivaPage";
 
 function App() {
   const { isBlocked, remainingCooldown } = useRefreshLimit();
   const { logueado, usuario, cargando } = useAuth();
-  const { usuario } = useAuth();
   const mantenimiento = useMantenimientoEstado();
 
   if (isBlocked) {
