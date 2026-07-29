@@ -49,15 +49,12 @@ export function AuthProvider({ children }) {
           const response = await getUsuarioAutenticado(); // GET /auth/me
           const datosBackend = response.data;
 
-          if (datosBackend.estadoCuenta === false) {
-            toast.error("Usuario inactivo. Contacta al administrador para activar tu cuenta.");
-            cerrarSesionHelper();
-            setUsuario(null);
-            setLogueado(false);
-            setCargando(false);
-            return;
-          }
-
+          // Nota: estadoCuenta=false puede significar que un admin suspendió la
+          // cuenta, o que el propio usuario solicitó su eliminación y sigue
+          // dentro del período de 30 días para recuperarla. En ambos casos el
+          // backend sigue emitiendo tokens válidos, así que dejamos que la
+          // sesión continúe; es la app (ver App.jsx) la que muestra la pantalla
+          // de cuenta inactiva / recuperación en lugar de cerrar la sesión.
           const sesionLocal = obtenerSesion();
           const usuarioVerificado = {
             ...sesionLocal,

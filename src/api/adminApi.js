@@ -38,3 +38,54 @@ export const patchEstadoUsuarioAdmin = (usuarioId, activo) =>
  */
 export const deleteUsuarioAdmin = (usuarioId) => 
     clienteApi.delete(`/admin/usuarios/${usuarioId}`);
+
+/**
+ * ADMIN API - Solicitudes de eliminación de cuenta (Etapa 2)
+ * Todos estos endpoints requieren token de ADMIN
+ */
+
+/**
+ * Lista paginada de solicitudes de eliminación de cuenta.
+ * @param {{ estado?: string, page?: number, size?: number }} params
+ * @returns {Promise}
+ */
+export const getSolicitudesEliminacionAdmin = ({ estado, page = 0, size = 10 } = {}) => {
+    const params = { page, size };
+    if (estado) params.estado = estado;
+    return clienteApi.get("/admin/eliminaciones", { params });
+};
+
+/**
+ * Detalle completo de una solicitud de eliminación (incluye verificación de
+ * identidad y dependencias detectadas).
+ * @param {string} id
+ * @returns {Promise}
+ */
+export const getDetalleEliminacionAdmin = (id) =>
+    clienteApi.get(`/admin/eliminaciones/${id}`);
+
+/**
+ * Fuerza el procesamiento inmediato de una solicitud: resuelve dependencias,
+ * anonimiza los datos y notifica a las partes afectadas.
+ * @param {string} id
+ * @param {{ observacion?: string }} body
+ * @returns {Promise}
+ */
+export const postProcesarEliminacionAdmin = (id, body = {}) =>
+    clienteApi.post(`/admin/eliminaciones/${id}/procesar`, body);
+
+/**
+ * Rechaza una solicitud activa y reactiva la cuenta del usuario.
+ * @param {string} id
+ * @param {{ observacion?: string }} body
+ * @returns {Promise}
+ */
+export const postRechazarEliminacionAdmin = (id, body = {}) =>
+    clienteApi.post(`/admin/eliminaciones/${id}/rechazar`, body);
+
+/**
+ * Métricas agregadas sobre las solicitudes de eliminación de cuenta.
+ * @returns {Promise}
+ */
+export const getMetricasEliminacionAdmin = () =>
+    clienteApi.get("/admin/eliminaciones/metricas");

@@ -93,3 +93,36 @@ export const getSpotsGuardados = () =>
  */
 export const postVerificarCodigo = (body) =>
   clienteApi.post("/auth/passwords/reset", body);
+
+/**
+ * Solicitar la eliminación de la propia cuenta (solo MIEMBRO).
+ * El backend genera un código de 6 dígitos y lo envía al correo del usuario,
+ * junto con las consecuencias de la eliminación.
+ * @param {{ motivo?: string, comentario?: string }} body - Ambos campos son opcionales
+ * @returns {Promise<{ data: { mensaje: string } }>}
+ */
+export const postSolicitarEliminacionCuenta = (body) =>
+  clienteApi.post("/usuarios/me/eliminacion/solicitar", body);
+
+/**
+ * Confirmar la eliminación de la cuenta con el código recibido por correo.
+ * Desactiva la cuenta y programa la eliminación definitiva en 30 días.
+ * @param {{ codigo: string }} body
+ * @returns {Promise<{ data: { mensaje: string } }>}
+ */
+export const postConfirmarEliminacionCuenta = (body) =>
+  clienteApi.post("/usuarios/me/eliminacion/confirmar", body);
+
+/**
+ * Cancelar la eliminación de la cuenta y recuperarla dentro del período de 30 días.
+ * @returns {Promise<{ data: { mensaje: string } }>}
+ */
+export const postCancelarEliminacionCuenta = () =>
+  clienteApi.post("/usuarios/me/eliminacion/cancelar");
+
+/**
+ * Obtener el estado de la solicitud de eliminación de cuenta del usuario autenticado.
+ * @returns {Promise<{ data: EstadoEliminacionDTO }>}
+ */
+export const getEstadoEliminacionCuenta = () =>
+  clienteApi.get("/usuarios/me/eliminacion/estado");

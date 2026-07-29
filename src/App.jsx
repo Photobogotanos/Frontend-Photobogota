@@ -11,9 +11,12 @@ import MantenimientoOverlay from "@/components/common/MantenimientoOverlay/Mante
 import { useAuth } from "@/context/AuthContext";
 
 import { MotionConfig } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
+import CuentaInactivaPage from "@/pages/cuenta/CuentaInactivaPage/CuentaInactivaPage";
 
 function App() {
   const { isBlocked, remainingCooldown } = useRefreshLimit();
+  const { logueado, usuario, cargando } = useAuth();
   const { usuario } = useAuth();
   const mantenimiento = useMantenimientoEstado();
 
@@ -32,6 +35,13 @@ function App() {
         </div>
       </div>
     );
+  }
+
+  // Cuenta desactivada (suspendida por un admin, o dentro del período de 30 días
+  // de recuperación tras una autoeliminación): bloqueamos el resto de la app y
+  // mostramos únicamente la pantalla de recuperación / aviso correspondiente.
+  if (!cargando && logueado && usuario?.estadoCuenta === false) {
+    return <CuentaInactivaPage />;
   }
 
   // El backend bloquea toda la API durante el mantenimiento excepto las

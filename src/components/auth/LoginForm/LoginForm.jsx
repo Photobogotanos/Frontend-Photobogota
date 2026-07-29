@@ -164,6 +164,14 @@ export default function LoginForm() {
       // Actualizar contexto de autenticación
       iniciarSesionContext(resultado.datos);
 
+      if (resultado.cuentaInactiva) {
+        toast(
+          "Tu cuenta está desactivada. Te llevaremos a la pantalla correspondiente...",
+          { icon: "⚠️", duration: 3500 },
+        );
+        return;
+      }
+
       toast.success(
         resultado.esDemo
           ? `¡Bienvenido (Demo)! Hola, ${resultado.datos.nombre}.`
