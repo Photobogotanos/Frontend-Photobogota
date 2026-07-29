@@ -11,8 +11,18 @@ export default function FotoPerfilModal({ show, onHide, foto, nombre }) {
       backdrop="static"       
       keyboard={true}
     >
-      <Modal.Body className="foto-perfil-modal-body" onClick={onHide}>
-        <div className="foto-perfil-container-modal" onClick={e => e.stopPropagation()}>
+      <Modal.Body
+        className="foto-perfil-modal-body"
+        onClick={onHide}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            onHide();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+      >
+        <div className="foto-perfil-container-modal" onClick={(e) => e.stopPropagation()}>
           <img
             src={foto}
             alt={`Foto de perfil de ${nombre}`}
