@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap");
 
 /* ── Contenedor ── */
 .formulario-contenedor {
@@ -27,7 +27,7 @@
 }
 
 .spot-header-title {
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   font-weight: 700;
   font-size: 2rem;
   letter-spacing: -0.02em;
@@ -46,8 +46,9 @@
   border-radius: 2px;
   background: linear-gradient(90deg, #806fbe 0%, #a294d0 60%, transparent 100%);
   background-size: 200% 100%;
-  animation: fadeInUp 0.6s ease 0.4s both,
-             shimmer 2.5s ease-in-out 1s infinite;
+  animation:
+    fadeInUp 0.6s ease 0.4s both,
+    shimmer 2.5s ease-in-out 1s infinite;
 }
 
 /* ── Labels ── */
@@ -73,7 +74,10 @@
   background: #fafafa;
   color: #0a0a0a;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .spot-input:focus {
@@ -82,7 +86,9 @@
   background: #fff;
 }
 
-.spot-input::placeholder { color: #bbb; }
+.spot-input::placeholder {
+  color: #bbb;
+}
 
 /* ── Textarea ── */
 .spot-textarea {
@@ -95,7 +101,10 @@
   color: #0a0a0a;
   outline: none;
   resize: vertical;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
   font-family: inherit;
 }
 
@@ -105,7 +114,9 @@
   background: #fff;
 }
 
-.spot-textarea::placeholder { color: #bbb; }
+.spot-textarea::placeholder {
+  color: #bbb;
+}
 
 /* ── React Select ── */
 .spot-select__control {
@@ -131,6 +142,90 @@
   color: #0a0a0a !important;
 }
 
+/* ── Select del método de ubicación (react-select) ── */
+.location-method-wrapper {
+  flex: 1;
+  min-width: 200px;
+}
+
+.location-method-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.location-method-option-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-primary);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ── Vista previa del mapa ── */
+.location-map-preview {
+  position: relative;
+  height: 180px;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 10px;
+  border: 1.5px solid #e8e8e8;
+  background: #fafafa;
+  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.location-map-preview .leaflet-container {
+  height: 100%;
+  width: 100%;
+  cursor: default;
+}
+
+.location-map-preview-overlay-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(2px);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.location-map-preview-overlay-btn:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(128, 111, 190, 0.3);
+}
+
+.location-map-preview-empty {
+  height: 180px;
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 14px;
+  border: 1.5px dashed #d5cef0;
+  background: #faf9ff;
+  color: #a89ed1;
+  font-size: 0.8rem;
+}
+
 /* ── Botón ubicación ── */
 .spot-location-btn {
   background: var(--color-primary);
@@ -140,7 +235,9 @@
   padding: 0 18px;
   font-size: 15px;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   flex-shrink: 0;
 }
 
@@ -167,7 +264,10 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
   gap: 4px;
   user-select: none;
 }
@@ -263,7 +363,9 @@
   cursor: pointer;
   font-size: 13px;
   color: #333;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
   backdrop-filter: blur(4px);
 }
 
@@ -272,8 +374,12 @@
   transform: translateY(-50%) scale(1.1);
 }
 
-.preview-nav.prev { left: 12px; }
-.preview-nav.next { right: 12px; }
+.preview-nav.prev {
+  left: 12px;
+}
+.preview-nav.next {
+  right: 12px;
+}
 
 /* Eliminar */
 .preview-remove {
@@ -291,7 +397,9 @@
   justify-content: center;
   font-size: 12px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
   backdrop-filter: blur(4px);
 }
 
@@ -313,7 +421,9 @@
   padding: 5px 14px;
   border-radius: 999px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
   backdrop-filter: blur(4px);
 }
 
@@ -362,7 +472,9 @@
   flex-shrink: 0;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .thumbnail-item img {
@@ -400,7 +512,9 @@
   justify-content: center;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.15s ease, background 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    background 0.15s ease;
   padding: 0;
 }
 
@@ -426,7 +540,10 @@
   flex-shrink: 0;
   cursor: pointer;
   gap: 2px;
-  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s;
 }
 
 .thumbnail-add:hover {
@@ -480,7 +597,10 @@
   font-weight: 600;
   border-radius: 999px;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.2s;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.2s;
 }
 
 .spot-btn-preview:hover {
@@ -501,7 +621,10 @@
   font-weight: 600;
   border-radius: 999px;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.2s;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    opacity 0.2s;
 }
 
 .spot-btn-publish:hover {
@@ -517,19 +640,36 @@
 
 /* ── Animaciones ── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(-6px); filter: blur(2px); }
-  to   { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
 
 @keyframes shimmer {
-  0%, 100% { background-position: 0%   0%; }
-  50%       { background-position: 200% 0%; }
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 200% 0%;
+  }
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .spot-header-title { font-size: 1.6rem; }
-  .formulario-contenedor { padding: 0 15px; }
+  .spot-header-title {
+    font-size: 1.6rem;
+  }
+  .formulario-contenedor {
+    padding: 0 15px;
+  }
 
   .botones-contenedor {
     flex-direction: column;
@@ -543,5 +683,42 @@
   }
 
   .preview-carousel,
-  .drop-zone { height: 200px; }
+  .drop-zone {
+    height: 200px;
+  }
+}
+
+/* Spinner */
+.spot-location-btn .fa-spin {
+  animation: fa-spin 1s infinite linear;
+}
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal del mapa */
+.map-picker-modal .modal-content {
+  border-radius: 16px;
+  overflow: hidden;
+}
+.map-picker-modal .modal-header {
+  padding: 1rem 1.25rem 0.5rem;
+}
+.map-picker-modal .leaflet-container {
+  border-radius: 0;
+}
+
+@media (max-width: 576px) {
+  .spot-location-btn {
+    padding: 0 12px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

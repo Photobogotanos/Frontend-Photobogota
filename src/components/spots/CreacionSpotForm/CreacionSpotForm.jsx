@@ -536,6 +536,8 @@ export default function CrearSpot() {
             <SpotInformacionBasica
               nombreLugar={state.nombreLugar}
               direccion={state.direccion}
+              latitud={state.latitud}
+              longitud={state.longitud}
               onNombreChange={(val) =>
                 dispatch({ type: "SET_NOMBRE_LUGAR", payload: val })
               }

@@ -7,6 +7,10 @@ import {
   getSpotsUsuario,
   getResenasUsuario,
   getSpotsGuardados,
+  postSolicitarEliminacionCuenta,
+  postConfirmarEliminacionCuenta,
+  postCancelarEliminacionCuenta,
+  getEstadoEliminacionCuenta,
 } from "@/api/usuarioApi";
 import {
   registrarUsuarioDemo,
@@ -66,15 +70,6 @@ export const iniciarSesion = async (login, contrasena) => {
     const { token, refreshToken, nombreUsuario, email, rol, nivel, mensaje, estadoCuenta } =
       respuesta.data;
 
-    if (estadoCuenta === false) {
-      return {
-        exitoso: false,
-        esDemo: false,
-        mensaje:
-          "Usuario inactivo. Contacta al administrador para activar tu cuenta.",
-      };
-    }
-
     guardarTokens(token, refreshToken);
 
     const usuario = {
@@ -88,7 +83,18 @@ export const iniciarSesion = async (login, contrasena) => {
 
     guardarSesion(usuario);
 
-    return { exitoso: true, esDemo: false, datos: usuario, mensaje };
+    // La cuenta puede estar desactivada (estadoCuenta=false) porque un admin la
+    // suspendió, o porque el propio miembro solicitó su eliminación y está dentro
+    // del período de 30 días para recuperarla. En ambos casos dejamos que inicie
+    // sesión (el backend sí emite un token válido) para que la app pueda mostrarle
+    // la pantalla correspondiente en lugar de bloquear el acceso por completo.
+    return {
+      exitoso: true,
+      esDemo: false,
+      datos: usuario,
+      mensaje,
+      cuentaInactiva: estadoCuenta === false,
+    };
   } catch (error) {
     const huboRespuestaDelServidor = !!error.response;
 
@@ -276,18 +282,6 @@ export const obtenerSpotsUsuario = async (nombreUsuario) => {
       esMock: false,
     };
   } catch (error) {
-    const status = error.response?.status;
-    const es404o500 = status === 404 || status === 500;
-
-    if (es404o500) {
-      return {
-        exitoso: true,
-        datos: [],
-        mensaje: "Mostrando datos de demostración",
-        esMock: true,
-      };
-    }
-
     const isNetworkError = !error.response;
 
     if (!isNetworkError) {
@@ -323,18 +317,6 @@ export const obtenerResenasUsuario = async (nombreUsuario) => {
       esMock: false,
     };
   } catch (error) {
-    const status = error.response?.status;
-    const es404o500 = status === 404 || status === 500;
-
-    if (es404o500) {
-      return {
-        exitoso: true,
-        datos: [],
-        mensaje: "Mostrando datos de demostración",
-        esMock: true,
-      };
-    }
-
     const isNetworkError = !error.response;
 
     if (!isNetworkError) {
@@ -382,18 +364,6 @@ export const obtenerSpotsGuardados = async () => {
       esMock: false,
     };
   } catch (error) {
-    const status = error.response?.status;
-    const es404o500 = status === 404 || status === 500;
-
-    if (es404o500) {
-      return {
-        exitoso: true,
-        datos: [],
-        mensaje: "Mostrando datos de demostración",
-        esMock: true,
-      };
-    }
-
     const isNetworkError = !error.response;
 
     if (!isNetworkError) {
@@ -411,6 +381,99 @@ export const obtenerSpotsGuardados = async () => {
       datos: SPOTS.slice(0, 3),
       mensaje: "Mostrando datos de demostración",
       esMock: true,
+    };
+  }
+};
+
+/**
+ * Extrae un mensaje de error legible desde una respuesta de axios,
+ * siguiendo el mismo patrón usado en el resto de este servicio.
+ */
+const extraerMensajeError = (error, mensajePorDefecto) => {
+  if (error.response) {
+    return (
+      error.response.data?.mensaje || error.response.data?.message || mensajePorDefecto
+    );
+  }
+  if (error.request) {
+    return "No se pudo conectar con el servidor";
+  }
+  return mensajePorDefecto;
+};
+
+/**
+ * Paso 1: solicitar la eliminación de la propia cuenta (solo MIEMBRO).
+ * Envía un motivo y comentario opcionales; el backend envía un código
+ * de 6 dígitos al correo del usuario.
+ * @param {{ motivo?: string, comentario?: string }} body
+ */
+export const solicitarEliminacionCuenta = async (body) => {
+  try {
+    const response = await postSolicitarEliminacionCuenta(body);
+    return {
+      exitoso: true,
+      mensaje: response.data?.mensaje || "Código de verificación enviado a tu correo",
+    };
+  } catch (error) {
+    return {
+      exitoso: false,
+      mensaje: extraerMensajeError(error, "Error al solicitar la eliminación de la cuenta"),
+    };
+  }
+};
+
+/**
+ * Paso 2: confirmar la eliminación con el código recibido por correo.
+ * Desactiva la cuenta y programa la eliminación definitiva en 30 días.
+ * @param {{ codigo: string }} body
+ */
+export const confirmarEliminacionCuenta = async (body) => {
+  try {
+    const response = await postConfirmarEliminacionCuenta(body);
+    return {
+      exitoso: true,
+      mensaje: response.data?.mensaje || "Eliminación confirmada",
+    };
+  } catch (error) {
+    return {
+      exitoso: false,
+      mensaje: extraerMensajeError(error, "Código inválido, expirado o ya usado"),
+    };
+  }
+};
+
+/**
+ * Cancela la eliminación programada y reactiva la cuenta,
+ * siempre que aún se esté dentro del período de 30 días.
+ */
+export const cancelarEliminacionCuenta = async () => {
+  try {
+    const response = await postCancelarEliminacionCuenta();
+    return {
+      exitoso: true,
+      mensaje: response.data?.mensaje || "Cuenta recuperada exitosamente",
+    };
+  } catch (error) {
+    return {
+      exitoso: false,
+      mensaje: extraerMensajeError(error, "No hay una solicitud activa o el plazo ya venció"),
+    };
+  }
+};
+
+/**
+ * Obtiene el estado actual de la solicitud de eliminación del usuario autenticado.
+ * @returns {Promise<{ exitoso: boolean, datos: EstadoEliminacionDTO|null, mensaje: string }>}
+ */
+export const obtenerEstadoEliminacionCuenta = async () => {
+  try {
+    const response = await getEstadoEliminacionCuenta();
+    return { exitoso: true, datos: response.data, mensaje: "Estado obtenido exitosamente" };
+  } catch (error) {
+    return {
+      exitoso: false,
+      datos: null,
+      mensaje: extraerMensajeError(error, "Error al obtener el estado de la solicitud"),
     };
   }
 };

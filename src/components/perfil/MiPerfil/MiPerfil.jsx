@@ -280,7 +280,13 @@ export default function MiPerfil() {
           onClick={() =>
             dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
           }
-          role="presentation"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
+            }
+          }}
+          role="button"
+          tabIndex={0}
         >
           <div
             className="perfil-notif-panel"
