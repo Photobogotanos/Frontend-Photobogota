@@ -41,21 +41,51 @@ const createUserLocationIcon = () => new L.Icon.Default();
 
 function BotonUbicacion() {
   const map = useMap();
+  const [buscando, setBuscando] = useState(false);
 
   useMapEvents({
     locationfound(e) {
+      setBuscando(false);
       map.setView(e.latlng, 16);
       L.marker(e.latlng, { icon: createUserLocationIcon() })
         .addTo(map)
         .bindPopup("Estás aquí")
         .openPopup();
     },
+    locationerror(e) {
+      setBuscando(false);
+      if (e.code === 1) {
+        toast.error(
+          "Activa el permiso de ubicación en el navegador para usar esta función."
+        );
+      } else {
+        toast.error(
+          "No se pudo obtener tu ubicación. Verifica que el GPS esté activado."
+        );
+      }
+    },
   });
+
+  const buscarUbicacion = () => {
+    if (!navigator.geolocation) {
+      toast.error("Tu navegador no soporta geolocalización.");
+      return;
+    }
+    setBuscando(true);
+    map.locate({
+      setView: true,
+      maxZoom: 16,
+      enableHighAccuracy: true,
+      timeout: 10000,
+    });
+  };
 
   return (
     <button
-      className="btn-ubicacion"
-      onClick={() => map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true })}
+      className={`btn-ubicacion ${buscando ? "buscando" : ""}`}
+      onClick={buscarUbicacion}
+      disabled={buscando}
+      aria-label="Ir a mi ubicación"
     >
       <FaLocationArrow />
     </button>

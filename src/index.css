@@ -113,3 +113,36 @@ button, input, select, textarea {
     scroll-behavior: auto !important;
   }
 }
+
+/* Toast personalizado (react-hot-toast) */
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.toast-message {
+  flex: 1;
+  line-height: 1.35;
+}
+
+.toast-close-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  opacity: 0.5;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 4px 6px;
+  margin-left: 4px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toast-close-btn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.06);
+}

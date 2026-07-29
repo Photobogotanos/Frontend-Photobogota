@@ -6,7 +6,7 @@ import { FaChevronUp, FaChevronDown } from "react-icons/fa";
 import "./MapaContent.css";
 
 const MapaContent = () => {
-  const [filtrosVisibles, setFiltrosVisibles] = useState(true);
+  const [filtrosVisibles, setFiltrosVisibles] = useState(false);
 
   return (
     <div className="mapa-content-container">

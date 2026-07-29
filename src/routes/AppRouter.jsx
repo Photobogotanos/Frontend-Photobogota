@@ -33,7 +33,7 @@ const AppRouter = () => {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        {/* ── RUTAS PÚBLICAS (sin cambios) ── */}
+        {/* ── RUTAS PÚBLICAS ── */}
         <Route path="/" element={<PaginaInicioPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/creacion-cuenta" element={<CreacionDeCuentaPage />} />
@@ -72,14 +72,6 @@ const AppRouter = () => {
           element={
             <ProtectedRoute>
               <CreacionSpotPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/notificaciones"
-          element={
-            <ProtectedRoute>
-              <div>Página de Notificaciones (en construcción)</div>
             </ProtectedRoute>
           }
         />
@@ -151,6 +143,22 @@ const AppRouter = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/dashboard-reportes"
+          element={
+            <ProtectedRoute roles={["MOD"]}>
+              <DashboardReportesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/gestionar-reportes"
+          element={
+            <ProtectedRoute roles={["MOD"]}>
+              <DashboardReportesPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ── RUTAS DE ADMIN ── */}
         <Route
@@ -178,10 +186,10 @@ const AppRouter = () => {
           }
         />
         <Route
-          path="/notificaciones-mantenimiento"
+          path="/admin/reportes"
           element={
             <ProtectedRoute roles={["ADMIN"]}>
-              <MantenimientoPage />
+              <AdminReportesPage />
             </ProtectedRoute>
           }
         />
@@ -190,6 +198,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <AdminEliminacionesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/mantenimiento"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <MantenimientoPage />
             </ProtectedRoute>
           }
         />
