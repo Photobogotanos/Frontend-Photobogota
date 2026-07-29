@@ -255,9 +255,13 @@ function PerfilFormulario({
                 </p>
                 <div className="hero-pills">
                   <span className="hpill">{rolMostrar}</span>
-                  <span className="hpill accent">
-                    Nivel {perfilData?.nivel || 1}
-                  </span>
+                  {rolMostrar === "MIEMBRO" &&
+                    perfilData?.nivel !== null &&
+                    perfilData?.nivel !== undefined && (
+                      <span className="hpill accent">
+                        Nivel {perfilData.nivel}
+                      </span>
+                    )}
                 </div>
               </div>
             </div>

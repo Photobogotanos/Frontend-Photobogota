@@ -45,6 +45,10 @@ const PerfilHeader = ({
         src={perfilData.fotoPerfil || "/images/user-pfp/default-avatar.jpg"}
         alt="Foto perfil"
         className="perfil-avatar"
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = "/images/user-pfp/default-avatar.jpg";
+        }}
         onClick={() =>
           dispatch({ type: "SET_MOSTRAR_FOTO_PERFIL", payload: true })
         }

@@ -48,7 +48,15 @@ export default function SpotCard({ id, img, title, rating, tags }) {
         <FaFlag />
       </button>
 
-      <img src={img} alt={title} className="spot-img-h" />
+      <img
+        src={img || "/images/publicaciones/default-post.jpg"}
+        alt={title}
+        className="spot-img-h"
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = "/images/publicaciones/default-post.jpg";
+        }}
+      />
 
       <div className="spot-content">
         <div className="spot-tags-h">
