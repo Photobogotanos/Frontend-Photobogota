@@ -1,6 +1,5 @@
 import { FiEdit3, FiBell } from "react-icons/fi";
 import { FaUser, FaCrown, FaUserShield, FaStore } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import UserAvatar from "@/components/common/UserAvatar/UserAvatar";
 
 const BadgeRol = ({ rol }) => {
@@ -107,13 +106,16 @@ const PerfilHeader = ({
           <FiEdit3 size={18} /> Editar perfil
         </button>
 
-        <Link
-          to="/perfil/preferencias-notificaciones"
+        <button
+          type="button"
           className="btn-notificaciones"
           title="Configurar notificaciones"
+          onClick={() =>
+            dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: true })
+          }
         >
           <FiBell size={18} /> Notificaciones
-        </Link>
+        </button>
       </div>
     </div>
   );

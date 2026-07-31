@@ -23,7 +23,6 @@ import AdminUsuariosPage from "@/pages/admin/AdminUsuarios/AdminUsuariosPage";
 import AdminLogsPage from "@/pages/admin/AdminLogs/AdminLogsPage";
 import MantenimientoPage from "@/pages/admin/Mantenimiento/MantenimientoPage";
 import GestionCategoriasPage from "../pages/moderador/GestionCategoriasPage/GestionCategoriasPage";
-import PreferenciasNotificacionesPage from "@/pages/notificaciones/PreferenciasNotificaciones/PreferenciasNotificacionesPage";
 import DashboardReportesPage from "@/pages/moderador/DashboardReportesPage/DashboardReportesPage";
 import AdminReportesPage from "@/pages/admin/AdminReportesPage/AdminReportesPage";
 import AdminEliminacionesPage from "@/pages/admin/AdminEliminacionesPage/AdminEliminacionesPage";
@@ -56,14 +55,6 @@ const AppRouter = () => {
           element={
             <ProtectedRoute>
               <MiPerfil />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/perfil/preferencias-notificaciones"
-          element={
-            <ProtectedRoute>
-              <PreferenciasNotificacionesPage />
             </ProtectedRoute>
           }
         />

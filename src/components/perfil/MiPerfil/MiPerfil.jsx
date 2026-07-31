@@ -2,6 +2,7 @@ import { useReducer, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import EditarPerfilModal from "../EditarPerfilModal/EditarPerfilModal";
 import FotoPerfilModal from "../FotoPerfilModal/FotoPerfilModal";
+import PreferenciasNotificacionesModal from "@/components/notificaciones/PreferenciasNotificaciones/PreferenciasNotificacionesModal";
 import PerfilHeader from "./PerfilHeader";
 import PerfilStats from "./PerfilStats";
 import PerfilTabs from "./PerfilTabs";
@@ -304,60 +305,12 @@ export default function MiPerfil() {
         nombre={state.perfilData.nombresCompletos}
       />
 
-      {/* Modal simple de notificaciones (placeholder) */}
-      {state.mostrarNotificaciones && (
-        <div
-          className="perfil-notif-overlay"
-          onClick={() =>
-            dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
-          }
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
-            }
-          }}
-          role="button"
-          tabIndex={0}
-        >
-          <div
-            className="perfil-notif-panel"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-label="Configurar notificaciones"
-          >
-            <h3 className="perfil-notif-title">Notificaciones</h3>
-            <p className="perfil-notif-sub">
-              Elige qué avisos quieres recibir.
-            </p>
-            <label className="perfil-notif-row">
-              <input type="checkbox" defaultChecked />
-              <span>Nuevas reseñas en tus spots</span>
-            </label>
-            <label className="perfil-notif-row">
-              <input type="checkbox" defaultChecked />
-              <span>Respuestas a tus reseñas</span>
-            </label>
-            <label className="perfil-notif-row">
-              <input type="checkbox" defaultChecked />
-              <span>Promociones de locales</span>
-            </label>
-            <label className="perfil-notif-row">
-              <input type="checkbox" />
-              <span>Novedades de la plataforma</span>
-            </label>
-            <button
-              type="button"
-              className="btn-editar-perfil"
-              style={{ width: "100%", justifyContent: "center", marginTop: 16 }}
-              onClick={() =>
-                dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
-              }
-            >
-              Guardar preferencias
-            </button>
-          </div>
-        </div>
-      )}
+      <PreferenciasNotificacionesModal
+        show={state.mostrarNotificaciones}
+        onHide={() =>
+          dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
+        }
+      />
     </Container>
   );
 }
