@@ -80,6 +80,43 @@
   margin-bottom: 12px;
 }
 
+.lugar-acciones-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-guardar-spot-detalle {
+  background: rgba(128, 111, 190, 0.1);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-guardar-spot-detalle:hover {
+  background: rgba(128, 111, 190, 0.2);
+  transform: translateY(-2px);
+}
+
+.btn-guardar-spot-detalle.guardado {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-guardar-spot-detalle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .resena-acciones {
   display: flex;
   justify-content: flex-end;

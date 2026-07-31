@@ -118,6 +118,15 @@ const PerfilTabs = ({
   const [cargandoDatos, setCargandoDatos] = useState(true);
   const [errorCarga, setErrorCarga] = useState(null);
 
+  const refetchGuardados = async () => {
+    const resGuardados = await obtenerSpotsGuardados();
+    if (resGuardados?.exitoso && Array.isArray(resGuardados.datos)) {
+      setGuardadosUsuario(resGuardados.datos);
+    } else {
+      setGuardadosUsuario([]);
+    }
+  };
+
   useEffect(() => {
     let cancelado = false;
 
@@ -304,6 +313,7 @@ const PerfilTabs = ({
                     tags={spotCard.tags}
                     rating={spotCard.rating}
                     likes={spotCard.likes}
+                    onToggleGuardado={refetchGuardados}
                   />
                 );
               })}
