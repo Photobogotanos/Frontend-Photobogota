@@ -2,12 +2,12 @@
   background-color: var(--color-bg);
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 2rem 1rem;
 }
 
 .perfil-page .container {
-  max-width: 95%;
+  max-width: 100%;
   width: 100%;
 }

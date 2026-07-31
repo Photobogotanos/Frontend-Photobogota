@@ -28,6 +28,8 @@ import {
 } from "@/services/calificacion.service";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-hot-toast";
+import Lottie from "lottie-react";
+import uploadAnimation from "@/assets/animations/Upload.json";
 import "./SpotContent.css";
 
 const MAX_COMENTARIO = 500;
@@ -212,20 +214,27 @@ const MapaContent = () => {
       <div className="lugar-content-wrapper">
         <div className="lugar-imagen-principal">
           {spot.imagen ? (
-            <img src={spot.imagen} alt={spot.nombre} />
-          ) : (
-            <div
-              style={{
-                backgroundColor: "#ddd",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+            <img
+              src={spot.imagen}
+              alt={spot.nombre}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+                const fallback = e.currentTarget.nextElementSibling;
+                if (fallback) fallback.style.display = "flex";
               }}
-            >
-              <span>Sin imagen</span>
-            </div>
-          )}
+            />
+          ) : null}
+          <div
+            className="lugar-imagen-fallback"
+            style={{ display: spot.imagen ? "none" : "flex" }}
+          >
+            <Lottie
+              animationData={uploadAnimation}
+              loop
+              style={{ width: 160, height: 160 }}
+            />
+            <span>Sin imagen</span>
+          </div>
         </div>
 
         <div className="lugar-info-container">

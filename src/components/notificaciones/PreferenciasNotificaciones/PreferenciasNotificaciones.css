@@ -141,19 +141,7 @@
   }
 }
 
-/* React Select */
-.select-container .react-select__control {
-  border-radius: 50px;
-  border: 1.5px solid #e0e0e0;
-  padding: 4px 12px;
-  min-height: 52px;
-}
 
-.select-container .react-select__control:hover,
-.select-container .react-select__control--is-focused {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 0.2rem rgba(128, 111, 190, 0.15);
-}
 
 /* Botón */
 .preferencias-btn {

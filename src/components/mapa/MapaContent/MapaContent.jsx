@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Row, Col } from "react-bootstrap";
 import FiltrosMapa from "@/components/mapa/FiltrosMapa/FiltrosMapa";
 import MapaBogota from "@/components/mapa/MapaBogota/MapaBogota";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
@@ -7,31 +6,31 @@ import "./MapaContent.css";
 
 const MapaContent = () => {
   const [filtrosVisibles, setFiltrosVisibles] = useState(true);
+  const [filtros, setFiltros] = useState({});
 
   return (
-    <div className="mapa-content-container">
-
-      <button
-        className="toggle-filtros-btn"
-        onClick={() => setFiltrosVisibles(!filtrosVisibles)}
-      >
-        {filtrosVisibles ? <FaChevronUp /> : <FaChevronDown />}
-        <span>{filtrosVisibles ? "Ocultar filtros" : "Mostrar filtros"}</span>
-      </button>
-
+    <div
+      className={`mapa-content-container ${filtrosVisibles ? "con-filtros" : "sin-filtros"}`}
+    >
       {filtrosVisibles && (
-        <Row className="mapa-row filtros-row">
-          <Col className="p-0">
-            <FiltrosMapa />
-          </Col>
-        </Row>
+        <div className="filtros-panel">
+          <FiltrosMapa onFiltrar={setFiltros} />
+        </div>
       )}
 
-      <Row className="mapa-row">
-        <Col className="p-0">
-          <MapaBogota />
-        </Col>
-      </Row>
+      <div className="mapa-area">
+        <button
+          type="button"
+          className="toggle-filtros-btn"
+          onClick={() => setFiltrosVisibles((v) => !v)}
+          aria-expanded={filtrosVisibles}
+        >
+          {filtrosVisibles ? <FaChevronUp /> : <FaChevronDown />}
+          <span>{filtrosVisibles ? "Ocultar filtros" : "Mostrar filtros"}</span>
+        </button>
+
+        <MapaBogota filtros={filtros} />
+      </div>
     </div>
   );
 };

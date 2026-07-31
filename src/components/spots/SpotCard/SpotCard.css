@@ -48,6 +48,14 @@
   height: 200px;
   border-radius: 10px;
   object-fit: cover;
+  flex-shrink: 0;
+}
+
+.spot-img-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
 @media (max-width: 576px) {

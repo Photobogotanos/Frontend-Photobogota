@@ -36,6 +36,20 @@
   object-fit: cover;
 }
 
+.lugar-imagen-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .lugar-info-container {
   max-width: 900px;
   margin: -30px auto 0;

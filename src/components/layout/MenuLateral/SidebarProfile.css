@@ -28,6 +28,7 @@
   margin-right: 14px;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(128, 111, 190, 0.3);
+  object-fit: cover;
 }
 
 .profile-info {

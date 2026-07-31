@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Select from "react-select";
 import './AdminLogsViewer.css';
 import {
     FaFileAlt, FaDownload, FaSync, FaSearch,
@@ -61,6 +62,26 @@ const AdminLogsViewer = () => {
         INFO:  { icon: <FaInfoCircle />,          color: '#3b82f6', bg: '#dbeafe', label: 'Info' },
         DEBUG: { icon: <FaBug />,                 color: '#8b5cf6', bg: '#ede9fe', label: 'Debug' }
     };
+
+    const opcionesLines = [
+        { value: 50, label: '50 líneas' },
+        { value: 100, label: '100 líneas' },
+        { value: 200, label: '200 líneas' },
+        { value: 500, label: '500 líneas' },
+    ];
+
+    const opcionesNivel = [
+        { value: 'todos', label: 'Todos los niveles' },
+        { value: 'ERROR', label: 'ERROR' },
+        { value: 'WARN', label: 'WARN' },
+        { value: 'INFO', label: 'INFO' },
+        { value: 'DEBUG', label: 'DEBUG' },
+    ];
+
+    const opcionesArchivo = archivos.map((arc) => ({
+        value: arc.nombre,
+        label: `${arc.nombre} (${(arc.tamaño / 1024).toFixed(1)} KB)`,
+    }));
 
     // ── Cargar archivos disponibles al montar ──────────────────────────────────
     useEffect(() => {
@@ -268,31 +289,28 @@ const AdminLogsViewer = () => {
                 <div className="controls-row">
                     <div className="file-selector">
                         <label>Archivo:</label>
-                        <select
-                            value={filtros.archivo}
-                            onChange={(e) => setFiltros({ ...filtros, archivo: e.target.value })}
-                            disabled={cargando}
-                        >
-                            {archivos.map(arc => (
-                                <option key={arc.nombre} value={arc.nombre}>
-                                    {arc.nombre} ({(arc.tamaño / 1024).toFixed(1)} KB)
-                                </option>
-                            ))}
-                        </select>
+                        <Select
+                            value={opcionesArchivo.find((o) => o.value === filtros.archivo) || null}
+                            onChange={(opcion) =>
+                                setFiltros({ ...filtros, archivo: opcion ? opcion.value : '' })
+                            }
+                            isDisabled={cargando}
+                            classNamePrefix="spot-select"
+                            options={opcionesArchivo}
+                        />
                     </div>
 
                     <div className="lines-selector">
                         <label>Líneas:</label>
-                        <select
-                            value={filtros.lines}
-                            onChange={(e) => setFiltros({ ...filtros, lines: parseInt(e.target.value) })}
-                            disabled={cargando}
-                        >
-                            <option value={50}>50 líneas</option>
-                            <option value={100}>100 líneas</option>
-                            <option value={200}>200 líneas</option>
-                            <option value={500}>500 líneas</option>
-                        </select>
+                        <Select
+                            value={opcionesLines.find((o) => o.value === filtros.lines) || null}
+                            onChange={(opcion) =>
+                                setFiltros({ ...filtros, lines: opcion ? opcion.value : 100 })
+                            }
+                            isDisabled={cargando}
+                            classNamePrefix="spot-select"
+                            options={opcionesLines}
+                        />
                     </div>
 
                     <label className="errors-only-checkbox">
@@ -325,16 +343,14 @@ const AdminLogsViewer = () => {
                     </div>
 
                     <div className="level-filter">
-                        <select
-                            value={filtros.nivel}
-                            onChange={(e) => setFiltros({ ...filtros, nivel: e.target.value })}
-                        >
-                            <option value="todos">Todos los niveles</option>
-                            <option value="ERROR">ERROR</option>
-                            <option value="WARN">WARN</option>
-                            <option value="INFO">INFO</option>
-                            <option value="DEBUG">DEBUG</option>
-                        </select>
+                        <Select
+                            value={opcionesNivel.find((o) => o.value === filtros.nivel) || null}
+                            onChange={(opcion) =>
+                                setFiltros({ ...filtros, nivel: opcion ? opcion.value : 'todos' })
+                            }
+                            classNamePrefix="spot-select"
+                            options={opcionesNivel}
+                        />
                     </div>
 
                     <div className="logger-filter">

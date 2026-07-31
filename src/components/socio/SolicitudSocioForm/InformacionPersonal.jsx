@@ -133,8 +133,7 @@ const InformacionPersonal = ({ formData, handleChange, localidadOptions}) => {
           })
         }
         placeholder="Seleccione una localidad"
-        classNamePrefix="react-select"
-        className="react-select-container-solicitud"
+        classNamePrefix="spot-select"
         />
       </Form.Group>
     </>

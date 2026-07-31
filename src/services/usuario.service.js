@@ -12,6 +12,7 @@ import {
   postCancelarEliminacionCuenta,
   getEstadoEliminacionCuenta,
 } from "@/api/usuarioApi";
+import { getSpots } from "@/api/spotApi";
 import {
   registrarUsuarioDemo,
   USUARIOS_DEMO,
@@ -20,6 +21,55 @@ import {
 import { SPOTS } from "@/mocks/spots.mock";
 import { obtenerEstadoServidor } from "@/utils/serverStatus";
 import { guardarTokens, guardarSesion } from "@/utils/sessionHelper";
+
+/**
+ * Compara el nombre de usuario del creador de un spot contra el
+ * nombreUsuario objetivo, sin importar bajo qué campo lo exponga el backend.
+ * Cubre las variantes vistas en el contrato y en el repo (case-insensitive).
+ */
+const esCreadorDelSpot = (spot, nombreUsuario) => {
+  if (!spot || !nombreUsuario) return false;
+  const objetivo = nombreUsuario.toLowerCase();
+  const candidatos = [
+    spot.creador?.nombreUsuario,
+    spot.creadorUsername,
+    spot.nombreUsuarioCreador,
+    spot.usernameCreador,
+    spot.creadorId,
+  ];
+  return candidatos.some(
+    (c) => typeof c === "string" && c.toLowerCase() === objetivo,
+  );
+};
+
+/**
+ * Formatea una fecha (ISO u otro formato reconocible) a algo legible.
+ * Si no se puede parsear, retorna el valor original tal cual.
+ */
+const formatearFecha = (fecha) => {
+  if (!fecha) return "";
+  const parsed = new Date(fecha);
+  if (Number.isNaN(parsed.getTime())) return fecha;
+  return parsed.toLocaleDateString("es-CO", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+/**
+ * Normaliza una reseña del backend (o de spots.resenas en mocks) al shape
+ * que espera ReviewCard: title, text, placeId, rating, likes, date.
+ */
+const normalizarResena = (resena) => ({
+  id: resena?.id,
+  placeId: resena?.spotId ?? resena?.placeId,
+  title: resena?.tituloSpot || resena?.title || resena?.nombreSpot || "",
+  text: resena?.texto || resena?.text || resena?.comentario || "",
+  rating: resena?.rating ?? 0,
+  likes: resena?.likes ?? 0,
+  date: formatearFecha(resena?.fechaCreacion || resena?.fecha || resena?.date),
+});
 
 const obtenerPerfilDemo = (nombreUsuario = "demo_user") => {
   const usuarioDemo = USUARIOS_DEMO.find(
@@ -181,9 +231,20 @@ export const registrarUsuario = async (datos) => {
 export const obtenerPerfil = async (nombreUsuario) => {
   try {
     const response = await getPerfilUsuario(nombreUsuario);
+    const data = response.data || {};
+
+    const datosNormalizados = {
+      ...data,
+      nombreUsuario: data.nombreUsuario || nombreUsuario,
+      rol: (data.rol || data.tipoUsuario || "MIEMBRO").toUpperCase(),
+      totalSpots: data.totalSpots ?? 0,
+      totalResenas: data.totalResenas ?? 0,
+      totalGuardados: data.totalGuardados ?? 0,
+    };
+
     return {
       exitoso: true,
-      datos: response.data,
+      datos: datosNormalizados,
       mensaje: "Perfil obtenido exitosamente",
       esMock: false,
     };
@@ -282,7 +343,39 @@ export const obtenerSpotsUsuario = async (nombreUsuario) => {
       esMock: false,
     };
   } catch (error) {
+    const status = error.response?.status;
+    const es404o500 = status === 404 || status === 500;
     const isNetworkError = !error.response;
+
+    // El endpoint dedicado falló (404/500): antes de rendirnos a los mocks,
+    // intentamos con el listado general de spots y filtramos por creador.
+    // Así nunca dejamos la UI sin datos si /spots sí trae spots del usuario.
+    if (es404o500) {
+      try {
+        const responseGeneral = await getSpots();
+        const spotsDelUsuario = (responseGeneral.data || []).filter((spot) =>
+          esCreadorDelSpot(spot, nombreUsuario),
+        );
+        return {
+          exitoso: true,
+          datos: spotsDelUsuario,
+          mensaje: "Spots del usuario obtenidos exitosamente",
+          esMock: false,
+        };
+      } catch {
+        // Tampoco funcionó el listado general: caemos a mocks más abajo.
+      }
+
+      const mockSpots = SPOTS.filter((spot) =>
+        esCreadorDelSpot(spot, nombreUsuario),
+      );
+      return {
+        exitoso: true,
+        datos: mockSpots,
+        mensaje: "Mostrando datos de demostración",
+        esMock: true,
+      };
+    }
 
     if (!isNetworkError) {
       let mensaje = "Error al obtener los spots del usuario";
@@ -294,8 +387,8 @@ export const obtenerSpotsUsuario = async (nombreUsuario) => {
       return { exitoso: false, datos: [], mensaje, esMock: false };
     }
 
-    const mockSpots = SPOTS.filter(
-      (spot) => spot.creadorId === nombreUsuario,
+    const mockSpots = SPOTS.filter((spot) =>
+      esCreadorDelSpot(spot, nombreUsuario),
     );
 
     return {
@@ -312,7 +405,7 @@ export const obtenerResenasUsuario = async (nombreUsuario) => {
     const response = await getResenasUsuario(nombreUsuario);
     return {
       exitoso: true,
-      datos: response.data || [],
+      datos: (response.data || []).map(normalizarResena),
       mensaje: "Reseñas del usuario obtenidas exitosamente",
       esMock: false,
     };
@@ -329,20 +422,22 @@ export const obtenerResenasUsuario = async (nombreUsuario) => {
       return { exitoso: false, datos: [], mensaje, esMock: false };
     }
 
-    const spotsUsuario = SPOTS.filter(
-      (spot) => spot.creadorId === nombreUsuario,
+    const spotsUsuario = SPOTS.filter((spot) =>
+      esCreadorDelSpot(spot, nombreUsuario),
     );
 
     const resenas = spotsUsuario.flatMap((spot) =>
-      (spot.resenas || []).map((resena) => ({
-        id: resena.id,
-        spotId: spot.id,
-        tituloSpot: spot.nombre,
-        rating: resena.rating,
-        texto: resena.comentario,
-        likes: 0,
-        fechaCreacion: resena.fecha,
-      })),
+      (spot.resenas || []).map((resena) =>
+        normalizarResena({
+          id: resena.id,
+          spotId: spot.id,
+          tituloSpot: spot.nombre,
+          rating: resena.rating,
+          texto: resena.comentario,
+          likes: 0,
+          fechaCreacion: resena.fecha,
+        }),
+      ),
     );
 
     return {
@@ -364,6 +459,18 @@ export const obtenerSpotsGuardados = async () => {
       esMock: false,
     };
   } catch (error) {
+    const status = error.response?.status;
+    const es404o500 = status === 404 || status === 500;
+
+    if (es404o500) {
+      return {
+        exitoso: true,
+        datos: [],
+        mensaje: "Aún no tienes lugares guardados",
+        esMock: false,
+      };
+    }
+
     const isNetworkError = !error.response;
 
     if (!isNetworkError) {

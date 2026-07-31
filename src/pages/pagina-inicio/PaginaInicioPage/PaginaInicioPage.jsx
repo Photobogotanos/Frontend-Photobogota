@@ -16,7 +16,7 @@ function PaginaInicioPage() {
   }, [navegar]);
 
   return (
-    <Container fluid className="p-0 mt-5">
+    <Container fluid className="p-0 mt-0">
       <div className="pagina-inicio-page">
         <PaginaInicioContent></PaginaInicioContent>
       </div>

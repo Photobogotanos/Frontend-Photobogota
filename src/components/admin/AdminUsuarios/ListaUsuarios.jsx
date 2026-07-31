@@ -224,8 +224,7 @@ const ListaUsuarios = () => {
             value={filtros.rol}
             onChange={(selected) => setFiltros({ ...filtros, rol: selected })}
             placeholder="Rol"
-            className="react-select-container"
-            classNamePrefix="react-select"
+            classNamePrefix="spot-select"
             isClearable
           />
 
@@ -236,8 +235,7 @@ const ListaUsuarios = () => {
               setFiltros({ ...filtros, estado: selected })
             }
             placeholder="Estado"
-            className="react-select-container"
-            classNamePrefix="react-select"
+            classNamePrefix="spot-select"
             isClearable
           />
         </div>

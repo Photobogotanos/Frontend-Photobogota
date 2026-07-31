@@ -1,19 +1,30 @@
 // ============================================================
 // COMPONENTE HIJO: FotoPerfil
-// Su única responsabilidad: mostrar la foto y sus botones.
-// No sabe nada del formulario, no tiene estado propio.
-// Todo lo que necesita lo recibe por props del padre.
+// Muestra foto real o inicial de nombreUsuario si no hay / falla.
 // ============================================================
 
 import { FaUpload, FaTrash } from "react-icons/fa";
 import { IoMdPhotos } from "react-icons/io";
 import { Form } from "react-bootstrap";
+import UserAvatar from "@/components/common/UserAvatar/UserAvatar";
 
-// Recibe 3 props:
-//   fotoPerfil    → string con la ruta o base64 de la imagen actual
-//   onFotoChange  → función del padre que se llama al elegir archivo
-//   onEliminarFoto → función del padre que se llama al presionar Eliminar
-export default function FotoPerfil({ fotoPerfil, onFotoChange, onEliminarFoto }) {
+const esFotoReal = (url) => {
+  if (!url || typeof url !== "string") return false;
+  const u = url.trim();
+  if (!u) return false;
+  if (u.includes("default-avatar")) return false;
+  return true;
+};
+
+export default function FotoPerfil({
+  fotoPerfil,
+  onFotoChange,
+  onEliminarFoto,
+  nombreUsuario = "",
+  nombre = "",
+}) {
+  const fotoSrc = esFotoReal(fotoPerfil) ? fotoPerfil : null;
+
   return (
     <Form.Group className="mb-4">
       <Form.Label className="form-label-custom">
@@ -23,17 +34,19 @@ export default function FotoPerfil({ fotoPerfil, onFotoChange, onEliminarFoto })
 
       <div className="foto-perfil-container">
         <div className="foto-preview">
-
-          {/* Muestra la foto actual. El valor viene del padre via prop */}
-          <img src={fotoPerfil} alt="Foto perfil" className="foto-perfil-img" />
+          <UserAvatar
+            src={fotoSrc}
+            nombreUsuario={nombreUsuario}
+            nombre={nombre}
+            alt="Foto perfil"
+            className="foto-perfil-img"
+          />
 
           <div className="foto-actions">
-            {/* Este label abre el input file al hacer click */}
             <label htmlFor="upload-foto" className="btn-foto-action upload">
               <FaUpload className="me-1" /> Cambiar
             </label>
 
-            {/* Al elegir un archivo, llama a onFotoChange que viene del padre */}
             <input
               type="file"
               id="upload-foto"
@@ -42,11 +55,11 @@ export default function FotoPerfil({ fotoPerfil, onFotoChange, onEliminarFoto })
               className="d-none"
             />
 
-            {/* Al hacer click, llama a onEliminarFoto que viene del padre */}
             <button
               type="button"
               className="btn-foto-action delete"
               onClick={onEliminarFoto}
+              disabled={!fotoSrc}
             >
               <FaTrash className="me-1" /> Eliminar
             </button>

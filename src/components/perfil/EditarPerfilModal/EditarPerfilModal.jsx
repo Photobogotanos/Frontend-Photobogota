@@ -37,7 +37,7 @@ function PerfilFormulario({
   });
 
   const [fotoPerfil, setFotoPerfil] = useState(
-    perfilData?.fotoPerfil || "/images/user-pfp/default-avatar.jpg",
+    perfilData?.fotoPerfil || null,
   );
   const [verActual, setVerActual] = useState(false);
   const [verNueva, setVerNueva] = useState(false);
@@ -72,14 +72,12 @@ function PerfilFormulario({
       setFotoPerfil(resultado.url);
     } else {
       Swal.fire({ icon: "error", title: "Error", text: resultado.mensaje });
-      setFotoPerfil(
-        perfilData?.fotoPerfil || "/images/user-pfp/default-avatar.jpg",
-      );
+      setFotoPerfil(perfilData?.fotoPerfil || null);
     }
   };
 
   const handleEliminarFoto = () => {
-    setFotoPerfil("/images/user-pfp/default-avatar.jpg");
+    setFotoPerfil(null);
   };
 
   const passwordsCoinciden =
@@ -113,7 +111,10 @@ function PerfilFormulario({
       nombresCompletos: formData.nombresCompletos,
       telefono: formData.telefono,
       biografia: formData.biografia,
-      fotoPerfil: fotoPerfil,
+      // null = sin foto (el backend / UI muestran la inicial)
+      fotoPerfil: fotoPerfil && !String(fotoPerfil).includes("default-avatar")
+        ? fotoPerfil
+        : null,
     };
 
     try {
@@ -260,6 +261,8 @@ function PerfilFormulario({
                 fotoPerfil={fotoPerfil}
                 onFotoChange={handleFotoChange}
                 onEliminarFoto={handleEliminarFoto}
+                nombreUsuario={formData.nombreUsuario}
+                nombre={formData.nombresCompletos}
               />
               <div className="hero-info">
                 <p className="hero-name">
@@ -270,9 +273,13 @@ function PerfilFormulario({
                 </p>
                 <div className="hero-pills">
                   <span className="hpill">{rolMostrar}</span>
-                  <span className="hpill accent">
-                    Nivel {perfilData?.nivel || 1}
-                  </span>
+                  {rolMostrar === "MIEMBRO" &&
+                    perfilData?.nivel !== null &&
+                    perfilData?.nivel !== undefined && (
+                      <span className="hpill accent">
+                        Nivel {perfilData.nivel}
+                      </span>
+                    )}
                 </div>
               </div>
             </div>

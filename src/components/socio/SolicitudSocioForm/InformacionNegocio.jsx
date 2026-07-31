@@ -89,8 +89,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
           })
         }
         placeholder="Seleccione una categoria"
-        classNamePrefix="react-select"
-        className="react-select-container-solicitud"
+        classNamePrefix="spot-select"
         />
       </Form.Group>
 
