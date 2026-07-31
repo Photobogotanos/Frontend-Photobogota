@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import "./ReviewCard.css";
 
 export default function ReviewCard({ title, rating, text, date, placeId, canRespond = false }) {
+  const navigate = useNavigate();
   const [mostrarRespuesta, setMostrarRespuesta] = useState(false);
   const [respuesta, setRespuesta] = useState("");
   // Generar array de 5 estrellas con keys fijas basadas en su posición
@@ -17,10 +20,25 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
     );
   }
 
-  // URL del spot (ajusta según tu routing)
-  const spotUrl = placeId ? `/spot/${placeId}` : "#";
+  const irAlSpot = () => {
+    if (!placeId) {
+      toast("No se pudo encontrar el spot asociado", { icon: "ℹ" });
+      return;
+    }
+    navigate(`/spot/${placeId}`);
+  };
 
-  const handleResponder = () => {
+  const handleCardClick = () => {
+    irAlSpot();
+  };
+
+  const handleTitleClick = (e) => {
+    e.stopPropagation();
+    irAlSpot();
+  };
+
+  const handleResponder = (e) => {
+    e.stopPropagation();
     // Aquí iría la lógica para enviar la respuesta al backend
     console.log("Respuesta enviada:", respuesta);
     setMostrarRespuesta(false);
@@ -28,12 +46,34 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
     alert("¡Tu respuesta ha sido enviada!");
   };
 
+  const handleVerSpot = (e) => {
+    e.stopPropagation();
+    irAlSpot();
+  };
+
   return (
-    <div className="review-card">
+    <div
+      className="review-card"
+      role="button"
+      tabIndex={0}
+      onClick={handleCardClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleCardClick();
+        }
+      }}
+    >
       {/* Header */}
       <div className="review-header">
         <div className="review-title-container">
-          <h3 className="review-title">{title}</h3>
+          <h3
+            className="review-title"
+            onClick={handleTitleClick}
+            style={{ cursor: "pointer" }}
+          >
+            {title}
+          </h3>
           <div className="review-meta">
             <span className="review-date">{date}</span>
             <div className="review-rating">
@@ -50,9 +90,12 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
       {canRespond && (
         <div className="review-respuesta-container">
           {!mostrarRespuesta ? (
-            <button 
+            <button
               className="btn-responder-resena"
-              onClick={() => setMostrarRespuesta(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setMostrarRespuesta(true);
+              }}
             >
               Responder esta reseña
             </button>
@@ -66,9 +109,10 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
                 rows={3}
               />
               <div className="respuesta-actions">
-                <button 
+                <button
                   className="btn-cancelar-respuesta"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setMostrarRespuesta(false);
                     setRespuesta("");
                   }}
@@ -90,10 +134,14 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
 
       {/* Enlace "ver spot" */}
       <div className="review-actions">
-        <a href={spotUrl} className="ver-spot-link">
+        <button
+          type="button"
+          className="ver-spot-link"
+          onClick={handleVerSpot}
+        >
           <span className="ver-spot-text">Ver spot</span>
           <span className="arrow-icon">→</span>
-        </a>
+        </button>
       </div>
     </div>
   );
