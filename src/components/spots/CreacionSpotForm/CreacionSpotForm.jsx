@@ -363,15 +363,6 @@ export default function CrearSpot() {
       return false;
     }
 
-    if (!esSocio && !state.tipsFoto.trim()) {
-      Swal.fire({
-        icon: "warning",
-        title: "Tips de fotografía requeridos",
-        text: "Por favor ingresa los tips de fotografía.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
 
     if (state.imagenes.length === 0) {
       Swal.fire({

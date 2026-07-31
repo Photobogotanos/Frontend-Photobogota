@@ -154,21 +154,20 @@ export default function SpotInformacionBasica({
 
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        onLatitudChange(coords.latitude);
-        onLongitudChange(coords.longitude);
+        const lat = coords.latitude;
+        const lng = coords.longitude;
+        onLatitudChange(lat);
+        onLongitudChange(lng);
 
-        Swal.fire({
-          icon: "success",
-          title: "Ubicación obtenida",
-          html: `
-            <small>Lat: ${coords.latitude.toFixed(6)} · Lng: ${coords.longitude.toFixed(6)}</small>
-            <br/><small style="color:#666">Precisión: ±${Math.round(coords.accuracy)} m</small>
-          `,
-          timer: 2500,
-          showConfirmButton: false,
-        });
-        setBuscando(false);
-      },
+    // reverse geocode y setear dirección
+    obtenerDireccionDesdeCoordenadas(lat, lng).then((dir) => {
+      if (dir) onDireccionChange(dir);
+      else onDireccionChange(`Ubicación: ${lat.toFixed(5)}, ${lng.toFixed(5)}`);
+    });
+
+      Swal.fire({ /* igual que antes */ });
+      setBuscando(false);
+    },
       (error) => {
         setBuscando(false);
 
@@ -211,18 +210,29 @@ export default function SpotInformacionBasica({
   // ─────────────────────────────────────────────
   // 3. Confirmar pin del mapa
   // ─────────────────────────────────────────────
-  const handleConfirmPin = (lat, lng) => {
-    onLatitudChange(lat);
-    onLongitudChange(lng);
+const handleConfirmPin = async (lat, lng) => {
+  onLatitudChange(lat);
+  onLongitudChange(lng);
 
-    Swal.fire({
-      icon: "success",
-      title: "Ubicación seleccionada",
-      html: `<small>Lat: ${lat.toFixed(6)} · Lng: ${lng.toFixed(6)}</small>`,
-      timer: 2200,
-      showConfirmButton: false,
-    });
-  };
+  setBuscando(true);
+  const direccionObtenida = await obtenerDireccionDesdeCoordenadas(lat, lng);
+  setBuscando(false);
+
+  if (direccionObtenida) {
+    onDireccionChange(direccionObtenida);
+  } else {
+    // Fallback si Nominatim falla: algo legible para pasar la validación
+    onDireccionChange(`Ubicación: ${lat.toFixed(5)}, ${lng.toFixed(5)}`);
+  }
+
+  Swal.fire({
+    icon: "success",
+    title: "Ubicación seleccionada",
+    html: `<small>Lat: ${lat.toFixed(6)} · Lng: ${lng.toFixed(6)}</small>`,
+    timer: 2200,
+    showConfirmButton: false,
+  });
+};
 
   // Ejecutar la acción según el método seleccionado
   const ejecutarMetodo = () => {
@@ -230,6 +240,23 @@ export default function SpotInformacionBasica({
     else if (metodo === "gps") usarUbicacionActual();
     else if (metodo === "mapa") setShowMapPicker(true);
   };
+
+  const obtenerDireccionDesdeCoordenadas = async (lat, lng) => {
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`;
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Photobogota/1.0 (photobogota123@gmail.com)",
+      },
+    });
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data?.display_name || null;
+  } catch (error) {
+    console.error("Error reverse geocoding:", error);
+    return null;
+  }
+};
 
   const initialMapPosition =
     latitud && longitud ? [latitud, longitud] : [4.6529, -74.075];
@@ -260,16 +287,20 @@ export default function SpotInformacionBasica({
           </label>
 
           {/* Campo de dirección (solo visible cuando el método es "dirección escrita") */}
-          {metodo === "direccion" && (
+          {(metodo === "direccion" || (latitud && longitud)) && (
             <input
               id="ubicacion-lugar"
               type="text"
               className="spot-input mb-2"
-              placeholder="Ej: Carrera 7 # 32-16, La Candelaria"
+              placeholder={
+                metodo === "direccion"
+                  ? "Ej: Carrera 7 # 32-16, La Candelaria"
+                  : "Dirección detectada (puedes editarla)"
+              }
               value={direccion}
               onChange={(e) => onDireccionChange(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
+                if (e.key === "Enter" && metodo === "direccion") {
                   e.preventDefault();
                   obtenerCoordenadasDesdeDireccion();
                 }
