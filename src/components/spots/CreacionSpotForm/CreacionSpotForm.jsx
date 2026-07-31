@@ -21,6 +21,7 @@ import SpotDescripcion from "./SpotDescripcion";
 import SpotBotones from "./SpotBotones";
 import { crearSpot } from "@/services/spot.service";
 import { subirImagenesSpot } from "@/services/imagen.service";
+import { useAuth } from "@/context/AuthContext";
 
 // ============================================================
 // REDUCER
@@ -262,6 +263,8 @@ function ImageUploader({
 export default function CrearSpot() {
   const [state, dispatch] = useReducer(spotFormReducer, initialState);
   const navigate = useNavigate();
+  const { usuario } = useAuth();
+  const esSocio = usuario?.rol === "SOCIO";
 
   // ============================================================
   // HANDLERS DE IMÁGENES
@@ -350,6 +353,26 @@ export default function CrearSpot() {
       return false;
     }
 
+    if (!esSocio && !state.recomendacion.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Recomendación requerida",
+        text: "Por favor ingresa una recomendación del lugar.",
+        confirmButtonColor: "#806fbe",
+      });
+      return false;
+    }
+
+    if (!esSocio && !state.tipsFoto.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Tips de fotografía requeridos",
+        text: "Por favor ingresa los tips de fotografía.",
+        confirmButtonColor: "#806fbe",
+      });
+      return false;
+    }
+
     if (state.imagenes.length === 0) {
       Swal.fire({
         icon: "warning",
@@ -414,10 +437,13 @@ export default function CrearSpot() {
         categoria: state.categoria?.value || state.categoria,
         localidad: state.localidad?.value || state.localidad,
         descripcion: state.descripcionImagen,
-        recomendacion: state.recomendacion || "",
-        tipsFoto: state.tipsFoto || "",
         imagenes: resultadoImagenes.urls,
       };
+
+      if (!esSocio) {
+        spotParaEnviar.recomendacion = state.recomendacion || "";
+        spotParaEnviar.tipsFoto = state.tipsFoto || "";
+      }
 
       const resultado = await crearSpot(spotParaEnviar);
 
@@ -472,10 +498,13 @@ export default function CrearSpot() {
     categoria: state.categoria?.label || "Categoría",
     localidad: state.localidad?.label || null,
     descripcion: state.descripcionImagen || "Descripción del lugar...",
-    recomendacion: state.recomendacion || null,
-    tipsFoto: state.tipsFoto || null,
     resenas: [],
   };
+
+  if (!esSocio) {
+    spotData.recomendacion = state.recomendacion || null;
+    spotData.tipsFoto = state.tipsFoto || null;
+  }
 
   // ============================================================
   // RENDER
@@ -483,7 +512,7 @@ export default function CrearSpot() {
   return (
     <div className="pb-5">
       <div className="formulario-contenedor">
-        <HeaderSpot />
+        <HeaderSpot esSocio={esSocio} />
 
         <Row className="g-4">
           <Col xs={12}>
@@ -549,6 +578,7 @@ export default function CrearSpot() {
               onTipsFotoChange={(val) =>
                 dispatch({ type: "SET_TIPS_FOTO", payload: val })
               }
+              esSocio={esSocio}
             />
           </Col>
         </Row>

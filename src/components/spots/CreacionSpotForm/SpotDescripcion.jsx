@@ -27,7 +27,8 @@ export default function SpotDescripcion({
   tipsFoto,
   onDescripcionChange,
   onRecomendacionChange,
-  onTipsFotoChange
+  onTipsFotoChange,
+  esSocio = false,
 }) {
   return (
     <>
@@ -41,26 +42,30 @@ export default function SpotDescripcion({
         placeholder="Describe lo que se ve en la foto"
       />
 
-      <TextAreaField
-        label="¿Por qué recomiendas este lugar?"
-        htmlFor="recomendacion-lugar"
-        required
-        icon={<FaHeart />}
-        value={recomendacion}
-        onChange={onRecomendacionChange}
-        rows={3}
-        placeholder="Cuéntanos tu experiencia"
-      />
+      {!esSocio && (
+        <TextAreaField
+          label="¿Por qué recomiendas este lugar?"
+          htmlFor="recomendacion-lugar"
+          required
+          icon={<FaHeart />}
+          value={recomendacion}
+          onChange={onRecomendacionChange}
+          rows={3}
+          placeholder="Cuéntanos tu experiencia"
+        />
+      )}
 
-      <TextAreaField
-        label="Tips de fotografía (opcional)"
-        htmlFor="tips-foto"
-        icon={<FaInfoCircle />}
-        value={tipsFoto}
-        onChange={onTipsFotoChange}
-        rows={2}
-        placeholder="Hora ideal, lente, ángulo, etc."
-      />
+      {!esSocio && (
+        <TextAreaField
+          label="Tips de fotografía (opcional)"
+          htmlFor="tips-foto"
+          icon={<FaInfoCircle />}
+          value={tipsFoto}
+          onChange={onTipsFotoChange}
+          rows={2}
+          placeholder="Hora ideal, lente, ángulo, etc."
+        />
+      )}
     </>
   );
 }
