@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { FaTools, FaTrash, FaPlus, FaSync } from "react-icons/fa";
+import {
+  FaTools,
+  FaTrash,
+  FaPlus,
+  FaSync,
+  FaCalendarAlt,
+} from "react-icons/fa";
 import Swal from "sweetalert2";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
@@ -41,7 +47,10 @@ const formatearParaMostrar = (iso) => {
 
 const estaActivoAhora = (m) => {
   const ahora = Date.now();
-  return new Date(m.fechaInicio).getTime() <= ahora && ahora <= new Date(m.fechaFin).getTime();
+  return (
+    new Date(m.fechaInicio).getTime() <= ahora &&
+    ahora <= new Date(m.fechaFin).getTime()
+  );
 };
 
 export default function MantenimientoAdmin() {
@@ -64,7 +73,9 @@ export default function MantenimientoAdmin() {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: resultado.mensaje || "No se pudieron cargar los mantenimientos programados",
+        text:
+          resultado.mensaje ||
+          "No se pudieron cargar los mantenimientos programados",
       });
     }
     setCargando(false);
@@ -182,7 +193,11 @@ export default function MantenimientoAdmin() {
 
     const resultado = await cancelarMantenimiento(mantenimiento.id);
     if (resultado.exitoso) {
-      Swal.fire({ icon: "success", title: "Cancelado", text: "El mantenimiento fue cancelado" });
+      Swal.fire({
+        icon: "success",
+        title: "Cancelado",
+        text: "El mantenimiento fue cancelado",
+      });
       cargarProgramados();
     } else {
       Swal.fire({ icon: "error", title: "Error", text: resultado.mensaje });
@@ -192,10 +207,19 @@ export default function MantenimientoAdmin() {
   return (
     <div className="mantenimiento-admin">
       <div className="mantenimiento-admin-header">
-        <h2>
-          <FaTools /> Mantenimiento del sistema
-        </h2>
-        <button className="btn-refrescar" onClick={cargarProgramados} disabled={cargando}>
+        <div className="mantenimiento-header-left">
+          <span className="mantenimiento-subtitle">Administración</span>
+          <h2>
+            <FaTools /> Mantenimiento del sistema
+          </h2>
+          <div className="mantenimiento-line" />
+        </div>
+
+        <button
+          className="btn-refrescar"
+          onClick={cargarProgramados}
+          disabled={cargando}
+        >
           <FaSync className={cargando ? "girando" : ""} /> Refrescar
         </button>
       </div>
@@ -203,21 +227,36 @@ export default function MantenimientoAdmin() {
       <form className="mantenimiento-form" onSubmit={handleSubmit}>
         <div className="form-row">
           <div className="form-group">
-            <label>Inicio</label>
-            <input ref={inicioRef} className="form-control" placeholder="Selecciona fecha y hora" readOnly />
+            <label className="mantenimiento-label">
+              <FaCalendarAlt /> Inicio
+            </label>
+            <input
+              ref={inicioRef}
+              className="form-control rounded-pill input-without-focus"
+              placeholder="Selecciona fecha y hora"
+              readOnly
+            />
           </div>
+
           <div className="form-group">
-            <label>Fin</label>
-            <input ref={finRef} className="form-control" placeholder="Selecciona fecha y hora" readOnly />
+            <label className="mantenimiento-label">
+              <FaCalendarAlt /> Fin
+            </label>
+            <input
+              ref={finRef}
+              className="form-control rounded-pill input-without-focus"
+              placeholder="Selecciona fecha y hora"
+              readOnly
+            />
           </div>
         </div>
 
         <div className="form-group">
-          <label>Motivo</label>
+          <label className="mantenimiento-label">Motivo</label>
           <input
             type="text"
             name="motivo"
-            className="form-control"
+            className="form-control rounded-pill input-without-focus"
             placeholder="Ej: Actualización de base de datos"
             value={form.motivo}
             onChange={handleChange}
@@ -225,11 +264,13 @@ export default function MantenimientoAdmin() {
         </div>
 
         <div className="form-group">
-          <label>Mensaje personalizado (opcional)</label>
+          <label className="mantenimiento-label">
+            Mensaje personalizado (opcional)
+          </label>
           <textarea
             name="mensajePersonalizado"
-            className="form-control"
-            rows={2}
+            className="form-control input-without-focus"
+            rows={3}
             placeholder="Si lo dejas vacío, se genera un mensaje automático con las fechas y el motivo"
             value={form.mensajePersonalizado}
             onChange={handleChange}
@@ -237,16 +278,21 @@ export default function MantenimientoAdmin() {
         </div>
 
         <button type="submit" className="btn-programar" disabled={enviando}>
-          <FaPlus /> {enviando ? "Programando..." : "Programar y notificar a todos"}
+          <FaPlus />{" "}
+          {enviando ? "Programando..." : "Programar y notificar a todos"}
         </button>
       </form>
 
-      <h3 className="mantenimiento-admin-subtitulo">Mantenimientos programados</h3>
+      <h3 className="mantenimiento-admin-subtitulo">
+        Mantenimientos programados
+      </h3>
 
       {cargando ? (
         <SpinnerLoader texto="Cargando..." />
       ) : programados.length === 0 ? (
-        <p className="text-muted">No hay mantenimientos programados actualmente.</p>
+        <div className="mantenimiento-vacio">
+          <p>No hay mantenimientos programados actualmente.</p>
+        </div>
       ) : (
         <div className="tabla-mantenimientos-wrapper">
           <table className="tabla-mantenimientos">
@@ -265,9 +311,13 @@ export default function MantenimientoAdmin() {
                 <tr key={m.id}>
                   <td>
                     {estaActivoAhora(m) ? (
-                      <span className="badge-estado badge-activo">Activo ahora</span>
+                      <span className="badge-estado badge-activo">
+                        Activo ahora
+                      </span>
                     ) : (
-                      <span className="badge-estado badge-pendiente">Próximo</span>
+                      <span className="badge-estado badge-pendiente">
+                        Próximo
+                      </span>
                     )}
                   </td>
                   <td>{formatearParaMostrar(m.fechaInicio)}</td>

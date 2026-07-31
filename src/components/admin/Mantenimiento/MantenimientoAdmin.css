@@ -1,43 +1,84 @@
+/* MantenimientoAdmin.css - Estilo Premium */
+
 .mantenimiento-admin {
-  padding: 24px;
+  padding: 2rem 1rem;
   max-width: 1100px;
   margin: 0 auto;
+  min-height: 100vh;
+  background-color: var(--color-bg);
 }
 
+/* Header */
 .mantenimiento-admin-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  align-items: flex-start;
+  margin-bottom: 2rem;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 16px;
+}
+
+.mantenimiento-header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.mantenimiento-subtitle {
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 6px;
 }
 
 .mantenimiento-admin-header h2 {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--color-dark);
+  gap: 12px;
+  font-family: "Playfair Display", serif;
   font-weight: 700;
+  font-size: 2.2rem;
+  color: #0a0a0a;
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
+.mantenimiento-line {
+  height: 2px;
+  width: 70px;
+  background: linear-gradient(90deg, var(--color-primary), #a294d0);
+  margin-top: 10px;
+  border-radius: 2px;
+}
+
+/* Botón refrescar */
 .btn-refrescar {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   background: white;
-  border: 1px solid var(--border);
-  border-radius: var(--pill);
-  padding: 8px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  padding: 10px 20px;
   color: var(--color-dark);
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-.btn-refrescar:hover {
-  background: var(--color-bg);
+.btn-refrescar:hover:not(:disabled) {
+  background: #f8f5ff;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.btn-refrescar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .girando {
@@ -45,78 +86,130 @@
 }
 
 @keyframes girar {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
+/* Formulario */
 .mantenimiento-form {
   background: white;
   border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 24px;
-  margin-bottom: 32px;
+  border-radius: 24px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 10px 30px rgba(128, 111, 190, 0.1);
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 20px;
 }
 
 @media (max-width: 576px) {
   .form-row {
     grid-template-columns: 1fr;
   }
+  .mantenimiento-admin-header h2 {
+    font-size: 1.85rem;
+  }
+  .mantenimiento-form {
+    padding: 1.5rem;
+  }
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
   display: block;
   font-weight: 600;
-  color: var(--color-dark);
-  margin-bottom: 6px;
-  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
 }
 
+.form-group .form-control,
+.form-group input,
+.form-group textarea {
+  border-radius: 50px;
+  border: 1.5px solid #e0e0e0;
+  padding: 12px 18px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.form-group textarea {
+  border-radius: 16px;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-group .form-control:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem rgba(128, 111, 190, 0.15);
+  outline: none;
+}
+
+/* Botón principal */
 .btn-programar {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #5a4a9d 100%);
   color: white;
   border: none;
-  border-radius: var(--pill);
-  padding: 12px;
-  font-weight: 700;
+  border-radius: 50px;
+  padding: 14px 24px;
+  font-size: 1.05rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(128, 111, 190, 0.3);
+  margin-top: 8px;
 }
 
 .btn-programar:hover:not(:disabled) {
-  background: var(--color-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(128, 111, 190, 0.4);
+  background: linear-gradient(135deg, #6a58ac 0%, #4a3a8d 100%);
+}
+
+.btn-programar:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .btn-programar:disabled {
-  opacity: 0.6;
+  opacity: 0.65;
   cursor: not-allowed;
+  transform: none;
 }
 
+/* Subtítulo lista */
 .mantenimiento-admin-subtitulo {
   font-weight: 700;
+  font-size: 1.25rem;
   color: var(--color-dark);
-  margin-bottom: 16px;
+  margin-bottom: 1.25rem;
 }
 
+/* Tabla */
 .tabla-mantenimientos-wrapper {
   background: white;
   border: 1px solid var(--border);
   border-radius: 20px;
   overflow-x: auto;
+  box-shadow: 0 8px 25px rgba(128, 111, 190, 0.08);
 }
 
 .tabla-mantenimientos {
@@ -126,7 +219,7 @@
 
 .tabla-mantenimientos th,
 .tabla-mantenimientos td {
-  padding: 14px 16px;
+  padding: 16px 18px;
   text-align: left;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
@@ -134,18 +227,26 @@
 
 .tabla-mantenimientos th {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  background: #fafafa;
 }
 
 .tabla-mantenimientos tr:last-child td {
   border-bottom: none;
 }
 
+.tabla-mantenimientos tbody tr:hover {
+  background: #faf8ff;
+}
+
+/* Badges de estado */
 .badge-estado {
-  padding: 4px 12px;
-  border-radius: var(--pill);
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 50px;
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -160,16 +261,85 @@
   color: #2563eb;
 }
 
+/* Botón cancelar */
 .btn-cancelar-mantenimiento {
   background: #fee2e2;
   color: #ef4444;
   border: none;
-  border-radius: 10px;
-  padding: 8px 10px;
+  border-radius: 12px;
+  padding: 9px 12px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-cancelar-mantenimiento:hover {
   background: #fecaca;
+  transform: scale(1.05);
+}
+
+/* Estado vacío */
+.mantenimiento-vacio {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--muted);
+  background: white;
+  border-radius: 20px;
+  border: 1px dashed var(--border);
+}
+
+/* Labels al estilo del formulario de creación */
+.mantenimiento-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.mantenimiento-label svg {
+  color: var(--color-primary);
+  font-size: 1rem;
+}
+
+/* Inputs y Flatpickr */
+.mantenimiento-form .form-control,
+.mantenimiento-form input.form-control,
+.mantenimiento-form .flatpickr-input {
+  border-radius: 50px !important;
+  border: 1.5px solid #e0e0e0;
+  padding: 12px 18px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  background: white;
+}
+
+.mantenimiento-form textarea.form-control {
+  border-radius: 16px !important;
+}
+
+.mantenimiento-form .form-control:focus,
+.mantenimiento-form input.form-control:focus,
+.mantenimiento-form .flatpickr-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(128, 111, 190, 0.15) !important;
+  outline: none !important;
+}
+
+/* Evitar el estilo azul por defecto de Bootstrap/Flatpickr */
+.input-without-focus:focus {
+  box-shadow: none !important;
+  border-color: #d9d9d9 !important;
+  outline: none !important;
+}
+
+/* Mejorar el altInput que genera Flatpickr */
+.mantenimiento-form .flatpickr-input.form-control,
+.mantenimiento-form .flatpickr-alt-input {
+  border-radius: 50px !important;
 }
