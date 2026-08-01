@@ -9,7 +9,7 @@ export const getMantenimientosProgramados = () =>
 
 // Programar una ventana de mantenimiento — Admin
 export const postProgramarMantenimiento = (body) =>
-  clienteApi.post("/admin/mantenimiento", body);
+  clienteApi.post("/admin/mantenimiento", body, { timeout: 30000 });
 
 // Cancelar un mantenimiento programado — Admin
 export const deleteCancelarMantenimiento = (id) =>
