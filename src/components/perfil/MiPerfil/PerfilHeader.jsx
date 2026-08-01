@@ -88,13 +88,13 @@ const PerfilHeader = ({
         </div>
 
         <h2 className="perfil-nombre">
-          {perfilData.nombresCompletos || "Usuario"}
+          {perfilData?.nombresCompletos || "Usuario"}
         </h2>
         <p className="perfil-username">
-          @{perfilData.nombreUsuario || "usuario"}
+          @{perfilData?.nombreUsuario || "usuario"}
         </p>
         <p className="perfil-descripcion">
-          {perfilData.biografia || "Sin descripción"}
+          {perfilData?.biografia || "Sin descripción"}
         </p>
       </div>
 
@@ -102,6 +102,7 @@ const PerfilHeader = ({
         {esPerfilPropio ? (
           <>
             <button
+              type="button"
               className="btn-editar-perfil"
               onClick={() =>
                 dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: true })
@@ -110,16 +111,27 @@ const PerfilHeader = ({
               <FiEdit3 size={18} /> Editar perfil
             </button>
 
-        <button
-          type="button"
-          className="btn-notificaciones"
-          title="Configurar notificaciones"
-          onClick={() =>
-            dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: true })
-          }
-        >
-          <FiBell size={18} /> Notificaciones
-        </button>
+            <button
+              type="button"
+              className="btn-notificaciones"
+              title="Configurar notificaciones"
+              onClick={() =>
+                dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: true })
+              }
+            >
+              <FiBell size={18} /> Notificaciones
+            </button>
+          </>
+        ) : (
+          <button
+            type="button"
+            className="btn-reportar"
+            title="Reportar usuario"
+            onClick={onReportar}
+          >
+            <FiFlag size={18} /> Reportar
+          </button>
+        )}
       </div>
     </div>
   );
