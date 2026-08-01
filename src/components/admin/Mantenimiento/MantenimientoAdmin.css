@@ -308,8 +308,7 @@
 
 /* Inputs y Flatpickr */
 .mantenimiento-form .form-control,
-.mantenimiento-form input.form-control,
-.mantenimiento-form .flatpickr-input {
+.mantenimiento-form input.form-control {
   border-radius: 50px !important;
   border: 1.5px solid #e0e0e0;
   padding: 12px 18px;
@@ -324,8 +323,31 @@
 }
 
 .mantenimiento-form .form-control:focus,
-.mantenimiento-form input.form-control:focus,
-.mantenimiento-form .flatpickr-input:focus {
+.mantenimiento-form input.form-control:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(128, 111, 190, 0.15) !important;
+  outline: none !important;
+}
+
+/* Ocultar el input original de Flatpickr (el que usa dateFormat interno).
+   Con altInput: true, Flatpickr genera un segundo input visible (alt).
+   Si no se oculta el original, se ven dos campos de fecha apilados. */
+.mantenimiento-form input.flatpickr-input:not(.flatpickr-alt-input) {
+  display: none !important;
+}
+
+/* Estilos del input visible que genera Flatpickr (altInput) */
+.mantenimiento-form .flatpickr-alt-input {
+  border-radius: 50px !important;
+  border: 1.5px solid #e0e0e0;
+  padding: 12px 18px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  background: white;
+}
+
+.mantenimiento-form .flatpickr-alt-input:focus {
   border-color: var(--color-primary) !important;
   box-shadow: 0 0 0 0.2rem rgba(128, 111, 190, 0.15) !important;
   outline: none !important;
@@ -336,10 +358,4 @@
   box-shadow: none !important;
   border-color: #d9d9d9 !important;
   outline: none !important;
-}
-
-/* Mejorar el altInput que genera Flatpickr */
-.mantenimiento-form .flatpickr-input.form-control,
-.mantenimiento-form .flatpickr-alt-input {
-  border-radius: 50px !important;
 }
