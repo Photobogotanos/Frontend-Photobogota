@@ -87,23 +87,31 @@ export default function MantenimientoAdmin() {
 
   // Flatpickr con selección de fecha y hora, en español
   useEffect(() => {
-    const pickerInicio = flatpickr(inicioRef.current, {
+    // React StrictMode (dev) monta -> desmonta -> vuelve a montar los efectos.
+    // Si el input ya tiene una instancia de flatpickr colgada (de un montaje
+    // anterior que no llegó a limpiarse), la destruimos antes de crear otra.
+    // Sin esto, cada input terminaba con su altInput duplicado.
+    inicioRef.current?._flatpickr?.destroy();
+    finRef.current?._flatpickr?.destroy();
+
+    const configComun = {
       enableTime: true,
       time_24hr: true,
       dateFormat: FORMATO_FLATPICKR,
       altInput: true,
+      altInputClass:
+        "form-control rounded-pill input-without-focus flatpickr-alt-input",
       altFormat: "d/m/Y H:i",
       minDate: "today",
+    };
+
+    const pickerInicio = flatpickr(inicioRef.current, {
+      ...configComun,
       onChange: ([date]) => setFechaInicio(date || null),
     });
 
     const pickerFin = flatpickr(finRef.current, {
-      enableTime: true,
-      time_24hr: true,
-      dateFormat: FORMATO_FLATPICKR,
-      altInput: true,
-      altFormat: "d/m/Y H:i",
-      minDate: "today",
+      ...configComun,
       onChange: ([date]) => setFechaFin(date || null),
     });
 
