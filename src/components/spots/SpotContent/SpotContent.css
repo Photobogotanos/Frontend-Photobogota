@@ -575,6 +575,22 @@ button.star {
   color: #1a1a1a;
 }
 
+.usuario-avatar[role="button"],
+.usuario-nombre[role="button"] {
+  cursor: pointer;
+}
+
+.usuario-avatar[role="button"]:hover .avatar-placeholder,
+.usuario-nombre[role="button"]:hover {
+  color: var(--color-primary);
+}
+
+.usuario-nombre[role="button"]:hover {
+  text-decoration: underline;
+  text-decoration-color: rgba(128, 111, 190, 0.25);
+  text-underline-offset: 2px;
+}
+
 .resena-fecha {
   font-size: 11px;
   color: #888;

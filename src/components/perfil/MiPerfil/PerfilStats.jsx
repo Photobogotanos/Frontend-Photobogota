@@ -1,7 +1,6 @@
-const PerfilStats = ({ rol, stats = {} }) => {
+const PerfilStats = ({ rol, stats = {}, esPerfilPropio = true }) => {
   const rolNormalizado = (rol || "MIEMBRO").toUpperCase();
   const esSocio = rolNormalizado === "SOCIO";
-  const esMiembro = rolNormalizado === "MIEMBRO";
   // ADMIN y MOD: solo reseñas y guardados (sin spots/publicaciones)
   const esStaff = rolNormalizado === "ADMIN" || rolNormalizado === "MOD";
 
@@ -31,10 +30,12 @@ const PerfilStats = ({ rol, stats = {} }) => {
           <h4>{totalResenas}</h4>
           <p>Reseñas</p>
         </div>
-        <div className="perfil-stat">
-          <h4>{totalGuardados}</h4>
-          <p>Guardados</p>
-        </div>
+        {esPerfilPropio && (
+          <div className="perfil-stat">
+            <h4>{totalGuardados}</h4>
+            <p>Guardados</p>
+          </div>
+        )}
       </div>
     );
   }
@@ -50,10 +51,12 @@ const PerfilStats = ({ rol, stats = {} }) => {
         <h4>{totalResenas}</h4>
         <p>Reseñas</p>
       </div>
-      <div className="perfil-stat">
-        <h4>{totalGuardados}</h4>
-        <p>Guardados</p>
-      </div>
+      {esPerfilPropio && (
+        <div className="perfil-stat">
+          <h4>{totalGuardados}</h4>
+          <p>Guardados</p>
+        </div>
+      )}
     </div>
   );
 };
