@@ -1,4 +1,4 @@
-import { useReducer, useRef, useState } from "react";
+import { useReducer, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
@@ -19,6 +19,7 @@ import SpotInformacionBasica from "./SpotInformacionBasica";
 import SpotCategorizacion from "./SpotCategorizacion";
 import SpotDescripcion from "./SpotDescripcion";
 import SpotBotones from "./SpotBotones";
+import SpotDatosLocal from "./SpotDatosLocal";
 import { crearSpot } from "@/services/spot.service";
 import { subirImagenesSpot } from "@/services/imagen.service";
 import { useAuth } from "@/context/AuthContext";
@@ -58,6 +59,14 @@ const spotFormReducer = (state, action) => {
       return { ...state, cargando: action.payload };
     case "RESET_FORM":
       return initialState;
+    case "SET_TIPO":
+      return { ...state, tipo: action.payload };
+    case "SET_TELEFONO":
+      return { ...state, telefono: action.payload };
+    case "SET_HORARIO":
+      return { ...state, horario: action.payload };
+    case "SET_SITIO_WEB":
+      return { ...state, sitioWeb: action.payload };
     default:
       return state;
   }
@@ -81,6 +90,10 @@ const initialState = {
   localidad: null,
   showModal: false,
   cargando: false,
+  tipo: "SPOT", // se sobrescribe según rol
+  telefono: "",
+  horario: "",
+  sitioWeb: "",
 };
 
 // ============================================================
@@ -266,6 +279,13 @@ export default function CrearSpot() {
   const { usuario } = useAuth();
   const esSocio = usuario?.rol === "SOCIO";
 
+  useEffect(() => {
+    dispatch({
+      type: "SET_TIPO",
+      payload: esSocio ? "LOCAL" : "SPOT",
+    });
+  }, [esSocio]);
+
   // ============================================================
   // HANDLERS DE IMÁGENES
   // ============================================================
@@ -363,7 +383,6 @@ export default function CrearSpot() {
       return false;
     }
 
-
     if (state.imagenes.length === 0) {
       Swal.fire({
         icon: "warning",
@@ -429,11 +448,18 @@ export default function CrearSpot() {
         localidad: state.localidad?.value || state.localidad,
         descripcion: state.descripcionImagen,
         imagenes: resultadoImagenes.urls,
+        tipo: esSocio ? "LOCAL" : "SPOT",
       };
 
       if (!esSocio) {
         spotParaEnviar.recomendacion = state.recomendacion || "";
         spotParaEnviar.tipsFoto = state.tipsFoto || "";
+      }
+
+      if (esSocio) {
+        spotParaEnviar.telefono = state.telefono || "";
+        spotParaEnviar.horario = state.horario || "";
+        spotParaEnviar.sitioWeb = state.sitioWeb || "";
       }
 
       const resultado = await crearSpot(spotParaEnviar);
@@ -444,8 +470,11 @@ export default function CrearSpot() {
       if (resultado.exitoso) {
         await Swal.fire({
           icon: "success",
-          title: "¡Spot publicado!",
-          text: "Tu spot ya está visible en el mapa.",
+          title: esSocio ? "Local creado" : "Spot publicado",
+          text:
+            "Tu " +
+            (esSocio ? "local" : "spot") +
+            " ya está visible en el mapa.",
           timer: 2000,
           showConfirmButton: false,
           timerProgressBar: true,
@@ -554,6 +583,24 @@ export default function CrearSpot() {
                 dispatch({ type: "SET_LOCALIDAD", payload: val })
               }
             />
+
+            {/* Datos en caso de ser socio */}
+            {esSocio && (
+              <SpotDatosLocal
+                telefono={state.telefono}
+                horario={state.horario}
+                sitioWeb={state.sitioWeb}
+                onTelefonoChange={(v) =>
+                  dispatch({ type: "SET_TELEFONO", payload: v })
+                }
+                onHorarioChange={(v) =>
+                  dispatch({ type: "SET_HORARIO", payload: v })
+                }
+                onSitioWebChange={(v) =>
+                  dispatch({ type: "SET_SITIO_WEB", payload: v })
+                }
+              />
+            )}
 
             {/* Descripción y detalles */}
             <SpotDescripcion
