@@ -1,5 +1,5 @@
 import { useState, useEffect, useReducer, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 import FiltrosMapa from "@/components/mapa/FiltrosMapa/FiltrosMapa";
 import MapaBogota from "@/components/mapa/MapaBogota/MapaBogota";
@@ -57,6 +57,7 @@ const obtenerNombreAutorCalificacion = (calificacion) =>
       "Usuario";
 const MapaContent = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { usuario, logueado } = useAuth();
   const { isGuardado, toggleGuardado } = useGuardados();
   const [spot, setSpot] = useState(null);
@@ -439,17 +440,57 @@ const MapaContent = () => {
                   calificacion.fecha ||
                   calificacion.createdAt;
 
+                const navegarAlPerfil = (e) => {
+                  e.stopPropagation();
+                  navigate(
+                    esPropia ? "/perfil" : `/usuario/${nombreAutor}`,
+                  );
+                };
+
                 return (
                   <div key={calificacion.id} className="resena-card">
                     <div className="resena-header">
                       <div className="resena-usuario">
-                        <div className="usuario-avatar">
+                        <div
+                          className="usuario-avatar"
+                          onClick={navegarAlPerfil}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              navegarAlPerfil(e);
+                            }
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={
+                            esPropia
+                              ? "Ver tu perfil"
+                              : `Ver perfil de ${nombreAutor}`
+                          }
+                        >
                           <div className="avatar-placeholder">
                             {nombreAutor.charAt(0).toUpperCase()}
                           </div>
                         </div>
                         <div className="usuario-info">
-                          <span className="usuario-nombre">
+                          <span
+                            className="usuario-nombre"
+                            onClick={navegarAlPerfil}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                navegarAlPerfil(e);
+                              }
+                            }}
+                            role="button"
+                            tabIndex={0}
+                            style={{ cursor: "pointer" }}
+                            aria-label={
+                              esPropia
+                                ? "Ver tu perfil"
+                                : `Ver perfil de ${nombreAutor}`
+                            }
+                          >
                             {nombreAutor}
                             {esPropia && (
                               <span className="mi-resena-badge">(Tú)</span>

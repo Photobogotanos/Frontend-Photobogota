@@ -1,4 +1,4 @@
-import { FiEdit3, FiBell } from "react-icons/fi";
+import { FiEdit3, FiBell, FiFlag } from "react-icons/fi";
 import { FaUser, FaCrown, FaUserShield, FaStore } from "react-icons/fa";
 import UserAvatar from "@/components/common/UserAvatar/UserAvatar";
 
@@ -44,6 +44,8 @@ const PerfilHeader = ({
   rol = "MIEMBRO",
   nivel = null,
   usandoMock = false,
+  esPerfilPropio = true,
+  onReportar,
 }) => {
   const mostrarNivel =
     rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
@@ -97,14 +99,16 @@ const PerfilHeader = ({
       </div>
 
       <div className="perfil-edit-wrapper">
-        <button
-          className="btn-editar-perfil"
-          onClick={() =>
-            dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: true })
-          }
-        >
-          <FiEdit3 size={18} /> Editar perfil
-        </button>
+        {esPerfilPropio ? (
+          <>
+            <button
+              className="btn-editar-perfil"
+              onClick={() =>
+                dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: true })
+              }
+            >
+              <FiEdit3 size={18} /> Editar perfil
+            </button>
 
         <button
           type="button"

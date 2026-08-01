@@ -178,6 +178,27 @@
   box-shadow: 0 6px 16px rgba(128, 111, 190, 0.15);
 }
 
+.btn-reportar-perfil {
+  background: white;
+  color: #b91c1c;
+  border: 1.5px solid #fecaca;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.btn-reportar-perfil:hover {
+  background: #fff5f5;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(128, 111, 190, 0.15);
+}
+
 /* ── Estadísticas ───────────────────────────────────────── */
 .perfil-stats {
   background: white;

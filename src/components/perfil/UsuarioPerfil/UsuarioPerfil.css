@@ -1,0 +1,15 @@
+.perfil-ajeno-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 8px;
+  padding: 4px 2px;
+}
+
+.perfil-ajeno-back:hover {
+  color: var(--color-primary);
+}
