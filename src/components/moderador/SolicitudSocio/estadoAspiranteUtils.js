@@ -24,6 +24,10 @@ export function estaEnRevision(estado) {
   return ESTADOS_EN_REVISION.includes(estado);
 }
 
+export function puedeEnviarCredenciales(estado) {
+  return estado === "ENVIO_CREDENCIALES";
+}
+
 export function formatearFecha(fecha) {
   if (!fecha) return "No disponible";
   return new Date(fecha).toLocaleString("es-ES", {

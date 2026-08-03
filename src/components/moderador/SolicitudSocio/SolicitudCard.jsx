@@ -1,14 +1,15 @@
 import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import Stack from "react-bootstrap/Stack";
-import { FiCheck, FiX, FiEye, FiUser, FiCalendar, FiTag, FiEdit3 } from "react-icons/fi";
-import { getEstadoMeta, estaEnRevision, formatearFecha } from "./estadoAspiranteUtils";
+import { FiCheck, FiX, FiEye, FiUser, FiCalendar, FiTag, FiEdit3, FiSend } from "react-icons/fi";
+import { getEstadoMeta, estaEnRevision, puedeEnviarCredenciales, formatearFecha } from "./estadoAspiranteUtils";
 
 // Este componente muestra la tarjeta de cada solicitud en la lista.
 // Recibe la solicitud y las funciones del padre para manejar las acciones.
-export default function SolicitudCard({ solicitud, onVerDetalle, onAprobar, onRechazar, onSolicitarCorreccion }) {
+export default function SolicitudCard({ solicitud, onVerDetalle, onAprobar, onRechazar, onSolicitarCorreccion, onEnviarCredenciales }) {
   const { label, variant } = getEstadoMeta(solicitud.estado);
   const enRevision = estaEnRevision(solicitud.estado);
+  const listoParaCredenciales = puedeEnviarCredenciales(solicitud.estado);
 
   return (
     <div className="solicitud-card">
@@ -53,6 +54,11 @@ export default function SolicitudCard({ solicitud, onVerDetalle, onAprobar, onRe
               <FiX /> Rechazar
             </Button>
           </Stack>
+        )}
+        {listoParaCredenciales && (
+          <Button variant="success" size="sm" onClick={() => onEnviarCredenciales(solicitud.id)} className="btn-credenciales">
+            <FiSend /> Enviar credenciales
+          </Button>
         )}
       </div>
     </div>

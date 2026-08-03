@@ -41,6 +41,11 @@ export const aprobarAspiranteApi = async (id) => {
     return respuesta.data;
 };
 
+export const enviarCredencialesAspiranteApi = async (id) => {
+    const respuesta = await clienteApi.put(`/aspirantes/${id}/enviar-credenciales`);
+    return respuesta.data;
+};
+
 export const rechazarAspiranteApi = async (id, motivo) => {
     const respuesta = await clienteApi.put(`/aspirantes/${id}/rechazar`, { motivo });
     return respuesta.data;

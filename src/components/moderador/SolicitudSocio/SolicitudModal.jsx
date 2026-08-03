@@ -5,15 +5,15 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import {
   FiCheck, FiX, FiEdit3, FiUser, FiMail, FiPhone, FiMapPin,
-  FiCalendar, FiTag, FiFileText, FiDownload, FiHash,
+  FiCalendar, FiTag, FiFileText, FiDownload, FiHash, FiSend,
 } from "react-icons/fi";
-import { getEstadoMeta, estaEnRevision, formatearFecha } from "./estadoAspiranteUtils";
+import { getEstadoMeta, estaEnRevision, puedeEnviarCredenciales, formatearFecha } from "./estadoAspiranteUtils";
 
 // Este componente muestra el detalle completo de una solicitud.
 // Incluye el documento adjunto, información del negocio y propietario,
 // estado con la decisión tomada, y la sección de comentarios internos.
 export default function SolicitudModal({
-  show, solicitud, onCerrar, onAprobar, onRechazar, onSolicitarCorreccion, onAgregarComentario,
+  show, solicitud, onCerrar, onAprobar, onRechazar, onSolicitarCorreccion, onEnviarCredenciales, onAgregarComentario,
 }) {
 
   // nuevoComentario es local a este componente — solo vive mientras el modal está abierto.
@@ -23,6 +23,7 @@ export default function SolicitudModal({
 
   const { label, variant } = getEstadoMeta(solicitud.estado);
   const enRevision = estaEnRevision(solicitud.estado);
+  const listoParaCredenciales = puedeEnviarCredenciales(solicitud.estado);
 
   // Cuando el moderador envía el comentario, lo pasamos al padre
   // y limpiamos el campo de texto.
@@ -149,6 +150,17 @@ export default function SolicitudModal({
               </div>
             )}
 
+            {/* Si ya se enviaron las credenciales, mostramos cuándo y con qué usuario */}
+            {solicitud.nombreUsuarioGenerado && (
+              <div className="mt-2">
+                <span className="detalle-label">Cuenta de socio creada:</span>
+                <span className="ms-2">{solicitud.nombreUsuarioGenerado}</span>
+                {solicitud.fechaEnvioCredenciales && (
+                  <span className="ms-2 text-muted">({formatearFecha(solicitud.fechaEnvioCredenciales)})</span>
+                )}
+              </div>
+            )}
+
             {/* El motivo aparece si fue rechazada o devuelta para corrección */}
             {(solicitud.estado === "RECHAZADO" || solicitud.estado === "EN_CORRECCION") && solicitud.motivoDecision && (
               <div className="mt-2">
@@ -217,6 +229,11 @@ export default function SolicitudModal({
               <FiX /> Rechazar Solicitud
             </Button>
           </>
+        )}
+        {listoParaCredenciales && (
+          <Button variant="success" onClick={() => onEnviarCredenciales(solicitud.id)}>
+            <FiSend /> Enviar credenciales
+          </Button>
         )}
         <Button variant="secondary" onClick={onCerrar}>Cerrar</Button>
       </Modal.Footer>

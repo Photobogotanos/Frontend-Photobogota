@@ -277,6 +277,14 @@
   flex: 1;
 }
 
+.btn-credenciales {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+}
+
 /* Modal */
 .solicitud-modal .modal-header .btn-close {
   border: 2px solid #dee2e6;

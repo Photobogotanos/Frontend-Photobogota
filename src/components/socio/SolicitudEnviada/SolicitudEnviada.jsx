@@ -182,6 +182,7 @@ const SolicitudEnviada = () => {
   const estadoLabel = ESTADO_LABELS[solicitudData.estado] ?? solicitudData.estado;
   const estadoVariant = ESTADO_VARIANTS[solicitudData.estado] ?? "secondary";
   const requiereCorreccion = solicitudData.estado === "EN_CORRECCION";
+  const esPendiente = solicitudData.estado === "PENDIENTE";
 
   return (
     <div className="solicitud-result-page mt-5">
@@ -260,6 +261,35 @@ const SolicitudEnviada = () => {
                   </div>
                 )}
 
+                {/* Cuando ya se le crearon las credenciales, le indicamos
+                    que revise su correo (nunca mostramos la contraseña aquí) */}
+                {solicitudData.estado === "APROBADO" && solicitudData.nombreUsuarioGenerado && (
+                  <div className="next-steps mt-3" style={{ borderLeft: "4px solid #198754" }}>
+                    <div className="next-steps-content">
+                      <FiCheckCircle className="next-steps-icon" />
+                      <p className="next-steps-text">
+                        <strong>¡Ya eres socio de PhotoBogota!</strong><br />
+                        Te enviamos un correo a <strong>{solicitudData.email}</strong> con tu usuario
+                        (<strong>{solicitudData.nombreUsuarioGenerado}</strong>), tu contraseña temporal,
+                        el manual del socio y el contacto de soporte por si lo necesitas.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {solicitudData.estado === "ENVIO_CREDENCIALES" && (
+                  <div className="next-steps mt-3" style={{ borderLeft: "4px solid #20c997" }}>
+                    <div className="next-steps-content">
+                      <FiClock className="next-steps-icon" />
+                      <p className="next-steps-text">
+                        <strong>¡Tu solicitud fue aprobada!</strong><br />
+                        Estamos preparando tu cuenta de socio. En breve recibirás un correo con tus
+                        credenciales de acceso, el manual del socio y el contacto de soporte.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {solicitudData.estado === "RECHAZADO" && solicitudData.motivoDecision && (
                   <div className="next-steps mt-3" style={{ borderLeft: "4px solid #dc3545" }}>
                     <div className="next-steps-content">
@@ -326,7 +356,7 @@ const SolicitudEnviada = () => {
                 </div>
               </div>
 
-              {!requiereCorreccion && (
+              {esPendiente && (
                 <div className="next-steps">
                   <div className="next-steps-content">
                     <FiAlertCircle className="next-steps-icon" />

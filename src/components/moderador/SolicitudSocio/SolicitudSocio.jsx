@@ -13,6 +13,7 @@ import {
   rechazarAspirante,
   solicitarCorreccionAspirante,
   agregarComentarioAspirante,
+  enviarCredencialesAspirante,
 } from "@/services/aspirante.service";
 import "./SolicitudSocio.css";
 
@@ -105,7 +106,7 @@ export default function SolicitudSocio() {
       handleCerrarModal();
     } catch (error) {
       console.error("Error al aprobar:", error);
-      toast.error(error.response?.data?.mensaje || "No se pudo aprobar la solicitud");
+      toast.error(error.response?.data?.message || error.response?.data?.mensaje || "No se pudo aprobar la solicitud");
     }
   };
 
@@ -130,7 +131,7 @@ export default function SolicitudSocio() {
       handleCerrarModal();
     } catch (error) {
       console.error(`Error al ${tipo}:`, error);
-      toast.error(error.response?.data?.mensaje || "No se pudo completar la acción");
+      toast.error(error.response?.data?.message || error.response?.data?.mensaje || "No se pudo completar la acción");
     }
   };
 
@@ -142,6 +143,19 @@ export default function SolicitudSocio() {
     } catch (error) {
       console.error("Error al agregar comentario:", error);
       toast.error("No se pudo agregar el comentario");
+    }
+  };
+
+  const handleEnviarCredenciales = async (id) => {
+    try {
+      const actualizada = await enviarCredencialesAspirante(id);
+      actualizarSolicitudLocal(actualizada);
+      toast.success(`Cuenta de socio creada (usuario: ${actualizada.nombreUsuarioGenerado}). Se enviaron las credenciales por correo.`);
+      cargarEstadisticas();
+      handleCerrarModal();
+    } catch (error) {
+      console.error("Error al enviar credenciales:", error);
+      toast.error(error.response?.data?.message || error.response?.data?.mensaje || "No se pudieron enviar las credenciales");
     }
   };
 
@@ -205,6 +219,7 @@ export default function SolicitudSocio() {
               onAprobar={handleAprobar}
               onRechazar={handleAbrirRechazar}
               onSolicitarCorreccion={handleAbrirCorreccion}
+              onEnviarCredenciales={handleEnviarCredenciales}
             />
           ))}
         </div>
@@ -217,6 +232,7 @@ export default function SolicitudSocio() {
         onAprobar={handleAprobar}
         onRechazar={handleAbrirRechazar}
         onSolicitarCorreccion={handleAbrirCorreccion}
+        onEnviarCredenciales={handleEnviarCredenciales}
         onAgregarComentario={handleAgregarComentario}
       />
 

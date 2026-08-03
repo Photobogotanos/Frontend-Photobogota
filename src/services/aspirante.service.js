@@ -7,6 +7,7 @@ import {
     obtenerAspirantesPorEstadoApi,
     obtenerEstadisticasAspirantesApi,
     aprobarAspiranteApi,
+    enviarCredencialesAspiranteApi,
     rechazarAspiranteApi,
     solicitarCorreccionAspiranteApi,
     reenviarDocumentosAspiranteApi,
@@ -45,6 +46,10 @@ export const obtenerEstadisticasAspirantes = async () => {
 
 export const aprobarAspirante = async (id) => {
     return await aprobarAspiranteApi(id);
+};
+
+export const enviarCredencialesAspirante = async (id) => {
+    return await enviarCredencialesAspiranteApi(id);
 };
 
 export const rechazarAspirante = async (id, motivo) => {
