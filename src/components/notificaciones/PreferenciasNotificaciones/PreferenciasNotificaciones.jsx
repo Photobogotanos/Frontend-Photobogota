@@ -16,7 +16,11 @@ const canalOptions = [
   { value: "AMBOS", label: "Aplicación + Correo electrónico" },
 ];
 
-const PreferenciasNotificaciones = () => {
+const PreferenciasNotificaciones = ({
+  enModal = false,
+  onCerrar,
+  onGuardado,
+}) => {
   const navigate = useNavigate();
   const { usuario } = useAuth();
   const [preferencias, setPreferencias] = useState({
@@ -65,8 +69,94 @@ const PreferenciasNotificaciones = () => {
     }
   };
 
+  const handleVolver = () => {
+    if (enModal) {
+      onCerrar?.();
+    } else {
+      navigate(-1);
+    }
+  };
+
   if (cargando) {
     return <div className="text-center py-5">Cargando...</div>;
+  }
+
+  const contenido = (
+    <div className="preferencias-card">
+      <div className="card-body">
+        <div className="mb-1">
+          {" "}
+          <div className="form-check form-switch custom-switch d-flex align-items-center gap-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              name="notificacionesActivas"
+              checked={preferencias.notificacionesActivas}
+              onChange={(e) =>
+                setPreferencias((prev) => ({
+                  ...prev,
+                  notificacionesActivas: e.target.checked,
+                }))
+              }
+              id="notificacionesActivas"
+            />
+            <label
+              className="form-check-label fw-bold fs-5 d-flex align-items-center gap-2"
+              htmlFor="notificacionesActivas"
+            >
+              <FaBell
+                className={`bell-icon ${preferencias.notificacionesActivas ? "bell-ringing" : ""}`}
+              />
+              Recibir notificaciones
+            </label>
+          </div>
+        </div>
+
+        {/* Canal preferido con react-select */}
+        <div className="mb-1 select-container">
+          <label className="form-label fw-bold section-title">
+            Canal preferido
+          </label>
+          <Select
+            options={canalOptions}
+            value={canalOptions.find(
+              (opt) => opt.value === preferencias.canalPreferido,
+            )}
+            onChange={handleCanalChange}
+            classNamePrefix="spot-select"
+            isSearchable={false}
+            isDisabled={!preferencias.notificacionesActivas}
+          />
+        </div>
+        {/* Botones */}
+        <div className="d-flex justify-content-between pt-4">
+          <button
+            type="button"
+            className="btn-volver-preferencias d-flex align-items-center justify-content-center gap-2"
+            onClick={handleVolver}
+          >
+            <FaArrowLeft /> {enModal ? "Cancelar" : "Volver"}
+          </button>
+
+          <button
+            className="preferencias-btn d-flex align-items-center justify-content-center gap-2"
+            onClick={guardarPreferencias}
+            disabled={guardando}
+          >
+            {guardando ? (
+              <span className="spinner-border spinner-border-sm" />
+            ) : (
+              <FaSave />
+            )}
+            {guardando ? "Guardando..." : "Guardar Preferencias"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (enModal) {
+    return contenido;
   }
 
   return (
@@ -77,78 +167,7 @@ const PreferenciasNotificaciones = () => {
           <h2 className="preferencias-title">Preferencias de Notificaciones</h2>
           <div className="preferencias-line" />
         </div>
-
-        <div className="preferencias-card">
-          <div className="card-body">
-            <div className="mb-1">
-              {" "}
-              <div className="form-check form-switch custom-switch d-flex align-items-center gap-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="notificacionesActivas"
-                  checked={preferencias.notificacionesActivas}
-                  onChange={(e) =>
-                    setPreferencias((prev) => ({
-                      ...prev,
-                      notificacionesActivas: e.target.checked,
-                    }))
-                  }
-                  id="notificacionesActivas"
-                />
-                <label
-                  className="form-check-label fw-bold fs-5 d-flex align-items-center gap-2"
-                  htmlFor="notificacionesActivas"
-                >
-                  <FaBell
-                    className={`bell-icon ${preferencias.notificacionesActivas ? "bell-ringing" : ""}`}
-                  />
-                  Recibir notificaciones
-                </label>
-              </div>
-            </div>
-
-              {/* Canal preferido con react-select */}
-              <div className="mb-1 select-container">
-                <label className="form-label fw-bold section-title">
-                  Canal preferido
-                </label>
-                <Select
-                  options={canalOptions}
-                  value={canalOptions.find(
-                    (opt) => opt.value === preferencias.canalPreferido,
-                  )}
-                  onChange={handleCanalChange}
-                  classNamePrefix="spot-select"
-                  isSearchable={false}
-                  isDisabled={!preferencias.notificacionesActivas}
-                />
-              </div>
-            {/* Botones */}
-            <div className="d-flex justify-content-between pt-4">
-              <button
-                type="button"
-                className="btn-volver-preferencias d-flex align-items-center justify-content-center gap-2"
-                onClick={() => navigate(-1)}
-              >
-                <FaArrowLeft /> Volver
-              </button>
-
-              <button
-                className="preferencias-btn d-flex align-items-center justify-content-center gap-2"
-                onClick={guardarPreferencias}
-                disabled={guardando}
-              >
-                {guardando ? (
-                  <span className="spinner-border spinner-border-sm" />
-                ) : (
-                  <FaSave />
-                )}
-                {guardando ? "Guardando..." : "Guardar Preferencias"}
-              </button>
-            </div>
-          </div>
-        </div>
+        {contenido}
       </div>
     </div>
   );
