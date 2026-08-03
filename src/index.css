@@ -92,7 +92,10 @@ img {
   height: auto;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   font-family: inherit;
 }
 
@@ -138,7 +141,9 @@ button, input, select, textarea {
   margin-left: 4px;
   cursor: pointer;
   border-radius: 50%;
-  transition: opacity 0.2s ease, background 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease;
   flex-shrink: 0;
 }
 
@@ -146,67 +151,108 @@ button, input, select, textarea {
   opacity: 1;
   background: rgba(0, 0, 0, 0.06);
 }
-
 /* ═══════════════════════════════════════════════════════════════════
-   GLOBAL REACT-SELECT STYLES (spot-select prefix from CreacionSpot)
-   Applied globally so every react-select in the app shares the same
-   visual treatment.
+   GLOBAL REACT-SELECT STYLES (spot-select)
    ═══════════════════════════════════════════════════════════════════ */
 .spot-select__control {
-  border-radius: 999px !important;
-  border: 1.5px solid #e8e8e8 !important;
+  border-radius: var(--pill) !important;
+  border: 1.5px solid var(--border) !important;
   background: #fafafa !important;
-  padding-left: 6px;
+  padding: 0 8px;
   box-shadow: none !important;
   min-height: 52px;
-  transition: border-color 0.2s ease !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
   cursor: pointer;
-}
-
-.spot-select__control--is-focused {
-  border-color: var(--color-primary) !important;
-  box-shadow: 0 0 0 3px rgba(128, 111, 190, 0.12) !important;
-  background: #fff !important;
-  color: #4b5563 !important;
 }
 
 .spot-select__control:hover {
   border-color: var(--color-primary) !important;
-  color: #4b5563 !important;
+  background: #ffffff !important;
 }
 
-.spot-select__placeholder,
-.spot-select__single-value {
-  color: #4b5563;
+.spot-select__control--is-focused {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 4px var(--purple-shadow) !important;
+  background: #ffffff !important;
+}
+
+.spot-select__placeholder {
+  color: var(--muted) !important;
   font-size: 0.95rem;
   padding-left: 2px;
 }
 
-.spot-select__menu {
-  border-radius: 16px !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-  border: none;
-  margin-top: 4px;
-  overflow: hidden;
-  z-index: 9999;
-}
-
-.spot-select__option {
-  padding: 12px 20px;
+.spot-select__single-value {
+  color: var(--color-dark) !important;
   font-size: 0.95rem;
-  cursor: pointer;
+  font-weight: 500;
+  padding-left: 2px;
 }
 
+/* Desplegable (Menú) */
+.spot-select__menu {
+  border-radius: 18px !important;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  background-color: #ffffff !important;
+  margin-top: 6px !important;
+  padding: 6px !important; /* Espaciado interno para que las opciones respire */
+  overflow: hidden;
+  z-index: 9999 !important;
+}
+
+.spot-select__menu-list {
+  padding: 0 !important;
+}
+
+/* Opciones individuales */
+.spot-select__option {
+  padding: 10px 16px !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  border-radius: 12px !important; /* Bordes redondeados dentro del menú */
+  cursor: pointer !important;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease !important;
+  color: var(--color-dark) !important;
+}
+
+/* HOVER / FOCUS: Estado al pasar el mouse o navegar con teclado */
 .spot-select__option--is-focused {
-  background-color: #f3e8ff !important;
-  color: #4b5563 !important;
+  background-color: var(--color-primary) !important;
+  color: var(--color-light) !important;
 }
 
+/* SELECCIONADO: Estado de la opción elegida */
 .spot-select__option--is-selected {
-  background: linear-gradient(135deg, var(--color-primary), #6a5acd) !important;
-  color: white !important;
+  background-color: var(--color-hover) !important;
+  color: var(--color-light) !important;
+  font-weight: 600 !important;
 }
 
+/* Si la opción está seleccionada Y focused al mismo tiempo */
+.spot-select__option--is-selected.spot-select__option--is-focused {
+  background-color: var(--color-hover) !important;
+  color: var(--color-light) !important;
+}
+
+/* Indicadores */
 .spot-select__indicator-separator {
-  display: none;
+  display: none !important;
+}
+
+.spot-select__dropdown-indicator {
+  color: var(--muted) !important;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease !important;
+  padding: 8px !important;
+}
+
+.spot-select__control:hover .spot-select__dropdown-indicator,
+.spot-select__control--is-focused .spot-select__dropdown-indicator {
+  color: var(--color-primary) !important;
 }

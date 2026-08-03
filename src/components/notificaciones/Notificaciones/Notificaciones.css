@@ -138,6 +138,10 @@
   border-left: 4px solid #0d6efd;
 }
 
+.notif-item.notif-clickeable {
+  cursor: pointer;
+}
+
 .notif-item strong {
   display: block;
   margin-bottom: 4px;

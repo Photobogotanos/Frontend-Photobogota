@@ -264,8 +264,14 @@ export default function MantenimientoAdmin() {
               {programados.map((m) => (
                 <tr key={m.id}>
                   <td>
-                    {estaActivoAhora(m) ? (
-                      <span className="badge-estado badge-activo">Activo ahora</span>
+                    {m.cancelado ? (
+                      <span className="badge-estado badge-cancelado">
+                        Cancelado
+                      </span>
+                    ) : estaActivoAhora(m) ? (
+                      <span className="badge-estado badge-activo">
+                        Activo ahora
+                      </span>
                     ) : (
                       <span className="badge-estado badge-pendiente">Próximo</span>
                     )}
@@ -275,13 +281,15 @@ export default function MantenimientoAdmin() {
                   <td>{m.motivo}</td>
                   <td>{m.creadoPor}</td>
                   <td>
-                    <button
-                      className="btn-cancelar-mantenimiento"
-                      title="Cancelar mantenimiento"
-                      onClick={() => handleCancelar(m)}
-                    >
-                      <FaTrash />
-                    </button>
+                    {!m.cancelado && (
+                      <button
+                        className="btn-cancelar-mantenimiento"
+                        title="Cancelar mantenimiento"
+                        onClick={() => handleCancelar(m)}
+                      >
+                        <FaTrash />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -22,6 +22,7 @@ import CrearCuentasAdminPage from "@/pages/admin/CrearCuentasAdmin/CrearCuentasA
 import AdminUsuariosPage from "@/pages/admin/AdminUsuarios/AdminUsuariosPage";
 import AdminLogsPage from "@/pages/admin/AdminLogs/AdminLogsPage";
 import MantenimientoPage from "@/pages/admin/Mantenimiento/MantenimientoPage";
+import EnviarNotificacionPage from "@/pages/admin/EnviarNotificacion/EnviarNotificacionPage";
 import GestionCategoriasPage from "../pages/moderador/GestionCategoriasPage/GestionCategoriasPage";
 import PreferenciasNotificacionesPage from "@/pages/notificaciones/PreferenciasNotificaciones/PreferenciasNotificacionesPage";
 import DashboardReportesPage from "@/pages/moderador/DashboardReportesPage/DashboardReportesPage";
@@ -206,6 +207,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <MantenimientoPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/enviar-notificacion"
+          element={
+            <ProtectedRoute roles={["ADMIN", "MOD"]}>
+              <EnviarNotificacionPage />
             </ProtectedRoute>
           }
         />

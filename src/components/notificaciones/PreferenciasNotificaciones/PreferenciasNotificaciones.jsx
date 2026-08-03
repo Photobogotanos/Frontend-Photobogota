@@ -22,20 +22,9 @@ const PreferenciasNotificaciones = () => {
   const [preferencias, setPreferencias] = useState({
     notificacionesActivas: true,
     canalPreferido: "APP",
-    tiposSilenciados: [],
   });
   const [cargando, setCargando] = useState(false);
   const [guardando, setGuardando] = useState(false);
-
-  const tiposNotificacion = [
-    {
-      value: "NUEVO_SPOT_INTERES",
-      label: "Nuevos spots en mis zonas/categorías",
-    },
-    { value: "NUEVA_RESENA", label: "Nuevas reseñas en mis spots" },
-    { value: "ANUNCIO_ADMIN", label: "Anuncios de administradores" },
-    { value: "ANUNCIO_MODERADOR", label: "Anuncios de moderadores" },
-  ];
 
   const cargarPreferencias = async () => {
     setCargando(true);
@@ -59,26 +48,18 @@ const PreferenciasNotificaciones = () => {
     setPreferencias((prev) => ({ ...prev, canalPreferido: selected.value }));
   };
 
-  const toggleTipoSilenciado = (tipo) => {
-    setPreferencias((prev) => ({
-      ...prev,
-      tiposSilenciados: prev.tiposSilenciados.includes(tipo)
-        ? prev.tiposSilenciados.filter((t) => t !== tipo)
-        : [...prev.tiposSilenciados, tipo],
-    }));
-  };
-
   const guardarPreferencias = async () => {
     setGuardando(true);
     try {
       const res = await actualizarPreferenciasNotificaciones(preferencias);
       if (res.exitoso) {
-        toast.success("✅ Preferencias guardadas correctamente");
+        toast.success("Preferencias guardadas correctamente");
+        onGuardado?.(preferencias);
       } else {
-        toast.error("❌ Error al guardar");
+        toast.error("Error al guardar");
       }
     } catch {
-      toast.error("❌ Error de conexión");
+      toast.error("Error de conexión");
     } finally {
       setGuardando(false);
     }
@@ -140,32 +121,9 @@ const PreferenciasNotificaciones = () => {
                   onChange={handleCanalChange}
                   classNamePrefix="spot-select"
                   isSearchable={false}
+                  isDisabled={!preferencias.notificacionesActivas}
                 />
               </div>
-            {/* Tipos a silenciar */}
-            <div className="mb-1">
-              <label className="form-label fw-bold section-title">
-                Silenciar tipos específicos
-              </label>
-              <div className="checkbox-grid">
-                {tiposNotificacion.map((tipo) => (
-                  <div key={tipo.value} className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      checked={preferencias.tiposSilenciados.includes(
-                        tipo.value,
-                      )}
-                      onChange={() => toggleTipoSilenciado(tipo.value)}
-                      id={tipo.value}
-                    />
-                    <label className="form-check-label" htmlFor={tipo.value}>
-                      {tipo.label}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
             {/* Botones */}
             <div className="d-flex justify-content-between pt-4">
               <button
