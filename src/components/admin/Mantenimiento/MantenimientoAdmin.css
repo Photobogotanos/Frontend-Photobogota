@@ -261,6 +261,12 @@
   color: #2563eb;
 }
 
+.badge-cancelado {
+  background: #f3f4f6;
+  color: #6b7280;
+  text-decoration: line-through;
+}
+
 /* Botón cancelar */
 .btn-cancelar-mantenimiento {
   background: #fee2e2;

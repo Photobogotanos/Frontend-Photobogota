@@ -33,3 +33,7 @@ export const getPreferenciasNotificaciones = () =>
 
 export const actualizarPreferenciasApi = (dto) =>
   clienteApi.put("/notificaciones/preferencias", dto);
+
+// Enviar notificación manual / anuncio (solo MOD y ADMIN)
+export const postEnviarNotificacion = (dto) =>
+  clienteApi.post("/notificaciones/enviar", dto);
