@@ -1,5 +1,5 @@
 import { useState, useEffect, useReducer, useCallback } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 import FiltrosMapa from "@/components/mapa/FiltrosMapa/FiltrosMapa";
 import MapaBogota from "@/components/mapa/MapaBogota/MapaBogota";
@@ -19,8 +19,6 @@ import {
   FaPaperPlane,
   FaRegCalendarAlt,
   FaFlag,
-  FaBookmark,
-  FaRegBookmark,
 } from "react-icons/fa";
 import { obtenerSpotPorId } from "@/services/spot.service";
 import {
@@ -29,7 +27,6 @@ import {
   actualizarCalificacion,
 } from "@/services/calificacion.service";
 import { useAuth } from "@/context/AuthContext";
-import { useGuardados } from "@/hooks/useGuardados";
 import { toast } from "react-hot-toast";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
@@ -57,14 +54,11 @@ const obtenerNombreAutorCalificacion = (calificacion) =>
       "Usuario";
 const MapaContent = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { usuario, logueado } = useAuth();
-  const { isGuardado, toggleGuardado } = useGuardados();
   const [spot, setSpot] = useState(null);
   const [cargandoSpot, setCargandoSpot] = useState(false);
   const [filtrosVisibles, setFiltrosVisibles] = useState(true);
   const [filtrosActivos, setFiltrosActivos] = useState({});
-  const [guardandoSpot, setGuardandoSpot] = useState(false);
 
   // Calificaciones (estrellas) del spot
   const [calificaciones, setCalificaciones] = useState([]);
@@ -102,21 +96,6 @@ const MapaContent = () => {
   const cerrarReporte = () => {
     setModalReporteAbierto(false);
     setContextoReporte(null);
-  };
-
-  const handleGuardarSpot = async () => {
-    if (!logueado) {
-      toast.error("Inicia sesión para guardar spots");
-      return;
-    }
-    setGuardandoSpot(true);
-    const resultado = await toggleGuardado(id);
-    if (resultado.exitoso) {
-      toast.success(resultado.mensaje);
-    } else {
-      toast.error(resultado.mensaje);
-    }
-    setGuardandoSpot(false);
   };
 
   useEffect(() => {
@@ -261,26 +240,14 @@ const MapaContent = () => {
         <div className="lugar-info-container">
           <div className="lugar-nombre-fila">
             <h1 className="lugar-nombre">{spot.nombre}</h1>
-            <div className="lugar-acciones-header">
-              <button
-                type="button"
-                className={`btn-guardar-spot-detalle ${isGuardado(spot.id) ? "guardado" : ""}`}
-                onClick={handleGuardarSpot}
-                aria-label={isGuardado(spot.id) ? "Quitar de guardados" : "Guardar spot"}
-                disabled={guardandoSpot}
-              >
-                {isGuardado(spot.id) ? <FaBookmark /> : <FaRegBookmark />}
-                {isGuardado(spot.id) ? "Guardado" : "Guardar"}
-              </button>
-              <button
-                type="button"
-                className="btn-reportar-spot"
-                onClick={abrirReporteSpot}
-              >
-                <FaFlag className="btn-icon" />
-                Reportar
-              </button>
-            </div>
+            <button
+              type="button"
+              className="btn-reportar-spot"
+              onClick={abrirReporteSpot}
+            >
+              <FaFlag className="btn-icon" />
+              Reportar
+            </button>
           </div>
           <p className="lugar-direccion">
             <FaMapMarkerAlt className="location-icon" />
@@ -440,57 +407,17 @@ const MapaContent = () => {
                   calificacion.fecha ||
                   calificacion.createdAt;
 
-                const navegarAlPerfil = (e) => {
-                  e.stopPropagation();
-                  navigate(
-                    esPropia ? "/perfil" : `/usuario/${nombreAutor}`,
-                  );
-                };
-
                 return (
                   <div key={calificacion.id} className="resena-card">
                     <div className="resena-header">
                       <div className="resena-usuario">
-                        <div
-                          className="usuario-avatar"
-                          onClick={navegarAlPerfil}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              navegarAlPerfil(e);
-                            }
-                          }}
-                          role="button"
-                          tabIndex={0}
-                          aria-label={
-                            esPropia
-                              ? "Ver tu perfil"
-                              : `Ver perfil de ${nombreAutor}`
-                          }
-                        >
+                        <div className="usuario-avatar">
                           <div className="avatar-placeholder">
                             {nombreAutor.charAt(0).toUpperCase()}
                           </div>
                         </div>
                         <div className="usuario-info">
-                          <span
-                            className="usuario-nombre"
-                            onClick={navegarAlPerfil}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" || e.key === " ") {
-                                e.preventDefault();
-                                navegarAlPerfil(e);
-                              }
-                            }}
-                            role="button"
-                            tabIndex={0}
-                            style={{ cursor: "pointer" }}
-                            aria-label={
-                              esPropia
-                                ? "Ver tu perfil"
-                                : `Ver perfil de ${nombreAutor}`
-                            }
-                          >
+                          <span className="usuario-nombre">
                             {nombreAutor}
                             {esPropia && (
                               <span className="mi-resena-badge">(Tú)</span>

@@ -1,331 +1,242 @@
-import { useState, useEffect, useReducer } from "react";
-import { FiClock, FiSearch } from "react-icons/fi";
-import "./SolicitudSocio.css";
-import SolicitudCard from "./SolicitudCard";
+import { useEffect, useState, useCallback } from "react";
+import toast from "react-hot-toast";
+import { FiUsers } from "react-icons/fi";
 import SolicitudFiltros from "./SolicitudFiltros";
+import SolicitudCard from "./SolicitudCard";
 import SolicitudModal from "./SolicitudModal";
 import ModalRechazo from "./ModalRechazo";
-import toast from "react-hot-toast";
+import EstadisticasSolicitudes from "./EstadisticasSolicitudes";
+import {
+  obtenerAspirantes,
+  obtenerEstadisticasAspirantes,
+  aprobarAspirante,
+  rechazarAspirante,
+  solicitarCorreccionAspirante,
+  agregarComentarioAspirante,
+} from "@/services/aspirante.service";
+import "./SolicitudSocio.css";
 
-// Estos son datos de prueba mientras conectamos el backend real.
-// Cuando haya API, esto se reemplaza por una llamada a fetch o axios.
-const solicitudesEjemplo = [
-  {
-    solicitudId: "SOL-0001",
-    fechaEnvio: "14/03/2026",
-    razonSocial: "Café Arte La Tertulia",
-    propietario: "Carlos García",
-    email: "carlos@tertulia.com",
-    telefono: "3012345678",
-    categoria: "Cafetería",
-    direccion: "Carrera 7 # 71-21, Bogotá",
-    descripcion: "Café de especialidad con exposiciones de arte",
-    estado: "pendiente",
-    documentos: [
-      { nombre: "cedula_demo.pdf", url: "/docs/cedula_demo.pdf" },
-      { nombre: "rut_demo.pdf", url: "/docs/rut_demo.pdf" },
-    ],
-  },
-  {
-    solicitudId: "SOL-0002",
-    fechaEnvio: "13/03/2026",
-    razonSocial: "Fotografía Studio Light",
-    propietario: "Maria Lopez",
-    email: "maria@studiolight.co",
-    telefono: "3123456789",
-    categoria: "Estudio Fotográfico",
-    direccion: "Calle 93 # 15-32, Bogotá",
-    descripcion: "Estudio profesional de fotografía y video",
-    estado: "pendiente",
-  },
-  {
-    solicitudId: "SOL-0003",
-    fechaEnvio: "12/03/2026",
-    razonSocial: "El Rincón del Libro",
-    propietario: "Pedro Martínez",
-    email: "pedro@rinconlibro.com",
-    telefono: "3156789012",
-    categoria: "Librería",
-    direccion: "Carrera 5 # 23-45, Bogotá",
-    descripcion: "Librería especializada en literatura colombiana",
-    estado: "aprobada",
-  },
-  {
-    solicitudId: "SOL-0004",
-    fechaEnvio: "11/03/2026",
-    razonSocial: "Sabores Culinarios",
-    propietario: "Ana Rodríguez",
-    email: "ana@sabores.com",
-    telefono: "3201234567",
-    categoria: "Restaurante",
-    direccion: "Calle 38 # 8-15, Bogotá",
-    descripcion: "Restaurante de cocina tradicional colombiana",
-    estado: "rechazada",
-  },
-];
-
-// El estado inicial del componente. Arranca con loading en true
-// para mostrar el spinner mientras se cargan las solicitudes.
-const initialState = {
-  solicitudes: [],
-  filtroEstado: "todos",
-  busqueda: "",
-  loading: true,
-};
-
-// El reducer es como un centro de control — recibe una acción
-// y decide cómo cambia el estado. Cada case es un tipo de acción diferente.
-function solicitudReducer(state, action) {
-  switch (action.type) {
-    // Cuando llegan las solicitudes del backend (o los datos de ejemplo),
-    // las guardamos y apagamos el loading.
-    case "CARGAR_SOLICITUDES":
-      return { ...state, solicitudes: action.payload, loading: false };
-
-    // Cuando el moderador aprueba o rechaza una solicitud,
-    // actualizamos su estado y guardamos quién decidió y cuándo.
-    case "ACTUALIZAR_ESTADO":
-      return {
-        ...state,
-        solicitudes: state.solicitudes.map((s) =>
-          s.solicitudId === action.payload.id
-            ? {
-                ...s,
-                estado: action.payload.estado,
-                motivoRechazo: action.payload.motivoRechazo || null,
-                decisionPor: "Moderador",
-                decisionFecha: new Date().toLocaleString("es-ES"),
-              }
-            : s,
-        ),
-      };
-
-    // Cuando un moderador escribe un comentario interno,
-    // lo agregamos a la lista de comentarios de esa solicitud.
-    case "AGREGAR_COMENTARIO":
-      return {
-        ...state,
-        solicitudes: state.solicitudes.map((s) =>
-          s.solicitudId === action.payload.id
-            ? {
-                ...s,
-                comentarios: [
-                  ...(s.comentarios || []),
-                  {
-                    id: Date.now(),
-                    texto: action.payload.texto,
-                    autor: action.payload.autor,
-                    fecha: new Date().toLocaleString("es-ES"),
-                  },
-                ],
-              }
-            : s,
-        ),
-      };
-
-    // Cambia el filtro de la tab activa (todos, pendiente, aprobada, rechazada).
-    case "SET_FILTRO":
-      return { ...state, filtroEstado: action.payload };
-
-    // Actualiza el texto del buscador en tiempo real.
-    case "SET_BUSQUEDA":
-      return { ...state, busqueda: action.payload };
-
-    default:
-      return state;
-  }
-}
-
+// Dashboard del moderador para revisar y procesar solicitudes de membresía
+// (HU: "Como moderador quiero revisar y procesar solicitudes de membresía").
+// Todo el estado viene del backend real — nada de datos de ejemplo.
 export default function SolicitudSocio() {
-  // solicitudSeleccionada guarda la solicitud que el moderador abrió en el modal.
+  const [solicitudes, setSolicitudes] = useState([]);
+  const [estadisticas, setEstadisticas] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [cargandoStats, setCargandoStats] = useState(true);
+
+  const [filtroEstado, setFiltroEstado] = useState("todos");
+  const [busqueda, setBusqueda] = useState("");
+
   const [solicitudSeleccionada, setSolicitudSeleccionada] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [mostrarModal, setMostrarModal] = useState(false);
 
-  // useReducer reemplaza varios useState — todos los datos relacionados
-  // viven en un solo objeto (state) y se actualizan con dispatch.
-  const [state, dispatch] = useReducer(solicitudReducer, initialState);
-  const { solicitudes, filtroEstado, busqueda, loading } = state;
+  // El modal de motivo se reutiliza para "rechazar" y "solicitar corrección".
+  // accionPendiente guarda cuál de las dos acciones se está por confirmar
+  // y sobre qué solicitud, para saber qué endpoint llamar al confirmar.
+  const [accionPendiente, setAccionPendiente] = useState(null); // { id, tipo: 'rechazar' | 'correccion' }
 
-  // solicitudArechazar guarda el ID de la solicitud que se está por rechazar,
-  // mientras el moderador escribe el motivo en el modal de rechazo.
-  const [showModalRechazo, setShowModalRechazo] = useState(false);
-  const [solicitudArechazar, setSolicitudArechazar] = useState(null);
-
-  // solicitudActualizada asegura que el modal siempre muestre
-  // la versión más reciente de la solicitud, incluyendo comentarios nuevos.
-  const solicitudActualizada =
-    solicitudes.find(
-      (s) => s.solicitudId === solicitudSeleccionada?.solicitudId,
-    ) || solicitudSeleccionada;
-
-  // Al montar el componente, intentamos cargar datos del localStorage.
-  // Si hay una solicitud guardada (enviada desde el formulario público),
-  // la mezclamos con los datos de ejemplo.
-  useEffect(() => {
-    const dataLocalStorage = localStorage.getItem("solicitudSocio");
-    if (dataLocalStorage) {
-      const parsed = JSON.parse(dataLocalStorage);
-      const solicitudStorage = {
-        ...parsed,
-        solicitudId:
-          parsed.solicitudId || `SOL-${Date.now().toString().slice(-8)}`,
-        fechaEnvio: parsed.fechaEnvio || new Date().toLocaleDateString("es-ES"),
-        estado: "pendiente",
-      };
-      dispatch({
-        type: "CARGAR_SOLICITUDES",
-        payload: [solicitudStorage, ...solicitudesEjemplo],
-      });
-    } else {
-      dispatch({ type: "CARGAR_SOLICITUDES", payload: solicitudesEjemplo });
+  const cargarSolicitudes = useCallback(async () => {
+    setCargando(true);
+    try {
+      const datos = await obtenerAspirantes();
+      setSolicitudes(datos);
+    } catch (error) {
+      console.error("Error al cargar solicitudes:", error);
+      toast.error("No se pudieron cargar las solicitudes");
+    } finally {
+      setCargando(false);
     }
   }, []);
 
-  // Filtramos las solicitudes según la tab activa y el texto del buscador.
-  const solicitudesFiltradas = solicitudes.filter((solicitud) => {
+  const cargarEstadisticas = useCallback(async () => {
+    setCargandoStats(true);
+    try {
+      const datos = await obtenerEstadisticasAspirantes();
+      setEstadisticas(datos);
+    } catch (error) {
+      console.error("Error al cargar estadísticas:", error);
+    } finally {
+      setCargandoStats(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    cargarSolicitudes();
+    cargarEstadisticas();
+  }, [cargarSolicitudes, cargarEstadisticas]);
+
+  // Reemplaza en la lista local la solicitud actualizada que devuelve el
+  // backend, así no hace falta recargar todo el listado tras cada acción.
+  const actualizarSolicitudLocal = (actualizada) => {
+    setSolicitudes((prev) => prev.map((s) => (s.id === actualizada.id ? actualizada : s)));
+    if (solicitudSeleccionada?.id === actualizada.id) {
+      setSolicitudSeleccionada(actualizada);
+    }
+  };
+
+  const handleTabSelect = (key) => {
+    const mapa = {
+      Todos: "todos",
+      Pendiente: "PENDIENTE",
+      Correccion: "EN_CORRECCION",
+      Aprobadas: "APROBADAS", // agrupa ENVIO_CREDENCIALES + APROBADO
+      Rechazadas: "RECHAZADO",
+    };
+    setFiltroEstado(mapa[key] ?? "todos");
+  };
+
+  const handleVerDetalle = (solicitud) => {
+    setSolicitudSeleccionada(solicitud);
+    setMostrarModal(true);
+  };
+
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+    setSolicitudSeleccionada(null);
+  };
+
+  const handleAprobar = async (id) => {
+    try {
+      const actualizada = await aprobarAspirante(id);
+      actualizarSolicitudLocal(actualizada);
+      toast.success("Solicitud aprobada. Queda en espera de envío de credenciales.");
+      cargarEstadisticas();
+      handleCerrarModal();
+    } catch (error) {
+      console.error("Error al aprobar:", error);
+      toast.error(error.response?.data?.mensaje || "No se pudo aprobar la solicitud");
+    }
+  };
+
+  // Abre el modal de motivo, ya sea para rechazar o para solicitar corrección.
+  const handleAbrirRechazar = (id) => setAccionPendiente({ id, tipo: "rechazar" });
+  const handleAbrirCorreccion = (id) => setAccionPendiente({ id, tipo: "correccion" });
+
+  const handleConfirmarAccionPendiente = async (motivo) => {
+    if (!accionPendiente) return;
+    const { id, tipo } = accionPendiente;
+    try {
+      const actualizada = tipo === "rechazar"
+        ? await rechazarAspirante(id, motivo)
+        : await solicitarCorreccionAspirante(id, motivo);
+
+      actualizarSolicitudLocal(actualizada);
+      toast.success(tipo === "rechazar"
+        ? "Solicitud rechazada."
+        : "Se solicitaron correcciones. El aspirante podrá reenviar sus documentos.");
+      cargarEstadisticas();
+      setAccionPendiente(null);
+      handleCerrarModal();
+    } catch (error) {
+      console.error(`Error al ${tipo}:`, error);
+      toast.error(error.response?.data?.mensaje || "No se pudo completar la acción");
+    }
+  };
+
+  const handleAgregarComentario = async (id, texto) => {
+    try {
+      const actualizada = await agregarComentarioAspirante(id, texto);
+      actualizarSolicitudLocal(actualizada);
+      toast.success("Comentario agregado");
+    } catch (error) {
+      console.error("Error al agregar comentario:", error);
+      toast.error("No se pudo agregar el comentario");
+    }
+  };
+
+  // Filtro combinado: estado (tab activo) + búsqueda por texto libre
+  const solicitudesFiltradas = solicitudes.filter((s) => {
     const coincideEstado =
-      filtroEstado === "todos" || solicitud.estado === filtroEstado;
+      filtroEstado === "todos" ||
+      (filtroEstado === "APROBADAS"
+        ? (s.estado === "ENVIO_CREDENCIALES" || s.estado === "APROBADO")
+        : s.estado === filtroEstado);
+
+    const texto = busqueda.trim().toLowerCase();
     const coincideBusqueda =
-      busqueda === "" ||
-      solicitud.solicitudId.toLowerCase().includes(busqueda.toLowerCase()) ||
-      solicitud.razonSocial.toLowerCase().includes(busqueda.toLowerCase()) ||
-      solicitud.propietario.toLowerCase().includes(busqueda.toLowerCase());
+      !texto ||
+      s.codigo?.toLowerCase().includes(texto) ||
+      s.razonSocial?.toLowerCase().includes(texto) ||
+      `${s.nombres} ${s.apellidos}`.toLowerCase().includes(texto);
+
     return coincideEstado && coincideBusqueda;
   });
 
-  // Abre el modal de detalle con la solicitud que el moderador seleccionó.
-  const handleVerDetalle = (solicitud) => {
-    setSolicitudSeleccionada(solicitud);
-    setShowModal(true);
-  };
-
-  // Aprueba la solicitud y registra la decisión en el estado.
-  const handleAprobar = (solicitudId) => {
-    dispatch({
-      type: "ACTUALIZAR_ESTADO",
-      payload: { id: solicitudId, estado: "aprobada" },
-    });
-    toast.success("Solicitud Aprobada")
-  };
-
-  // En vez de rechazar directo, abre el modal para pedir el motivo primero.
-  const handleRechazar = (solicitudId) => {
-    setSolicitudArechazar(solicitudId);
-    setShowModalRechazo(true);
-  };
-
-  // Una vez que el moderador escribe el motivo y confirma,
-  // rechazamos la solicitud y guardamos el motivo.
-  const handleConfirmarRechazo = (motivo) => {
-    dispatch({
-      type: "ACTUALIZAR_ESTADO",
-      payload: {
-        id: solicitudArechazar,
-        estado: "rechazada",
-        motivoRechazo: motivo,
-      },
-    });
-    setSolicitudArechazar(null);
-    setShowModalRechazo(false);
-    toast.error("Solicitud rechazada")
-  };
-
-  // Agrega un comentario interno a la solicitud con autor y fecha automáticos.
-  const handleAgregarComentario = (solicitudId, texto) => {
-    dispatch({
-      type: "AGREGAR_COMENTARIO",
-      payload: { id: solicitudId, texto, autor: "Moderador" },
-    });
-  };
-
-  // Mapea el eventKey de las tabs al valor real del filtro.
-  const handleTabSelect = (eventKey) => {
-    const mapa = {
-      Todos: "todos",
-      Pendiente: "pendiente",
-      Aprobadas: "aprobada",
-      Rechazadas: "rechazada",
-    };
-    dispatch({ type: "SET_FILTRO", payload: mapa[eventKey] ?? "todos" });
-  };
-
-  // Mientras cargan las solicitudes mostramos un spinner.
-  if (loading) {
-    return (
-      <div className="solicitud-socio-loading">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Cargando...</span>
-        </div>
-        <p>Cargando solicitudes...</p>
-      </div>
-    );
-  }
+  const pendientesCount = solicitudes.filter((s) => s.estado === "PENDIENTE").length;
 
   return (
-    <div className="solicitud-socio-main-container mt-4">
+    <div className="solicitud-socio-container">
       <div className="solicitud-socio-header">
-        <span className="solicitud-socio-top-text">Gestión de Solicitudes</span>
         <div className="solicitud-socio-title-group">
-          <h2 className="solicitud-socio-title">
-            <FiClock className="header-icon" />
-            Solicitudes de Socios
-          </h2>
-          <p className="solicitud-socio-subtitle">
-            Revisa, aprueba o rechaza las solicitudes de nuevos socios para la
-            comunidad de PhotoBogotá.
-          </p>
+          <span className="solicitud-socio-top-text">Moderación</span>
+          <h1 className="solicitud-socio-title">
+            <FiUsers className="header-icon" /> Solicitudes de Membresía
+          </h1>
+          <p className="solicitud-socio-subtitle">Revisa, aprueba, rechaza o solicita correcciones a los aspirantes a socio</p>
         </div>
-        <span className="spot-header-line" />
+        {pendientesCount > 0 && (
+          <span className="badge bg-warning pending-count">{pendientesCount} pendiente(s) por revisar</span>
+        )}
       </div>
+      <div className="spot-header-line" />
 
-      {/* Tabs de filtro y buscador */}
+      <EstadisticasSolicitudes estadisticas={estadisticas} loading={cargandoStats} />
+
       <SolicitudFiltros
         filtroEstado={filtroEstado}
         busqueda={busqueda}
         solicitudes={solicitudes}
         onTabSelect={handleTabSelect}
-        onBusqueda={(valor) =>
-          dispatch({ type: "SET_BUSQUEDA", payload: valor })
-        }
+        onBusqueda={setBusqueda}
       />
 
-      {/* Si no hay resultados mostramos un mensaje, si hay los listamos */}
-      {solicitudesFiltradas.length === 0 ? (
-        <div className="no-solicitudes">
-          <FiSearch className="no-solicitudes-icon" />
-          <p>No se encontraron solicitudes</p>
-        </div>
+      {cargando ? (
+        <p className="text-center text-muted mt-4">Cargando solicitudes...</p>
+      ) : solicitudesFiltradas.length === 0 ? (
+        <p className="text-center text-muted mt-4">No hay solicitudes que coincidan con este filtro</p>
       ) : (
         <div className="solicitudes-list">
           {solicitudesFiltradas.map((solicitud) => (
             <SolicitudCard
-              key={solicitud.solicitudId}
+              key={solicitud.id}
               solicitud={solicitud}
               onVerDetalle={handleVerDetalle}
               onAprobar={handleAprobar}
-              onRechazar={handleRechazar}
+              onRechazar={handleAbrirRechazar}
+              onSolicitarCorreccion={handleAbrirCorreccion}
             />
           ))}
         </div>
       )}
 
-      {/* Modal de detalle — usa solicitudActualizada para mostrar
-          siempre los comentarios y cambios más recientes */}
       <SolicitudModal
-        show={showModal}
-        solicitud={solicitudActualizada}
-        onCerrar={() => setShowModal(false)}
+        show={mostrarModal}
+        solicitud={solicitudSeleccionada}
+        onCerrar={handleCerrarModal}
         onAprobar={handleAprobar}
-        onRechazar={handleRechazar}
+        onRechazar={handleAbrirRechazar}
+        onSolicitarCorreccion={handleAbrirCorreccion}
         onAgregarComentario={handleAgregarComentario}
       />
 
-      {/* Modal que aparece cuando el moderador quiere rechazar —
-          pide el motivo antes de confirmar */}
       <ModalRechazo
-        show={showModalRechazo}
-        onCerrar={() => setShowModalRechazo(false)}
-        onConfirmar={handleConfirmarRechazo}
+        show={!!accionPendiente}
+        onCerrar={() => setAccionPendiente(null)}
+        onConfirmar={handleConfirmarAccionPendiente}
+        titulo={accionPendiente?.tipo === "rechazar" ? "Motivo de rechazo" : "Correcciones a solicitar"}
+        etiqueta={
+          accionPendiente?.tipo === "rechazar"
+            ? "Explica por qué se rechaza esta solicitud:"
+            : "Explica qué debe corregir o volver a enviar el aspirante:"
+        }
+        textoConfirmar={accionPendiente?.tipo === "rechazar" ? "Confirmar rechazo" : "Solicitar corrección"}
+        varianteConfirmar={accionPendiente?.tipo === "rechazar" ? "danger" : "warning"}
+        mensajeValidacion={
+          accionPendiente?.tipo === "rechazar"
+            ? "Para poder confirmar un rechazo de solicitud, es necesario que des una razón válida"
+            : "Para solicitar una corrección, es necesario que expliques qué debe corregir el aspirante"
+        }
       />
     </div>
   );

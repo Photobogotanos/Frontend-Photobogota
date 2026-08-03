@@ -138,33 +138,6 @@ export const crearReporte = async (body) => {
   }
 };
 
-/**
- * Reportar el perfil de otro usuario.
- *
- * Nota: el backend actual solo expone POST /reportes con referencia a un
- * spot (spotId) y/o reseña (resenaId), pero NO a un usuario. Mientras no
- * exista un endpoint dedicado, reutilizamos la misma ruta dejando
- * spotId/resenaId en undefined y anteponiendo el nombre de usuario al
- * comienzo de la descripción para trazabilidad por parte de la moderación.
- *
- * @param {string} nombreUsuario - nombreUsuario del perfil a reportar
- * @param {{ categoria: string, descripcion: string, evidencias?: string[] }} body
- */
-export const reportarUsuario = async (nombreUsuario, body) => {
-  const { categoria, descripcion, evidencias = [] } = body || {};
-  const descripcionConContexto = descripcion
-    ? `Reporte de usuario @${nombreUsuario}: ${descripcion}`
-    : `Reporte de usuario @${nombreUsuario}`;
-
-  const resultado = await crearReporte({
-    categoria,
-    descripcion: descripcionConContexto,
-    evidencias,
-  });
-
-  return resultado;
-};
-
 export const listarMisReportes = async () => {
   try {
     const response = await getMisReportes();

@@ -16,11 +16,7 @@ const canalOptions = [
   { value: "AMBOS", label: "Aplicación + Correo electrónico" },
 ];
 
-const PreferenciasNotificaciones = ({
-  enModal = false,
-  onCerrar,
-  onGuardado,
-}) => {
+const PreferenciasNotificaciones = () => {
   const navigate = useNavigate();
   const { usuario } = useAuth();
   const [preferencias, setPreferencias] = useState({
@@ -78,7 +74,6 @@ const PreferenciasNotificaciones = ({
       const res = await actualizarPreferenciasNotificaciones(preferencias);
       if (res.exitoso) {
         toast.success("✅ Preferencias guardadas correctamente");
-        onGuardado?.(preferencias);
       } else {
         toast.error("❌ Error al guardar");
       }
@@ -89,19 +84,19 @@ const PreferenciasNotificaciones = ({
     }
   };
 
-  const handleVolver = () => {
-    if (enModal) {
-      onCerrar?.();
-    } else {
-      navigate(-1);
-    }
-  };
-
   if (cargando) {
     return <div className="text-center py-5">Cargando...</div>;
   }
 
-  const contenido = (
+  return (
+    <div className="preferencias-container">
+      <div className="page-container">
+        <div className="preferencias-header">
+          <span className="preferencias-subtitle">Configuración</span>
+          <h2 className="preferencias-title">Preferencias de Notificaciones</h2>
+          <div className="preferencias-line" />
+        </div>
+
         <div className="preferencias-card">
           <div className="card-body">
             <div className="mb-1">
@@ -176,9 +171,9 @@ const PreferenciasNotificaciones = ({
               <button
                 type="button"
                 className="btn-volver-preferencias d-flex align-items-center justify-content-center gap-2"
-                onClick={handleVolver}
+                onClick={() => navigate(-1)}
               >
-                <FaArrowLeft /> {enModal ? "Cancelar" : "Volver"}
+                <FaArrowLeft /> Volver
               </button>
 
               <button
@@ -196,21 +191,6 @@ const PreferenciasNotificaciones = ({
             </div>
           </div>
         </div>
-  );
-
-  if (enModal) {
-    return contenido;
-  }
-
-  return (
-    <div className="preferencias-container">
-      <div className="page-container">
-        <div className="preferencias-header">
-          <span className="preferencias-subtitle">Configuración</span>
-          <h2 className="preferencias-title">Preferencias de Notificaciones</h2>
-          <div className="preferencias-line" />
-        </div>
-        {contenido}
       </div>
     </div>
   );

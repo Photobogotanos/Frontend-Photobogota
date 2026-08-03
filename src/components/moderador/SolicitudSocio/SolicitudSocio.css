@@ -268,7 +268,8 @@
 }
 
 .btn-approve,
-.btn-reject {
+.btn-reject,
+.btn-correccion {
   display: flex;
   align-items: center;
   justify-content: center;

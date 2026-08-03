@@ -7,8 +7,6 @@ import {
   getSpotsUsuario,
   getResenasUsuario,
   getSpotsGuardados,
-  postGuardarSpot,
-  deleteGuardarSpot,
   postSolicitarEliminacionCuenta,
   postConfirmarEliminacionCuenta,
   postCancelarEliminacionCuenta,
@@ -22,11 +20,7 @@ import {
 } from "@/mocks/usuario.mock";
 import { SPOTS } from "@/mocks/spots.mock";
 import { obtenerEstadoServidor } from "@/utils/serverStatus";
-import {
-  guardarTokens,
-  guardarSesion,
-  obtenerAccessToken,
-} from "@/utils/sessionHelper";
+import { guardarTokens, guardarSesion } from "@/utils/sessionHelper";
 
 /**
  * Compara el nombre de usuario del creador de un spot contra el
@@ -495,110 +489,6 @@ export const obtenerSpotsGuardados = async () => {
       mensaje: "Mostrando datos de demostración",
       esMock: true,
     };
-  }
-};
-
-/**
- * Guardar un spot en la lista de guardados del usuario autenticado.
- * Requiere token de acceso (sesión activa).
- * @param {string|number} spotId
- * @returns {Promise<{ exitoso: boolean, datos: *, mensaje: string, esMock: boolean }>}
- */
-export const guardarSpot = async (spotId) => {
-  const token = obtenerAccessToken();
-
-  if (!token) {
-    return {
-      exitoso: false,
-      datos: null,
-      mensaje: "Inicia sesión para guardar spots",
-      esMock: false,
-    };
-  }
-
-  try {
-    const response = await postGuardarSpot(spotId);
-    return {
-      exitoso: true,
-      datos: response.data,
-      mensaje: response.data?.mensaje || "Spot guardado exitosamente",
-      esMock: false,
-    };
-  } catch (error) {
-    let mensaje = "Error al guardar el spot";
-
-    if (error.response) {
-      const status = error.response.status;
-      if (status === 401) {
-        mensaje = "Tu sesión ha expirado. Inicia sesión nuevamente.";
-      } else if (status === 404) {
-        mensaje = "El spot no existe.";
-      } else if (status === 400) {
-        mensaje =
-          error.response.data?.mensaje ||
-          error.response.data?.message ||
-          "Datos inválidos.";
-      } else {
-        mensaje =
-          error.response.data?.mensaje ||
-          error.response.data?.message ||
-          mensaje;
-      }
-    } else if (error.request) {
-      mensaje = "No se pudo conectar con el servidor";
-    }
-
-    return { exitoso: false, datos: null, mensaje, esMock: false };
-  }
-};
-
-/**
- * Quitar un spot de la lista de guardados del usuario autenticado.
- * Requiere token de acceso (sesión activa).
- * @param {string|number} spotId
- * @returns {Promise<{ exitoso: boolean, datos: *, mensaje: string, esMock: boolean }>}
- */
-export const quitarSpotGuardado = async (spotId) => {
-  const token = obtenerAccessToken();
-
-  if (!token) {
-    return {
-      exitoso: false,
-      datos: null,
-      mensaje: "Inicia sesión para quitar spots de guardados",
-      esMock: false,
-    };
-  }
-
-  try {
-    const response = await deleteGuardarSpot(spotId);
-    return {
-      exitoso: true,
-      datos: response.data,
-      mensaje:
-        response.data?.mensaje || "Spot quitado de guardados exitosamente",
-      esMock: false,
-    };
-  } catch (error) {
-    let mensaje = "Error al quitar el spot de guardados";
-
-    if (error.response) {
-      const status = error.response.status;
-      if (status === 401) {
-        mensaje = "Tu sesión ha expirado. Inicia sesión nuevamente.";
-      } else if (status === 404) {
-        mensaje = "El spot no está en tus guardados.";
-      } else {
-        mensaje =
-          error.response.data?.mensaje ||
-          error.response.data?.message ||
-          mensaje;
-      }
-    } else if (error.request) {
-      mensaje = "No se pudo conectar con el servidor";
-    }
-
-    return { exitoso: false, datos: null, mensaje, esMock: false };
   }
 };
 

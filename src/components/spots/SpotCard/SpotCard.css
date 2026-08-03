@@ -13,42 +13,6 @@
   position: relative;
 }
 
-.btn-guardar-spot {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 2;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.9);
-  color: #5c5c5c;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-  transition: all 0.2s ease;
-}
-
-.btn-guardar-spot:hover {
-  color: var(--color-primary, #806fbe);
-  background: rgba(255, 255, 255, 0.95);
-  transform: scale(1.1);
-}
-
-.btn-guardar-spot.guardado {
-  color: var(--color-primary, #806fbe);
-}
-
-.btn-guardar-spot:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
 .btn-reportar-spot-card {
   position: absolute;
   top: 10px;

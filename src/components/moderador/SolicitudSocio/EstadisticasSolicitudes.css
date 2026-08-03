@@ -1,0 +1,45 @@
+.estadisticas-solicitudes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.estadistica-card {
+  flex: 1 1 150px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.estadistica-icono {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+}
+
+.estadistica-valor {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-text, #333);
+}
+
+.estadistica-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-top: 0.15rem;
+}
+
+.estadistica-total {
+  background: linear-gradient(135deg, #806fbe 0%, #a294d0 100%);
+}
+
+.estadistica-total .estadistica-valor,
+.estadistica-total .estadistica-label {
+  color: #fff;
+}

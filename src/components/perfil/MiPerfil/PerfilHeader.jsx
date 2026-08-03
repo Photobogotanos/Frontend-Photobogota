@@ -1,5 +1,6 @@
-import { FiEdit3, FiBell, FiFlag } from "react-icons/fi";
+import { FiEdit3, FiBell } from "react-icons/fi";
 import { FaUser, FaCrown, FaUserShield, FaStore } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import UserAvatar from "@/components/common/UserAvatar/UserAvatar";
 
 const BadgeRol = ({ rol }) => {
@@ -44,8 +45,6 @@ const PerfilHeader = ({
   rol = "MIEMBRO",
   nivel = null,
   usandoMock = false,
-  esPerfilPropio = true,
-  onReportar,
 }) => {
   const mostrarNivel =
     rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
@@ -88,50 +87,33 @@ const PerfilHeader = ({
         </div>
 
         <h2 className="perfil-nombre">
-          {perfilData?.nombresCompletos || "Usuario"}
+          {perfilData.nombresCompletos || "Usuario"}
         </h2>
         <p className="perfil-username">
-          @{perfilData?.nombreUsuario || "usuario"}
+          @{perfilData.nombreUsuario || "usuario"}
         </p>
         <p className="perfil-descripcion">
-          {perfilData?.biografia || "Sin descripción"}
+          {perfilData.biografia || "Sin descripción"}
         </p>
       </div>
 
       <div className="perfil-edit-wrapper">
-        {esPerfilPropio ? (
-          <>
-            <button
-              type="button"
-              className="btn-editar-perfil"
-              onClick={() =>
-                dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: true })
-              }
-            >
-              <FiEdit3 size={18} /> Editar perfil
-            </button>
+        <button
+          className="btn-editar-perfil"
+          onClick={() =>
+            dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: true })
+          }
+        >
+          <FiEdit3 size={18} /> Editar perfil
+        </button>
 
-            <button
-              type="button"
-              className="btn-notificaciones"
-              title="Configurar notificaciones"
-              onClick={() =>
-                dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: true })
-              }
-            >
-              <FiBell size={18} /> Notificaciones
-            </button>
-          </>
-        ) : (
-          <button
-            type="button"
-            className="btn-reportar"
-            title="Reportar usuario"
-            onClick={onReportar}
-          >
-            <FiFlag size={18} /> Reportar
-          </button>
-        )}
+        <Link
+          to="/perfil/preferencias-notificaciones"
+          className="btn-notificaciones"
+          title="Configurar notificaciones"
+        >
+          <FiBell size={18} /> Notificaciones
+        </Link>
       </div>
     </div>
   );

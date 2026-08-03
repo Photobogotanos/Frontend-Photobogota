@@ -10,7 +10,7 @@ export default function PromoPreview({ state, estado }) {
   }
 
   return (
-    <div id="preview-promo" className="promo-preview mt-5">
+    <div className="promo-preview mt-5">
       <h5 className="section-title mb-3">Vista previa de la promoción</h5>
 
       <div className="preview-card">

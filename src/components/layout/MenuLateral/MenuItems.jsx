@@ -140,10 +140,10 @@ export default function MenuItems({ rol, cerrar }) {
           />
           <SidebarLink
             icon={<FaBell />}
-            texto="Mantenimiento del sistema"
-            to="/admin/mantenimiento"
+            texto="Notificaciones de Mantenimiento"
+            to="/notificaciones-mantenimiento"
             onClick={cerrar}
-            activo={esRutaActiva("/admin/mantenimiento")}
+            activo={esRutaActiva("/notificaciones-mantenimiento")}
           />
           <SidebarLink
             icon={<FaFileAlt />}

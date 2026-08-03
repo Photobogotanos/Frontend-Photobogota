@@ -14,7 +14,6 @@ import {
   CATEGORIAS_REPORTE,
   subirEvidenciasReporte,
   crearReporte,
-  reportarUsuario,
 } from "@/services/reporte.service";
 import "./ReportarModal.css";
 
@@ -27,18 +26,12 @@ const MAX_EVIDENCIAS = 3;
 // reporte viene de una reseña puntual dejamos esa referencia visible en el
 // modal y la anteponemos a la descripción para que quede trazable para
 // moderación.
-//
-// También admite un `usuarioAReportar` (nombreUsuario) para reportar el
-// perfil de otro usuario. No existe endpoint dedicado, por lo que se reenvía
-// a POST /reportes con spotId/resenaId en undefined y el nombre de usuario
-// como contexto en la descripción (ver reportarUsuario en reporte.service).
 const ReportarModal = ({
   show,
   onCerrar,
   spotId,
   resenaId = null,
   nombreAutorResena = null,
-  usuarioAReportar = null,
 }) => {
   const [categoria, setCategoria] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -48,7 +41,6 @@ const ReportarModal = ({
   const inputFileRef = useRef(null);
 
   const esReporteDeResena = Boolean(resenaId);
-  const esReporteDeUsuario = Boolean(usuarioAReportar);
 
   const resetearEstado = () => {
     setCategoria("");
@@ -114,19 +106,13 @@ const ReportarModal = ({
       evidencias = resultadoEvidencia.urls;
     }
 
-    const resultado = esReporteDeUsuario
-      ? await reportarUsuario(usuarioAReportar, {
-          categoria,
-          descripcion: descripcion.trim(),
-          evidencias,
-        })
-      : await crearReporte({
-          categoria,
-          descripcion: descripcion.trim(),
-          spotId: spotId || undefined,
-          resenaId: resenaId || undefined,
-          evidencias,
-        });
+    const resultado = await crearReporte({
+      categoria,
+      descripcion: descripcion.trim(),
+      spotId: spotId || undefined,
+      resenaId: resenaId || undefined,
+      evidencias,
+    });
 
     setEnviando(false);
 
@@ -192,19 +178,12 @@ const ReportarModal = ({
       ) : (
         <>
           <Modal.Body>
-          {esReporteDeResena && (
-            <div className="reportar-contexto">
-              Estás reportando la reseña de{" "}
-              <strong>{nombreAutorResena}</strong>
-            </div>
-          )}
-
-          {esReporteDeUsuario && (
-            <div className="reportar-contexto">
-              Estás reportando el perfil de{" "}
-              <strong>@{usuarioAReportar}</strong>
-            </div>
-          )}
+            {esReporteDeResena && (
+              <div className="reportar-contexto">
+                Estás reportando la reseña de{" "}
+                <strong>{nombreAutorResena}</strong>
+              </div>
+            )}
 
             <Form.Group className="mb-3">
               <Form.Label>Categoría</Form.Label>
