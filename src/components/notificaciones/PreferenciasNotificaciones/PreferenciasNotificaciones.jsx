@@ -77,13 +77,13 @@ const PreferenciasNotificaciones = ({
     try {
       const res = await actualizarPreferenciasNotificaciones(preferencias);
       if (res.exitoso) {
-        toast.success("✅ Preferencias guardadas correctamente");
+        toast.success("Preferencias guardadas correctamente");
         onGuardado?.(preferencias);
       } else {
-        toast.error("❌ Error al guardar");
+        toast.error("Error al guardar");
       }
     } catch {
-      toast.error("❌ Error de conexión");
+      toast.error("Error de conexión");
     } finally {
       setGuardando(false);
     }
