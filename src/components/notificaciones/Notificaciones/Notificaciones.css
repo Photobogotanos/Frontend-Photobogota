@@ -101,6 +101,29 @@
   color: #212529;
 }
 
+.btn-marcar-todas {
+  border: none;
+  background: linear-gradient(135deg, #806fbe 0%, #5b4da8 100%);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 7px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 4px 10px rgba(128, 111, 190, 0.2);
+}
+
+.btn-marcar-todas:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(128, 111, 190, 0.3);
+  opacity: 0.95;
+}
+
+.btn-marcar-todas:active {
+  transform: scale(0.98);
+}
+
 .lista-notificaciones {
   max-height: 420px;
   overflow-y: auto;

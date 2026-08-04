@@ -110,11 +110,13 @@ export default function EnviarNotificacion() {
   return (
     <div className="enviar-notif-admin">
       <div className="enviar-notif-header">
-        <span className="enviar-notif-subtitle">Administración</span>
-        <h2>
-          <FaBullhorn /> Enviar notificación
-        </h2>
-        <div className="enviar-notif-line" />
+        <div className="enviar-notif-title-wrap">
+          <span className="enviar-notif-subtitle">Administración</span>
+          <h2 className="enviar-notif-title">
+            <FaBullhorn className="enviar-notif-icon" /> Enviar notificación
+          </h2>
+          <span className="enviar-notif-line" />
+        </div>
         <p className="enviar-notif-descripcion">
           Envía un anuncio a todos los usuarios, a un rol específico o a
           usuarios puntuales. Solo moderadores y administradores pueden
@@ -157,6 +159,7 @@ export default function EnviarNotificacion() {
               >
                 <input
                   type="radio"
+                  className="me-2"
                   name="alcance"
                   value={op.value}
                   checked={form.alcance === op.value}
