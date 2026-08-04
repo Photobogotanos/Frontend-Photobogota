@@ -1,7 +1,7 @@
 import { FaCheck, FaTimes } from "react-icons/fa";
 import "./PasswordValidation.css";
 
-export default function PasswordValidation({ password, validationRules }) {
+export default function PasswordValidation({ validationRules }) {
   return (
     <ul className="password-rules">
       <li className={validationRules.length ? "valid" : "invalid"}>

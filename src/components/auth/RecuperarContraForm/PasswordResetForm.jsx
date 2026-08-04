@@ -47,10 +47,17 @@ export default function PasswordResetForm() {
     const nuevoPassword = esConfirmacion ? state.password : valor;
     const nuevoPassword2 = esConfirmacion ? valor : state.password2;
 
-    dispatch({ type: "SET_FIELD", field: esConfirmacion ? "password2" : "password", value: valor });
+    dispatch({
+      type: "SET_FIELD",
+      field: esConfirmacion ? "password2" : "password",
+      value: valor,
+    });
     dispatch({
       type: "SET_PASSWORD_MATCH",
-      payload: nuevoPassword && nuevoPassword2 ? nuevoPassword === nuevoPassword2 : null,
+      payload:
+        nuevoPassword && nuevoPassword2
+          ? nuevoPassword === nuevoPassword2
+          : null,
     });
     dispatch({
       type: "SET_VALIDATION_RULES",
@@ -67,20 +74,41 @@ export default function PasswordResetForm() {
     e.preventDefault();
 
     if (!state.password || !state.password2) {
-      return Swal.fire({ icon: "error", title: "Campos incompletos", text: "Por favor completa todos los campos.", confirmButtonColor: "#806fbe" });
+      return Swal.fire({
+        icon: "error",
+        title: "Campos incompletos",
+        text: "Por favor completa todos los campos.",
+        confirmButtonColor: "#806fbe",
+      });
     }
 
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(state.password)) {
-      return Swal.fire({ icon: "error", title: "Contraseña insegura", text: "Debe tener mínimo 8 caracteres, mayúsculas, minúsculas y números.", confirmButtonColor: "#806fbe" });
+    if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(state.password)
+    ) {
+      return Swal.fire({
+        icon: "error",
+        title: "Contraseña insegura",
+        text: "Debe tener mínimo 8 caracteres, mayúsculas, minúsculas y números.",
+        confirmButtonColor: "#806fbe",
+      });
     }
 
     if (state.password !== state.password2) {
-      return Swal.fire({ icon: "error", title: "Las contraseñas no coinciden", text: "Verifica que ambas contraseñas sean iguales.", confirmButtonColor: "#806fbe" });
+      return Swal.fire({
+        icon: "error",
+        title: "Las contraseñas no coinciden",
+        text: "Verifica que ambas contraseñas sean iguales.",
+        confirmButtonColor: "#806fbe",
+      });
     }
 
     dispatch({ type: "SET_LOADING", payload: true });
     try {
-      await postVerificarCodigo({ email, codigo, nuevaContrasena: state.password });
+      await postVerificarCodigo({
+        email,
+        codigo,
+        nuevaContrasena: state.password,
+      });
 
       Swal.fire({
         icon: "success",
@@ -88,10 +116,16 @@ export default function PasswordResetForm() {
         text: "Ya puedes iniciar sesión con tu nueva contraseña.",
         confirmButtonColor: "#806fbe",
       }).then(() => navegar("/login"));
-
     } catch (error) {
-      const mensaje = error.response?.data?.message || "Código inválido o expirado. Vuelve a intentarlo.";
-      Swal.fire({ icon: "error", title: "Error", text: mensaje, confirmButtonColor: "#d33" });
+      const mensaje =
+        error.response?.data?.message ||
+        "Código inválido o expirado. Vuelve a intentarlo.";
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: mensaje,
+        confirmButtonColor: "#d33",
+      });
     } finally {
       dispatch({ type: "SET_LOADING", payload: false });
     }
@@ -99,7 +133,6 @@ export default function PasswordResetForm() {
 
   return (
     <Form onSubmit={handleSubmit} className="password-reset-form-container">
-
       <div className="password-reset-header">
         <span className="password-reset-subtitle">Nueva contraseña</span>
         <h2 className="password-reset-title">Establecer contraseña</h2>
@@ -107,23 +140,31 @@ export default function PasswordResetForm() {
       </div>
 
       <p className="password-reset-desc">
-        Ingresa tu nueva contraseña. Debe cumplir con los requisitos de seguridad.
+        Ingresa tu nueva contraseña. Debe cumplir con los requisitos de
+        seguridad.
       </p>
 
       <PasswordFields
         password={state.password}
         password2={state.password2}
         mostrarContrasena={state.mostrarContrasena}
-        setMostrarContrasena={(val) => dispatch({ type: "TOGGLE_VISIBILITY", field: "mostrarContrasena" })}
-        mostrarContrasena2={state.mostrarContrasena2}
-        setMostrarContrasena2={(val) => dispatch({ type: "TOGGLE_VISIBILITY", field: "mostrarContrasena2" })}
+        setMostrarContrasena={() =>
+          dispatch({ type: "TOGGLE_VISIBILITY", field: "mostrarContrasena" })
+        }
+        setMostrarContrasena2={() =>
+          dispatch({ type: "TOGGLE_VISIBILITY", field: "mostrarContrasena2" })
+        }
         passwordMatch={state.passwordMatch}
         validationRules={state.validationRules}
         onChangePassword={handlePasswordChange}
       />
 
       <div className="password-reset-submit-wrap">
-        <button className="password-reset-btn" type="submit" disabled={state.cargando}>
+        <button
+          className="password-reset-btn"
+          type="submit"
+          disabled={state.cargando}
+        >
           {state.cargando ? "Guardando..." : "Guardar contraseña"}
         </button>
       </div>
@@ -131,7 +172,6 @@ export default function PasswordResetForm() {
       <div className="justify-content-center d-flex mb-4 mt-3">
         <BackButton />
       </div>
-
     </Form>
   );
 }

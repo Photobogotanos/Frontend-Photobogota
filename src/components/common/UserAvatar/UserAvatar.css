@@ -18,3 +18,9 @@
   user-select: none;
   text-transform: uppercase;
 }
+
+.user-avatar-img-button {
+  all: unset;
+  cursor: pointer;
+  display: inline-block;
+}

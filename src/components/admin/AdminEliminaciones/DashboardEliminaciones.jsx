@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import Form from "react-bootstrap/Form";
-import { FiUserX, FiSearch, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import {
+  FiUserX,
+  FiSearch,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import {
   listarSolicitudesEliminacionAdmin,
@@ -122,15 +127,17 @@ export default function DashboardEliminaciones() {
   return (
     <div className="dashboard-eliminaciones-main-container mt-4">
       <div className="dashboard-eliminaciones-header">
-        <span className="dashboard-eliminaciones-top-text">Panel de administración</span>
+        <span className="dashboard-eliminaciones-top-text">
+          Panel de administración
+        </span>
         <div className="dashboard-eliminaciones-title-group">
           <h2 className="dashboard-eliminaciones-title">
             <FiUserX className="header-icon" />
             Solicitudes de eliminación de cuenta
           </h2>
           <p className="dashboard-eliminaciones-subtitle">
-            Verifica la identidad, resuelve dependencias y procesa las eliminaciones de cuenta
-            de la plataforma.
+            Verifica la identidad, resuelve dependencias y procesa las
+            eliminaciones de cuenta de la plataforma.
           </p>
         </div>
         <span className="elim-header-line" />
@@ -140,8 +147,9 @@ export default function DashboardEliminaciones() {
 
       <div className="elim-filtros">
         <div className="elim-filtro-campo">
-          <label>Estado</label>
+          <label htmlFor="estado-filtro">Estado</label>
           <Form.Select
+            id="estado-filtro"
             size="sm"
             value={estadoFiltro}
             onChange={(e) => handleCambiarFiltro(e.target.value)}
@@ -186,6 +194,7 @@ export default function DashboardEliminaciones() {
             className="page-btn"
             disabled={pagina === 0}
             onClick={() => setPagina((p) => p - 1)}
+            aria-label="Página anterior"
           >
             <FiChevronLeft />
           </button>
@@ -196,6 +205,7 @@ export default function DashboardEliminaciones() {
             className="page-btn"
             disabled={pagina >= totalPaginas - 1}
             onClick={() => setPagina((p) => p + 1)}
+            aria-label="Página siguiente"
           >
             <FiChevronRight />
           </button>

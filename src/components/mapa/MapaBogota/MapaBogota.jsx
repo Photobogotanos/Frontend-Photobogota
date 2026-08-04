@@ -19,7 +19,8 @@ import { toast } from "react-hot-toast";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
@@ -56,11 +57,11 @@ function BotonUbicacion() {
       setBuscando(false);
       if (e.code === 1) {
         toast.error(
-          "Activa el permiso de ubicación en el navegador para usar esta función."
+          "Activa el permiso de ubicación en el navegador para usar esta función.",
         );
       } else {
         toast.error(
-          "No se pudo obtener tu ubicación. Verifica que el GPS esté activado."
+          "No se pudo obtener tu ubicación. Verifica que el GPS esté activado.",
         );
       }
     },
@@ -96,8 +97,12 @@ function ControlesZoom() {
   const map = useMap();
   return (
     <div className="zoom-buttons">
-      <button onClick={() => map.zoomIn()}><FaPlus /></button>
-      <button onClick={() => map.zoomOut()}><FaMinus /></button>
+      <button onClick={() => map.zoomIn()}>
+        <FaPlus />
+      </button>
+      <button onClick={() => map.zoomOut()}>
+        <FaMinus />
+      </button>
     </div>
   );
 }
@@ -112,7 +117,10 @@ function MapBounds() {
     },
   });
 
-  map.setMaxBounds([[4.2, -74.6], [5.1, -73.6]]);
+  map.setMaxBounds([
+    [4.2, -74.6],
+    [5.1, -73.6],
+  ]);
   map.setMinZoom(10);
   map.setMaxZoom(18);
 
@@ -126,6 +134,8 @@ const MapaBogota = ({ filtros = {} }) => {
   const [showModal, setShowModal] = useState(false);
   const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
 
+  const filtrosSerializados = JSON.stringify(filtros);
+
   useEffect(() => {
     const cargar = async () => {
       setCargando(true);
@@ -134,41 +144,43 @@ const MapaBogota = ({ filtros = {} }) => {
 
       if (resultado.exitoso) {
         // Filtro MUCHO más estricto
-        const spotsValidos = resultado.datos.filter(spot => {
+        const spotsValidos = resultado.datos.filter((spot) => {
           const lat = parseFloat(spot.latitud);
           const lng = parseFloat(spot.longitud);
 
           return (
             !isNaN(lat) &&
             !isNaN(lng) &&
-            lat >= -90 && lat <= 90 &&
-            lng >= -180 && lng <= 180
+            lat >= -90 &&
+            lat <= 90 &&
+            lng >= -180 &&
+            lng <= 180
           );
         });
 
-const spotsFormateados = spotsValidos.map(spot => ({
-           id: spot.id,
-           nombre: spot.nombre || "Sin nombre",
-           direccion: spot.direccion || "",
-           coord: [parseFloat(spot.latitud), parseFloat(spot.longitud)], // ← Asegura números
-           categoria: spot.categoria,
-           localidad: spot.localidad,
-           descripcion: spot.descripcion,
-           rating: spot.rating,
-           totalResenas: spot.totalResenas,
-           imagen: spot.imagen || spot.imagenes?.[0],
-           recomendacion: spot.recomendacion,
-           tipsFoto: spot.tipsFoto,
-           creadorId: spot.creadorId,
-           rol: spot.rol || spot.creador?.rol,
-         }));
+        const spotsFormateados = spotsValidos.map((spot) => ({
+          id: spot.id,
+          nombre: spot.nombre || "Sin nombre",
+          direccion: spot.direccion || "",
+          coord: [parseFloat(spot.latitud), parseFloat(spot.longitud)], // ← Asegura números
+          categoria: spot.categoria,
+          localidad: spot.localidad,
+          descripcion: spot.descripcion,
+          rating: spot.rating,
+          totalResenas: spot.totalResenas,
+          imagen: spot.imagen || spot.imagenes?.[0],
+          recomendacion: spot.recomendacion,
+          tipsFoto: spot.tipsFoto,
+          creadorId: spot.creadorId,
+          rol: spot.rol || spot.creador?.rol,
+        }));
 
         setSpots(spotsFormateados);
         setUsandoMock(resultado.esMock || false);
 
         if (spotsValidos.length !== resultado.datos.length) {
           toast.error(
-            `${resultado.datos.length - spotsValidos.length} spots no se pudieron mostrar por coordenadas inválidas`
+            `${resultado.datos.length - spotsValidos.length} spots no se pudieron mostrar por coordenadas inválidas`,
           );
         }
       } else {
@@ -181,7 +193,8 @@ const spotsFormateados = spotsValidos.map(spot => ({
     };
 
     cargar();
-  }, [JSON.stringify(filtros)]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtrosSerializados]);
 
   const handleMarkerClick = (lugar) => {
     setLugarSeleccionado(lugar);

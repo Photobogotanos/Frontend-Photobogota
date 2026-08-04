@@ -21,6 +21,7 @@ export default function UserAvatar({
 
   // Si cambia la URL, reintentar mostrar foto
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     setError(false);
   }, [src]);
 
@@ -34,26 +35,38 @@ export default function UserAvatar({
   ).toUpperCase();
 
   if (tieneFoto) {
-    return (
+    const imagen = (
       <img
         src={src}
-        alt={alt}
+        alt={onClick ? "" : alt}
         className={`user-avatar-img ${className}`.trim()}
         style={size ? { width: size, height: size } : undefined}
         onError={() => setError(true)}
-        onClick={onClick}
-        onKeyDown={onKeyDown}
-        tabIndex={tabIndex}
-        role={role}
-        aria-label={ariaLabel}
       />
     );
+
+    if (onClick) {
+      return (
+        <button
+          type="button"
+          className="user-avatar-img-button"
+          onClick={onClick}
+          aria-label={ariaLabel}
+        >
+          {imagen}
+        </button>
+      );
+    }
+
+    return imagen;
   }
 
   return (
     <div
       className={`user-avatar-letter ${className}`.trim()}
-      style={size ? { width: size, height: size, fontSize: size * 0.42 } : undefined}
+      style={
+        size ? { width: size, height: size, fontSize: size * 0.42 } : undefined
+      }
       onClick={onClick}
       onKeyDown={onKeyDown}
       tabIndex={tabIndex}

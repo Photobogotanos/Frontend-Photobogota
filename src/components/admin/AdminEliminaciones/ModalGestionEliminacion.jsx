@@ -29,6 +29,7 @@ export default function ModalGestionEliminacion({
   const [observacion, setObservacion] = useState("");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     if (solicitud) setObservacion("");
   }, [solicitud]);
 

@@ -126,7 +126,9 @@ export default function EnviarNotificacion() {
 
       <form className="enviar-notif-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label className="enviar-notif-label">Título</label>
+          <label className="enviar-notif-label" htmlFor="titulo">
+            Título
+          </label>
           <input
             type="text"
             name="titulo"
@@ -138,7 +140,9 @@ export default function EnviarNotificacion() {
         </div>
 
         <div className="form-group">
-          <label className="enviar-notif-label">Mensaje</label>
+          <label className="enviar-notif-label" htmlFor="mensaje">
+            Mensaje
+          </label>
           <textarea
             name="mensaje"
             className="form-control input-without-focus"
@@ -150,7 +154,9 @@ export default function EnviarNotificacion() {
         </div>
 
         <div className="form-group">
-          <label className="enviar-notif-label">¿A quién va dirigido?</label>
+          <label className="enviar-notif-label" htmlFor="alcance">
+            ¿A quién va dirigido?
+          </label>
           <div className="alcance-opciones">
             {ALCANCE_OPCIONES.map((op) => (
               <label
@@ -173,7 +179,9 @@ export default function EnviarNotificacion() {
 
         {form.alcance === "POR_ROL" && (
           <div className="form-group">
-            <label className="enviar-notif-label">Roles</label>
+            <label className="enviar-notif-label" htmlFor="roles">
+              Roles
+            </label>
             <div className="roles-grid">
               {ROLES_DISPONIBLES.map((rol) => (
                 <div key={rol} className="form-check">
@@ -195,7 +203,7 @@ export default function EnviarNotificacion() {
 
         {form.alcance === "USUARIOS_ESPECIFICOS" && (
           <div className="form-group">
-            <label className="enviar-notif-label">
+            <label className="enviar-notif-label" htmlFor="usernamesTexto">
               Nombres de usuario (separados por coma)
             </label>
             <input

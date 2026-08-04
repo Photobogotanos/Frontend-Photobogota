@@ -1,4 +1,3 @@
-// DemoAccountsPanel.jsx - Cierre automático al seleccionar
 import { useState } from "react";
 import {
     FaUserCircle,

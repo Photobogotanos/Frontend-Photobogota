@@ -71,6 +71,7 @@ export default function MapPickerModal({
   // Cuando se abre el modal, usamos la posición actual si existe
   useEffect(() => {
     if (show && initialPosition) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
       setPosition(initialPosition);
     }
   }, [show, initialPosition]);

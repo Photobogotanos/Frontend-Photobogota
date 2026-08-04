@@ -1,425 +1,531 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Select from "react-select";
-import './AdminLogsViewer.css';
+import "./AdminLogsViewer.css";
 import {
-    FaFileAlt, FaDownload, FaSync, FaSearch,
-    FaFilter, FaTerminal, FaExclamationTriangle, FaInfoCircle,
-    FaBug, FaCopy, FaExpand, FaCompress
-} from 'react-icons/fa';
+  FaFileAlt,
+  FaDownload,
+  FaSync,
+  FaSearch,
+  FaFilter,
+  FaTerminal,
+  FaExclamationTriangle,
+  FaInfoCircle,
+  FaBug,
+  FaCopy,
+  FaExpand,
+  FaCompress,
+} from "react-icons/fa";
 import SpinnerLoader from "@/components/common/SpinnerLoader/SpinnerLoader";
-import LogDetailModal from './LogDetailModal';
-import { obtenerLogs, obtenerArchivosLog, generarLogDemo } from '@/services/log.service';
+import LogDetailModal from "./LogDetailModal";
+import {
+  obtenerLogs,
+  obtenerArchivosLog,
+  generarLogDemo,
+} from "@/services/log.service";
 
 // ─── PARSEADOR ────────────────────────────────────────────────────────────────
 const parseLogLine = (linea) => {
-    const patronLogback = /(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3})\s\[([^\]]+)\]\s+(INFO|WARN|ERROR|DEBUG)\s+([^\s]+)\s+-\s+(.+)/;
-    const match = linea.match(patronLogback);
+  const patronLogback =
+    /(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3})\s\[([^\]]+)\]\s+(INFO|WARN|ERROR|DEBUG)\s+([^\s]+)\s+-\s+(.+)/;
+  const match = linea.match(patronLogback);
 
-    if (match) {
-        return {
-            timestamp: match[1],
-            thread: match[2],
-            level: match[3],
-            logger: match[4],
-            message: match[5],
-            fullLine: linea,
-            isValid: true
-        };
-    }
-
+  if (match) {
     return {
-        timestamp: null, thread: null, level: null, logger: null,
-        message: linea, fullLine: linea, isValid: false
+      timestamp: match[1],
+      thread: match[2],
+      level: match[3],
+      logger: match[4],
+      message: match[5],
+      fullLine: linea,
+      isValid: true,
     };
+  }
+
+  return {
+    timestamp: null,
+    thread: null,
+    level: null,
+    logger: null,
+    message: linea,
+    fullLine: linea,
+    isValid: false,
+  };
 };
 
 // ─── COMPONENTE ───────────────────────────────────────────────────────────────
 const AdminLogsViewer = () => {
-    const [logs, setLogs] = useState([]);
-    const [archivos, setArchivos] = useState([]);
-    const [cargando, setCargando] = useState(false);
-    const [error, setError] = useState(null);
-    const [modoDemo, setModoDemo] = useState(false);
-    const [filtros, setFiltros] = useState({
-        lines: 100,
-        errorsOnly: false,
-        archivo: 'photobogota.log',
-        busqueda: '',
-        nivel: 'todos',
-        logger: ''
-    });
-    const [autoRefresh, setAutoRefresh] = useState(false);
-    const [expandido, setExpandido] = useState(false);
-    const [logSeleccionado, setLogSeleccionado] = useState(null);
-    const [estadisticas, setEstadisticas] = useState({ ERROR: 0, WARN: 0, INFO: 0, DEBUG: 0 });
+  const [logs, setLogs] = useState([]);
+  const [archivos, setArchivos] = useState([]);
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState(null);
+  const [modoDemo, setModoDemo] = useState(false);
+  const [filtros, setFiltros] = useState({
+    lines: 100,
+    errorsOnly: false,
+    archivo: "photobogota.log",
+    busqueda: "",
+    nivel: "todos",
+    logger: "",
+  });
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [expandido, setExpandido] = useState(false);
+  const [logSeleccionado, setLogSeleccionado] = useState(null);
 
-    const containerRef = useRef(null);
-    const intervaloRef = useRef(null);
+  const containerRef = useRef(null);
+  const intervaloRef = useRef(null);
 
-    const nivelesLog = {
-        ERROR: { icon: <FaExclamationTriangle />, color: '#ef4444', bg: '#fee2e2', label: 'Error' },
-        WARN:  { icon: <FaExclamationTriangle />, color: '#f59e0b', bg: '#fef3c7', label: 'Warning' },
-        INFO:  { icon: <FaInfoCircle />,          color: '#3b82f6', bg: '#dbeafe', label: 'Info' },
-        DEBUG: { icon: <FaBug />,                 color: '#8b5cf6', bg: '#ede9fe', label: 'Debug' }
+  const nivelesLog = {
+    ERROR: {
+      icon: <FaExclamationTriangle />,
+      color: "#ef4444",
+      bg: "#fee2e2",
+      label: "Error",
+    },
+    WARN: {
+      icon: <FaExclamationTriangle />,
+      color: "#f59e0b",
+      bg: "#fef3c7",
+      label: "Warning",
+    },
+    INFO: {
+      icon: <FaInfoCircle />,
+      color: "#3b82f6",
+      bg: "#dbeafe",
+      label: "Info",
+    },
+    DEBUG: { icon: <FaBug />, color: "#8b5cf6", bg: "#ede9fe", label: "Debug" },
+  };
+
+  const opcionesLines = [
+    { value: 50, label: "50 líneas" },
+    { value: 100, label: "100 líneas" },
+    { value: 200, label: "200 líneas" },
+    { value: 500, label: "500 líneas" },
+  ];
+
+  const opcionesNivel = [
+    { value: "todos", label: "Todos los niveles" },
+    { value: "ERROR", label: "ERROR" },
+    { value: "WARN", label: "WARN" },
+    { value: "INFO", label: "INFO" },
+    { value: "DEBUG", label: "DEBUG" },
+  ];
+
+  const opcionesArchivo = archivos.map((arc) => ({
+    value: arc.nombre,
+    label: `${arc.nombre} (${(arc.tamaño / 1024).toFixed(1)} KB)`,
+  }));
+
+  // ── Cargar archivos disponibles al montar ──────────────────────────────────
+  useEffect(() => {
+    const cargarArchivos = async () => {
+      const resultado = await obtenerArchivosLog();
+      if (resultado.exitoso && resultado.data.length > 0) {
+        setArchivos(resultado.data);
+        // Preseleccionar el primer archivo si el actual no está en la lista
+        const nombres = resultado.data.map((a) => a.nombre);
+        if (!nombres.includes(filtros.archivo)) {
+          setFiltros((prev) => ({
+            ...prev,
+            archivo: resultado.data[0].nombre,
+          }));
+        }
+      }
     };
-
-    const opcionesLines = [
-        { value: 50, label: '50 líneas' },
-        { value: 100, label: '100 líneas' },
-        { value: 200, label: '200 líneas' },
-        { value: 500, label: '500 líneas' },
-    ];
-
-    const opcionesNivel = [
-        { value: 'todos', label: 'Todos los niveles' },
-        { value: 'ERROR', label: 'ERROR' },
-        { value: 'WARN', label: 'WARN' },
-        { value: 'INFO', label: 'INFO' },
-        { value: 'DEBUG', label: 'DEBUG' },
-    ];
-
-    const opcionesArchivo = archivos.map((arc) => ({
-        value: arc.nombre,
-        label: `${arc.nombre} (${(arc.tamaño / 1024).toFixed(1)} KB)`,
-    }));
-
-    // ── Cargar archivos disponibles al montar ──────────────────────────────────
-    useEffect(() => {
-        const cargarArchivos = async () => {
-            const resultado = await obtenerArchivosLog();
-            if (resultado.exitoso && resultado.data.length > 0) {
-                setArchivos(resultado.data);
-                // Preseleccionar el primer archivo si el actual no está en la lista
-                const nombres = resultado.data.map(a => a.nombre);
-                if (!nombres.includes(filtros.archivo)) {
-                    setFiltros(prev => ({ ...prev, archivo: resultado.data[0].nombre }));
-                }
-            }
-        };
-        cargarArchivos();
+    cargarArchivos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+  }, []);
 
-    // ── Cargar logs ────────────────────────────────────────────────────────────
-    const cargarLogs = useCallback(async () => {
-        setCargando(true);
-        setError(null);
+  // ── Cargar logs ────────────────────────────────────────────────────────────
+  const cargarLogs = useCallback(async () => {
+    setCargando(true);
+    setError(null);
 
-        // El backend filtra por archivo con el param errorsOnly;
-        // si el archivo seleccionado es el de errores, lo forzamos.
-        const esArchivoError = filtros.archivo.includes('error');
-        const resultado = await obtenerLogs(
-            filtros.lines,
-            filtros.errorsOnly || esArchivoError
-        );
+    // El backend filtra por archivo con el param errorsOnly;
+    // si el archivo seleccionado es el de errores, lo forzamos.
+    const esArchivoError = filtros.archivo.includes("error");
+    const resultado = await obtenerLogs(
+      filtros.lines,
+      filtros.errorsOnly || esArchivoError,
+    );
 
-        if (resultado.exitoso) {
-            setLogs(resultado.data);
-            setModoDemo(resultado.esDemo);
+    if (resultado.exitoso) {
+      setLogs(resultado.data);
+      setModoDemo(resultado.esDemo);
+    } else {
+      setError("No se pudieron cargar los logs.");
+    }
+
+    setCargando(false);
+  }, [filtros.archivo, filtros.lines, filtros.errorsOnly]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
+    cargarLogs();
+  }, [cargarLogs]);
+
+  // ── Auto-refresh ───────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (autoRefresh) {
+      intervaloRef.current = setInterval(() => {
+        if (modoDemo) {
+          // En modo demo añadimos logs ficticios
+          setLogs((prev) => [
+            generarLogDemo(),
+            ...prev.slice(0, filtros.lines - 1),
+          ]);
         } else {
-            setError('No se pudieron cargar los logs.');
+          // En modo real recargamos del servidor
+          cargarLogs();
         }
-
-        setCargando(false);
-    }, [filtros.archivo, filtros.lines, filtros.errorsOnly]);
-
-    useEffect(() => {
-        cargarLogs();
-    }, [cargarLogs]);
-
-    // ── Auto-refresh ───────────────────────────────────────────────────────────
-    useEffect(() => {
-        if (autoRefresh) {
-            intervaloRef.current = setInterval(() => {
-                if (modoDemo) {
-                    // En modo demo añadimos logs ficticios
-                    setLogs(prev => [generarLogDemo(), ...prev.slice(0, filtros.lines - 1)]);
-                } else {
-                    // En modo real recargamos del servidor
-                    cargarLogs();
-                }
-            }, 3000);
-        } else {
-            if (intervaloRef.current) clearInterval(intervaloRef.current);
-        }
-        return () => { if (intervaloRef.current) clearInterval(intervaloRef.current); };
-    }, [autoRefresh, filtros.lines, modoDemo, cargarLogs]);
-
-    // ── Estadísticas ───────────────────────────────────────────────────────────
-    const calcularEstadisticas = useCallback((logsData) => {
-        const stats = { ERROR: 0, WARN: 0, INFO: 0, DEBUG: 0 };
-        logsData.forEach(log => {
-            const parsed = parseLogLine(log);
-            if (parsed.level && stats[parsed.level] !== undefined) {
-                stats[parsed.level]++;
-            }
-        });
-        setEstadisticas(stats);
-    }, []);
-
-    // ── Filtrado local ─────────────────────────────────────────────────────────
-    const logsFiltrados = React.useMemo(() => {
-        const filtrados = logs
-            .map(log => ({ raw: log, parsed: parseLogLine(log) }))
-            .filter(({ raw, parsed }) => {
-                const matchesBusqueda = !filtros.busqueda ||
-                    raw.toLowerCase().includes(filtros.busqueda.toLowerCase());
-                const matchesNivel = filtros.nivel === 'todos' ||
-                    (parsed.level && parsed.level === filtros.nivel);
-                const matchesSoloError = !filtros.errorsOnly || parsed.level === 'ERROR';
-                const matchesLogger = !filtros.logger ||
-                    (parsed.logger && parsed.logger.toLowerCase().includes(filtros.logger.toLowerCase()));
-
-                return matchesBusqueda && matchesNivel && matchesSoloError && matchesLogger;
-            })
-            .map(item => item.raw);
-
-        calcularEstadisticas(filtrados);
-        return filtrados;
-    }, [logs, filtros, calcularEstadisticas]);
-
-    // ── Utilidades ─────────────────────────────────────────────────────────────
-    const limpiarFiltros = () => setFiltros(prev => ({
-        ...prev, busqueda: '', nivel: 'todos', errorsOnly: false, logger: ''
-    }));
-
-    const copiarLogs = async () => {
-        try {
-            await navigator.clipboard.writeText(logsFiltrados.join('\n'));
-        } catch (err) {
-            console.error('Error al copiar:', err);
-        }
+      }, 3000);
+    } else {
+      if (intervaloRef.current) clearInterval(intervaloRef.current);
+    }
+    return () => {
+      if (intervaloRef.current) clearInterval(intervaloRef.current);
     };
+  }, [autoRefresh, filtros.lines, modoDemo, cargarLogs]);
 
-    const descargarLogs = () => {
-        const contenido = logsFiltrados.join('\n');
-        const blob = new Blob([contenido], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${filtros.archivo}_${new Date().toISOString().split('T')[0]}.log`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    };
-
-    // ── Render de línea ────────────────────────────────────────────────────────
-    const formatearLineaLog = (linea, index) => {
-        const parsed = parseLogLine(linea);
-        const nivel = parsed.level;
-
-        let nivelVisual = null;
-        if (nivel && nivelesLog[nivel]) {
-            nivelVisual = nivel;
-        } else {
-            for (const key of Object.keys(nivelesLog)) {
-                if (linea.includes(key)) { nivelVisual = key; break; }
-            }
-        }
+  // ── Filtrado local ─────────────────────────────────────────────────────────
+  const logsFiltrados = React.useMemo(() => {
+    const filtrados = logs
+      .map((log) => ({ raw: log, parsed: parseLogLine(log) }))
+      .filter(({ raw, parsed }) => {
+        const matchesBusqueda =
+          !filtros.busqueda ||
+          raw.toLowerCase().includes(filtros.busqueda.toLowerCase());
+        const matchesNivel =
+          filtros.nivel === "todos" ||
+          (parsed.level && parsed.level === filtros.nivel);
+        const matchesSoloError =
+          !filtros.errorsOnly || parsed.level === "ERROR";
+        const matchesLogger =
+          !filtros.logger ||
+          (parsed.logger &&
+            parsed.logger.toLowerCase().includes(filtros.logger.toLowerCase()));
 
         return (
-            <div
-                key={index}
-                className={`log-line ${nivelVisual ? `log-${nivelVisual.toLowerCase()}` : ''}`}
-                onClick={() => setLogSeleccionado({ raw: linea, parsed, id: index })}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setLogSeleccionado({ raw: linea, parsed, id: index });
-                    }
-                }}
-                role="button"
-                tabIndex={0}
-            >
-                <div className="log-line-number">{index + 1}</div>
-                {nivelVisual && (
-                    <div className="log-level-icon" style={{ color: nivelesLog[nivelVisual].color }}>
-                        {nivelesLog[nivelVisual].icon}
-                    </div>
-                )}
-                <div className="log-content">
-                    {parsed.timestamp && <span className="log-timestamp">{parsed.timestamp}</span>}
-                    {parsed.thread  && <span className="log-thread">[{parsed.thread}]</span>}
-                    {parsed.logger  && <span className="log-logger">{parsed.logger}</span>}
-                    <span className="log-message">- {parsed.message}</span>
-                </div>
-            </div>
+          matchesBusqueda && matchesNivel && matchesSoloError && matchesLogger
         );
-    };
+      })
+      .map((item) => item.raw);
 
-    // ── JSX ────────────────────────────────────────────────────────────────────
+    return filtrados;
+  }, [logs, filtros]);
+
+  // ── Estadísticas (derivadas de logsFiltrados, no necesitan estado propio) ──
+  const estadisticas = React.useMemo(() => {
+    const stats = { ERROR: 0, WARN: 0, INFO: 0, DEBUG: 0 };
+    logsFiltrados.forEach((log) => {
+      const parsed = parseLogLine(log);
+      if (parsed.level && stats[parsed.level] !== undefined) {
+        stats[parsed.level]++;
+      }
+    });
+    return stats;
+  }, [logsFiltrados]);
+
+  // ── Utilidades ─────────────────────────────────────────────────────────────
+  const limpiarFiltros = () =>
+    setFiltros((prev) => ({
+      ...prev,
+      busqueda: "",
+      nivel: "todos",
+      errorsOnly: false,
+      logger: "",
+    }));
+
+  const copiarLogs = async () => {
+    try {
+      await navigator.clipboard.writeText(logsFiltrados.join("\n"));
+    } catch (err) {
+      console.error("Error al copiar:", err);
+    }
+  };
+
+  const descargarLogs = () => {
+    const contenido = logsFiltrados.join("\n");
+    const blob = new Blob([contenido], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${filtros.archivo}_${new Date().toISOString().split("T")[0]}.log`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // ── Render de línea ────────────────────────────────────────────────────────
+  const formatearLineaLog = (linea, index) => {
+    const parsed = parseLogLine(linea);
+    const nivel = parsed.level;
+
+    let nivelVisual = null;
+    if (nivel && nivelesLog[nivel]) {
+      nivelVisual = nivel;
+    } else {
+      for (const key of Object.keys(nivelesLog)) {
+        if (linea.includes(key)) {
+          nivelVisual = key;
+          break;
+        }
+      }
+    }
+
     return (
-        <div className={`log-viewer-container ${expandido ? 'expandido' : ''}`}>
-            <div className="log-viewer-header">
-                <div className="header-info">
-                    <h1 className="header-titulo">
-                        <FaTerminal /> Visualizador de Logs
-                        {modoDemo && (
-                            <span style={{
-                                fontSize: '0.75rem', fontWeight: 500,
-                                background: '#fef3c7', color: '#92400e',
-                                padding: '2px 10px', borderRadius: 20, marginLeft: 8
-                            }}>
-                                DEMO
-                            </span>
-                        )}
-                    </h1>
-                    <div className="log-stats-badges">
-                        <span className="stat-badge">
-                            <FaFileAlt /> Total: {logsFiltrados.length} líneas
-                        </span>
-                        {Object.entries(estadisticas).map(([nivel, count]) =>
-                            count > 0 && (
-                                <span
-                                    key={nivel}
-                                    className={`stat-badge stat-${nivel.toLowerCase()}`}
-                                    style={{ backgroundColor: nivelesLog[nivel].bg, color: nivelesLog[nivel].color }}
-                                >
-                                    {nivelesLog[nivel].icon} {nivel}: {count}
-                                </span>
-                            )
-                        )}
-                    </div>
-                </div>
-                <div className="log-stats">
-                    <button
-                        className={`auto-refresh-btn ${autoRefresh ? 'active' : ''}`}
-                        onClick={() => setAutoRefresh(!autoRefresh)}
-                    >
-                        <FaSync className={autoRefresh ? 'spin' : ''} />
-                        {autoRefresh ? 'Auto-refresh ON' : 'Auto-refresh OFF'}
-                    </button>
-                </div>
-            </div>
-
-            <div className="log-controls">
-                <div className="controls-row">
-                    <div className="file-selector">
-                        <label>Archivo:</label>
-                        <Select
-                            value={opcionesArchivo.find((o) => o.value === filtros.archivo) || null}
-                            onChange={(opcion) =>
-                                setFiltros({ ...filtros, archivo: opcion ? opcion.value : '' })
-                            }
-                            isDisabled={cargando}
-                            classNamePrefix="spot-select"
-                            options={opcionesArchivo}
-                        />
-                    </div>
-
-                    <div className="lines-selector">
-                        <label>Líneas:</label>
-                        <Select
-                            value={opcionesLines.find((o) => o.value === filtros.lines) || null}
-                            onChange={(opcion) =>
-                                setFiltros({ ...filtros, lines: opcion ? opcion.value : 100 })
-                            }
-                            isDisabled={cargando}
-                            classNamePrefix="spot-select"
-                            options={opcionesLines}
-                        />
-                    </div>
-
-                    <label className="errors-only-checkbox">
-                        <input
-                            type="checkbox"
-                            checked={filtros.errorsOnly}
-                            onChange={(e) => setFiltros({ ...filtros, errorsOnly: e.target.checked })}
-                        />
-                        <FaExclamationTriangle /> Solo errores
-                    </label>
-
-                    <button className="control-btn" onClick={cargarLogs} disabled={cargando}>
-                        <FaSync className={cargando ? 'spin' : ''} /> Recargar
-                    </button>
-
-                    <button className="control-btn" onClick={limpiarFiltros}>
-                        <FaFilter /> Limpiar filtros
-                    </button>
-                </div>
-
-                <div className="controls-row">
-                    <div className="search-box">
-                        <FaSearch className="search-icon" />
-                        <input
-                            type="text"
-                            placeholder="Buscar en logs..."
-                            value={filtros.busqueda}
-                            onChange={(e) => setFiltros({ ...filtros, busqueda: e.target.value })}
-                        />
-                    </div>
-
-                    <div className="level-filter">
-                        <Select
-                            value={opcionesNivel.find((o) => o.value === filtros.nivel) || null}
-                            onChange={(opcion) =>
-                                setFiltros({ ...filtros, nivel: opcion ? opcion.value : 'todos' })
-                            }
-                            classNamePrefix="spot-select"
-                            options={opcionesNivel}
-                        />
-                    </div>
-
-                    <div className="logger-filter">
-                        <input
-                            type="text"
-                            placeholder="Filtrar por logger..."
-                            value={filtros.logger}
-                            onChange={(e) => setFiltros({ ...filtros, logger: e.target.value })}
-                            className="logger-input"
-                        />
-                    </div>
-
-                    <button className="control-btn" onClick={copiarLogs}>
-                        <FaCopy /> Copiar
-                    </button>
-
-                    <button className="control-btn" onClick={descargarLogs}>
-                        <FaDownload /> Descargar
-                    </button>
-
-                    <button className="control-btn" onClick={() => setExpandido(!expandido)}>
-                        {expandido ? <FaCompress /> : <FaExpand />}
-                    </button>
-                </div>
-            </div>
-
-            <div className="logs-container" ref={containerRef}>
-                {cargando ? (
-                    <div className="loading-overlay">
-                        <SpinnerLoader texto="Cargando logs..." />
-                    </div>
-                ) : error ? (
-                    <div className="logs-error">
-                        <FaExclamationTriangle />
-                        <p>{error}</p>
-                        <button onClick={cargarLogs}>Reintentar</button>
-                    </div>
-                ) : logsFiltrados.length === 0 ? (
-                    <div className="logs-empty">
-                        <FaInfoCircle />
-                        <p>No hay logs que coincidan con los filtros aplicados</p>
-                        <button onClick={limpiarFiltros}>Limpiar filtros</button>
-                    </div>
-                ) : (
-                    <div className="logs-list">
-                        {logsFiltrados.map((log, index) => formatearLineaLog(log, index))}
-                    </div>
-                )}
-            </div>
-
-            {logSeleccionado && (
-                <LogDetailModal
-                    log={logSeleccionado}
-                    onClose={() => setLogSeleccionado(null)}
-                    nivelesLog={nivelesLog}
-                    logs={logsFiltrados.map((raw, i) => ({ raw, parsed: parseLogLine(raw), id: i }))}
-                    onNavigate={(nuevoLog) => setLogSeleccionado(nuevoLog)}
-                />
-            )}
+      <div
+        key={index}
+        className={`log-line ${nivelVisual ? `log-${nivelVisual.toLowerCase()}` : ""}`}
+        onClick={() => setLogSeleccionado({ raw: linea, parsed, id: index })}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setLogSeleccionado({ raw: linea, parsed, id: index });
+          }
+        }}
+        role="button"
+        tabIndex={0}
+      >
+        <div className="log-line-number">{index + 1}</div>
+        {nivelVisual && (
+          <div
+            className="log-level-icon"
+            style={{ color: nivelesLog[nivelVisual].color }}
+          >
+            {nivelesLog[nivelVisual].icon}
+          </div>
+        )}
+        <div className="log-content">
+          {parsed.timestamp && (
+            <span className="log-timestamp">{parsed.timestamp}</span>
+          )}
+          {parsed.thread && (
+            <span className="log-thread">[{parsed.thread}]</span>
+          )}
+          {parsed.logger && <span className="log-logger">{parsed.logger}</span>}
+          <span className="log-message">- {parsed.message}</span>
         </div>
+      </div>
     );
+  };
+
+  // ── JSX ────────────────────────────────────────────────────────────────────
+  return (
+    <div className={`log-viewer-container ${expandido ? "expandido" : ""}`}>
+      <div className="log-viewer-header">
+        <div className="header-info">
+          <h1 className="header-titulo">
+            <FaTerminal /> Visualizador de Logs
+            {modoDemo && (
+              <span
+                style={{
+                  fontSize: "0.75rem",
+                  fontWeight: 500,
+                  background: "#fef3c7",
+                  color: "#92400e",
+                  padding: "2px 10px",
+                  borderRadius: 20,
+                  marginLeft: 8,
+                }}
+              >
+                DEMO
+              </span>
+            )}
+          </h1>
+          <div className="log-stats-badges">
+            <span className="stat-badge">
+              <FaFileAlt /> Total: {logsFiltrados.length} líneas
+            </span>
+            {Object.entries(estadisticas).map(
+              ([nivel, count]) =>
+                count > 0 && (
+                  <span
+                    key={nivel}
+                    className={`stat-badge stat-${nivel.toLowerCase()}`}
+                    style={{
+                      backgroundColor: nivelesLog[nivel].bg,
+                      color: nivelesLog[nivel].color,
+                    }}
+                  >
+                    {nivelesLog[nivel].icon} {nivel}: {count}
+                  </span>
+                ),
+            )}
+          </div>
+        </div>
+        <div className="log-stats">
+          <button
+            className={`auto-refresh-btn ${autoRefresh ? "active" : ""}`}
+            onClick={() => setAutoRefresh(!autoRefresh)}
+          >
+            <FaSync className={autoRefresh ? "spin" : ""} />
+            {autoRefresh ? "Auto-refresh ON" : "Auto-refresh OFF"}
+          </button>
+        </div>
+      </div>
+
+      <div className="log-controls">
+        <div className="controls-row">
+          <div className="file-selector">
+            <label htmlFor="archivo-select">Archivo:</label>
+            <Select
+              inputId="archivo-select"
+              value={
+                opcionesArchivo.find((o) => o.value === filtros.archivo) || null
+              }
+              onChange={(opcion) =>
+                setFiltros({ ...filtros, archivo: opcion ? opcion.value : "" })
+              }
+              isDisabled={cargando}
+              classNamePrefix="spot-select"
+              options={opcionesArchivo}
+            />
+          </div>
+
+          <div className="lines-selector">
+            <label htmlFor="lineas-select">Líneas:</label>
+            <Select
+              inputId="lineas-select"
+              value={
+                opcionesLines.find((o) => o.value === filtros.lines) || null
+              }
+              onChange={(opcion) =>
+                setFiltros({ ...filtros, lines: opcion ? opcion.value : 100 })
+              }
+              isDisabled={cargando}
+              classNamePrefix="spot-select"
+              options={opcionesLines}
+            />
+          </div>
+
+          <label className="errors-only-checkbox">
+            <input
+              type="checkbox"
+              checked={filtros.errorsOnly}
+              onChange={(e) =>
+                setFiltros({ ...filtros, errorsOnly: e.target.checked })
+              }
+            />
+            <FaExclamationTriangle /> Solo errores
+          </label>
+
+          <button
+            className="control-btn"
+            onClick={cargarLogs}
+            disabled={cargando}
+          >
+            <FaSync className={cargando ? "spin" : ""} /> Recargar
+          </button>
+
+          <button className="control-btn" onClick={limpiarFiltros}>
+            <FaFilter /> Limpiar filtros
+          </button>
+        </div>
+
+        <div className="controls-row">
+          <div className="search-box">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Buscar en logs..."
+              aria-label="Buscar en logs"
+              value={filtros.busqueda}
+              onChange={(e) =>
+                setFiltros({ ...filtros, busqueda: e.target.value })
+              }
+            />
+          </div>
+
+          <div className="level-filter">
+            <Select
+              inputId="nivel-select"
+              aria-label="Filtrar por nivel"
+              value={
+                opcionesNivel.find((o) => o.value === filtros.nivel) || null
+              }
+              onChange={(opcion) =>
+                setFiltros({
+                  ...filtros,
+                  nivel: opcion ? opcion.value : "todos",
+                })
+              }
+              classNamePrefix="spot-select"
+              options={opcionesNivel}
+            />
+          </div>
+
+          <div className="logger-filter">
+            <input
+              type="text"
+              placeholder="Filtrar por logger..."
+              aria-label="Filtrar por logger"
+              value={filtros.logger}
+              onChange={(e) =>
+                setFiltros({ ...filtros, logger: e.target.value })
+              }
+              className="logger-input"
+            />
+          </div>
+
+          <button className="control-btn" onClick={copiarLogs}>
+            <FaCopy /> Copiar
+          </button>
+
+          <button className="control-btn" onClick={descargarLogs}>
+            <FaDownload /> Descargar
+          </button>
+
+          <button
+            className="control-btn"
+            onClick={() => setExpandido(!expandido)}
+            aria-label={expandido ? "Comprimir vista" : "Expandir vista"}
+          >
+            {expandido ? <FaCompress /> : <FaExpand />}
+          </button>
+        </div>
+      </div>
+
+      <div className="logs-container" ref={containerRef}>
+        {cargando ? (
+          <div className="loading-overlay">
+            <SpinnerLoader texto="Cargando logs..." />
+          </div>
+        ) : error ? (
+          <div className="logs-error">
+            <FaExclamationTriangle />
+            <p>{error}</p>
+            <button onClick={cargarLogs}>Reintentar</button>
+          </div>
+        ) : logsFiltrados.length === 0 ? (
+          <div className="logs-empty">
+            <FaInfoCircle />
+            <p>No hay logs que coincidan con los filtros aplicados</p>
+            <button onClick={limpiarFiltros}>Limpiar filtros</button>
+          </div>
+        ) : (
+          <div className="logs-list">
+            {logsFiltrados.map((log, index) => formatearLineaLog(log, index))}
+          </div>
+        )}
+      </div>
+
+      {logSeleccionado && (
+        <LogDetailModal
+          log={logSeleccionado}
+          onClose={() => setLogSeleccionado(null)}
+          nivelesLog={nivelesLog}
+          logs={logsFiltrados.map((raw, i) => ({
+            raw,
+            parsed: parseLogLine(raw),
+            id: i,
+          }))}
+          onNavigate={(nuevoLog) => setLogSeleccionado(nuevoLog)}
+        />
+      )}
+    </div>
+  );
 };
 
 export default AdminLogsViewer;

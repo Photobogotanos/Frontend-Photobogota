@@ -70,6 +70,7 @@ export default function MantenimientoAdmin() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarProgramados();
   }, [cargarProgramados]);
 
@@ -198,17 +199,17 @@ export default function MantenimientoAdmin() {
       <form className="mantenimiento-form" onSubmit={handleSubmit}>
         <div className="form-row">
           <div className="form-group">
-            <label>Inicio</label>
+            <label htmlFor="fechaInicio">Inicio</label>
             <input ref={inicioRef} className="form-control rounded-pill" placeholder="Selecciona fecha y hora" readOnly />
           </div>
           <div className="form-group">
-            <label>Fin</label>
+            <label htmlFor="fechaFin">Fin</label>
             <input ref={finRef} className="form-control rounded-pill" placeholder="Selecciona fecha y hora" readOnly />
           </div>
         </div> 
 
         <div className="form-group">
-          <label>Motivo</label>
+          <label htmlFor="motivo">Motivo</label>
           <input
             type="text"
             name="motivo"
@@ -220,7 +221,7 @@ export default function MantenimientoAdmin() {
         </div>
 
         <div className="form-group">
-          <label>Mensaje personalizado (opcional)</label>
+          <label htmlFor="mensajePersonalizado">Mensaje personalizado (opcional)</label>
           <textarea
             name="mensajePersonalizado"
             className="form-control"
