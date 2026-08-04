@@ -29,6 +29,7 @@ import DashboardReportesPage from "@/pages/moderador/DashboardReportesPage/Dashb
 import AdminReportesPage from "@/pages/admin/AdminReportesPage/AdminReportesPage";
 import AdminEliminacionesPage from "@/pages/admin/AdminEliminacionesPage/AdminEliminacionesPage";
 import ProtectedRoute from "./ProtectedRoute";
+import SocioLocalesPage from "@/pages/socio/SocioLocalesPage/SocioLocalesPage.jsx";
 
 const AppRouter = () => {
   return (
@@ -99,6 +100,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute roles={["SOCIO"]}>
               <EstadisticasSocioPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/locales"
+          element={
+            <ProtectedRoute roles={["SOCIO"]}>
+              <SocioLocalesPage />
             </ProtectedRoute>
           }
         />
