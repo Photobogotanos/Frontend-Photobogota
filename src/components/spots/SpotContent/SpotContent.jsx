@@ -19,6 +19,7 @@ import {
   FaPaperPlane,
   FaRegCalendarAlt,
   FaFlag,
+  FaEdit,
 } from "react-icons/fa";
 import { obtenerSpotPorId } from "@/services/spot.service";
 import {
@@ -65,6 +66,9 @@ const MapaContent = () => {
   const [cargandoCalificaciones, setCargandoCalificaciones] = useState(false);
   const [miCalificacion, setMiCalificacion] = useState(null);
   const [enviandoCalificacion, setEnviandoCalificacion] = useState(false);
+  // Controla si el formulario de "mi calificación" está en modo edición.
+  // Cuando el usuario ya calificó, por defecto se muestra en modo lectura.
+  const [editandoResena, setEditandoResena] = useState(false);
   const [estadoResena, dispatchResena] = useReducer(
     resenaReducer,
     initialResenaState,
@@ -192,11 +196,25 @@ const MapaContent = () => {
     if (resultado.exitoso) {
       toast.success(resultado.mensaje);
       await cargarCalificaciones(id);
+      setEditandoResena(false);
     } else {
       toast.error(resultado.mensaje);
     }
 
     setEnviandoCalificacion(false);
+  };
+
+  // Descarta cambios sin guardar y vuelve a la vista de solo lectura con
+  // los valores que ya estaban guardados.
+  const handleCancelarEdicion = () => {
+    if (miCalificacion) {
+      dispatchResena({ type: "SET_RATING", payload: miCalificacion.estrellas });
+      dispatchResena({
+        type: "SET_COMENTARIO",
+        payload: miCalificacion.comentario || "",
+      });
+    }
+    setEditandoResena(false);
   };
 
   if (cargandoSpot) {
@@ -324,65 +342,103 @@ const MapaContent = () => {
             </div>
           ) : (
             <div className="nueva-resena-card">
-              <h4>
-                <FaStar className="form-icon" />
-                {miCalificacion ? "Tu calificación" : "Calificá este spot"}
-              </h4>
-              <form onSubmit={handleSubmitCalificacion}>
-                <div className="rating-input">
-                  <label>Estrellas</label>
-                  <div className="stars-input">
-                    <StarRating
-                      rating={estadoResena.nuevaResena.rating}
-                      hoverRating={estadoResena.hoverRating}
-                      isInteractive
-                      onSelect={(valor) =>
-                        dispatchResena({ type: "SET_RATING", payload: valor })
-                      }
-                      onHover={(valor) =>
-                        dispatchResena({ type: "SET_HOVER", payload: valor })
-                      }
-                      onLeave={() =>
-                        dispatchResena({ type: "SET_HOVER", payload: 0 })
-                      }
-                    />
+              {miCalificacion && !editandoResena ? (
+                <>
+                  <h4>
+                    <FaStar className="form-icon" /> Tu calificación
+                  </h4>
+                  <div className="mi-resena-vista">
+                    <StarRating rating={miCalificacion.estrellas} />
+                    {miCalificacion.comentario && (
+                      <p className="resena-comentario">
+                        {miCalificacion.comentario}
+                      </p>
+                    )}
                   </div>
-                </div>
+                  <button
+                    type="button"
+                    className="btn-editar-resena"
+                    onClick={() => setEditandoResena(true)}
+                  >
+                    <FaEdit className="btn-icon" /> Editar
+                  </button>
+                </>
+              ) : (
+                <>
+                  <h4>
+                    <FaStar className="form-icon" />
+                    {miCalificacion ? "Editar tu calificación" : "Calificá este spot"}
+                  </h4>
+                  <form onSubmit={handleSubmitCalificacion}>
+                    <div className="rating-input">
+                      <label>Estrellas</label>
+                      <div className="stars-input">
+                        <StarRating
+                          rating={estadoResena.nuevaResena.rating}
+                          hoverRating={estadoResena.hoverRating}
+                          isInteractive
+                          onSelect={(valor) =>
+                            dispatchResena({ type: "SET_RATING", payload: valor })
+                          }
+                          onHover={(valor) =>
+                            dispatchResena({ type: "SET_HOVER", payload: valor })
+                          }
+                          onLeave={() =>
+                            dispatchResena({ type: "SET_HOVER", payload: 0 })
+                          }
+                        />
+                      </div>
+                    </div>
 
-                <div className="comentario-input">
-                  <textarea
-                    placeholder="Contanos tu experiencia en este spot (opcional)..."
-                    rows="3"
-                    maxLength={MAX_COMENTARIO}
-                    value={estadoResena.nuevaResena.comentario}
-                    onChange={(e) =>
-                      dispatchResena({
-                        type: "SET_COMENTARIO",
-                        payload: e.target.value,
-                      })
-                    }
-                  />
-                  <span className="comentario-contador">
-                    {estadoResena.nuevaResena.comentario.length}/
-                    {MAX_COMENTARIO}
-                  </span>
-                </div>
+                    <div className="comentario-input">
+                      <textarea
+                        placeholder="Contanos tu experiencia en este spot (opcional)..."
+                        rows="3"
+                        maxLength={MAX_COMENTARIO}
+                        value={estadoResena.nuevaResena.comentario}
+                        onChange={(e) =>
+                          dispatchResena({
+                            type: "SET_COMENTARIO",
+                            payload: e.target.value,
+                          })
+                        }
+                      />
+                      <span className="comentario-contador">
+                        {estadoResena.nuevaResena.comentario.length}/
+                        {MAX_COMENTARIO}
+                      </span>
+                    </div>
 
-                <button
-                  type="submit"
-                  className="btn-submit-resena"
-                  disabled={
-                    enviandoCalificacion || estadoResena.nuevaResena.rating < 1
-                  }
-                >
-                  <FaPaperPlane className="btn-icon" />
-                  {enviandoCalificacion
-                    ? "Enviando..."
-                    : miCalificacion
-                      ? "Actualizar calificación"
-                      : "Enviar calificación"}
-                </button>
-              </form>
+                    <div className="resena-form-acciones">
+                      <button
+                        type="submit"
+                        className="btn-submit-resena"
+                        disabled={
+                          enviandoCalificacion ||
+                          estadoResena.nuevaResena.rating < 1
+                        }
+                      >
+                        <FaPaperPlane className="btn-icon" />
+                        {enviandoCalificacion
+                          ? "Enviando..."
+                          : miCalificacion
+                            ? "Actualizar reseña"
+                            : "Enviar calificación"}
+                      </button>
+                      {miCalificacion && (
+                        <button
+                          type="button"
+                          className="btn-cancelar-resena"
+                          onClick={handleCancelarEdicion}
+                          disabled={enviandoCalificacion}
+                        >
+                          Cancelar
+                        </button>
+                      )}
+                    </div>
+                  </form>
+                </>
+              )}
             </div>
           )}
 
