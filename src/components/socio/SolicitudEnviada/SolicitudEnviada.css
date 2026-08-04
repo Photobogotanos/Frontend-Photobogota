@@ -431,15 +431,6 @@
   font-weight: 500;
 }
 
-.status-badge {
-  background-color: #48bb78;
-  color: white;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-}
-
 .details-section {
   margin-bottom: 2rem;
 }
@@ -511,6 +502,7 @@
 
 .category-tag {
   display: inline-block;
+  align-self: flex-start;
   background-color: #805ad5;
   color: white;
   font-size: 0.8rem;

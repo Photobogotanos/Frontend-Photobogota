@@ -2,7 +2,7 @@ import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import Stack from "react-bootstrap/Stack";
 import { FiCheck, FiX, FiEye, FiUser, FiCalendar, FiTag, FiEdit3, FiSend } from "react-icons/fi";
-import { getEstadoMeta, estaEnRevision, puedeEnviarCredenciales, formatearFecha } from "./estadoAspiranteUtils";
+import { getEstadoMeta, estaEnRevision, puedeEnviarCredenciales, formatearFecha } from "@/utils/estadoAspiranteUtils";
 
 // Este componente muestra la tarjeta de cada solicitud en la lista.
 // Recibe la solicitud y las funciones del padre para manejar las acciones.
