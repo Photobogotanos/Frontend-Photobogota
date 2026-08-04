@@ -311,17 +311,11 @@ export default function MiPerfil() {
           onClick={() =>
             dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
           }
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
-            }
-          }}
-          role="button"
-          tabIndex={0}
         >
           <div
             className="perfil-notif-panel"
-            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
             role="dialog"
             aria-label="Configurar notificaciones"
           >

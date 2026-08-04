@@ -99,10 +99,6 @@ function ImageUploader({
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
           onClick={() => inputRef.current.click()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
-          aria-label="Subir imágenes"
         >
           <div className="drop-zone-lottie">
             <Lottie
@@ -117,14 +113,7 @@ function ImageUploader({
         </div>
       ) : (
         <div className="uploader-con-imagenes">
-          <div
-            className="preview-carousel"
-            onClick={() => onNavigate("next")}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === "Enter" && onNavigate("next")}
-            aria-label="Avanzar imagen"
-          >
+          <div className="preview-carousel" onClick={() => onNavigate("next")}>
             <img
               src={previews[indice]}
               alt={`Preview ${indice + 1}`}
@@ -180,10 +169,6 @@ function ImageUploader({
                 key={src}
                 className={`thumbnail-item${idx === indice ? " active" : ""}`}
                 onClick={() => onSelectIndice(idx)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === "Enter" && onSelectIndice(idx)}
-                aria-label={`Ver imagen ${idx + 1}`}
               >
                 <img src={src} alt={`Thumb ${idx + 1}`} />
                 <button
@@ -200,14 +185,7 @@ function ImageUploader({
               </div>
             ))}
 
-            <div
-              className="thumbnail-add"
-              onClick={() => inputRef.current.click()}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
-              aria-label="Agregar más fotos"
-            >
+            <div className="thumbnail-add" onClick={() => inputRef.current.click()}>
               <span className="thumbnail-add-icon">+</span>
               <span className="thumbnail-add-text">Añadir</span>
             </div>

@@ -45,6 +45,7 @@ export default function TeamCarousel({ images, currentSlide, onNext, onPrev, onG
         </AnimatePresence>
 
         <button
+          type="button"
           className="carousel-btn carousel-btn-prev"
           onClick={onPrev}
           aria-label="Anterior"
@@ -52,6 +53,7 @@ export default function TeamCarousel({ images, currentSlide, onNext, onPrev, onG
           <FaChevronLeft />
         </button>
         <button
+          type="button"
           className="carousel-btn carousel-btn-next"
           onClick={onNext}
           aria-label="Siguiente"
@@ -62,7 +64,8 @@ export default function TeamCarousel({ images, currentSlide, onNext, onPrev, onG
         <div className="carousel-indicators">
           {images.map((img, idx) => (
             <button
-              key={img.alt} 
+              type="button"
+              key={img.alt}
               className={`indicator ${idx === currentSlide ? "active" : ""}`}
               onClick={() => onGoTo(idx)}
               aria-label={`Ir a imagen ${idx + 1}`}

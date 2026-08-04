@@ -30,27 +30,42 @@ export default function DashboardEliminaciones() {
 
   const cargarSolicitudes = useCallback(async () => {
     setLoading(true);
-    const resultado = await listarSolicitudesEliminacionAdmin({
-      estado: estadoFiltro || undefined,
-      page: pagina,
-      size: 10,
-    });
-    if (resultado.exitoso) {
-      setSolicitudes(resultado.datos.content || []);
-      setTotalPaginas(resultado.datos.totalPages || 0);
-    } else {
-      toast.error(resultado.mensaje);
+
+    try {
+      const resultado = await listarSolicitudesEliminacionAdmin({
+        estado: estadoFiltro || undefined,
+        page: pagina,
+        size: 10,
+      });
+
+      if (resultado.exitoso) {
+        setSolicitudes(resultado.datos.content || []);
+        setTotalPaginas(resultado.datos.totalPages || 0);
+      } else {
+        toast.error(resultado.mensaje);
+      }
+    } catch (error) {
+      console.error("Error al cargar solicitudes de eliminación:", error);
+      toast.error("No se pudieron cargar las solicitudes de eliminación.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [estadoFiltro, pagina]);
 
   const cargarMetricas = useCallback(async () => {
     setCargandoMetricas(true);
-    const resultado = await obtenerMetricasEliminacionAdmin();
-    if (resultado.exitoso) {
-      setMetricas(resultado.datos);
+
+    try {
+      const resultado = await obtenerMetricasEliminacionAdmin();
+      if (resultado.exitoso) {
+        setMetricas(resultado.datos);
+      }
+    } catch (error) {
+      console.error("Error al cargar métricas de eliminación:", error);
+      toast.error("No se pudieron cargar las métricas.");
+    } finally {
+      setCargandoMetricas(false);
     }
-    setCargandoMetricas(false);
   }, []);
 
   useEffect(() => {

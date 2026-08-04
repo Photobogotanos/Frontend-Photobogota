@@ -52,28 +52,18 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
   };
 
   return (
-    <div
-      className="review-card"
-      role="button"
-      tabIndex={0}
-      onClick={handleCardClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          handleCardClick();
-        }
-      }}
-    >
+    <div className="review-card" onClick={handleCardClick}>
       {/* Header */}
       <div className="review-header">
         <div className="review-title-container">
-          <h3
+          <button
+            type="button"
             className="review-title"
             onClick={handleTitleClick}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", background: "none", border: "none", padding: 0, textAlign: "left" }}
           >
             {title}
-          </h3>
+          </button>
           <div className="review-meta">
             <span className="review-date">{date}</span>
             <div className="review-rating">
@@ -91,6 +81,7 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
         <div className="review-respuesta-container">
           {!mostrarRespuesta ? (
             <button
+              type="button"
               className="btn-responder-resena"
               onClick={(e) => {
                 e.stopPropagation();
@@ -101,7 +92,11 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
             </button>
           ) : (
             <div className="respuesta-form">
+              <label htmlFor={`respuesta-review-${title}`} className="visually-hidden">
+                Respuesta a la reseña
+              </label>
               <textarea
+                id={`respuesta-review-${title}`}
                 className="respuesta-input"
                 placeholder="Escribe tu respuesta..."
                 value={respuesta}
@@ -110,6 +105,7 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
               />
               <div className="respuesta-actions">
                 <button
+                  type="button"
                   className="btn-cancelar-respuesta"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -119,7 +115,8 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
                 >
                   Cancelar
                 </button>
-                <button 
+                <button
+                  type="button"
                   className="btn-enviar-respuesta"
                   onClick={handleResponder}
                   disabled={!respuesta.trim()}

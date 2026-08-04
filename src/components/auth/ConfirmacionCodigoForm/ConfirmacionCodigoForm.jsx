@@ -115,9 +115,13 @@ export default function ConfirmacionCodigoForm() {
       </p>
 
       <div className="confirmacion-inputs">
+        <label htmlFor={`confirmacion-codigo-0`} className="visually-hidden">
+          Código de verificación, dígito 1
+        </label>
         {codigo.map((num, idx) => (
           <input
             key={DIGIT_SLOTS[idx]}
+            id={`confirmacion-codigo-${idx}`}
             type="text"
             inputMode="numeric"
             autoComplete="one-time-code"
@@ -127,6 +131,7 @@ export default function ConfirmacionCodigoForm() {
             ref={(el) => (inputsRef.current[idx] = el)}
             onChange={(e) => handleChange(e, idx)}
             onKeyDown={(e) => handleKeyDown(e, idx)}
+            aria-label={`Código de verificación, dígito ${idx + 1}`}
           />
         ))}
       </div>

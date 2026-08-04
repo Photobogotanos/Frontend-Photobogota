@@ -342,6 +342,7 @@ export default function EliminarCuenta({ onHide }) {
           className="elim-link-btn"
           onClick={handleReenviarCodigo}
           disabled={enviando}
+          aria-label="Reenviar código de confirmación"
         >
           ¿No recibiste el código? Reenviar
         </button>

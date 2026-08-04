@@ -6,7 +6,7 @@ function BackButton() {
   const navigate = useNavigate();
 
   return (
-    <button className="back-button" onClick={() => navigate(-1)}>
+    <button type="button" className="back-button" onClick={() => navigate(-1)}>
       <IoArrowBack /> Atrás
     </button>
   );

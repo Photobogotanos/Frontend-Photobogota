@@ -223,6 +223,14 @@ const AdminLogsViewer = () => {
                 key={index}
                 className={`log-line ${nivelVisual ? `log-${nivelVisual.toLowerCase()}` : ''}`}
                 onClick={() => setLogSeleccionado({ raw: linea, parsed, id: index })}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setLogSeleccionado({ raw: linea, parsed, id: index });
+                    }
+                }}
+                role="button"
+                tabIndex={0}
             >
                 <div className="log-line-number">{index + 1}</div>
                 {nivelVisual && (

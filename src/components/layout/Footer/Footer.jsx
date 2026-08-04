@@ -25,13 +25,13 @@ export default function Footer() {
             </p>
 
             <div className="footer-social">
-              <button className="footer-social-link" aria-label="Facebook" onClick={() => window.open('https://facebook.com', '_blank', 'noopener,noreferrer')}>
+              <button type="button" className="footer-social-link" aria-label="Facebook" onClick={() => window.open('https://facebook.com', '_blank', 'noopener,noreferrer')}>
                 <FaFacebookF size={26} />
               </button>
-              <button className="footer-social-link" aria-label="YouTube" onClick={() => window.open('https://youtube.com', '_blank', 'noopener,noreferrer')}>
+              <button type="button" className="footer-social-link" aria-label="YouTube" onClick={() => window.open('https://youtube.com', '_blank', 'noopener,noreferrer')}>
                 <FaYoutube size={26} />
               </button>
-              <button className="footer-social-link" aria-label="Instagram" onClick={() => window.open('https://instagram.com', '_blank', 'noopener,noreferrer')}>
+              <button type="button" className="footer-social-link" aria-label="Instagram" onClick={() => window.open('https://instagram.com', '_blank', 'noopener,noreferrer')}>
                 <FaInstagram size={26} />
               </button>
             </div>

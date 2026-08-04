@@ -289,6 +289,7 @@ export default function LoginForm() {
               className="eye-icon"
               onClick={() => dispatch({ type: "TOGGLE_MOSTRAR_CONTRASENA" })}
               disabled={state.cargando}
+              aria-label={state.mostrarContrasena ? "Ocultar contraseña" : "Mostrar contraseña"}
             >
               {state.mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
             </button>

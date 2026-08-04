@@ -91,9 +91,17 @@ export default function Notificaciones() {
     }
   };
 
+  const handleKeyDownNotificacion = (e, notif) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClickNotificacion(notif);
+    }
+  };
+
   return (
     <div className="notificaciones-wrapper position-relative">
       <button
+        type="button"
         className={`btn-campana ${contador > 0 ? "shake-bell" : ""}`}
         onClick={() => {
           setMostrarPanel(!mostrarPanel);
@@ -136,7 +144,9 @@ export default function Notificaciones() {
                     notif.spotId ? "notif-clickeable" : ""
                   }`}
                   onClick={() => handleClickNotificacion(notif)}
+                  onKeyDown={(e) => handleKeyDownNotificacion(e, notif)}
                   role={notif.spotId ? "button" : undefined}
+                  tabIndex={notif.spotId ? 0 : undefined}
                 >
                   <div>
                     <strong>{notif.titulo}</strong>
@@ -148,6 +158,7 @@ export default function Notificaciones() {
                   <div className="notif-actions">
                     {!notif.leida && (
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleMarcarLeida(notif.id);
@@ -158,6 +169,7 @@ export default function Notificaciones() {
                       </button>
                     )}
                     <button
+                      type="button"
                       onClick={(e) => handleEliminar(notif.id, e)}
                       title="Eliminar"
                       className="text-danger"

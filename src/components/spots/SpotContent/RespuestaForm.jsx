@@ -8,7 +8,11 @@ const RespuestaForm = ({ resenaId, onEnviar, onCancelar }) => {
 
   return (
     <div className="respuesta-form">
+      <label htmlFor="respuesta-resena" className="visually-hidden">
+        Respuesta a la reseña
+      </label>
       <textarea
+        id="respuesta-resena"
         placeholder="Escribe tu respuesta a esta reseña..."
         className="respuesta-input"
         rows="3"
@@ -16,10 +20,11 @@ const RespuestaForm = ({ resenaId, onEnviar, onCancelar }) => {
         onChange={(e) => setTexto(e.target.value)}
       />
       <div className="respuesta-acciones">
-        <button className="btn-cancelar-respuesta" onClick={onCancelar}>
+        <button type="button" className="btn-cancelar-respuesta" onClick={onCancelar}>
           Cancelar
         </button>
         <button
+          type="button"
           className="btn-enviar-respuesta"
           onClick={() => onEnviar(resenaId, texto)}
         >
