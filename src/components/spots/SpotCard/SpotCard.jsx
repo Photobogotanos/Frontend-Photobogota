@@ -1,19 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaStar, FaHeart } from "react-icons/fa6";
+import { FaStar, FaHeart, FaBookmark, FaRegBookmark } from "react-icons/fa6";
 import { FaFlag } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
 import { useAuth } from "@/context/AuthContext";
+import { useGuardados } from "@/hooks/useGuardados";
 import ReportarModal from "@/components/spots/SpotContent/ReportarModal";
 import "./SpotCard.css";
 
-export default function SpotCard({ id, img, title, rating, tags }) {
+export default function SpotCard({ id, img, title, rating, tags, onToggleGuardado }) {
   const navigate = useNavigate();
   const { logueado } = useAuth();
+  const { isGuardado, toggleGuardado } = useGuardados();
   const [modalReporteAbierto, setModalReporteAbierto] = useState(false);
   const [imgRota, setImgRota] = useState(!img);
+  const [guardando, setGuardando] = useState(false);
 
   const irAlSpot = () => navigate(`/spot/${id}`);
 
@@ -33,6 +36,23 @@ export default function SpotCard({ id, img, title, rating, tags }) {
     setModalReporteAbierto(true);
   };
 
+  const handleGuardar = async (e) => {
+    e.stopPropagation();
+    if (!logueado) {
+      toast.error("Inicia sesión para guardar spots");
+      return;
+    }
+    setGuardando(true);
+    const resultado = await toggleGuardado(id);
+    if (resultado.exitoso) {
+      toast.success(resultado.mensaje);
+      onToggleGuardado?.();
+    } else {
+      toast.error(resultado.mensaje);
+    }
+    setGuardando(false);
+  };
+
   return (
     <div
       className="spot-card-horizontal"
@@ -49,6 +69,17 @@ export default function SpotCard({ id, img, title, rating, tags }) {
         title="Reportar"
       >
         <FaFlag />
+      </button>
+
+      <button
+        type="button"
+        className={`btn-guardar-spot ${isGuardado(id) ? "guardado" : ""}`}
+        onClick={handleGuardar}
+        aria-label={isGuardado(id) ? "Quitar de guardados" : "Guardar spot"}
+        title={isGuardado(id) ? "Quitar de guardados" : "Guardar spot"}
+        disabled={guardando}
+      >
+        {isGuardado(id) ? <FaBookmark /> : <FaRegBookmark />}
       </button>
 
       {imgRota ? (

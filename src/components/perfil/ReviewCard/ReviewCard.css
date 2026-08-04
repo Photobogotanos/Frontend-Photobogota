@@ -111,8 +111,8 @@
   text-overflow: ellipsis;
 }
 
-/* ENLACE "VER LUGAR" - versión <a> */
-.ver-lugar-link {
+/* ENLACE "VER LUGAR" - versión button (navegación programática) */
+.ver-spot-link {
   color: var(--color-primary);
   font-size: 0.9rem;
   font-weight: 500;
@@ -123,6 +123,10 @@
   gap: 6px;
   transition: all 0.2s ease;
   width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
 }
 
 .ver-lugar-link:hover {
