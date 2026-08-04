@@ -87,6 +87,22 @@ export const getSpotsGuardados = () =>
   clienteApi.get("/usuarios/me/guardados");
 
 /**
+ * Guardar un spot en la lista de guardados del usuario autenticado
+ * @param {string|number} spotId
+ * @returns {Promise<{ data: Spot }>}
+ */
+export const postGuardarSpot = (spotId) =>
+  clienteApi.post(`/usuarios/me/guardados/${spotId}`);
+
+/**
+ * Quitar un spot de la lista de guardados del usuario autenticado
+ * @param {string|number} spotId
+ * @returns {Promise<{ data: { mensaje: string } }>}
+ */
+export const deleteGuardarSpot = (spotId) =>
+  clienteApi.delete(`/usuarios/me/guardados/${spotId}`);
+
+/**
  * Verificar el código recibido por correo y establecer la nueva contraseña.
  * @param {{ email: string, codigo: string, nuevaContrasena: string }} body
  * @returns {Promise<{ data: { mensaje: string } }>}
