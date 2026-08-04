@@ -212,7 +212,7 @@ const AppRouter = () => {
           }
         />
         <Route
-          path="/admin/mantenimiento"
+          path="/admin/notificaciones-mantenimiento"
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <MantenimientoPage />

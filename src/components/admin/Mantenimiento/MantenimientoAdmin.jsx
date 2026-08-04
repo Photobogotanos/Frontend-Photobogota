@@ -19,10 +19,9 @@ const FORM_INICIAL = {
   mensajePersonalizado: "",
 };
 
-// Formato interno de flatpickr; el valor real que se envía al backend se
-// arma aparte en aIsoLocal() a partir del objeto Date, así que esto solo
-// afecta al input oculto.
-const FORMATO_FLATPICKR = "Y-m-d H:i";
+// Formato que se muestra en el input visible. El valor real que se envía al
+// backend se arma aparte en aIsoLocal() a partir del objeto Date.
+const FORMATO_FLATPICKR = "d/m/Y H:i";
 
 const formatearParaMostrar = (iso) => {
   if (!iso) return "—";
@@ -80,8 +79,6 @@ export default function MantenimientoAdmin() {
       enableTime: true,
       time_24hr: true,
       dateFormat: FORMATO_FLATPICKR,
-      altInput: true,
-      altFormat: "d/m/Y H:i",
       minDate: "today",
       onChange: ([date]) => setFechaInicio(date || null),
     });
@@ -90,8 +87,6 @@ export default function MantenimientoAdmin() {
       enableTime: true,
       time_24hr: true,
       dateFormat: FORMATO_FLATPICKR,
-      altInput: true,
-      altFormat: "d/m/Y H:i",
       minDate: "today",
       onChange: ([date]) => setFechaFin(date || null),
     });
@@ -204,20 +199,20 @@ export default function MantenimientoAdmin() {
         <div className="form-row">
           <div className="form-group">
             <label>Inicio</label>
-            <input ref={inicioRef} className="form-control" placeholder="Selecciona fecha y hora" readOnly />
+            <input ref={inicioRef} className="form-control rounded-pill" placeholder="Selecciona fecha y hora" readOnly />
           </div>
           <div className="form-group">
             <label>Fin</label>
-            <input ref={finRef} className="form-control" placeholder="Selecciona fecha y hora" readOnly />
+            <input ref={finRef} className="form-control rounded-pill" placeholder="Selecciona fecha y hora" readOnly />
           </div>
-        </div>
+        </div> 
 
         <div className="form-group">
           <label>Motivo</label>
           <input
             type="text"
             name="motivo"
-            className="form-control"
+            className="form-control rounded-pill"
             placeholder="Ej: Actualización de base de datos"
             value={form.motivo}
             onChange={handleChange}

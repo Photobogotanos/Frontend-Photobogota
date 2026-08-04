@@ -112,8 +112,9 @@ export default function Notificaciones() {
             <h6>Notificaciones ({contador})</h6>
             {contador > 0 && (
               <button
+                type="button"
                 onClick={handleMarcarTodas}
-                className="btn-sm text-primary"
+                className="btn-marcar-todas"
               >
                 Marcar todas como leídas
               </button>

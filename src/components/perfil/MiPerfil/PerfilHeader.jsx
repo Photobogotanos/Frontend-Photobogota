@@ -1,4 +1,4 @@
-import { FiEdit3, FiBell } from "react-icons/fi";
+import { FiEdit3, FiBell, FiFlag } from "react-icons/fi";
 import { FaUser, FaCrown, FaUserShield, FaStore } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import UserAvatar from "@/components/common/UserAvatar/UserAvatar";
@@ -45,6 +45,8 @@ const PerfilHeader = ({
   rol = "MIEMBRO",
   nivel = null,
   usandoMock = false,
+  esPerfilPropio = true,
+  onReportar,
 }) => {
   const mostrarNivel =
     rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
@@ -98,22 +100,35 @@ const PerfilHeader = ({
       </div>
 
       <div className="perfil-edit-wrapper">
-        <button
-          className="btn-editar-perfil"
-          onClick={() =>
-            dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: true })
-          }
-        >
-          <FiEdit3 size={18} /> Editar perfil
-        </button>
+        {esPerfilPropio ? (
+          <>
+            <button
+              className="btn-editar-perfil"
+              onClick={() =>
+                dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: true })
+              }
+            >
+              <FiEdit3 size={18} /> Editar perfil
+            </button>
 
-        <Link
-          to="/perfil/preferencias-notificaciones"
-          className="btn-notificaciones"
-          title="Configurar notificaciones"
-        >
-          <FiBell size={18} /> Notificaciones
-        </Link>
+            <Link
+              to="/perfil/preferencias-notificaciones"
+              className="btn-notificaciones"
+              title="Configurar notificaciones"
+            >
+              <FiBell size={18} /> Notificaciones
+            </Link>
+          </>
+        ) : (
+          <button
+            type="button"
+            className="btn-reportar-perfil"
+            onClick={onReportar}
+            aria-label="Reportar este perfil"
+          >
+            <FiFlag size={18} /> Reportar perfil
+          </button>
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import Container from "react-bootstrap/Container";
 import EnviarNotificacion from "@/components/admin/EnviarNotificacion/EnviarNotificacion";
+import "./EnviarNotificacionPage.css";
 
 const EnviarNotificacionPage = () => {
   return (
