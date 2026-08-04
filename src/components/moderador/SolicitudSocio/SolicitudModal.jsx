@@ -7,7 +7,7 @@ import {
   FiCheck, FiX, FiEdit3, FiUser, FiMail, FiPhone, FiMapPin,
   FiCalendar, FiTag, FiFileText, FiDownload, FiHash, FiSend,
 } from "react-icons/fi";
-import { getEstadoMeta, estaEnRevision, puedeEnviarCredenciales, formatearFecha } from "./estadoAspiranteUtils";
+import { getEstadoMeta, estaEnRevision, puedeEnviarCredenciales, formatearFecha } from "@/utils/estadoAspiranteUtils";
 
 // Este componente muestra el detalle completo de una solicitud.
 // Incluye el documento adjunto, información del negocio y propietario,

@@ -23,22 +23,7 @@ import {
   reenviarDocumentosAspirante,
   subirDocumentoAspirante,
 } from "@/services/aspirante.service";
-
-const ESTADO_LABELS = {
-  PENDIENTE: "Pendiente de revisión",
-  EN_CORRECCION: "Requiere corrección",
-  ENVIO_CREDENCIALES: "Aprobada · preparando tus credenciales",
-  APROBADO: "Aprobada",
-  RECHAZADO: "Rechazada",
-};
-
-const ESTADO_VARIANTS = {
-  PENDIENTE: "warning",
-  EN_CORRECCION: "info",
-  ENVIO_CREDENCIALES: "success",
-  APROBADO: "success",
-  RECHAZADO: "danger",
-};
+import { getEstadoMeta } from "@/utils/estadoAspiranteUtils";
 
 const SolicitudEnviada = () => {
   const [solicitudData, setSolicitudData] = useState(null);
@@ -179,8 +164,7 @@ const SolicitudEnviada = () => {
       })
     : "No disponible";
 
-  const estadoLabel = ESTADO_LABELS[solicitudData.estado] ?? solicitudData.estado;
-  const estadoVariant = ESTADO_VARIANTS[solicitudData.estado] ?? "secondary";
+  const { label: estadoLabel, variant: estadoVariant } = getEstadoMeta(solicitudData.estado);
   const requiereCorreccion = solicitudData.estado === "EN_CORRECCION";
   const esPendiente = solicitudData.estado === "PENDIENTE";
 
@@ -214,7 +198,7 @@ const SolicitudEnviada = () => {
                   <FiClock className="status-icon" />
                   <div className="status-content">
                     <span className="status-label">Estado:</span>
-                    <Badge bg={estadoVariant} className="status-badge">
+                    <Badge bg={estadoVariant}>
                       {estadoLabel}
                     </Badge>
                   </div>
@@ -332,10 +316,7 @@ const SolicitudEnviada = () => {
                       <FiTag className="info-icon" />
                       <div className="info-label-small">Categoría</div>
                     </div>
-                    <div>
-                      <div className="info-value-small">{solicitudData.categoria}</div>
-                      <span className="category-tag">{solicitudData.categoria}</span>
-                    </div>
+                    <span className="category-tag">{solicitudData.categoria}</span>
                   </div>
 
                   <div className="info-row">
