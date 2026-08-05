@@ -1,8 +1,9 @@
 allowBuilds:
   esbuild: true
-#minimumReleaseAge: 4320
+minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - eslint@10.8.0
+  - "@typescript-eslint/types@8.66.0"
 
-#packages:
+packages:
   - "."
