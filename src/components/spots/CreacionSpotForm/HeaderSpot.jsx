@@ -1,4 +1,5 @@
-export default function HeaderSpot() {
+
+export default function HeaderSpot({ esSocio }) {
   return (
     <div className="spot-header">
       <span className="spot-header-subtitle">{esSocio ? "Nuevo establecimiento" : "Nueva publicación"}</span>
@@ -6,4 +7,4 @@ export default function HeaderSpot() {
       <span className="spot-header-line" />
     </div>
   );
-}
+};
