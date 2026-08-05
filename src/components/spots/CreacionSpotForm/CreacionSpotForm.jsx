@@ -118,6 +118,8 @@ function ImageUploader({
         // Estado sin imágenes - Zona de drop
         <div
           className={`drop-zone${isDragging ? " dragging" : ""}`}
+          role="button"
+          tabIndex={0}
           onDragOver={(e) => {
             e.preventDefault();
             setIsDragging(true);
@@ -125,6 +127,12 @@ function ImageUploader({
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
           onClick={() => inputRef.current.click()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              inputRef.current.click();
+            }
+          }}
         >
           <div className="drop-zone-lottie">
             <Lottie
@@ -140,7 +148,18 @@ function ImageUploader({
       ) : (
         // Estado con imágenes - Carrusel de previews
         <div className="uploader-con-imagenes">
-          <div className="preview-carousel" onClick={() => onNavigate("next")}>
+          <div
+            className="preview-carousel"
+            role="button"
+            tabIndex={0}
+            onClick={() => onNavigate("next")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onNavigate("next");
+              }
+            }}
+          >
             <img
               src={previews[indice]}
               alt={`Preview ${indice + 1}`}
@@ -196,7 +215,16 @@ function ImageUploader({
               <div
                 key={src}
                 className={`thumbnail-item${idx === indice ? " active" : ""}`}
+                role="button"
+                tabIndex={0}
                 onClick={() => onSelectIndice(idx)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelectIndice(idx);
+                  }
+                }}
+                aria-label={`Seleccionar imagen ${idx + 1}`}
               >
                 <img src={src} alt={`Thumb ${idx + 1}`} />
                 <button
@@ -214,10 +242,15 @@ function ImageUploader({
             ))}
 
             {/* Botón para agregar más imágenes */}
-            <div className="thumbnail-add" onClick={() => inputRef.current.click()}>
+            <button
+              type="button"
+              className="thumbnail-add"
+              onClick={() => inputRef.current.click()}
+              aria-label="Añadir imagen"
+            >
               <span className="thumbnail-add-icon">+</span>
               <span className="thumbnail-add-text">Añadir</span>
-            </div>
+            </button>
           </div>
         </div>
       )}

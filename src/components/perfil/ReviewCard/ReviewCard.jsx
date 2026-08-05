@@ -51,8 +51,22 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
     irAlSpot();
   };
 
+  const handleCardKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleCardClick();
+    }
+  };
+
   return (
-    <div className="review-card" onClick={handleCardClick}>
+    
+    <div 
+      className="review-card" 
+      onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
+      role="button"
+      tabIndex={0}
+    >
       {/* Header */}
       <div className="review-header">
         <div className="review-title-container">

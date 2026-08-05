@@ -293,8 +293,9 @@ function PerfilFormulario({
               <Row className="g-3">
                 <Col md={12}>
                   <div className="fgroup">
-                    <label className="flabel">Nombre completo</label>
+                    <label htmlFor="nombresCompletos" className="flabel">Nombre completo</label>
                     <Form.Control
+                      id="nombresCompletos"
                       type="text"
                       name="nombresCompletos"
                       value={formData.nombresCompletos}
@@ -306,8 +307,9 @@ function PerfilFormulario({
                 </Col>
                 <Col md={12}>
                   <div className="fgroup">
-                    <label className="flabel">Biografía</label>
+                    <label htmlFor="biografia" className="flabel">Biografía</label>
                     <Form.Control
+                      id="biografia"
                       as="textarea"
                       rows={3}
                       name="biografia"
@@ -336,8 +338,9 @@ function PerfilFormulario({
               <Row className="g-3">
                 <Col md={7}>
                   <div className="fgroup">
-                    <label className="flabel">Correo electrónico</label>
+                    <label htmlFor="email" className="flabel">Correo electrónico</label>
                     <Form.Control
+                      id="email"
                       type="email"
                       name="email"
                       value={formData.email}
@@ -350,11 +353,12 @@ function PerfilFormulario({
                 </Col>
                 <Col md={5}>
                   <div className="fgroup">
-                    <label className="flabel">
+                    <label htmlFor="telefono" className="flabel">
                       <FaPhone style={{ fontSize: "0.7rem", marginRight: 5 }} />
                       Teléfono
                     </label>
                     <Form.Control
+                      id="telefono"
                       type="tel"
                       name="telefono"
                       value={formData.telefono}

@@ -26,9 +26,10 @@ const SocioPromociones = () => {
   const [filtroEstado, setFiltroEstado] = useState("todas");
 
   // Filtrar promociones según el estado seleccionado
-  const promocionesFiltradas = filtroEstado === "todas"
+
+  /* const promocionesFiltradas = filtroEstado === "todas"
     ? promocionesEjemplo
-    : promocionesEjemplo.filter(p => p.estado === filtroEstado);
+    : promocionesEjemplo.filter(p => p.estado === filtroEstado);*/
 
   // Obtener el color del badge según el estado
   const getBadgeColor = (estado) => {

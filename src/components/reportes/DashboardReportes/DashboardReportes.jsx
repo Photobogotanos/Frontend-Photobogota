@@ -53,6 +53,7 @@ export default function DashboardReportes() {
   }, [filtros]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarReportes();
   }, [cargarReportes]);
 

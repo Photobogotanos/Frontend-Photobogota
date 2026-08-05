@@ -30,6 +30,7 @@ export default function FotoPerfilModal({ show, onHide, foto, nombre }) {
           className="foto-perfil-container-modal"
           onMouseDown={(e) => e.stopPropagation()}
           onTouchStart={(e) => e.stopPropagation()}
+          role="presentation"
         >
           <button
             type="button"

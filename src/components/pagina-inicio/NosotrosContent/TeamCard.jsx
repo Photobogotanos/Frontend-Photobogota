@@ -20,6 +20,9 @@ export default function TeamCard({ member, index, flipped, playing, onCardClick,
       <div
         className={`team-card-3d ${flipped ? "flipped" : ""}`}
         onClick={onCardClick}
+        onKeyDown={(e) => e.key === "Enter" && onCardClick()}
+        role="button"
+        tabIndex={0}
       >
         <div className="team-card-inner-3d">
           {/* Front */}

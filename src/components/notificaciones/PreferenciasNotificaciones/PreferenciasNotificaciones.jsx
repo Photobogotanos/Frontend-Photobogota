@@ -45,6 +45,7 @@ const PreferenciasNotificaciones = ({
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     if (usuario) cargarPreferencias();
   }, [usuario]);
 
@@ -114,10 +115,12 @@ const PreferenciasNotificaciones = ({
 
         {/* Canal preferido con react-select */}
         <div className="mb-1 select-container">
-          <label className="form-label fw-bold section-title">
+          <label className="form-label fw-bold section-title" htmlFor="canalPreferido">
             Canal preferido
           </label>
           <Select
+            id="canalPreferido"
+            name="canalPreferido"
             options={canalOptions}
             value={canalOptions.find(
               (opt) => opt.value === preferencias.canalPreferido,

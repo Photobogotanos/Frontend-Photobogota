@@ -13,6 +13,7 @@ export default function ModalCambiarEstado({ show, reporte, onCerrar, onConfirma
 
   useEffect(() => {
     if (reporte) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
       setEstado(reporte.estado || "");
       setObservacion("");
     }

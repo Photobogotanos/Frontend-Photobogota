@@ -41,6 +41,7 @@ export default function Notificaciones() {
     if (usuario) {
       // Al entrar/recargar la sesión ya debe quedar el contador actualizado,
       // sin necesidad de abrir el panel de la campana.
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
       cargarContador();
       // Polling cada 30 segundos
       const interval = setInterval(cargarContador, 30000);
@@ -53,7 +54,7 @@ export default function Notificaciones() {
     if (ok) {
       // La dejamos en la lista, solo se actualiza su estado a leída.
       setNotificaciones((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, leida: true } : n))
+        prev.map((n) => (n.id === id ? { ...n, leida: true } : n)),
       );
       setContador((c) => Math.max(0, c - 1));
     }

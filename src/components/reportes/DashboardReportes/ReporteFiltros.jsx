@@ -6,15 +6,14 @@ import {
   TIPOS_OBJETIVO_REPORTE,
 } from "@/services/reporte.service";
 
-// Filtros del dashboard. No tiene estado propio — todo se lo pasa el padre,
-// igual que SolicitudFiltros en el módulo de solicitudes de socio.
 export default function ReporteFiltros({ filtros, onCambiarFiltro }) {
   return (
     <div className="reporte-filtros">
       <div className="reporte-filtro-campo">
-        <label>Estado</label>
+        <label htmlFor="estado">Estado</label>
         <Form.Select
           size="sm"
+          id="estado"
           value={filtros.estado}
           onChange={(e) => onCambiarFiltro("estado", e.target.value)}
         >
@@ -28,9 +27,10 @@ export default function ReporteFiltros({ filtros, onCambiarFiltro }) {
       </div>
 
       <div className="reporte-filtro-campo">
-        <label>Gravedad</label>
+        <label htmlFor="gravedad">Gravedad</label>
         <Form.Select
           size="sm"
+          id="gravedad"
           value={filtros.gravedad}
           onChange={(e) => onCambiarFiltro("gravedad", e.target.value)}
         >
@@ -44,9 +44,10 @@ export default function ReporteFiltros({ filtros, onCambiarFiltro }) {
       </div>
 
       <div className="reporte-filtro-campo">
-        <label>Tipo</label>
+        <label htmlFor="tipo">Tipo</label>
         <Form.Select
           size="sm"
+          id="tipo"
           value={filtros.categoria}
           onChange={(e) => onCambiarFiltro("categoria", e.target.value)}
         >
@@ -60,9 +61,10 @@ export default function ReporteFiltros({ filtros, onCambiarFiltro }) {
       </div>
 
       <div className="reporte-filtro-campo">
-        <label>Objetivo</label>
+        <label htmlFor="tipo-objetivo">Objetivo</label>
         <Form.Select
           size="sm"
+          id="tipo-objetivo"
           value={filtros.tipoObjetivo}
           onChange={(e) => onCambiarFiltro("tipoObjetivo", e.target.value)}
         >
@@ -76,9 +78,10 @@ export default function ReporteFiltros({ filtros, onCambiarFiltro }) {
       </div>
 
       <div className="reporte-filtro-campo">
-        <label>Escalados</label>
+        <label htmlFor="escalado">Escalados</label>
         <Form.Select
           size="sm"
+          id="escalado"
           value={filtros.escalado}
           onChange={(e) => onCambiarFiltro("escalado", e.target.value)}
         >
@@ -89,9 +92,10 @@ export default function ReporteFiltros({ filtros, onCambiarFiltro }) {
       </div>
 
       <div className="reporte-filtro-campo">
-        <label>Ordenar por</label>
+        <label htmlFor="orden">Ordenar por</label>
         <Form.Select
           size="sm"
+          id="orden"
           value={filtros.orden}
           onChange={(e) => onCambiarFiltro("orden", e.target.value)}
         >

@@ -54,7 +54,14 @@ export default function SpotCard({ id, img, title, rating, tags, onToggleGuardad
   };
 
   return (
-    <div className="spot-card-horizontal" onClick={irAlSpot}>
+    <div
+      className="spot-card-horizontal"
+      onClick={irAlSpot}
+      role="button"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      aria-label={`Ver ${title}`}
+    >
       <button
         type="button"
         className="btn-reportar-spot-card"

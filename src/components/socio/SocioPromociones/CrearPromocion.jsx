@@ -92,6 +92,8 @@ function ImageUploader({
       {total === 0 ? (
         <div
           className={`drop-zone${isDragging ? " dragging" : ""}`}
+          role="button"
+          tabIndex={0}
           onDragOver={(e) => {
             e.preventDefault();
             setIsDragging(true);
@@ -99,6 +101,12 @@ function ImageUploader({
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
           onClick={() => inputRef.current.click()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              inputRef.current.click();
+            }
+          }}
         >
           <div className="drop-zone-lottie">
             <Lottie
@@ -113,7 +121,19 @@ function ImageUploader({
         </div>
       ) : (
         <div className="uploader-con-imagenes">
-          <div className="preview-carousel" onClick={() => onNavigate("next")}>
+          <div
+            className="preview-carousel"
+            role="button"
+            tabIndex={0}
+            onClick={() => onNavigate("next")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onNavigate("next");
+              }
+            }}
+            aria-label="Next photo"
+          >
             <img
               src={previews[indice]}
               alt={`Preview ${indice + 1}`}
@@ -122,46 +142,37 @@ function ImageUploader({
             <span className="preview-counter">
               {indice + 1} / {total}
             </span>
-
-            {total > 1 && (
-              <>
-                <button
-                  type="button"
-                  className="preview-nav prev"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onNavigate("prev");
-                  }}
-                  aria-label="Anterior"
-                >
-                  <FaChevronLeft />
-                </button>
-                <button
-                  type="button"
-                  className="preview-nav next"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onNavigate("next");
-                  }}
-                  aria-label="Siguiente"
-                >
-                  <FaChevronRight />
-                </button>
-              </>
-            )}
-
-            <button
-              type="button"
-              className="preview-remove"
-              onClick={(e) => {
-                e.stopPropagation();
-                onRemove(indice);
-              }}
-              aria-label="Eliminar imagen"
-            >
-              <FaTrash />
-            </button>
           </div>
+
+          {total > 1 && (
+            <div className="preview-controls">
+              <button
+                type="button"
+                className="preview-nav prev"
+                onClick={() => onNavigate("prev")}
+                aria-label="Anterior"
+              >
+                <FaChevronLeft />
+              </button>
+              <button
+                type="button"
+                className="preview-nav next"
+                onClick={() => onNavigate("next")}
+                aria-label="Siguiente"
+              >
+                <FaChevronRight />
+              </button>
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="preview-remove"
+            onClick={() => onRemove(indice)}
+            aria-label="Eliminar imagen"
+          >
+            <FaTrash />
+          </button>
 
           <div className="thumbnails-strip">
             {previews.map((src, idx) => (
@@ -169,6 +180,14 @@ function ImageUploader({
                 key={src}
                 className={`thumbnail-item${idx === indice ? " active" : ""}`}
                 onClick={() => onSelectIndice(idx)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelectIndice(idx);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
               >
                 <img src={src} alt={`Thumb ${idx + 1}`} />
                 <button
@@ -185,10 +204,14 @@ function ImageUploader({
               </div>
             ))}
 
-            <div className="thumbnail-add" onClick={() => inputRef.current.click()}>
+            <button
+              type="button"
+              className="thumbnail-add"
+              onClick={() => inputRef.current.click()}
+            >
               <span className="thumbnail-add-icon">+</span>
               <span className="thumbnail-add-text">Añadir</span>
-            </div>
+            </button>
           </div>
         </div>
       )}
@@ -242,6 +265,7 @@ export default function CrearPromocion() {
     dispatch({ type: "SET_INDICE_IMAGEN", payload: next });
   };
 
+  /*
   const handleSubmit = () => {
     const payload = {
       titulo: state.titulo,
@@ -256,6 +280,7 @@ export default function CrearPromocion() {
     console.log("Payload a enviar:", payload);
     // Aquí va tu llamada a la API
   };
+  */
 
   return (
     <div className="promociones-container">
@@ -267,11 +292,12 @@ export default function CrearPromocion() {
         <PromoDisponibilidad state={state} dispatch={dispatch} />
 
         <div className="mt-4">
-          <label className="promo-label mb-2">
+          <label className="promo-label mb-2" htmlFor="imagenPromo">
             <FaCamera className="me-2" />
             Imágenes de la promoción
           </label>
           <ImageUploader
+            id="imagenPromo"
             previews={state.previews}
             indice={state.indiceImagen}
             onImageChange={handleImagen}
