@@ -6,7 +6,7 @@ import PerfilHeader from "../MiPerfil/PerfilHeader";
 import PerfilStats from "../MiPerfil/PerfilStats";
 import PerfilTabs from "../MiPerfil/PerfilTabs";
 import FotoPerfilModal from "../FotoPerfilModal/FotoPerfilModal";
-import ReportarModal from "@/components/spots/SpotContent/ReportarModal";
+import ReportarPerfilModal from "@/components/perfil/ReportarPerfilModal/ReportarPerfilModal";
 import { obtenerPerfil } from "@/services/usuario.service";
 import { useAuth } from "@/context/AuthContext";
 import "./UsuarioPerfil.css";
@@ -220,11 +220,10 @@ export default function UsuarioPerfil() {
         nombre={perfilData.nombresCompletos}
       />
 
-      <ReportarModal
+      <ReportarPerfilModal
         show={mostrarReporte}
-        onCerrar={() => setMostrarReporte(false)}
-        spotId={null}
-        usuarioAReportar={perfilData.nombreUsuario}
+        onHide={() => setMostrarReporte(false)}
+        perfilData={perfilData}
       />
     </Container>
   );
