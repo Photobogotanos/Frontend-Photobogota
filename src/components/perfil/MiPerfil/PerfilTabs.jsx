@@ -212,8 +212,8 @@ const PerfilTabs = ({
           }
         }
 
-        // Guardados: miembro + staff
-        if (esMiembro || esStaff) {
+        // Guardados: solo para el perfil propio
+        if (esPerfilPropio && (esMiembro || esStaff)) {
           try {
             const resGuardados = await obtenerSpotsGuardados();
             if (

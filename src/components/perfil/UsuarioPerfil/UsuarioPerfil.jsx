@@ -70,6 +70,12 @@ export default function UsuarioPerfil() {
             totalGuardados: resultado.datos.totalGuardados ?? 0,
           }));
           setNoExiste(false);
+
+          if (resultado.esMock) {
+            setError(
+              "Servidor no disponible. Mostrando datos de demostración.",
+            );
+          }
         } else {
           // 404 o error de negocio: el service retorna exitoso:false + mensaje
           const es404 = /no existe/i.test(resultado?.mensaje || "");
