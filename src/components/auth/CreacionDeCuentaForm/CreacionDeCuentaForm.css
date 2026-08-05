@@ -171,7 +171,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .eye-icon:hover {
   color: var(--color-primary, #7c6cbb);
 }

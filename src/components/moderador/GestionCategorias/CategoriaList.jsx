@@ -21,6 +21,8 @@ import {
 import SpinnerLoader from "@/components/common/SpinnerLoader/SpinnerLoader";
 import "./CategoriaList.css";
 
+const estaActiva = (item) => item.activo === true;
+
 const CategoriaList = () => {
   const [categorias, setCategorias] = useState([]);
   const [cargando, setCargando] = useState(false);
@@ -151,8 +153,6 @@ const CategoriaList = () => {
     }
   };
 
-  const estaActiva = (item) => item.activo === true;
-
   const renderItem = (item) => (
     <div
       key={item.id}
@@ -166,6 +166,7 @@ const CategoriaList = () => {
       </div>
       <div className="item-acciones">
         <button
+          type="button"
           className={`btn-toggle ${estaActiva(item) ? "active" : "inactive"}`}
           onClick={() => handleToggle(item.id)}
           title={estaActiva(item) ? "Desactivar" : "Activar"}
@@ -177,10 +178,20 @@ const CategoriaList = () => {
         >
           {estaActiva(item) ? "Activa" : "Inactiva"}
         </span>
-        <button className="btn-edit" onClick={() => handleEditar(item)}>
+        <button
+          type="button"
+          className="btn-edit"
+          onClick={() => handleEditar(item)}
+          aria-label="Editar"
+        >
           <FaEdit />
         </button>
-        <button className="btn-delete" onClick={() => handleEliminar(item.id)}>
+        <button
+          type="button"
+          className="btn-delete"
+          onClick={() => handleEliminar(item.id)}
+          aria-label="Eliminar"
+        >
           <FaTrash />
         </button>
       </div>
@@ -195,16 +206,17 @@ const CategoriaList = () => {
           <input
             type="text"
             placeholder="Buscar categoría..."
+            aria-label="Buscar categoría"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             className="search-input"
           />
         </div>
         <div className="actions">
-          <button className="btn-refresh" onClick={cargarCategorias}>
+          <button type="button" className="btn-refresh" onClick={cargarCategorias}>
             <FaSync /> Actualizar
           </button>
-          <button className="btn-primary" onClick={handleCrear}>
+          <button type="button" className="btn-primary" onClick={handleCrear}>
             <FaPlus /> Nueva Categoría
           </button>
         </div>
@@ -268,12 +280,13 @@ const CategoriaList = () => {
         </Modal.Body>
         <Modal.Footer>
           <button
+            type="button"
             className="btn btn-secondary"
             onClick={() => setShowModal(false)}
           >
             Cancelar
           </button>
-          <button className="btn btn-primary" onClick={handleGuardar}>
+          <button type="button" className="btn btn-primary" onClick={handleGuardar}>
             {editItem ? "Actualizar" : "Crear"}
           </button>
         </Modal.Footer>

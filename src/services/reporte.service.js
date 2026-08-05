@@ -1,7 +1,5 @@
 import {
   postCrearReporte,
-  getMisReportes,
-  getReportePorId,
   postSubirEvidenciaReporte,
   getDashboardReportes,
   patchCambiarEstadoReporte,
@@ -163,40 +161,6 @@ export const reportarUsuario = async (nombreUsuario, body) => {
   });
 
   return resultado;
-};
-
-export const listarMisReportes = async () => {
-  try {
-    const response = await getMisReportes();
-    return {
-      exitoso: true,
-      datos: response.data || [],
-      mensaje: "Reportes obtenidos exitosamente",
-    };
-  } catch (error) {
-    const mensaje =
-      error.response?.data?.mensaje ||
-      error.response?.data?.message ||
-      "Error al obtener tus reportes";
-    return { exitoso: false, datos: [], mensaje };
-  }
-};
-
-export const obtenerReportePorId = async (id) => {
-  try {
-    const response = await getReportePorId(id);
-    return {
-      exitoso: true,
-      datos: response.data || null,
-      mensaje: "Reporte obtenido exitosamente",
-    };
-  } catch (error) {
-    const mensaje =
-      error.response?.data?.mensaje ||
-      error.response?.data?.message ||
-      "Error al obtener el reporte";
-    return { exitoso: false, datos: null, mensaje };
-  }
 };
 
 /**

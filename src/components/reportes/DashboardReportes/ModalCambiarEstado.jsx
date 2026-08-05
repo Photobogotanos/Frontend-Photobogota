@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -8,16 +8,8 @@ import { ESTADOS_REPORTE } from "@/services/reporte.service";
 // RESUELTO, avisamos que eso dispara la validación del moderador
 // (Etapa 2, punto 4) una vez esté conectado el sistema de notificaciones.
 export default function ModalCambiarEstado({ show, reporte, onCerrar, onConfirmar }) {
-  const [estado, setEstado] = useState("");
+  const [estado, setEstado] = useState(reporte?.estado || "");
   const [observacion, setObservacion] = useState("");
-
-  useEffect(() => {
-    if (reporte) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
-      setEstado(reporte.estado || "");
-      setObservacion("");
-    }
-  }, [reporte]);
 
   const handleCerrar = () => {
     setObservacion("");

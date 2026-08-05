@@ -19,11 +19,6 @@ export default function Notificaciones() {
   const [mostrarPanel, setMostrarPanel] = useState(false);
   const [cargando, setCargando] = useState(false);
 
-  const cargarContador = async () => {
-    const contadorRes = await obtenerContadorNoLeidas();
-    setContador(contadorRes);
-  };
-
   const cargarDatos = async () => {
     setCargando(true);
     // Traemos leídas y no leídas para que al marcar como leída la notificación
@@ -38,15 +33,23 @@ export default function Notificaciones() {
   };
 
   useEffect(() => {
-    if (usuario) {
-      // Al entrar/recargar la sesión ya debe quedar el contador actualizado,
-      // sin necesidad de abrir el panel de la campana.
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
-      cargarContador();
-      // Polling cada 30 segundos
-      const interval = setInterval(cargarContador, 30000);
-      return () => clearInterval(interval);
-    }
+    if (!usuario) return;
+    let activo = true;
+
+    const cargarContadorSeguro = async () => {
+      const contadorRes = await obtenerContadorNoLeidas();
+      if (activo) setContador(contadorRes);
+    };
+
+    // Al entrar/recargar la sesión ya debe quedar el contador actualizado,
+    // sin necesidad de abrir el panel de la campana.
+    cargarContadorSeguro();
+    // Polling cada 30 segundos
+    const interval = setInterval(cargarContadorSeguro, 30000);
+    return () => {
+      activo = false;
+      clearInterval(interval);
+    };
   }, [usuario]);
 
   const handleMarcarLeida = async (id) => {
@@ -72,13 +75,11 @@ export default function Notificaciones() {
     e.stopPropagation();
     const ok = await eliminarNotif(id);
     if (ok) {
-      setNotificaciones((prev) => {
-        const eliminada = prev.find((n) => n.id === id);
-        if (eliminada && !eliminada.leida) {
-          setContador((c) => Math.max(0, c - 1));
-        }
-        return prev.filter((n) => n.id !== id);
-      });
+      const wasUnread = notificaciones.find((n) => n.id === id)?.leida === false;
+      setNotificaciones((prev) => prev.filter((n) => n.id !== id));
+      if (wasUnread) {
+        setContador((c) => Math.max(0, c - 1));
+      }
     }
   };
 

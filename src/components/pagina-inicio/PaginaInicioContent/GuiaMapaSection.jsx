@@ -17,16 +17,16 @@ export default function GuiaMapaSection({ onMarkerClick }) {
     const spotsMapa = getSpots();
 
     // Filtramos y formateamos los spots para que tengan "coord"
-    const spotsFormateados = spotsMapa
-        .filter(spot => {
-            const lat = parseFloat(spot.latitud);
-            const lng = parseFloat(spot.longitud);
-            return !isNaN(lat) && !isNaN(lng);
-        })
-        .map(spot => ({
+    const spotsFormateados = [];
+    for (const spot of spotsMapa) {
+        const lat = parseFloat(spot.latitud);
+        const lng = parseFloat(spot.longitud);
+        if (isNaN(lat) || isNaN(lng)) continue;
+        spotsFormateados.push({
             ...spot,
-            coord: [parseFloat(spot.latitud), parseFloat(spot.longitud)]
-        }));
+            coord: [lat, lng]
+        });
+    }
 
     return (
         <LazyMotion features={domAnimation}>

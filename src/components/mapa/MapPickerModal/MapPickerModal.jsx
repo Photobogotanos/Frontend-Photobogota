@@ -48,33 +48,23 @@ function LocationMarker({ position, setPosition }) {
 }
 
 // Fuerza a Leaflet a recalcular el tamaño cuando el modal se abre
-function MapResizer({ show }) {
+function MapResizer() {
   const map = useMap();
   useEffect(() => {
-    if (show) {
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 200);
-    }
-  }, [show, map]);
+    const id = setTimeout(() => {
+      map.invalidateSize();
+    }, 200);
+    return () => clearTimeout(id);
+  }, [map]);
   return null;
 }
 
 export default function MapPickerModal({
-  show,
   onHide,
   onConfirm,
   initialPosition = [4.6529, -74.075], // Centro de Bogotá
 }) {
   const [position, setPosition] = useState(initialPosition);
-
-  // Cuando se abre el modal, usamos la posición actual si existe
-  useEffect(() => {
-    if (show && initialPosition) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
-      setPosition(initialPosition);
-    }
-  }, [show, initialPosition]);
 
   const handleConfirm = () => {
     if (position) {
@@ -85,7 +75,7 @@ export default function MapPickerModal({
 
   return (
     <Modal
-      show={show}
+      show
       onHide={onHide}
       centered
       size="lg"
@@ -111,7 +101,7 @@ export default function MapPickerModal({
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             />
             <LocationMarker position={position} setPosition={setPosition} />
-            <MapResizer show={show} />
+            <MapResizer />
           </MapContainer>
         </div>
 

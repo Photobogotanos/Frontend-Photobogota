@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -27,11 +27,6 @@ export default function ModalGestionEliminacion({
   onRechazar,
 }) {
   const [observacion, setObservacion] = useState("");
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
-    if (solicitud) setObservacion("");
-  }, [solicitud]);
 
   if (!solicitud) return null;
 

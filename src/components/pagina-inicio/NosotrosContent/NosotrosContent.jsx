@@ -93,21 +93,28 @@ export default function NosotrosContent() {
   const [flipped, setFlipped] = useState({});
   const [playing, setPlaying] = useState({});
   const audioRefs = useRef([]);
+  const handlerRefs = useRef([]);
 
   useEffect(() => {
-    audioRefs.current = teamMembers.map((member) => {
+    const handlers = [];
+    const audios = teamMembers.map((member, idx) => {
       const audio = new Audio(member.song);
-      audio.addEventListener("ended", () => {
-        setPlaying((prev) => ({
-          ...prev,
-          [teamMembers.indexOf(member)]: false,
-        }));
-      });
+      const handleEnded = () => {
+        setPlaying((prev) => ({ ...prev, [idx]: false }));
+      };
+      audio.onended = handleEnded;
+      handlers[idx] = handleEnded;
       return audio;
     });
+    audioRefs.current = audios;
+    handlerRefs.current = handlers;
 
     return () => {
-      audioRefs.current.forEach((audio) => {
+      audios.forEach((audio, idx) => {
+        const handler = handlers[idx];
+        if (handler) {
+          audio.onended = null;
+        }
         audio.pause();
         audio.src = "";
       });
@@ -131,7 +138,7 @@ export default function NosotrosContent() {
       audio.pause();
       setPlaying((prev) => ({ ...prev, [index]: false }));
     } else {
-      audioRefs.current.forEach((a, i) => {
+      audioRefs.current.forEach(({ audio: a }, i) => {
         if (i !== index && a && !a.paused) a.pause();
       });
       setPlaying({});

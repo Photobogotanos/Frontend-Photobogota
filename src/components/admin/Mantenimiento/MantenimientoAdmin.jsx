@@ -48,8 +48,8 @@ export default function MantenimientoAdmin() {
   const [cargando, setCargando] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [form, setForm] = useState(FORM_INICIAL);
-  const [fechaInicio, setFechaInicio] = useState(null);
-  const [fechaFin, setFechaFin] = useState(null);
+  const fechaInicio = useRef(null);
+  const fechaFin = useRef(null);
 
   const inicioRef = useRef(null);
   const finRef = useRef(null);
@@ -81,7 +81,7 @@ export default function MantenimientoAdmin() {
       time_24hr: true,
       dateFormat: FORMATO_FLATPICKR,
       minDate: "today",
-      onChange: ([date]) => setFechaInicio(date || null),
+      onChange: ([date]) => { fechaInicio.current = date || null; },
     });
 
     const pickerFin = flatpickr(finRef.current, {
@@ -89,7 +89,7 @@ export default function MantenimientoAdmin() {
       time_24hr: true,
       dateFormat: FORMATO_FLATPICKR,
       minDate: "today",
-      onChange: ([date]) => setFechaFin(date || null),
+      onChange: ([date]) => { fechaFin.current = date || null; },
     });
 
     return () => {
@@ -105,8 +105,8 @@ export default function MantenimientoAdmin() {
 
   const limpiarFormulario = () => {
     setForm(FORM_INICIAL);
-    setFechaInicio(null);
-    setFechaFin(null);
+    fechaInicio.current = null;
+    fechaFin.current = null;
     inicioRef.current._flatpickr?.clear();
     finRef.current._flatpickr?.clear();
   };
@@ -114,7 +114,7 @@ export default function MantenimientoAdmin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!fechaInicio || !fechaFin) {
+    if (!fechaInicio.current || !fechaFin.current) {
       Swal.fire({
         icon: "warning",
         title: "Faltan fechas",
@@ -136,7 +136,7 @@ export default function MantenimientoAdmin() {
       icon: "question",
       title: "¿Programar mantenimiento?",
       html: `Se notificará <strong>a todos los usuarios</strong> que el servidor estará en mantenimiento de<br/>
-             <strong>${formatearParaMostrar(fechaInicio)}</strong> a <strong>${formatearParaMostrar(fechaFin)}</strong>.`,
+             <strong>${formatearParaMostrar(fechaInicio.current)}</strong> a <strong>${formatearParaMostrar(fechaFin.current)}</strong>.`,
       showCancelButton: true,
       confirmButtonText: "Sí, programar",
       cancelButtonText: "Cancelar",
@@ -145,8 +145,8 @@ export default function MantenimientoAdmin() {
 
     setEnviando(true);
     const resultado = await programarMantenimiento({
-      fechaInicio: aIsoLocal(fechaInicio),
-      fechaFin: aIsoLocal(fechaFin),
+      fechaInicio: aIsoLocal(fechaInicio.current),
+      fechaFin: aIsoLocal(fechaFin.current),
       motivo: form.motivo.trim(),
       mensajePersonalizado: form.mensajePersonalizado,
     });
@@ -191,7 +191,7 @@ export default function MantenimientoAdmin() {
         <h2>
           <FaTools /> Mantenimiento del sistema
         </h2>
-        <button className="btn-refrescar" onClick={cargarProgramados} disabled={cargando}>
+        <button type="button" className="btn-refrescar" onClick={cargarProgramados} disabled={cargando}>
           <FaSync className={cargando ? "girando" : ""} /> Refrescar
         </button>
       </div>
@@ -200,11 +200,11 @@ export default function MantenimientoAdmin() {
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="fechaInicio">Inicio</label>
-            <input ref={inicioRef} className="form-control rounded-pill" placeholder="Selecciona fecha y hora" readOnly />
+            <input ref={inicioRef} className="form-control rounded-pill" placeholder="Selecciona fecha y hora" aria-label="Fecha y hora de inicio del mantenimiento" readOnly />
           </div>
           <div className="form-group">
             <label htmlFor="fechaFin">Fin</label>
-            <input ref={finRef} className="form-control rounded-pill" placeholder="Selecciona fecha y hora" readOnly />
+            <input ref={finRef} className="form-control rounded-pill" placeholder="Selecciona fecha y hora" aria-label="Fecha y hora de fin del mantenimiento" readOnly />
           </div>
         </div> 
 
@@ -215,6 +215,7 @@ export default function MantenimientoAdmin() {
             name="motivo"
             className="form-control rounded-pill"
             placeholder="Ej: Actualización de base de datos"
+            aria-label="Motivo del mantenimiento"
             value={form.motivo}
             onChange={handleChange}
           />
@@ -227,6 +228,7 @@ export default function MantenimientoAdmin() {
             className="form-control"
             rows={2}
             placeholder="Si lo dejas vacío, se genera un mensaje automático con las fechas y el motivo"
+            aria-label="Mensaje personalizado para los usuarios"
             value={form.mensajePersonalizado}
             onChange={handleChange}
           />
@@ -279,6 +281,7 @@ export default function MantenimientoAdmin() {
                   <td>
                     {!m.cancelado && (
                       <button
+                        type="button"
                         className="btn-cancelar-mantenimiento"
                         title="Cancelar mantenimiento"
                         onClick={() => handleCancelar(m)}

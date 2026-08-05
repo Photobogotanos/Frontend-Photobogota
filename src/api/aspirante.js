@@ -10,24 +10,8 @@ export const obtenerAspirantesApi = async () => {
     return respuesta.data;
 };
 
-export const obtenerAspirantePorIdApi = async (id) => {
-    const respuesta = await clienteApi.get(`/aspirantes/${id}`);
-    return respuesta.data;
-};
-
-export const obtenerAspirantePorEmailApi = async (email) => {
-    const respuesta = await clienteApi.get(`/aspirantes/email/${email}`);
-    return respuesta.data;
-};
-
-
 export const obtenerAspirantePorCodigoApi = async (codigo) => {
     const respuesta = await clienteApi.get(`/aspirantes/codigo/${codigo}`);
-    return respuesta.data;
-};
-
-export const obtenerAspirantesPorEstadoApi = async (estado) => {
-    const respuesta = await clienteApi.get(`/aspirantes/estado/${estado}`);
     return respuesta.data;
 };
 
@@ -66,13 +50,6 @@ export const reenviarDocumentosAspiranteApi = async (codigo, rutaArchivo, tipoAr
 
 export const agregarComentarioAspiranteApi = async (id, texto) => {
     const respuesta = await clienteApi.post(`/aspirantes/${id}/comentarios`, { texto });
-    return respuesta.data;
-};
-
-export const actualizarEstadoAspiranteApi = async (id, estado) => {
-    const respuesta = await clienteApi.put(`/aspirantes/${id}/estado`, null, {
-        params: { estado },
-    });
     return respuesta.data;
 };
 

@@ -15,9 +15,10 @@ const PassField = ({
   validationRules 
 }) => (
   <div className="fgroup">
-    <label className="flabel">{label}</label>
+    <label className="flabel" htmlFor={name}>{label}</label>
     <div className="pass-wrap">
       <Form.Control
+        id={name}
         type={ver ? "text" : "password"}
         name={name}
         value={value}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Offcanvas } from "react-bootstrap";
 import { FaSignOutAlt } from "react-icons/fa";
 import SidebarHeader from "./SidebarHeader";
@@ -12,14 +12,6 @@ import { useAuth } from "@/context/AuthContext";
 export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
   const { usuario: usuarioAuth } = useAuth();
   const [usuario, setUsuario] = useState(null);
-
-  // Limpiar usuario cuando se cierra el menú
-  useEffect(() => {
-    if (!mostrar) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
-      setUsuario(null);
-    }
-  }, [mostrar]);
 
   const handleShow = () => {
     const datosUsuario = obtenerSesion();

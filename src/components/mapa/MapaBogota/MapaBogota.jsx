@@ -83,6 +83,7 @@ function BotonUbicacion() {
 
   return (
     <button
+      type="button"
       className={`btn-ubicacion ${buscando ? "buscando" : ""}`}
       onClick={buscarUbicacion}
       disabled={buscando}
@@ -97,10 +98,10 @@ function ControlesZoom() {
   const map = useMap();
   return (
     <div className="zoom-buttons">
-      <button onClick={() => map.zoomIn()}>
+      <button type="button" onClick={() => map.zoomIn()} aria-label="Acercar zoom">
         <FaPlus />
       </button>
-      <button onClick={() => map.zoomOut()}>
+      <button type="button" onClick={() => map.zoomOut()} aria-label="Alejar zoom">
         <FaMinus />
       </button>
     </div>
@@ -137,10 +138,16 @@ const MapaBogota = ({ filtros = {} }) => {
   const filtrosSerializados = JSON.stringify(filtros);
 
   useEffect(() => {
+    let activo = true;
+
     const cargar = async () => {
       setCargando(true);
 
+      if (!activo) return;
+
       const resultado = await obtenerSpots(filtros);
+
+      if (!activo || !resultado) return;
 
       if (resultado.exitoso) {
         // Filtro MUCHO más estricto
@@ -193,6 +200,9 @@ const MapaBogota = ({ filtros = {} }) => {
     };
 
     cargar();
+    return () => {
+      activo = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtrosSerializados]);
 

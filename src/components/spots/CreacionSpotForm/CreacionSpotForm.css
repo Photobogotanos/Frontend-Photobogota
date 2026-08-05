@@ -321,6 +321,11 @@
   overflow: hidden;
   background: #111;
   cursor: pointer;
+  display: block;
+  width: 100%;
+  border: none;
+  padding: 0;
+  font: inherit;
 }
 
 .preview-img {

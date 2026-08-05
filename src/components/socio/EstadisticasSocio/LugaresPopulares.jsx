@@ -2,46 +2,46 @@ import { Card } from "react-bootstrap";
 import { FaStar, FaExternalLinkAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+const lugaresPopulares = [
+  {
+    id: "1",
+    nombre: "Estación Aguas",
+    visitas: 850,
+    rating: 4.8,
+    imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo.jpg`,
+  },
+  {
+    id: "2",
+    nombre: "Monserrate",
+    visitas: 720,
+    rating: 4.6,
+    imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo2.jpg`,
+  },
+  {
+    id: "3",
+    nombre: "Parque El Jazmín",
+    visitas: 580,
+    rating: 4.5,
+    imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo3.jpg`,
+  },
+  {
+    id: "4",
+    nombre: "Parque Timiza",
+    visitas: 450,
+    rating: 4.7,
+    imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo4.jpg`,
+  },
+  {
+    id: "5",
+    nombre: "Estación Minuto de Dios",
+    visitas: 380,
+    rating: 4.9,
+    imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo5.jpg`,
+  },
+];
+
 const LugaresPopulares = () => {
   const navigate = useNavigate();
-
-  const lugaresPopulares = [
-    {
-      id: "1",
-      nombre: "Estación Aguas",
-      visitas: 850,
-      rating: 4.8,
-      imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo.jpg`,
-    },
-    {
-      id: "2",
-      nombre: "Monserrate",
-      visitas: 720,
-      rating: 4.6,
-      imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo2.jpg`,
-    },
-    {
-      id: "3",
-      nombre: "Parque El Jazmín",
-      visitas: 580,
-      rating: 4.5,
-      imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo3.jpg`,
-    },
-    {
-      id: "4",
-      nombre: "Parque Timiza",
-      visitas: 450,
-      rating: 4.7,
-      imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo4.jpg`,
-    },
-    {
-      id: "5",
-      nombre: "Estación Minuto de Dios",
-      visitas: 380,
-      rating: 4.9,
-      imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo5.jpg`,
-    },
-  ];
 
   const handleLugarClick = (lugarId) => {
     navigate(`/spot/${lugarId}`);

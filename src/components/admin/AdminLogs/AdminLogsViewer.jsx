@@ -1,27 +1,38 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import Select from "react-select";
 import "./AdminLogsViewer.css";
-import {
-  FaFileAlt,
-  FaDownload,
-  FaSync,
-  FaSearch,
-  FaFilter,
-  FaTerminal,
-  FaExclamationTriangle,
-  FaInfoCircle,
-  FaBug,
-  FaCopy,
-  FaExpand,
-  FaCompress,
-} from "react-icons/fa";
-import SpinnerLoader from "@/components/common/SpinnerLoader/SpinnerLoader";
+import { FaExclamationTriangle, FaInfoCircle, FaBug } from "react-icons/fa";
+import LogsView from "./LogsView";
+import LogHeader from "./LogHeader";
+import LogControls from "./LogControls";
 import LogDetailModal from "./LogDetailModal";
 import {
   obtenerLogs,
   obtenerArchivosLog,
   generarLogDemo,
 } from "@/services/log.service";
+
+// ─── CONSTANTES ───────────────────────────────────────────────────────────────
+const NIVELES_LOG = {
+  ERROR: {
+    icon: <FaExclamationTriangle />,
+    color: "#ef4444",
+    bg: "#fee2e2",
+    label: "Error",
+  },
+  WARN: {
+    icon: <FaExclamationTriangle />,
+    color: "#f59e0b",
+    bg: "#fef3c7",
+    label: "Warning",
+  },
+  INFO: {
+    icon: <FaInfoCircle />,
+    color: "#3b82f6",
+    bg: "#dbeafe",
+    label: "Info",
+  },
+  DEBUG: { icon: <FaBug />, color: "#8b5cf6", bg: "#ede9fe", label: "Debug" },
+};
 
 // ─── PARSEADOR ────────────────────────────────────────────────────────────────
 const parseLogLine = (linea) => {
@@ -73,43 +84,6 @@ const AdminLogsViewer = () => {
 
   const containerRef = useRef(null);
   const intervaloRef = useRef(null);
-
-  const nivelesLog = {
-    ERROR: {
-      icon: <FaExclamationTriangle />,
-      color: "#ef4444",
-      bg: "#fee2e2",
-      label: "Error",
-    },
-    WARN: {
-      icon: <FaExclamationTriangle />,
-      color: "#f59e0b",
-      bg: "#fef3c7",
-      label: "Warning",
-    },
-    INFO: {
-      icon: <FaInfoCircle />,
-      color: "#3b82f6",
-      bg: "#dbeafe",
-      label: "Info",
-    },
-    DEBUG: { icon: <FaBug />, color: "#8b5cf6", bg: "#ede9fe", label: "Debug" },
-  };
-
-  const opcionesLines = [
-    { value: 50, label: "50 líneas" },
-    { value: 100, label: "100 líneas" },
-    { value: 200, label: "200 líneas" },
-    { value: 500, label: "500 líneas" },
-  ];
-
-  const opcionesNivel = [
-    { value: "todos", label: "Todos los niveles" },
-    { value: "ERROR", label: "ERROR" },
-    { value: "WARN", label: "WARN" },
-    { value: "INFO", label: "INFO" },
-    { value: "DEBUG", label: "DEBUG" },
-  ];
 
   const opcionesArchivo = archivos.map((arc) => ({
     value: arc.nombre,
@@ -189,28 +163,30 @@ const AdminLogsViewer = () => {
 
   // ── Filtrado local ─────────────────────────────────────────────────────────
   const logsFiltrados = React.useMemo(() => {
-    const filtrados = logs
-      .map((log) => ({ raw: log, parsed: parseLogLine(log) }))
-      .filter(({ raw, parsed }) => {
-        const matchesBusqueda =
-          !filtros.busqueda ||
-          raw.toLowerCase().includes(filtros.busqueda.toLowerCase());
-        const matchesNivel =
-          filtros.nivel === "todos" ||
-          (parsed.level && parsed.level === filtros.nivel);
-        const matchesSoloError =
-          !filtros.errorsOnly || parsed.level === "ERROR";
-        const matchesLogger =
-          !filtros.logger ||
-          (parsed.logger &&
-            parsed.logger.toLowerCase().includes(filtros.logger.toLowerCase()));
+    const filtrados = [];
+    for (const raw of logs) {
+      const parsed = parseLogLine(raw);
+      const matchesBusqueda =
+        !filtros.busqueda ||
+        raw.toLowerCase().includes(filtros.busqueda.toLowerCase());
+      const matchesNivel =
+        filtros.nivel === "todos" ||
+        (parsed.level && parsed.level === filtros.nivel);
+      const matchesSoloError = !filtros.errorsOnly || parsed.level === "ERROR";
+      const matchesLogger =
+        !filtros.logger ||
+        (parsed.logger &&
+          parsed.logger.toLowerCase().includes(filtros.logger.toLowerCase()));
 
-        return (
-          matchesBusqueda && matchesNivel && matchesSoloError && matchesLogger
-        );
-      })
-      .map((item) => item.raw);
-
+      if (
+        matchesBusqueda &&
+        matchesNivel &&
+        matchesSoloError &&
+        matchesLogger
+      ) {
+        filtrados.push(raw);
+      }
+    }
     return filtrados;
   }, [logs, filtros]);
 
@@ -257,265 +233,48 @@ const AdminLogsViewer = () => {
     URL.revokeObjectURL(url);
   };
 
-  // ── Render de línea ────────────────────────────────────────────────────────
-  const formatearLineaLog = (linea, index) => {
-    const parsed = parseLogLine(linea);
-    const nivel = parsed.level;
-
-    let nivelVisual = null;
-    if (nivel && nivelesLog[nivel]) {
-      nivelVisual = nivel;
-    } else {
-      for (const key of Object.keys(nivelesLog)) {
-        if (linea.includes(key)) {
-          nivelVisual = key;
-          break;
-        }
-      }
-    }
-
-    return (
-      <div
-        key={index}
-        className={`log-line ${nivelVisual ? `log-${nivelVisual.toLowerCase()}` : ""}`}
-        onClick={() => setLogSeleccionado({ raw: linea, parsed, id: index })}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            setLogSeleccionado({ raw: linea, parsed, id: index });
-          }
-        }}
-        role="button"
-        tabIndex={0}
-      >
-        <div className="log-line-number">{index + 1}</div>
-        {nivelVisual && (
-          <div
-            className="log-level-icon"
-            style={{ color: nivelesLog[nivelVisual].color }}
-          >
-            {nivelesLog[nivelVisual].icon}
-          </div>
-        )}
-        <div className="log-content">
-          {parsed.timestamp && (
-            <span className="log-timestamp">{parsed.timestamp}</span>
-          )}
-          {parsed.thread && (
-            <span className="log-thread">[{parsed.thread}]</span>
-          )}
-          {parsed.logger && <span className="log-logger">{parsed.logger}</span>}
-          <span className="log-message">- {parsed.message}</span>
-        </div>
-      </div>
-    );
-  };
-
   // ── JSX ────────────────────────────────────────────────────────────────────
   return (
     <div className={`log-viewer-container ${expandido ? "expandido" : ""}`}>
-      <div className="log-viewer-header">
-        <div className="header-info">
-          <h1 className="header-titulo">
-            <FaTerminal /> Visualizador de Logs
-            {modoDemo && (
-              <span
-                style={{
-                  fontSize: "0.75rem",
-                  fontWeight: 500,
-                  background: "#fef3c7",
-                  color: "#92400e",
-                  padding: "2px 10px",
-                  borderRadius: 20,
-                  marginLeft: 8,
-                }}
-              >
-                DEMO
-              </span>
-            )}
-          </h1>
-          <div className="log-stats-badges">
-            <span className="stat-badge">
-              <FaFileAlt /> Total: {logsFiltrados.length} líneas
-            </span>
-            {Object.entries(estadisticas).map(
-              ([nivel, count]) =>
-                count > 0 && (
-                  <span
-                    key={nivel}
-                    className={`stat-badge stat-${nivel.toLowerCase()}`}
-                    style={{
-                      backgroundColor: nivelesLog[nivel].bg,
-                      color: nivelesLog[nivel].color,
-                    }}
-                  >
-                    {nivelesLog[nivel].icon} {nivel}: {count}
-                  </span>
-                ),
-            )}
-          </div>
-        </div>
-        <div className="log-stats">
-          <button
-            className={`auto-refresh-btn ${autoRefresh ? "active" : ""}`}
-            onClick={() => setAutoRefresh(!autoRefresh)}
-          >
-            <FaSync className={autoRefresh ? "spin" : ""} />
-            {autoRefresh ? "Auto-refresh ON" : "Auto-refresh OFF"}
-          </button>
-        </div>
-      </div>
+      <LogHeader
+        modoDemo={modoDemo}
+        logsFiltrados={logsFiltrados}
+        estadisticas={estadisticas}
+        autoRefresh={autoRefresh}
+        onToggleAutoRefresh={() => setAutoRefresh(!autoRefresh)}
+        NIVELES_LOG={NIVELES_LOG}
+      />
 
-      <div className="log-controls">
-        <div className="controls-row">
-          <div className="file-selector">
-            <label htmlFor="archivo-select">Archivo:</label>
-            <Select
-              inputId="archivo-select"
-              value={
-                opcionesArchivo.find((o) => o.value === filtros.archivo) || null
-              }
-              onChange={(opcion) =>
-                setFiltros({ ...filtros, archivo: opcion ? opcion.value : "" })
-              }
-              isDisabled={cargando}
-              classNamePrefix="spot-select"
-              options={opcionesArchivo}
-            />
-          </div>
+      <LogControls
+        opcionesArchivo={opcionesArchivo}
+        filtros={filtros}
+        setFiltros={setFiltros}
+        cargando={cargando}
+        onRecargar={cargarLogs}
+        onLimpiarFiltros={limpiarFiltros}
+        onCopiar={copiarLogs}
+        onDescargar={descargarLogs}
+        expandido={expandido}
+        onToggleExpandir={() => setExpandido(!expandido)}
+      />
 
-          <div className="lines-selector">
-            <label htmlFor="lineas-select">Líneas:</label>
-            <Select
-              inputId="lineas-select"
-              value={
-                opcionesLines.find((o) => o.value === filtros.lines) || null
-              }
-              onChange={(opcion) =>
-                setFiltros({ ...filtros, lines: opcion ? opcion.value : 100 })
-              }
-              isDisabled={cargando}
-              classNamePrefix="spot-select"
-              options={opcionesLines}
-            />
-          </div>
-
-          <label className="errors-only-checkbox">
-            <input
-              type="checkbox"
-              checked={filtros.errorsOnly}
-              onChange={(e) =>
-                setFiltros({ ...filtros, errorsOnly: e.target.checked })
-              }
-            />
-            <FaExclamationTriangle /> Solo errores
-          </label>
-
-          <button
-            className="control-btn"
-            onClick={cargarLogs}
-            disabled={cargando}
-          >
-            <FaSync className={cargando ? "spin" : ""} /> Recargar
-          </button>
-
-          <button className="control-btn" onClick={limpiarFiltros}>
-            <FaFilter /> Limpiar filtros
-          </button>
-        </div>
-
-        <div className="controls-row">
-          <div className="search-box">
-            <FaSearch className="search-icon" />
-            <input
-              type="text"
-              placeholder="Buscar en logs..."
-              aria-label="Buscar en logs"
-              value={filtros.busqueda}
-              onChange={(e) =>
-                setFiltros({ ...filtros, busqueda: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="level-filter">
-            <Select
-              inputId="nivel-select"
-              aria-label="Filtrar por nivel"
-              value={
-                opcionesNivel.find((o) => o.value === filtros.nivel) || null
-              }
-              onChange={(opcion) =>
-                setFiltros({
-                  ...filtros,
-                  nivel: opcion ? opcion.value : "todos",
-                })
-              }
-              classNamePrefix="spot-select"
-              options={opcionesNivel}
-            />
-          </div>
-
-          <div className="logger-filter">
-            <input
-              type="text"
-              placeholder="Filtrar por logger..."
-              aria-label="Filtrar por logger"
-              value={filtros.logger}
-              onChange={(e) =>
-                setFiltros({ ...filtros, logger: e.target.value })
-              }
-              className="logger-input"
-            />
-          </div>
-
-          <button className="control-btn" onClick={copiarLogs}>
-            <FaCopy /> Copiar
-          </button>
-
-          <button className="control-btn" onClick={descargarLogs}>
-            <FaDownload /> Descargar
-          </button>
-
-          <button
-            className="control-btn"
-            onClick={() => setExpandido(!expandido)}
-            aria-label={expandido ? "Comprimir vista" : "Expandir vista"}
-          >
-            {expandido ? <FaCompress /> : <FaExpand />}
-          </button>
-        </div>
-      </div>
-
-      <div className="logs-container" ref={containerRef}>
-        {cargando ? (
-          <div className="loading-overlay">
-            <SpinnerLoader texto="Cargando logs..." />
-          </div>
-        ) : error ? (
-          <div className="logs-error">
-            <FaExclamationTriangle />
-            <p>{error}</p>
-            <button onClick={cargarLogs}>Reintentar</button>
-          </div>
-        ) : logsFiltrados.length === 0 ? (
-          <div className="logs-empty">
-            <FaInfoCircle />
-            <p>No hay logs que coincidan con los filtros aplicados</p>
-            <button onClick={limpiarFiltros}>Limpiar filtros</button>
-          </div>
-        ) : (
-          <div className="logs-list">
-            {logsFiltrados.map((log, index) => formatearLineaLog(log, index))}
-          </div>
-        )}
-      </div>
+      <LogsView
+        cargando={cargando}
+        error={error}
+        logsFiltrados={logsFiltrados}
+        onReintentar={cargarLogs}
+        onLimpiarFiltros={limpiarFiltros}
+        parseLogLine={parseLogLine}
+        NIVELES_LOG={NIVELES_LOG}
+        onSelectLog={setLogSeleccionado}
+        containerRef={containerRef}
+      />
 
       {logSeleccionado && (
         <LogDetailModal
           log={logSeleccionado}
           onClose={() => setLogSeleccionado(null)}
-          nivelesLog={nivelesLog}
+          NIVELES_LOG={NIVELES_LOG}
           logs={logsFiltrados.map((raw, i) => ({
             raw,
             parsed: parseLogLine(raw),

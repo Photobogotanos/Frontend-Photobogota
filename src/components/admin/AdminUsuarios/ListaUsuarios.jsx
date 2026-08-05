@@ -1,17 +1,7 @@
-/* eslint-disable no-unused-vars */
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import "./ListaUsuarios.css";
 import Select from "react-select";
-import {
-  FaSearch,
-  FaSync,
-  FaUsers,
-  FaBan,
-  FaUserCheck,
-  FaTrash,
-  FaChevronLeft,
-  FaChevronRight,
-} from "react-icons/fa";
+import { FaSearch, FaSync, FaUsers } from "react-icons/fa";
 
 import SpinnerLoader from "@/components/common/SpinnerLoader/SpinnerLoader";
 import Swal from "sweetalert2";
@@ -20,6 +10,22 @@ import {
   actualizarEstadoUsuarioAdmin,
   eliminarUsuarioAdmin,
 } from "@/services/admin.service";
+import FilaUsuario from "./FilaUsuario";
+import PaginacionUsuarios from "./PaginacionUsuarios";
+
+const rolOptions = [
+  { value: "todos", label: "Todos los roles" },
+  { value: "ADMIN", label: "Administradores" },
+  { value: "MOD", label: "Moderadores" },
+  { value: "SOCIO", label: "Socios" },
+  { value: "MIEMBRO", label: "Miembros" },
+];
+
+const estadoOptions = [
+  { value: "todos", label: "Todos los estados" },
+  { value: "true", label: "Activos" },
+  { value: "false", label: "Inactivos" },
+];
 
 const ListaUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -35,22 +41,7 @@ const ListaUsuarios = () => {
     totalPaginas: 0,
     totalElementos: 0,
   });
-  const [modoDemo, setModoDemo] = useState(false);
-
-  // Opciones para react-select
-  const rolOptions = [
-    { value: "todos", label: "Todos los roles" },
-    { value: "ADMIN", label: "Administradores" },
-    { value: "MOD", label: "Moderadores" },
-    { value: "SOCIO", label: "Socios" },
-    { value: "MIEMBRO", label: "Miembros" },
-  ];
-
-  const estadoOptions = [
-    { value: "todos", label: "Todos los estados" },
-    { value: "true", label: "Activos" },
-    { value: "false", label: "Inactivos" },
-  ];
+  const modoDemo = useRef(false);
 
   const cargarUsuarios = useCallback(async () => {
     setCargando(true);
@@ -61,7 +52,7 @@ const ListaUsuarios = () => {
       );
 
       if (resultado.exitoso) {
-        setModoDemo(resultado.esDemo);
+        modoDemo.current = resultado.esDemo;
         const data = resultado.data;
         // Sincronización con la estructura de Page de Spring Boot o Mock
         setUsuarios(data.content || []);
@@ -193,16 +184,6 @@ const ListaUsuarios = () => {
     }
   };
 
-  const getRolNombre = (rol) => {
-    const roles = {
-      ADMIN: "Administrador",
-      MOD: "Moderador",
-      SOCIO: "Socio",
-      MIEMBRO: "Miembro",
-    };
-    return roles[rol] || rol;
-  };
-
   return (
     <div className="lista-usuarios-container">
       <div className="filtros-bar">
@@ -212,6 +193,7 @@ const ListaUsuarios = () => {
             <input
               type="text"
               placeholder="Buscar por nombre, usuario o email..."
+              aria-label="Buscar por nombre, usuario o email"
               value={filtros.busqueda}
               onChange={(e) =>
                 setFiltros({ ...filtros, busqueda: e.target.value })
@@ -242,7 +224,7 @@ const ListaUsuarios = () => {
         </div>
 
         <div className="acciones-group">
-          <button className="btn-refresh" onClick={cargarUsuarios}>
+          <button type="button" className="btn-refresh" onClick={cargarUsuarios}>
             <FaSync /> Actualizar
           </button>
         </div>
@@ -273,82 +255,23 @@ const ListaUsuarios = () => {
                 </thead>
                 <tbody>
                   {usuariosFiltrados.map((user) => (
-                    <tr key={user.id} className="usuario-fila">
-                      <td className="usuario-cell">
-                        <div className="usuario-avatar">
-                          {user.nombresCompletos?.charAt(0) || "U"}
-                        </div>
-                        <div className="usuario-info">
-                          <span className="usuario-nombre-completo">
-                            {user.nombresCompletos}
-                          </span>
-                          <span className="usuario-username">
-                            @{user.nombreUsuario}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="email-cell">{user.email}</td>
-                      <td>
-                        <span className={`role-badge badges-${user.rol}`}>
-                          {getRolNombre(user.rol)}
-                        </span>
-                      </td>
-                      <td>
-                        <span
-                          className={`status-badge ${user.estadoCuenta ? "activo" : "inactivo"}`}
-                        >
-                          {user.estadoCuenta ? "● Activo" : "● Inactivo"}
-                        </span>
-                      </td>
-                      <td className="acciones-cell">
-                        <button
-                          className={`action-icon ${user.estadoCuenta ? "suspend" : "activate"}`}
-                          onClick={() =>
-                            handleActualizarEstado(user.id, user.estadoCuenta)
-                          }
-                        >
-                          {user.estadoCuenta ? <FaBan /> : <FaUserCheck />}
-                        </button>
-                        <button
-                          className="action-icon delete"
-                          onClick={() =>
-                            handleEliminarUsuario(user.id, user.nombreUsuario)
-                          }
-                        >
-                          <FaTrash />
-                        </button>
-                      </td>
-                    </tr>
+                    <FilaUsuario
+                      key={user.id}
+                      user={user}
+                      onActualizarEstado={handleActualizarEstado}
+                      onEliminarUsuario={handleEliminarUsuario}
+                    />
                   ))}
                 </tbody>
               </table>
             </div>
 
-            {paginacion.totalPaginas > 1 && (
-              <div className="paginacion">
-                <button
-                  className="page-btn"
-                  disabled={paginacion.pagina === 0}
-                  onClick={() =>
-                    setPaginacion((p) => ({ ...p, pagina: p.pagina - 1 }))
-                  }
-                >
-                  <FaChevronLeft />
-                </button>
-                <span className="page-info">
-                  {paginacion.pagina + 1} de {paginacion.totalPaginas}
-                </span>
-                <button
-                  className="page-btn"
-                  disabled={paginacion.pagina >= paginacion.totalPaginas - 1}
-                  onClick={() =>
-                    setPaginacion((p) => ({ ...p, pagina: p.pagina + 1 }))
-                  }
-                >
-                  <FaChevronRight />
-                </button>
-              </div>
-            )}
+            <PaginacionUsuarios
+              paginacion={paginacion}
+              onCambiarPagina={(pagina) =>
+                setPaginacion((p) => ({ ...p, pagina }))
+              }
+            />
           </>
         )}
       </div>

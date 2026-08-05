@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const REFRESH_LIMIT = 5;
-const STORAGE_KEY = "app_refresh_metrics";
+const STORAGE_KEY = "app_refresh_metrics:v1";
 const BASE_COOLDOWN_MS = 5000;
 
 // Guard a nivel de MÓDULO (no de componente). Sirve para que, si React

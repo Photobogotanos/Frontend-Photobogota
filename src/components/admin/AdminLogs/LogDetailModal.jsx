@@ -11,6 +11,40 @@ import { useState } from "react";
 import "./LogDetailModal.css";
 import toast from "react-hot-toast";
 
+const handleCopy = async (text, type = "line") => {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast.success(
+      `${type === "line" ? "Línea" : "Mensaje"} copiado al portapapeles`,
+      {
+        duration: 2000,
+        icon: "📋",
+      },
+    );
+  } catch (err) {
+    toast.error("Error al copiar al portapapeles " + err);
+  }
+};
+
+const formatTimestamp = (timestamp) => {
+  if (!timestamp) return "N/A";
+  try {
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) return timestamp;
+    return date.toLocaleString("es-ES", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+  } catch {
+    return timestamp;
+  }
+};
+
 const LogDetailModal = ({
   log,
   onClose,
@@ -25,21 +59,6 @@ const LogDetailModal = ({
   const currentIndex = logs.findIndex((l) => l.id === log.id);
   const hasPrevious = currentIndex > 0;
   const hasNext = currentIndex < logs.length - 1;
-
-  const handleCopy = async (text, type = "line") => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success(
-        `${type === "line" ? "Línea" : "Mensaje"} copiado al portapapeles`,
-        {
-          duration: 2000,
-          icon: "📋",
-        },
-      );
-    } catch (err) {
-      toast.error("Error al copiar al portapapeles " + err);
-    }
-  };
 
   const handleCopyMessage = () => {
     handleCopy(log.parsed.message, "message");
@@ -80,26 +99,6 @@ Raw: ${log.raw}
     }
   };
 
-  // Función para formatear el timestamp
-  const formatTimestamp = (timestamp) => {
-    if (!timestamp) return "N/A";
-    try {
-      const date = new Date(timestamp);
-      if (isNaN(date.getTime())) return timestamp;
-      return date.toLocaleString("es-ES", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-      });
-    } catch {
-      return timestamp;
-    }
-  };
-
   const handleOverlayKeyDown = (e) => {
     if (e.key === "Escape") {
       onClose();
@@ -130,6 +129,7 @@ Raw: ${log.raw}
           </div>
           <div className="header-actions">
             <button
+              type="button"
               className="modal-action-btn"
               onClick={() => setIsRawExpanded(!isRawExpanded)}
               title={isRawExpanded ? "Contraer vista" : "Expandir vista"}
@@ -138,6 +138,7 @@ Raw: ${log.raw}
               <FaExpand />
             </button>
             <button
+              type="button"
               className="modal-close-btn"
               onClick={onClose}
               aria-label="Cerrar"
@@ -198,6 +199,7 @@ Raw: ${log.raw}
               <div className="section-header">
                 <span className="detail-label">💬 Mensaje</span>
                 <button
+                  type="button"
                   className="section-copy-btn"
                   onClick={handleCopyMessage}
                   title="Copiar mensaje"
@@ -212,6 +214,7 @@ Raw: ${log.raw}
               <div className="section-header">
                 <span className="detail-label">📄 Línea completa (raw)</span>
                 <button
+                  type="button"
                   className="section-copy-btn"
                   onClick={() => handleCopy(log.raw, "raw")}
                   title="Copiar línea completa"
@@ -243,6 +246,7 @@ Raw: ${log.raw}
             {logs.length > 1 && (
               <div className="navigation-buttons">
                 <button
+                  type="button"
                   className="btn-nav"
                   onClick={() => handleNavigate("prev")}
                   disabled={!hasPrevious}
@@ -251,6 +255,7 @@ Raw: ${log.raw}
                   <FaChevronLeft /> Anterior
                 </button>
                 <button
+                  type="button"
                   className="btn-nav"
                   onClick={() => handleNavigate("next")}
                   disabled={!hasNext}
@@ -262,16 +267,16 @@ Raw: ${log.raw}
             )}
           </div>
           <div className="footer-right">
-            <button className="btn-download" onClick={handleDownload}>
+            <button type="button" className="btn-download" onClick={handleDownload}>
               <FaDownload /> Descargar
             </button>
-            <button className="btn-copy" onClick={handleCopyAll}>
+            <button type="button" className="btn-copy" onClick={handleCopyAll}>
               <FaCopy /> Copiar todo
             </button>
-            <button className="btn-copy" onClick={() => handleCopy(log.raw)}>
+            <button type="button" className="btn-copy" onClick={() => handleCopy(log.raw)}>
               <FaCopy /> Copiar línea
             </button>
-            <button className="btn-close" onClick={onClose}>
+            <button type="button" className="btn-close" onClick={onClose}>
               Cerrar
             </button>
           </div>

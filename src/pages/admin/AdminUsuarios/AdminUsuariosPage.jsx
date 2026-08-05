@@ -32,7 +32,7 @@ const AdminUsuariosPage = () => {
                             Administra las cuentas de usuarios de la plataforma
                         </p>
                     </div>
-                    <button className="btn-crear-usuario" onClick={handleCrearUsuario}>
+                    <button type="button" className="btn-crear-usuario" onClick={handleCrearUsuario}>
                         <FaUserPlus /> Crear Nuevo Usuario
                     </button>
                 </div>

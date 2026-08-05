@@ -4,7 +4,6 @@ import {
   patchEstadoUsuarioAdmin,
   deleteUsuarioAdmin,
   getSolicitudesEliminacionAdmin,
-  getDetalleEliminacionAdmin,
   postProcesarEliminacionAdmin,
   postRechazarEliminacionAdmin,
   getMetricasEliminacionAdmin,
@@ -177,24 +176,6 @@ export const listarSolicitudesEliminacionAdmin = async ({ estado, page = 0, size
       exitoso: false,
       datos: null,
       mensaje: extraerMensajeErrorAdmin(error, "Error al obtener las solicitudes de eliminación"),
-    };
-  }
-};
-
-/**
- * Detalle completo de una solicitud (verificación de identidad + dependencias).
- * @param {string} id
- */
-export const obtenerDetalleEliminacionAdmin = async (id) => {
-  try {
-    const respuesta = await getDetalleEliminacionAdmin(id);
-    return { exitoso: true, datos: respuesta.data, mensaje: "Detalle obtenido exitosamente" };
-  } catch (error) {
-    console.error("Error al obtener el detalle de la solicitud:", error);
-    return {
-      exitoso: false,
-      datos: null,
-      mensaje: extraerMensajeErrorAdmin(error, "Error al obtener el detalle de la solicitud"),
     };
   }
 };

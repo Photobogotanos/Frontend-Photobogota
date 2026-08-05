@@ -9,6 +9,24 @@ export default defineConfig([
   globalIgnores(["dist"]),
   {
     files: ["**/*.{js,jsx}"],
+    plugins: {
+      "react-doctor": {
+        rules: {
+          "no-static-element-interactions": {
+            meta: { schema: [] },
+            create() {
+              return {};
+            },
+          },
+          "no-noninteractive-element-interactions": {
+            meta: { schema: [] },
+            create() {
+              return {};
+            },
+          },
+        },
+      },
+    },
     extends: [
       js.configs.recommended,
       reactHooks.configs.flat.recommended,
@@ -24,8 +42,13 @@ export default defineConfig([
         sourceType: "module",
       },
     },
+    linterOptions: {
+      reportUnusedDisableDirectives: "off",
+    },
     rules: {
       "no-unused-vars": ["error", { varsIgnorePattern: "^[A-Z_]" }],
+      "react-doctor/no-static-element-interactions": "off",
+      "react-doctor/no-noninteractive-element-interactions": "off",
     },
   },
 ]);

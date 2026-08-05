@@ -134,6 +134,7 @@ export default function EnviarNotificacion() {
             name="titulo"
             className="form-control rounded-pill input-without-focus"
             placeholder="Ej: Nueva función disponible"
+            aria-label="Título de la notificación"
             value={form.titulo}
             onChange={handleChange}
           />
@@ -148,6 +149,7 @@ export default function EnviarNotificacion() {
             className="form-control input-without-focus"
             rows={4}
             placeholder="Escribe el contenido del anuncio"
+            aria-label="Mensaje de la notificación"
             value={form.mensaje}
             onChange={handleChange}
           />
@@ -211,6 +213,7 @@ export default function EnviarNotificacion() {
               name="usernamesTexto"
               className="form-control rounded-pill input-without-focus"
               placeholder="Ej: juanperez, mariagomez"
+              aria-label="Nombres de usuario destinatarios (separados por coma)"
               value={form.usernamesTexto}
               onChange={handleChange}
             />

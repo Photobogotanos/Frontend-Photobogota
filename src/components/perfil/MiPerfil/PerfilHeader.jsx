@@ -103,6 +103,7 @@ const PerfilHeader = ({
         {esPerfilPropio ? (
           <>
             <button
+              type="button"
               className="btn-editar-perfil"
               onClick={() =>
                 dispatch({ type: "SET_MOSTRAR_EDITAR_PERFIL", payload: true })

@@ -5,7 +5,7 @@ export default function ImageModal({ show, onHide, imgSrc, titulo }) {
   return (
     <Modal show={show} onHide={onHide} centered size="lg" className="custom-modal">
       <Modal.Body className="p-0 position-relative">
-        <button className="modal-close-btn" onClick={onHide} aria-label="Cerrar modal">
+        <button type="button" className="modal-close-btn" onClick={onHide} aria-label="Cerrar modal">
           <FaTimes />
         </button>
         {titulo && (

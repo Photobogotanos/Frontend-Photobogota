@@ -1,14 +1,12 @@
 import { useState, useMemo } from "react";
-import { Modal, Form, Row, Col } from "react-bootstrap";
-import { FaUser, FaEnvelope, FaPhone, FaShieldAlt, FaUserSlash } from "react-icons/fa";
-import { FiEdit3 } from "react-icons/fi";
+import { Modal } from "react-bootstrap";
 import "./EditarPerfilModal.css";
 import "./EliminarCuenta.css";
 import Swal from "sweetalert2";
-import FotoPerfil from "./FotoPerfil";
-import BotonesAccion from "./BotonesAccion";
-import PassField from "./PassField";
 import EliminarCuenta from "./EliminarCuenta";
+import PerfilModalHeader from "./PerfilModalHeader";
+import PerfilFormCampos from "./PerfilFormCampos";
+import PassFormCampos from "./PassFormCampos";
 import {
   editarPerfil,
   cambiarContrasena,
@@ -211,230 +209,44 @@ function PerfilFormulario({
 
   return (
     <>
-      {/* HEADER */}
-      <Modal.Header closeButton className="modal-header-custom">
-        <div className="modal-title-custom">
-          <span className="mh-icon-box">
-            <FiEdit3 />
-          </span>
-          Editar perfil
-        </div>
-      </Modal.Header>
-
-      {/* TABS NAV */}
-      <div className="modal-tabs-nav">
-        <button
-          type="button"
-          className={`mtab ${tabActiva === "perfil" ? "active" : ""}`}
-          onClick={() => setTabActiva("perfil")}
-        >
-          <FaUser className="mtab-icon" />
-          Perfil
-        </button>
-        <button
-          type="button"
-          className={`mtab ${tabActiva === "contrasena" ? "active" : ""}`}
-          onClick={() => setTabActiva("contrasena")}
-        >
-          <FaShieldAlt className="mtab-icon" />
-          Contraseña
-        </button>
-        {esMiembro && (
-          <button
-            type="button"
-            className={`mtab mtab-danger ${tabActiva === "eliminar" ? "active" : ""}`}
-            onClick={() => setTabActiva("eliminar")}
-          >
-            <FaUserSlash className="mtab-icon" />
-            Eliminar cuenta
-          </button>
-        )}
-      </div>
+      <PerfilModalHeader
+        esMiembro={esMiembro}
+        tabActiva={tabActiva}
+        onCambiarTab={setTabActiva}
+      />
 
       <Modal.Body className="modal-body-custom">
-        {/* ══ TAB: PERFIL ══════════════════════════════════ */}
         {tabActiva === "perfil" && (
-          <Form onSubmit={handleSubmitPerfil}>
-            {/* Hero foto */}
-            <div className="profile-hero">
-              <FotoPerfil
-                fotoPerfil={fotoPerfil}
-                onFotoChange={handleFotoChange}
-                onEliminarFoto={handleEliminarFoto}
-                nombreUsuario={formData.nombreUsuario}
-                nombre={formData.nombresCompletos}
-              />
-              <div className="hero-info">
-                <p className="hero-name">
-                  {formData.nombresCompletos || "Usuario"}
-                </p>
-                <p className="hero-user">
-                  @{formData.nombreUsuario || "usuario"}
-                </p>
-                <div className="hero-pills">
-                  <span className="hpill">{rolMostrar}</span>
-                  {rolMostrar === "MIEMBRO" &&
-                    perfilData?.nivel !== null &&
-                    perfilData?.nivel !== undefined && (
-                      <span className="hpill accent">
-                        Nivel {perfilData.nivel}
-                      </span>
-                    )}
-                </div>
-              </div>
-            </div>
-
-            {/* Info personal */}
-            <div className="form-block">
-              <div className="block-heading">
-                <FaUser className="bh-icon" />
-                <span>Información personal</span>
-              </div>
-              <Row className="g-3">
-                <Col md={12}>
-                  <div className="fgroup">
-                    <label htmlFor="nombresCompletos" className="flabel">Nombre completo</label>
-                    <Form.Control
-                      id="nombresCompletos"
-                      type="text"
-                      name="nombresCompletos"
-                      value={formData.nombresCompletos}
-                      onChange={handleChange}
-                      className="finput"
-                      placeholder="Tu nombre completo"
-                    />
-                  </div>
-                </Col>
-                <Col md={12}>
-                  <div className="fgroup">
-                    <label htmlFor="biografia" className="flabel">Biografía</label>
-                    <Form.Control
-                      id="biografia"
-                      as="textarea"
-                      rows={3}
-                      name="biografia"
-                      value={formData.biografia}
-                      onChange={handleChange}
-                      className="finput ftextarea"
-                      placeholder="Cuéntanos sobre ti..."
-                      maxLength={160}
-                    />
-                    <span className="char-hint">
-                      {formData.biografia?.length || 0}/160
-                    </span>
-                  </div>
-                </Col>
-              </Row>
-            </div>
-
-            <div className="block-sep" />
-
-            {/* Contacto */}
-            <div className="form-block">
-              <div className="block-heading">
-                <FaEnvelope className="bh-icon" />
-                <span>Contacto</span>
-              </div>
-              <Row className="g-3">
-                <Col md={7}>
-                  <div className="fgroup">
-                    <label htmlFor="email" className="flabel">Correo electrónico</label>
-                    <Form.Control
-                      id="email"
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="finput"
-                      placeholder="correo@ejemplo.com"
-                      disabled
-                    />
-                  </div>
-                </Col>
-                <Col md={5}>
-                  <div className="fgroup">
-                    <label htmlFor="telefono" className="flabel">
-                      <FaPhone style={{ fontSize: "0.7rem", marginRight: 5 }} />
-                      Teléfono
-                    </label>
-                    <Form.Control
-                      id="telefono"
-                      type="tel"
-                      name="telefono"
-                      value={formData.telefono}
-                      onChange={handleChange}
-                      className="finput"
-                      placeholder="300 000 0000"
-                    />
-                  </div>
-                </Col>
-              </Row>
-            </div>
-
-            <BotonesAccion onCancelar={onHide} />
-          </Form>
+          <PerfilFormCampos
+            formData={formData}
+            fotoPerfil={fotoPerfil}
+            rolMostrar={rolMostrar}
+            perfilData={perfilData}
+            handleChange={handleChange}
+            handleFotoChange={handleFotoChange}
+            handleEliminarFoto={handleEliminarFoto}
+            handleSubmit={handleSubmitPerfil}
+            onCancelar={onHide}
+          />
         )}
 
-        {/* ══ TAB: CONTRASEÑA ══════════════════════════════ */}
         {tabActiva === "contrasena" && (
-          <Form onSubmit={handleSubmitContrasena}>
-            <div className="form-block pass-tab-block">
-              {/* Ilustración / ícono decorativo */}
-              <div className="pass-hero">
-                <span className="pass-hero-icon">
-                  <FaShieldAlt />
-                </span>
-                <p className="pass-hero-title">Cambiar contraseña</p>
-                <p className="pass-hero-sub">
-                  Elige una contraseña segura con al menos 8 caracteres, una
-                  mayúscula, una minúscula y un número.
-                </p>
-              </div>
-
-              <div className="pass-fields-stack">
-                <PassField
-                  label="Contraseña actual"
-                  name="contrasenaActual"
-                  value={formData.contrasenaActual}
-                  onChange={handleChange}
-                  ver={verActual}
-                  onToggle={() => setVerActual(!verActual)}
-                  placeholder="Tu contraseña actual"
-                  formData={formData}
-                />
-
-                <div className="pass-divider" />
-
-                <PassField
-                  label="Nueva contraseña"
-                  name="contrasenaNueva"
-                  value={formData.contrasenaNueva}
-                  onChange={handleChange}
-                  ver={verNueva}
-                  onToggle={() => setVerNueva(!verNueva)}
-                  placeholder="Mínimo 8 caracteres..."
-                  formData={formData}
-                  validationRules={validationRules}
-                />
-
-                <PassField
-                  label="Confirmar nueva contraseña"
-                  name="confirmarContrasena"
-                  value={formData.confirmarContrasena}
-                  onChange={handleChange}
-                  ver={verConfirmar}
-                  onToggle={() => setVerConfirmar(!verConfirmar)}
-                  placeholder="Repite la nueva contraseña"
-                  formData={formData}
-                  passwordsCoinciden={passwordsCoinciden}
-                />
-              </div>
-            </div>
-            <BotonesAccion onCancelar={onHide} />
-          </Form>
+          <PassFormCampos
+            formData={formData}
+            handleChange={handleChange}
+            validationRules={validationRules}
+            passwordsCoinciden={passwordsCoinciden}
+            verActual={verActual}
+            verNueva={verNueva}
+            verConfirmar={verConfirmar}
+            onToggleActual={() => setVerActual(!verActual)}
+            onToggleNueva={() => setVerNueva(!verNueva)}
+            onToggleConfirmar={() => setVerConfirmar(!verConfirmar)}
+            handleSubmit={handleSubmitContrasena}
+            onCancelar={onHide}
+          />
         )}
 
-        {/* ══ TAB: ELIMINAR CUENTA ═════════════════════════ */}
         {tabActiva === "eliminar" && esMiembro && (
           <EliminarCuenta onHide={onHide} />
         )}

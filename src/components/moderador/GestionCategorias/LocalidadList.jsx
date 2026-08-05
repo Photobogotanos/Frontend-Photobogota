@@ -23,6 +23,8 @@ import {
 import SpinnerLoader from "@/components/common/SpinnerLoader/SpinnerLoader";
 import "./LocalidadList.css";
 
+const estaActiva = (item) => item.activo === true;
+
 const LocalidadList = () => {
   const [localidades, setLocalidades] = useState([]);
   const [cargando, setCargando] = useState(false);
@@ -156,8 +158,6 @@ const LocalidadList = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const estaActiva = (item) => item.activo === true;
-
   const renderItem = (item) => (
     <div key={item.id} className={`item-card ${estaActiva(item) ? "" : "inactiva"}`}>
       <div className="item-info">
@@ -168,6 +168,7 @@ const LocalidadList = () => {
       </div>
       <div className="item-acciones">
         <button
+          type="button"
           className={`btn-toggle ${estaActiva(item) ? "active" : "inactive"}`}
           onClick={() => handleToggle(item.id)}
           title={estaActiva(item) ? "Desactivar" : "Activar"}
@@ -177,10 +178,20 @@ const LocalidadList = () => {
         <span className={`estado-badge ${estaActiva(item) ? "activo" : "inactivo"}`}>
           {estaActiva(item) ? "Activa" : "Inactiva"}
         </span>
-        <button className="btn-edit" onClick={() => handleEditar(item)}>
+        <button
+          type="button"
+          className="btn-edit"
+          onClick={() => handleEditar(item)}
+          aria-label="Editar"
+        >
           <FaEdit />
         </button>
-        <button className="btn-delete" onClick={() => handleEliminar(item.id)}>
+        <button
+          type="button"
+          className="btn-delete"
+          onClick={() => handleEliminar(item.id)}
+          aria-label="Eliminar"
+        >
           <FaTrash />
         </button>
       </div>
@@ -195,16 +206,17 @@ const LocalidadList = () => {
           <input
             type="text"
             placeholder="Buscar localidad..."
+            aria-label="Buscar localidad"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             className="search-input"
           />
         </div>
         <div className="actions">
-          <button className="btn-refresh" onClick={cargarLocalidades}>
+          <button type="button" className="btn-refresh" onClick={cargarLocalidades}>
             <FaSync /> Actualizar
           </button>
-          <button className="btn-primary" onClick={handleCrear}>
+          <button type="button" className="btn-primary" onClick={handleCrear}>
             <FaPlus /> Nueva Localidad
           </button>
         </div>
@@ -269,10 +281,10 @@ const LocalidadList = () => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
+          <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
             Cancelar
           </button>
-          <button className="btn btn-primary" onClick={handleGuardar}>
+          <button type="button" className="btn btn-primary" onClick={handleGuardar}>
             {editItem ? "Actualizar" : "Crear"}
           </button>
         </Modal.Footer>

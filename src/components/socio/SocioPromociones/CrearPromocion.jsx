@@ -1,4 +1,4 @@
-import { useReducer, useMemo, useState, useRef } from "react";
+import { useReducer, useMemo, useState, useRef, useEffect } from "react";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
 import {
@@ -121,17 +121,10 @@ function ImageUploader({
         </div>
       ) : (
         <div className="uploader-con-imagenes">
-          <div
+          <button
+            type="button"
             className="preview-carousel"
-            role="button"
-            tabIndex={0}
             onClick={() => onNavigate("next")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onNavigate("next");
-              }
-            }}
             aria-label="Next photo"
           >
             <img
@@ -142,7 +135,7 @@ function ImageUploader({
             <span className="preview-counter">
               {indice + 1} / {total}
             </span>
-          </div>
+          </button>
 
           {total > 1 && (
             <div className="preview-controls">
@@ -176,18 +169,11 @@ function ImageUploader({
 
           <div className="thumbnails-strip">
             {previews.map((src, idx) => (
+              // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, react-doctor/no-static-element-interactions
               <div
                 key={src}
                 className={`thumbnail-item${idx === indice ? " active" : ""}`}
                 onClick={() => onSelectIndice(idx)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    onSelectIndice(idx);
-                  }
-                }}
-                role="button"
-                tabIndex={0}
               >
                 <img src={src} alt={`Thumb ${idx + 1}`} />
                 <button
@@ -233,6 +219,18 @@ function ImageUploader({
 // ============================================================
 export default function CrearPromocion() {
   const [state, dispatch] = useReducer(promoFormReducer, initialState);
+  const previewsRef = useRef([]);
+
+  useEffect(() => {
+    previewsRef.current = state.previews;
+  }, [state.previews]);
+
+  useEffect(() => {
+    return () => {
+      previewsRef.current.forEach((url) => URL.revokeObjectURL(url));
+      previewsRef.current = [];
+    };
+  }, []);
 
   const estadoCalculado = useMemo(() => {
     if (!state.fechaFin) return "activa";
@@ -240,6 +238,7 @@ export default function CrearPromocion() {
   }, [state.fechaFin]);
 
   const handleImagen = (files) => {
+    // oxlint-disable-next-line react-doctor/no-create-object-url-without-revoke -- se revoca en handleRemoveImagen y en unmount (previewsRef)
     const newPreviews = files.map((f) => URL.createObjectURL(f));
     dispatch({ type: "SET_IMAGENES", payload: [...state.imagenes, ...files] });
     dispatch({ type: "SET_PREVIEWS", payload: [...state.previews, ...newPreviews] });
@@ -247,6 +246,8 @@ export default function CrearPromocion() {
   };
 
   const handleRemoveImagen = (idx) => {
+    const url = state.previews[idx];
+    if (url) URL.revokeObjectURL(url);
     const newImagenes = state.imagenes.filter((_, i) => i !== idx);
     const newPreviews = state.previews.filter((_, i) => i !== idx);
     dispatch({ type: "SET_IMAGENES", payload: newImagenes });

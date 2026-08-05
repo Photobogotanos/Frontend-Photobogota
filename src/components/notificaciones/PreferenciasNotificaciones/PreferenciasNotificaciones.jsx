@@ -30,23 +30,30 @@ const PreferenciasNotificaciones = ({
   const [cargando, setCargando] = useState(false);
   const [guardando, setGuardando] = useState(false);
 
-  const cargarPreferencias = async () => {
-    setCargando(true);
-    try {
-      const res = await obtenerPreferenciasNotificaciones();
-      if (res.exitoso && res.data) {
-        setPreferencias(res.data);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setCargando(false);
-    }
-  };
-
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
-    if (usuario) cargarPreferencias();
+    if (!usuario) return;
+    let activo = true;
+
+    const cargarPreferenciasSeguro = async () => {
+      setCargando(true);
+      try {
+        if (!activo) return;
+        const res = await obtenerPreferenciasNotificaciones();
+        if (!activo || !res) return;
+        if (res.exitoso && res.data) {
+          setPreferencias(res.data);
+        }
+      } catch (error) {
+        if (activo) console.error(error);
+      } finally {
+        if (activo) setCargando(false);
+      }
+    };
+
+    cargarPreferenciasSeguro();
+    return () => {
+      activo = false;
+    };
   }, [usuario]);
 
   const handleCanalChange = (selected) => {
@@ -142,6 +149,7 @@ const PreferenciasNotificaciones = ({
           </button>
 
           <button
+            type="button"
             className="preferencias-btn d-flex align-items-center justify-content-center gap-2"
             onClick={guardarPreferencias}
             disabled={guardando}
