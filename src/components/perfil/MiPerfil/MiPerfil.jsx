@@ -312,18 +312,26 @@ export default function MiPerfil() {
             dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
           }
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
+            if (e.key === "Escape") {
+              dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false });
+            }
+            if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+              dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false });
             }
           }}
           role="button"
           tabIndex={0}
+          aria-label="Cerrar notificaciones"
         >
+          {/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */}
           <div
             className="perfil-notif-panel"
-            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
             role="dialog"
+            aria-modal="true"
             aria-label="Configurar notificaciones"
+            onClick={(e) => e.stopPropagation()}
           >
             <h3 className="perfil-notif-title">Notificaciones</h3>
             <p className="perfil-notif-sub">
@@ -356,6 +364,7 @@ export default function MiPerfil() {
               Guardar preferencias
             </button>
           </div>
+          {/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */}
         </div>
       )}
     </Container>

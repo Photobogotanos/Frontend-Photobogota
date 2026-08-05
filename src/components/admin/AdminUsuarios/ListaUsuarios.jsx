@@ -90,6 +90,7 @@ const ListaUsuarios = () => {
   }, [paginacion.pagina, paginacion.porPagina]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarUsuarios();
   }, [cargarUsuarios]);
 

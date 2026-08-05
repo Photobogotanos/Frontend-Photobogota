@@ -175,13 +175,13 @@ export default function UsuarioPerfil() {
         </div>
       )}
 
-      <div
+      <button
+        type="button"
         className="perfil-ajeno-back"
         onClick={handleVolver}
-        role="button"
       >
         <FaArrowLeft /> Volver atrás
-      </div>
+      </button>
 
       <PerfilHeader
         perfilData={perfilData}

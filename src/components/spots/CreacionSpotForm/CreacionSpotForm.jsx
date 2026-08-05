@@ -131,6 +131,8 @@ function ImageUploader({
         // Estado sin imágenes - Zona de drop
         <div
           className={`drop-zone${isDragging ? " dragging" : ""}`}
+          role="button"
+          tabIndex={0}
           onDragOver={(e) => {
             e.preventDefault();
             setIsDragging(true);
@@ -138,10 +140,12 @@ function ImageUploader({
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
           onClick={() => inputRef.current.click()}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
-          aria-label="Subir imágenes"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              inputRef.current.click();
+            }
+          }}
         >
           <div className="drop-zone-lottie">
             <Lottie
@@ -159,11 +163,15 @@ function ImageUploader({
         <div className="uploader-con-imagenes">
           <div
             className="preview-carousel"
-            onClick={() => onNavigate("next")}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => e.key === "Enter" && onNavigate("next")}
-            aria-label="Avanzar imagen"
+            onClick={() => onNavigate("next")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onNavigate("next");
+              }
+            }}
           >
             <img
               src={previews[indice]}
@@ -220,11 +228,16 @@ function ImageUploader({
               <div
                 key={src}
                 className={`thumbnail-item${idx === indice ? " active" : ""}`}
-                onClick={() => onSelectIndice(idx)}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => e.key === "Enter" && onSelectIndice(idx)}
-                aria-label={`Ver imagen ${idx + 1}`}
+                onClick={() => onSelectIndice(idx)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelectIndice(idx);
+                  }
+                }}
+                aria-label={`Seleccionar imagen ${idx + 1}`}
               >
                 <img src={src} alt={`Thumb ${idx + 1}`} />
                 <button
@@ -242,17 +255,15 @@ function ImageUploader({
             ))}
 
             {/* Botón para agregar más imágenes */}
-            <div
+            <button
+              type="button"
               className="thumbnail-add"
               onClick={() => inputRef.current.click()}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
-              aria-label="Agregar más fotos"
+              aria-label="Añadir imagen"
             >
               <span className="thumbnail-add-icon">+</span>
               <span className="thumbnail-add-text">Añadir</span>
-            </div>
+            </button>
           </div>
         </div>
       )}

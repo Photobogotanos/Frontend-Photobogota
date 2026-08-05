@@ -3,7 +3,7 @@ import Col from "react-bootstrap/Col";
 import { IoPin } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
 import { LazyMotion, m, domAnimation } from "framer-motion";
-import { getSpots } from "@/mocks/spots.helpers"; 
+import { getSpots } from "@/mocks/spots.helpers";
 
 const topSpots = getSpots().slice(0, 3);
 
@@ -22,16 +22,20 @@ export default function TopSpotsSection({ onImageClick }) {
                 transition={{ delay: i * 0.2 }}
                 className="card-spot"
               >
-                <img
-                  src={spot.imagen}
-                  alt={spot.nombre}
+                <button
+                  type="button"
+                  className="image-button"
                   onClick={() => onImageClick(spot.imagen, spot.nombre)}
-                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onImageClick(spot.imagen, spot.nombre)}
-                  tabIndex={0}
-                  role="button"
                   aria-label={`Ver ${spot.nombre}`}
-                  style={{ cursor: "pointer" }}
-                />
+                  style={{
+                    cursor: "pointer",
+                    padding: 0,
+                    border: "none",
+                    background: "transparent",
+                  }}
+                >
+                  <img src={spot.imagen} alt={spot.nombre} />
+                </button>
                 <div className="card-info">
                   <h5>{spot.nombre}</h5>
                   <div className="location">

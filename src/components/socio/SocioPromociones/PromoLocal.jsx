@@ -6,8 +6,12 @@ export default function PromoLocal({ state, dispatch }) {
   const [locales, setLocales] = useState([]);
 
   useEffect(() => {
-    // getLocalesBySocio().then(setLocales);
-  }, []);
+  // TODO: reemplazar por getLocalesBySocio() cuando el endpoint esté listo
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
+  setLocales([
+    { id: 1, nombre: "Local de prueba" },
+  ]);
+}, []);
 
   const opcionesLocales = locales.map((local) => ({
     value: local.id,
@@ -26,8 +30,11 @@ export default function PromoLocal({ state, dispatch }) {
   return (
     <div className="promo-section mb-4">
       <h5 className="section-title">Local asociado</h5>
-      <label className="promo-label">Selecciona el local <RequiredMark /></label>
+      <label className="promo-label" htmlFor="local-select">
+        Selecciona el local <RequiredMark />
+      </label>
       <Select
+        id="local-select"
         inputId="local-select"
         classNamePrefix="spot-select"
         options={opcionesLocales}

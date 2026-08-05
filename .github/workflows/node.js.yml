@@ -25,13 +25,13 @@ jobs:
     - name: Instalar pnpm
       uses: pnpm/action-setup@v4
       with:
-        version: 9          # o la versión que estén usando
+        version: 9          # la versión que estemos usando
 
     - name: Configurar Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'       # ← ahora usa pnpm
+        cache: 'pnpm'      
 
     - name: Instalar dependencias
       run: pnpm install

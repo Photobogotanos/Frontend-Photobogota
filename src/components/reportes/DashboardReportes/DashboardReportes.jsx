@@ -36,16 +36,24 @@ export default function DashboardReportes() {
 
   const cargarReportes = useCallback(async () => {
     setLoading(true);
-    const resultado = await obtenerDashboardReportes(filtros);
-    if (resultado.exitoso) {
-      setReportes(resultado.datos);
-    } else {
-      toast.error(resultado.mensaje);
+
+    try {
+      const resultado = await obtenerDashboardReportes(filtros);
+      if (resultado.exitoso) {
+        setReportes(resultado.datos);
+      } else {
+        toast.error(resultado.mensaje);
+      }
+    } catch (error) {
+      console.error("Error al cargar reportes:", error);
+      toast.error("No se pudieron cargar los reportes.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [filtros]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarReportes();
   }, [cargarReportes]);
 

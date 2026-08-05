@@ -32,16 +32,24 @@ export default function InspoSection({ onImageClick }) {
                 transition={{ delay: i * 0.2 }}
                 className="card-inspo"
               >
-                <img
-                  src={item.img}
-                  alt={`Inspiración ${i + 1}`}
+                <button
+                  type="button"
                   onClick={() => onImageClick(item.img, `Foto de ${item.user}`)}
-                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onImageClick(item.img, `Foto de ${item.user}`)}
-                  tabIndex={0}
-                  role="button"
                   aria-label={`Ver foto de ${item.user}`}
-                  style={{ cursor: "pointer" }}
-                />
+                  style={{
+                    cursor: "pointer",
+                    padding: 0,
+                    border: 0,
+                    background: "transparent",
+                    width: "100%",
+                  }}
+                >
+                  <img
+                    src={item.img}
+                    alt={`Inspiración ${i + 1}`}
+                    style={{ width: "100%", display: "block" }}
+                  />
+                </button>
                 <div className="card-info">
                   <h5>{item.user}</h5>
                   <div className="location">

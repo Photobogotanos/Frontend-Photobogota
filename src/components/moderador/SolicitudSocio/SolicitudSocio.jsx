@@ -63,6 +63,7 @@ export default function SolicitudSocio() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarSolicitudes();
     cargarEstadisticas();
   }, [cargarSolicitudes, cargarEstadisticas]);
@@ -70,7 +71,9 @@ export default function SolicitudSocio() {
   // Reemplaza en la lista local la solicitud actualizada que devuelve el
   // backend, así no hace falta recargar todo el listado tras cada acción.
   const actualizarSolicitudLocal = (actualizada) => {
-    setSolicitudes((prev) => prev.map((s) => (s.id === actualizada.id ? actualizada : s)));
+    setSolicitudes((prev) =>
+      prev.map((s) => (s.id === actualizada.id ? actualizada : s)),
+    );
     if (solicitudSeleccionada?.id === actualizada.id) {
       setSolicitudSeleccionada(actualizada);
     }
@@ -101,37 +104,52 @@ export default function SolicitudSocio() {
     try {
       const actualizada = await aprobarAspirante(id);
       actualizarSolicitudLocal(actualizada);
-      toast.success("Solicitud aprobada. Queda en espera de envío de credenciales.");
+      toast.success(
+        "Solicitud aprobada. Queda en espera de envío de credenciales.",
+      );
       cargarEstadisticas();
       handleCerrarModal();
     } catch (error) {
       console.error("Error al aprobar:", error);
-      toast.error(error.response?.data?.message || error.response?.data?.mensaje || "No se pudo aprobar la solicitud");
+      toast.error(
+        error.response?.data?.message ||
+          error.response?.data?.mensaje ||
+          "No se pudo aprobar la solicitud",
+      );
     }
   };
 
   // Abre el modal de motivo, ya sea para rechazar o para solicitar corrección.
-  const handleAbrirRechazar = (id) => setAccionPendiente({ id, tipo: "rechazar" });
-  const handleAbrirCorreccion = (id) => setAccionPendiente({ id, tipo: "correccion" });
+  const handleAbrirRechazar = (id) =>
+    setAccionPendiente({ id, tipo: "rechazar" });
+  const handleAbrirCorreccion = (id) =>
+    setAccionPendiente({ id, tipo: "correccion" });
 
   const handleConfirmarAccionPendiente = async (motivo) => {
     if (!accionPendiente) return;
     const { id, tipo } = accionPendiente;
     try {
-      const actualizada = tipo === "rechazar"
-        ? await rechazarAspirante(id, motivo)
-        : await solicitarCorreccionAspirante(id, motivo);
+      const actualizada =
+        tipo === "rechazar"
+          ? await rechazarAspirante(id, motivo)
+          : await solicitarCorreccionAspirante(id, motivo);
 
       actualizarSolicitudLocal(actualizada);
-      toast.success(tipo === "rechazar"
-        ? "Solicitud rechazada."
-        : "Se solicitaron correcciones. El aspirante podrá reenviar sus documentos.");
+      toast.success(
+        tipo === "rechazar"
+          ? "Solicitud rechazada."
+          : "Se solicitaron correcciones. El aspirante podrá reenviar sus documentos.",
+      );
       cargarEstadisticas();
       setAccionPendiente(null);
       handleCerrarModal();
     } catch (error) {
       console.error(`Error al ${tipo}:`, error);
-      toast.error(error.response?.data?.message || error.response?.data?.mensaje || "No se pudo completar la acción");
+      toast.error(
+        error.response?.data?.message ||
+          error.response?.data?.mensaje ||
+          "No se pudo completar la acción",
+      );
     }
   };
 
@@ -150,12 +168,18 @@ export default function SolicitudSocio() {
     try {
       const actualizada = await enviarCredencialesAspirante(id);
       actualizarSolicitudLocal(actualizada);
-      toast.success(`Cuenta de socio creada (usuario: ${actualizada.nombreUsuarioGenerado}). Se enviaron las credenciales por correo.`);
+      toast.success(
+        `Cuenta de socio creada (usuario: ${actualizada.nombreUsuarioGenerado}). Se enviaron las credenciales por correo.`,
+      );
       cargarEstadisticas();
       handleCerrarModal();
     } catch (error) {
       console.error("Error al enviar credenciales:", error);
-      toast.error(error.response?.data?.message || error.response?.data?.mensaje || "No se pudieron enviar las credenciales");
+      toast.error(
+        error.response?.data?.message ||
+          error.response?.data?.mensaje ||
+          "No se pudieron enviar las credenciales",
+      );
     }
   };
 
@@ -164,7 +188,7 @@ export default function SolicitudSocio() {
     const coincideEstado =
       filtroEstado === "todos" ||
       (filtroEstado === "APROBADAS"
-        ? (s.estado === "ENVIO_CREDENCIALES" || s.estado === "APROBADO")
+        ? s.estado === "ENVIO_CREDENCIALES" || s.estado === "APROBADO"
         : s.estado === filtroEstado);
 
     const texto = busqueda.trim().toLowerCase();
@@ -177,7 +201,9 @@ export default function SolicitudSocio() {
     return coincideEstado && coincideBusqueda;
   });
 
-  const pendientesCount = solicitudes.filter((s) => s.estado === "PENDIENTE").length;
+  const pendientesCount = solicitudes.filter(
+    (s) => s.estado === "PENDIENTE",
+  ).length;
 
   return (
     <div className="solicitud-socio-container">
@@ -187,15 +213,23 @@ export default function SolicitudSocio() {
           <h1 className="solicitud-socio-title">
             <FiUsers className="header-icon" /> Solicitudes de Membresía
           </h1>
-          <p className="solicitud-socio-subtitle">Revisa, aprueba, rechaza o solicita correcciones a los aspirantes a socio</p>
+          <p className="solicitud-socio-subtitle">
+            Revisa, aprueba, rechaza o solicita correcciones a los aspirantes a
+            socio
+          </p>
         </div>
         {pendientesCount > 0 && (
-          <span className="badge bg-warning pending-count">{pendientesCount} pendiente(s) por revisar</span>
+          <span className="badge bg-warning pending-count">
+            {pendientesCount} pendiente(s) por revisar
+          </span>
         )}
       </div>
       <div className="spot-header-line" />
 
-      <EstadisticasSolicitudes estadisticas={estadisticas} loading={cargandoStats} />
+      <EstadisticasSolicitudes
+        estadisticas={estadisticas}
+        loading={cargandoStats}
+      />
 
       <SolicitudFiltros
         filtroEstado={filtroEstado}
@@ -208,7 +242,9 @@ export default function SolicitudSocio() {
       {cargando ? (
         <p className="text-center text-muted mt-4">Cargando solicitudes...</p>
       ) : solicitudesFiltradas.length === 0 ? (
-        <p className="text-center text-muted mt-4">No hay solicitudes que coincidan con este filtro</p>
+        <p className="text-center text-muted mt-4">
+          No hay solicitudes que coincidan con este filtro
+        </p>
       ) : (
         <div className="solicitudes-list">
           {solicitudesFiltradas.map((solicitud) => (
@@ -240,14 +276,24 @@ export default function SolicitudSocio() {
         show={!!accionPendiente}
         onCerrar={() => setAccionPendiente(null)}
         onConfirmar={handleConfirmarAccionPendiente}
-        titulo={accionPendiente?.tipo === "rechazar" ? "Motivo de rechazo" : "Correcciones a solicitar"}
+        titulo={
+          accionPendiente?.tipo === "rechazar"
+            ? "Motivo de rechazo"
+            : "Correcciones a solicitar"
+        }
         etiqueta={
           accionPendiente?.tipo === "rechazar"
             ? "Explica por qué se rechaza esta solicitud:"
             : "Explica qué debe corregir o volver a enviar el aspirante:"
         }
-        textoConfirmar={accionPendiente?.tipo === "rechazar" ? "Confirmar rechazo" : "Solicitar corrección"}
-        varianteConfirmar={accionPendiente?.tipo === "rechazar" ? "danger" : "warning"}
+        textoConfirmar={
+          accionPendiente?.tipo === "rechazar"
+            ? "Confirmar rechazo"
+            : "Solicitar corrección"
+        }
+        varianteConfirmar={
+          accionPendiente?.tipo === "rechazar" ? "danger" : "warning"
+        }
         mensajeValidacion={
           accionPendiente?.tipo === "rechazar"
             ? "Para poder confirmar un rechazo de solicitud, es necesario que des una razón válida"

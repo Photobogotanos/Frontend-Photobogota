@@ -342,6 +342,7 @@ export default function EliminarCuenta({ onHide }) {
           className="elim-link-btn"
           onClick={handleReenviarCodigo}
           disabled={enviando}
+          aria-label="Reenviar código de confirmación"
         >
           ¿No recibiste el código? Reenviar
         </button>
@@ -392,8 +393,11 @@ export default function EliminarCuenta({ onHide }) {
 
       <div className="elim-form-fields">
         <div className="fgroup">
-          <label className="flabel">¿Por qué te vas? (opcional)</label>
+          <label className="flabel" htmlFor="motivo-eliminacion">
+            ¿Por qué te vas? (opcional)
+          </label>
           <Select
+            id="motivo-eliminacion"
             inputId="motivo-eliminacion"
             classNamePrefix="spot-select"
             options={MOTIVOS}
@@ -405,8 +409,11 @@ export default function EliminarCuenta({ onHide }) {
         </div>
 
         <div className="fgroup">
-          <label className="flabel">Cuéntanos más (opcional)</label>
+          <label className="flabel" htmlFor="comentario-eliminacion">
+            Cuéntanos más (opcional)
+          </label>
           <textarea
+            id="comentario-eliminacion"
             className="finput ftextarea"
             rows={3}
             maxLength={500}

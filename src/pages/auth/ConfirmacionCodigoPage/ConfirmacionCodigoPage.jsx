@@ -1,14 +1,12 @@
-import Container from 'react-bootstrap/Container';
-import ConfirmacionCodigoForm from '@/components/auth/ConfirmacionCodigoForm/ConfirmacionCodigoForm';
-import "./ConfirmacionCodigoPage.css"
-export default function ConfirmacionCodigoPage(){
-
-    return(
+import Container from "react-bootstrap/Container";
+import ConfirmacionCodigoForm from "@/components/auth/ConfirmacionCodigoForm/ConfirmacionCodigoForm";
+import "./ConfirmacionCodigoPage.css";
+export default function ConfirmacionCodigoPage() {
+  return (
     <div className="confirmacion-codigo">
-    <Container >
+      <Container>
         <ConfirmacionCodigoForm></ConfirmacionCodigoForm>
-    </Container>
+      </Container>
     </div>
-    );
-
+  );
 }

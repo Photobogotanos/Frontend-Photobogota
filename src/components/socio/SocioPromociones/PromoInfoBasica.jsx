@@ -5,12 +5,12 @@ import Select from "react-select";
 
 const tipoOptions = [
   { value: "descuento", label: "Descuento %" },
-  { value: "regalos", label: "Regalos y obsequios"},
+  { value: "regalos", label: "Regalos y obsequios" },
   { value: "pack", label: "Combo" },
   { value: "demostracion", label: "Demostraciones" },
   { value: "gratis", label: "Servicio gratis" },
   { value: "otro", label: "Otro" },
-  {}
+  {},
 ];
 
 export default function PromoInfoBasica({ state, dispatch }) {
@@ -18,21 +18,27 @@ export default function PromoInfoBasica({ state, dispatch }) {
     <div className="promo-section mb-4">
       <Row className="g-3">
         <Col md={8}>
-          <label className="promo-label">
+          <label className="promo-label" htmlFor="titulo">
             Título <RequiredMark />
           </label>
           <input
+            id="titulo"
             type="text"
             className="spot-input"
             value={state.titulo}
-            onChange={(e) => dispatch({ type: "SET_TITULO", payload: e.target.value })}
+            onChange={(e) =>
+              dispatch({ type: "SET_TITULO", payload: e.target.value })
+            }
             placeholder="Ej: 50% de descuento en sesión de fotos"
             maxLength={100}
           />
         </Col>
         <Col md={4}>
-          <label className="spot-label promo-label">Tipo de promoción</label>
+          <label className="spot-label promo-label" htmlFor="tipoPromocion">
+            Tipo de promoción
+          </label>
           <Select
+            id="tipoPromocion"
             className="input-without-focus rounded-pill"
             value={tipoOptions.find((opt) => opt.value === state.tipo) || null}
             onChange={(selected) => {
@@ -46,10 +52,11 @@ export default function PromoInfoBasica({ state, dispatch }) {
           />
         </Col>
         <Col xs={12}>
-          <label className="promo-label">
+          <label className="promo-label" htmlFor="descripcion">
             Descripción <RequiredMark />
           </label>
           <textarea
+            id="descripcion"
             className="spot-textarea"
             rows={4}
             value={state.descripcion}

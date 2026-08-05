@@ -46,6 +46,7 @@ export function useMantenimientoEstado() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     consultar();
     const interval = setInterval(consultar, POLLING_INTERVAL_MS);
     return () => clearInterval(interval);

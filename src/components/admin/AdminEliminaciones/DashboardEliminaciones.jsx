@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import Form from "react-bootstrap/Form";
-import { FiUserX, FiSearch, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import {
+  FiUserX,
+  FiSearch,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import {
   listarSolicitudesEliminacionAdmin,
@@ -30,34 +35,51 @@ export default function DashboardEliminaciones() {
 
   const cargarSolicitudes = useCallback(async () => {
     setLoading(true);
-    const resultado = await listarSolicitudesEliminacionAdmin({
-      estado: estadoFiltro || undefined,
-      page: pagina,
-      size: 10,
-    });
-    if (resultado.exitoso) {
-      setSolicitudes(resultado.datos.content || []);
-      setTotalPaginas(resultado.datos.totalPages || 0);
-    } else {
-      toast.error(resultado.mensaje);
+
+    try {
+      const resultado = await listarSolicitudesEliminacionAdmin({
+        estado: estadoFiltro || undefined,
+        page: pagina,
+        size: 10,
+      });
+
+      if (resultado.exitoso) {
+        setSolicitudes(resultado.datos.content || []);
+        setTotalPaginas(resultado.datos.totalPages || 0);
+      } else {
+        toast.error(resultado.mensaje);
+      }
+    } catch (error) {
+      console.error("Error al cargar solicitudes de eliminación:", error);
+      toast.error("No se pudieron cargar las solicitudes de eliminación.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [estadoFiltro, pagina]);
 
   const cargarMetricas = useCallback(async () => {
     setCargandoMetricas(true);
-    const resultado = await obtenerMetricasEliminacionAdmin();
-    if (resultado.exitoso) {
-      setMetricas(resultado.datos);
+
+    try {
+      const resultado = await obtenerMetricasEliminacionAdmin();
+      if (resultado.exitoso) {
+        setMetricas(resultado.datos);
+      }
+    } catch (error) {
+      console.error("Error al cargar métricas de eliminación:", error);
+      toast.error("No se pudieron cargar las métricas.");
+    } finally {
+      setCargandoMetricas(false);
     }
-    setCargandoMetricas(false);
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarSolicitudes();
   }, [cargarSolicitudes]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarMetricas();
   }, [cargarMetricas]);
 
@@ -107,15 +129,17 @@ export default function DashboardEliminaciones() {
   return (
     <div className="dashboard-eliminaciones-main-container mt-4">
       <div className="dashboard-eliminaciones-header">
-        <span className="dashboard-eliminaciones-top-text">Panel de administración</span>
+        <span className="dashboard-eliminaciones-top-text">
+          Panel de administración
+        </span>
         <div className="dashboard-eliminaciones-title-group">
           <h2 className="dashboard-eliminaciones-title">
             <FiUserX className="header-icon" />
             Solicitudes de eliminación de cuenta
           </h2>
           <p className="dashboard-eliminaciones-subtitle">
-            Verifica la identidad, resuelve dependencias y procesa las eliminaciones de cuenta
-            de la plataforma.
+            Verifica la identidad, resuelve dependencias y procesa las
+            eliminaciones de cuenta de la plataforma.
           </p>
         </div>
         <span className="elim-header-line" />
@@ -125,8 +149,9 @@ export default function DashboardEliminaciones() {
 
       <div className="elim-filtros">
         <div className="elim-filtro-campo">
-          <label>Estado</label>
+          <label htmlFor="estado-filtro">Estado</label>
           <Form.Select
+            id="estado-filtro"
             size="sm"
             value={estadoFiltro}
             onChange={(e) => handleCambiarFiltro(e.target.value)}
@@ -171,6 +196,7 @@ export default function DashboardEliminaciones() {
             className="page-btn"
             disabled={pagina === 0}
             onClick={() => setPagina((p) => p - 1)}
+            aria-label="Página anterior"
           >
             <FiChevronLeft />
           </button>
@@ -181,6 +207,7 @@ export default function DashboardEliminaciones() {
             className="page-btn"
             disabled={pagina >= totalPaginas - 1}
             onClick={() => setPagina((p) => p + 1)}
+            aria-label="Página siguiente"
           >
             <FiChevronRight />
           </button>

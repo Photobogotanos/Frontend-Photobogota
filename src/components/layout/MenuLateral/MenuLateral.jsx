@@ -16,6 +16,7 @@ export default function MenuLateral({ mostrar, cerrar, cerrarSesion }) {
   // Limpiar usuario cuando se cierra el menú
   useEffect(() => {
     if (!mostrar) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
       setUsuario(null);
     }
   }, [mostrar]);

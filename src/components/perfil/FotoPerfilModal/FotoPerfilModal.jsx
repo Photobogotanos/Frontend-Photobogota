@@ -26,7 +26,12 @@ export default function FotoPerfilModal({ show, onHide, foto, nombre }) {
         role="button"
         tabIndex={0}
       >
-        <div className="foto-perfil-container-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="foto-perfil-container-modal"
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          role="presentation"
+        >
           <button
             type="button"
             className="foto-perfil-close-btn"

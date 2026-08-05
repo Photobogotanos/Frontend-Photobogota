@@ -20,12 +20,9 @@ export default function TeamCard({ member, index, flipped, playing, onCardClick,
       <div
         className={`team-card-3d ${flipped ? "flipped" : ""}`}
         onClick={onCardClick}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") onCardClick(e);
-        }}
+        onKeyDown={(e) => e.key === "Enter" && onCardClick()}
         role="button"
         tabIndex={0}
-        aria-label={`Ver más información de ${member.name}`}
       >
         <div className="team-card-inner-3d">
           {/* Front */}
@@ -67,6 +64,7 @@ export default function TeamCard({ member, index, flipped, playing, onCardClick,
                     rel="noopener noreferrer"
                     className="social-btn instagram-btn"
                     onClick={(e) => e.stopPropagation()}
+                    aria-label={`Visitar Instagram de ${member.name}`}
                   >
                     <FaInstagram size={18} />
                   </a>
@@ -78,6 +76,7 @@ export default function TeamCard({ member, index, flipped, playing, onCardClick,
                     rel="noopener noreferrer"
                     className="social-btn linkedin-btn"
                     onClick={(e) => e.stopPropagation()}
+                    aria-label={`Visitar LinkedIn de ${member.name}`}
                   >
                     <FaLinkedin size={18} />
                   </a>
@@ -89,6 +88,7 @@ export default function TeamCard({ member, index, flipped, playing, onCardClick,
                     rel="noopener noreferrer"
                     className="social-btn github-btn"
                     onClick={(e) => e.stopPropagation()}
+                    aria-label={`Visitar GitHub de ${member.name}`}
                   >
                     <FaGithub size={18} />
                   </a>

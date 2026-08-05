@@ -92,6 +92,7 @@ export default function MenuSuperior() {
           {/* Botón hamburguesa para usuarios logueados (menú lateral) */}
           {logueado && (
             <button
+              type="button"
               onClick={abrirSidebar}
               className="hamburger-btn p-0 me-3"
               aria-label="Abrir menú lateral"

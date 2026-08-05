@@ -27,7 +27,11 @@ const CategoriaList = () => {
   const [busqueda, setBusqueda] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [editItem, setEditItem] = useState(null);
-  const [formData, setFormData] = useState({ nombre: "", descripcion: "", imagen: "" });
+  const [formData, setFormData] = useState({
+    nombre: "",
+    descripcion: "",
+    imagen: "",
+  });
 
   const cargarCategorias = useCallback(async () => {
     setCargando(true);
@@ -47,11 +51,12 @@ const CategoriaList = () => {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarCategorias();
   }, [cargarCategorias]);
 
   const filteredItems = categorias.filter((item) =>
-    item.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    item.nombre.toLowerCase().includes(busqueda.toLowerCase()),
   );
 
   const handleCrear = () => {
@@ -94,7 +99,7 @@ const CategoriaList = () => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "No se pudo eliminar la categoría",
+          text: "No se pudo eliminar la categoría " + error.message,
         });
       }
     }
@@ -108,7 +113,7 @@ const CategoriaList = () => {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "No se pudo cambiar el estado",
+        text: "No se pudo cambiar el estado " + error.message,
       });
     }
   };
@@ -126,7 +131,11 @@ const CategoriaList = () => {
     try {
       if (editItem) {
         await actualizarCategoria(editItem.id, formData);
-        Swal.fire("Actualizado", "Categoría actualizada correctamente", "success");
+        Swal.fire(
+          "Actualizado",
+          "Categoría actualizada correctamente",
+          "success",
+        );
       } else {
         await crearCategoria(formData);
         Swal.fire("Creado", "Categoría creada correctamente", "success");
@@ -137,7 +146,7 @@ const CategoriaList = () => {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "No se pudo guardar la categoría",
+        text: "No se pudo guardar la categoría " + error.message,
       });
     }
   };
@@ -145,10 +154,15 @@ const CategoriaList = () => {
   const estaActiva = (item) => item.activo === true;
 
   const renderItem = (item) => (
-    <div key={item.id} className={`item-card ${estaActiva(item) ? "" : "inactiva"}`}>
+    <div
+      key={item.id}
+      className={`item-card ${estaActiva(item) ? "" : "inactiva"}`}
+    >
       <div className="item-info">
         <span className="item-nombre">{item.nombre}</span>
-        {item.descripcion && <span className="item-descripcion">{item.descripcion}</span>}
+        {item.descripcion && (
+          <span className="item-descripcion">{item.descripcion}</span>
+        )}
       </div>
       <div className="item-acciones">
         <button
@@ -158,7 +172,9 @@ const CategoriaList = () => {
         >
           {estaActiva(item) ? <FaToggleOn /> : <FaToggleOff />}
         </button>
-        <span className={`estado-badge ${estaActiva(item) ? "activo" : "inactivo"}`}>
+        <span
+          className={`estado-badge ${estaActiva(item) ? "activo" : "inactivo"}`}
+        >
           {estaActiva(item) ? "Activa" : "Inactiva"}
         </span>
         <button className="btn-edit" onClick={() => handleEditar(item)}>
@@ -205,9 +221,7 @@ const CategoriaList = () => {
           <p>Crea una nueva categoría para comenzar</p>
         </div>
       ) : (
-        <div className="items-grid">
-          {filteredItems.map(renderItem)}
-        </div>
+        <div className="items-grid">{filteredItems.map(renderItem)}</div>
       )}
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
@@ -216,20 +230,21 @@ const CategoriaList = () => {
         </Modal.Header>
         <Modal.Body>
           <div className="form-group">
-            <label>Nombre *</label>
+            <label htmlFor="nombre">Nombre *</label>
             <input
+              id="nombre"
               type="text"
               name="nombre"
               value={formData.nombre}
               onChange={handleChange}
               placeholder="Ingrese el nombre de la categoría"
               className="form-control"
-              autoFocus
             />
           </div>
           <div className="form-group">
-            <label>Descripción</label>
+            <label htmlFor="descripcion">Descripción</label>
             <textarea
+              id="descripcion"
               name="descripcion"
               value={formData.descripcion}
               onChange={handleChange}
@@ -239,8 +254,9 @@ const CategoriaList = () => {
             />
           </div>
           <div className="form-group">
-            <label>URL de Imagen</label>
+            <label htmlFor="imagen">URL de Imagen</label>
             <input
+              id="imagen"
               type="text"
               name="imagen"
               value={formData.imagen}
@@ -251,7 +267,10 @@ const CategoriaList = () => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowModal(false)}
+          >
             Cancelar
           </button>
           <button className="btn btn-primary" onClick={handleGuardar}>

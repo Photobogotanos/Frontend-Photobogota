@@ -14,4 +14,5 @@ export const postCrearSpot = (body) =>
   clienteApi.post("/spots", body);
 
 export const postCrearResena = (spotId, body) =>
-  clienteApi.post(`/spots/${spotId}/resenas`, body);
+  clienteApi.post(`/spots/${spotId}/resenas`, body); 
+

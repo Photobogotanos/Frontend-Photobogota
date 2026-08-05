@@ -33,7 +33,7 @@ export default function MantenimientoOverlay({ mensaje, fechaFin, onReintentar }
             Disponible nuevamente aprox. el <strong>{fechaFormateada}</strong>
           </p>
         )}
-        <button className="mantenimiento-btn" onClick={onReintentar}>
+        <button type="button" className="mantenimiento-btn" onClick={onReintentar}>
           Reintentar ahora
         </button>
       </div>

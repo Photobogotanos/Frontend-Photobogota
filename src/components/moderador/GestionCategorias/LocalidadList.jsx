@@ -53,6 +53,7 @@ const LocalidadList = () => {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarLocalidades();
   }, [cargarLocalidades]);
 
@@ -96,7 +97,7 @@ const LocalidadList = () => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "No se pudo eliminar la localidad",
+          text: "No se pudo eliminar la localidad " + error.message,
         });
       }
     }
@@ -110,7 +111,7 @@ const LocalidadList = () => {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "No se pudo cambiar el estado",
+        text: "No se pudo cambiar el estado " + error.message,
       });
     }
   };
@@ -145,7 +146,7 @@ const LocalidadList = () => {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "No se pudo guardar la localidad",
+        text: "No se pudo guardar la localidad " + error.message,
       });
     }
   };
@@ -231,20 +232,21 @@ const LocalidadList = () => {
         </Modal.Header>
         <Modal.Body>
           <div className="form-group">
-            <label>Nombre *</label>
+            <label htmlFor="nombre">Nombre *</label>
             <input
+              id="nombre"
               type="text"
               name="nombre"
               value={formData.nombre}
               onChange={handleChange}
               placeholder="Ej: Chapinero, Usaquén"
               className="form-control"
-              autoFocus
             />
           </div>
           <div className="form-group">
-            <label>Descripción</label>
+            <label htmlFor="descripcion">Descripción</label>
             <textarea
+              id="descripcion"
               name="descripcion"
               value={formData.descripcion}
               onChange={handleChange}
@@ -254,8 +256,9 @@ const LocalidadList = () => {
             />
           </div>
           <div className="form-group">
-            <label>URL de Imagen</label>
+            <label htmlFor="imagen">URL de Imagen</label>
             <input
+              id="imagen"
               type="text"
               name="imagen"
               value={formData.imagen}

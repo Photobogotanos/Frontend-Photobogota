@@ -47,7 +47,11 @@ export default function CuentaInactivaPage() {
       }
       const resultado = await obtenerEstadoEliminacionCuenta();
       if (!activo) return;
-      if (resultado.exitoso && resultado.datos?.tieneSolicitudActiva && resultado.datos.estado === "PROGRAMADA") {
+      if (
+        resultado.exitoso &&
+        resultado.datos?.tieneSolicitudActiva &&
+        resultado.datos.estado === "PROGRAMADA"
+      ) {
         setEstadoInfo(resultado.datos);
       }
       setCargando(false);
@@ -73,7 +77,11 @@ export default function CuentaInactivaPage() {
     try {
       const resultado = await cancelarEliminacionCuenta();
       if (!resultado.exitoso) {
-        Swal.fire({ icon: "error", title: "No se pudo recuperar", text: resultado.mensaje });
+        Swal.fire({
+          icon: "error",
+          title: "No se pudo recuperar",
+          text: resultado.mensaje,
+        });
         return;
       }
       await Swal.fire({
@@ -104,22 +112,31 @@ export default function CuentaInactivaPage() {
   return (
     <div className="cuenta-inactiva-page">
       <div className="cip-card">
-        <span className={`cip-icon ${tieneRecuperacion ? "cip-icon-recover" : "cip-icon-block"}`}>
+        <span
+          className={`cip-icon ${tieneRecuperacion ? "cip-icon-recover" : "cip-icon-block"}`}
+        >
           {tieneRecuperacion ? <FaClock /> : <FaBan />}
         </span>
 
         {tieneRecuperacion ? (
           <>
-            <h1 className="cip-title">Tu cuenta está programada para eliminarse</h1>
+            <h1 className="cip-title">
+              Tu cuenta está programada para eliminarse
+            </h1>
             <p className="cip-text">
               Solicitaste eliminar tu cuenta. Tienes hasta el{" "}
-              <b>{formatearFecha(estadoInfo.fechaProgramadaEliminacion)}</b> para recuperarla
-              {estadoInfo.diasRestantes != null ? ` (${estadoInfo.diasRestantes} días restantes)` : ""}.
-              Pasado ese plazo, tus datos personales se anonimizarán de forma permanente.
+              <b>{formatearFecha(estadoInfo.fechaProgramadaEliminacion)}</b>{" "}
+              para recuperarla
+              {estadoInfo.diasRestantes != null
+                ? ` (${estadoInfo.diasRestantes} días restantes)`
+                : ""}
+              . Pasado ese plazo, tus datos personales se anonimizarán de forma
+              permanente.
             </p>
             {estadoInfo.motivo && (
               <p className="cip-detalle">
-                Motivo indicado: <b>{MOTIVO_LABEL[estadoInfo.motivo] || estadoInfo.motivo}</b>
+                Motivo indicado:{" "}
+                <b>{MOTIVO_LABEL[estadoInfo.motivo] || estadoInfo.motivo}</b>
               </p>
             )}
 
@@ -129,15 +146,16 @@ export default function CuentaInactivaPage() {
               onClick={handleRecuperar}
               disabled={recuperando}
             >
-              <FaCheckCircle /> {recuperando ? "Procesando..." : "Recuperar mi cuenta"}
+              <FaCheckCircle />{" "}
+              {recuperando ? "Procesando..." : "Recuperar mi cuenta"}
             </button>
           </>
         ) : (
           <>
             <h1 className="cip-title">Tu cuenta está desactivada</h1>
             <p className="cip-text">
-              Un administrador desactivó esta cuenta. Si crees que esto es un error,
-              comunícate con soporte para más información.
+              Un administrador desactivó esta cuenta. Si crees que esto es un
+              error, comunícate con soporte para más información.
             </p>
           </>
         )}

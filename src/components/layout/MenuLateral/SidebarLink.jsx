@@ -14,7 +14,7 @@ export default function SidebarLink({
 
   if (esBoton) {
     return (
-      <button onClick={onClick} className={clases}>
+      <button type="button" onClick={onClick} className={clases}>
         <span className="sidebar-link-icon">{icon}</span>
         <span className="sidebar-link-text">{texto}</span>
       </button>

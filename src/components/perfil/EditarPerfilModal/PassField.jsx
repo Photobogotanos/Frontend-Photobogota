@@ -28,7 +28,7 @@ const PassField = ({
           }`}
         placeholder={placeholder}
       />
-      <button type="button" className="eye-btn" onClick={onToggle} tabIndex={-1}>
+      <button type="button" className="eye-btn" onClick={onToggle} tabIndex={-1} aria-label={ver ? "Ocultar contraseña" : "Mostrar contraseña"}>
         {ver ? <FaEyeSlash /> : <FaEye />}
       </button>
       {name === "confirmarContrasena" && passwordsCoinciden && (

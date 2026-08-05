@@ -179,6 +179,7 @@ const MapaContent = () => {
 
   useEffect(() => {
     if (id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
       cargarCalificaciones(id);
     }
   }, [id, cargarCalificaciones]);
@@ -404,10 +405,12 @@ const MapaContent = () => {
                   </h4>
                   <form onSubmit={handleSubmitCalificacion}>
                     <div className="rating-input">
-                      <label>Estrellas</label>
+                      <label htmlFor="estrellas">Estrellas</label>
                       <div className="stars-input">
                         <StarRating
-                          rating={estadoResena.nuevaResena.rating}
+                          id="estrellas"
+                      name="estrellas"
+                      rating={estadoResena.nuevaResena.rating}
                           hoverRating={estadoResena.hoverRating}
                           isInteractive
                           onSelect={(valor) =>

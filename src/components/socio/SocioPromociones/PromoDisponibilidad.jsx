@@ -43,25 +43,42 @@ export default function PromoDisponibilidad({ state, dispatch }) {
       startPicker.destroy();
       endPicker.destroy();
     };
-  }, [state.fechaInicio]);
+  }, [dispatch, state.fechaFin, state.fechaInicio]);
 
   return (
     <div className="promo-section mb-4">
       <h5 className="section-title">Disponibilidad y Límite</h5>
       <Row className="g-3">
         <Col md={6}>
-          <label className="creacion-formulario-label" >
-            <MdDateRange/> Fecha de inicio <RequiredMark />
+          <label className="creacion-formulario-label" htmlFor="fechaInicio">
+            <MdDateRange /> Fecha de inicio <RequiredMark />
           </label>
-          <input ref={startRef} className="rounded-pill form-control input-without-focus" placeholder="Selecciona fecha" readOnly />
-        </Col>
-        <Col md={6}>
-          <label className="creacion-formulario-label">Fecha de fin <RequiredMark /></label>
-          <input ref={endRef} className="rounded-pill form-control input-without-focus" placeholder="Selecciona fecha" readOnly />
-        </Col>
-        <Col md={6}>
-          <label className="promo-label">Límite de códigos / usos</label>
           <input
+            id="fechaInicio"
+            ref={startRef}
+            className="rounded-pill form-control input-without-focus"
+            placeholder="Selecciona fecha"
+            readOnly
+          />
+        </Col>
+        <Col md={6}>
+          <label className="creacion-formulario-label" htmlFor="fechaFin">
+            Fecha de fin <RequiredMark />
+          </label>
+          <input
+            id="fechaFin"
+            ref={endRef}
+            className="rounded-pill form-control input-without-focus"
+            placeholder="Selecciona fecha"
+            readOnly
+          />
+        </Col>
+        <Col md={6}>
+          <label className="promo-label" htmlFor="limiteUsos">
+            Límite de códigos / usos
+          </label>
+          <input
+            id="limiteUsos"
             type="number"
             min="1"
             max="1000"
@@ -69,13 +86,18 @@ export default function PromoDisponibilidad({ state, dispatch }) {
             value={state.limiteUsos}
             onChange={(e) => {
               const val = e.target.value;
-              if (val === "" || (/^\d+$/.test(val) && +val >= 1 && +val <= 1000)) {
+              if (
+                val === "" ||
+                (/^\d+$/.test(val) && +val >= 1 && +val <= 1000)
+              ) {
                 dispatch({ type: "SET_LIMITE_USOS", payload: val });
               }
             }}
             placeholder="Ej: 50 (vacío = ilimitado)"
           />
-          <small className="text-muted">Mínimo 5 • Máximo 1000 • Vacío = ilimitado</small>
+          <small className="text-muted">
+            Mínimo 5 • Máximo 1000 • Vacío = ilimitado
+          </small>
         </Col>
       </Row>
     </div>

@@ -1,13 +1,13 @@
-import Container from 'react-bootstrap/Container';
-import FormularioCreacion from '@/components/auth/CreacionDeCuentaForm/CreacionDeCuentaForm';
-import  "./CreacionDeCuentaPage.css"
+import Container from "react-bootstrap/Container";
+import FormularioCreacion from "@/components/auth/CreacionDeCuentaForm/CreacionDeCuentaForm";
+import "./CreacionDeCuentaPage.css";
 
 function CreacionDeCuentaPage() {
   return (
     <div className="creacion-cuenta">
-    <Container >
+      <Container>
         <FormularioCreacion></FormularioCreacion>
-    </Container>
+      </Container>
     </div>
   );
 }

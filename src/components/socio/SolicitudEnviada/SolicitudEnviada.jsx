@@ -128,7 +128,7 @@ const SolicitudEnviada = () => {
               />
             </div>
 
-            <button onClick={handleSearch} className="search-button" disabled={cargando}>
+            <button type="button" onClick={handleSearch} className="search-button" disabled={cargando}>
               <FiSearch className="btn-icon" />
               {cargando ? "Buscando..." : "Buscar Solicitud"}
             </button>
