@@ -1,0 +1,57 @@
+/* Header morado consistente con el resto de modales de perfil (EditarPerfilModal) */
+.preferencias-notif-modal .modal-header-custom {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  align-items: center;
+}
+
+.preferencias-notif-modal .modal-title-custom {
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.01em;
+}
+
+.preferencias-notif-modal .mh-icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 9px;
+  font-size: 0.9rem;
+}
+
+.preferencias-notif-modal .modal-header-custom .btn-close {
+  filter: invert(1);
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+
+.preferencias-notif-modal .modal-header-custom .btn-close:hover {
+  opacity: 1;
+}
+
+/* La card de PreferenciasNotificaciones fue pensada para página completa
+   (min-height: 100vh, sombra grande). Dentro del modal la neutralizamos
+   para que quede integrada al cuerpo del modal en vez de flotar. */
+.preferencias-notif-modal-body {
+  padding: 1.5rem;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.preferencias-notif-modal-body .preferencias-card {
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+}
+
+.preferencias-notif-modal-body .preferencias-card .card-body {
+  padding: 0;
+}

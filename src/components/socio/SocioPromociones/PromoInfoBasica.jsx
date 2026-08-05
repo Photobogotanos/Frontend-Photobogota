@@ -10,6 +10,7 @@ const tipoOptions = [
   { value: "demostracion", label: "Demostraciones" },
   { value: "gratis", label: "Servicio gratis" },
   { value: "otro", label: "Otro" },
+  {}
 ];
 
 export default function PromoInfoBasica({ state, dispatch }) {

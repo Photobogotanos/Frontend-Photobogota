@@ -16,6 +16,7 @@
 .foto-perfil-modal-body {
   padding: 0;
   background: transparent;
+  cursor: zoom-out;
 }
 
 /* CONTENEDOR DE LA FOTO - Fondo oscuro */
@@ -25,7 +26,31 @@
   align-items: center;
   padding: 0;
   min-height: 80vh;
+  cursor: default;
+  position: relative;
+}
 
+.foto-perfil-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  border: none;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.foto-perfil-close-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
 }
 
 /* FOTO AMPLIADA - FORMATO CUADRADO SIN MARCO */

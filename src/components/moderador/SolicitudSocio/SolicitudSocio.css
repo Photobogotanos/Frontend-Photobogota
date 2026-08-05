@@ -268,12 +268,21 @@
 }
 
 .btn-approve,
-.btn-reject {
+.btn-reject,
+.btn-correccion {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
   flex: 1;
+}
+
+.btn-credenciales {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
 }
 
 /* Modal */

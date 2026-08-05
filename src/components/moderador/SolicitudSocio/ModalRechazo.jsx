@@ -4,22 +4,27 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import toast from "react-hot-toast";
 
-// Este modal aparece cuando el moderador hace clic en "Rechazar".
-// En vez de rechazar directo, pedimos el motivo primero
-// para que quede registrado y el solicitante sepa por qué.
-export default function ModalRechazo({ show, onCerrar, onConfirmar }) {
+// Este modal se reutiliza tanto para "Rechazar" como para "Solicitar
+// correcciones": en ambos casos necesitamos que el moderador escriba una
+// justificación antes de confirmar, para que quede registrada y el
+// aspirante sepa exactamente qué pasó / qué debe corregir.
+export default function ModalRechazo({
+  show,
+  onCerrar,
+  onConfirmar,
+  titulo = "Motivo de rechazo",
+  etiqueta = "Explica por qué se rechaza esta solicitud:",
+  textoConfirmar = "Confirmar rechazo",
+  varianteConfirmar = "danger",
+  mensajeValidacion = "Para poder confirmar un rechazo de solicitud, es necesario que des una razón valida",
+}) {
   const [motivo, setMotivo] = useState("");
 
   // Al confirmar validamos que haya escrito algo — no tiene sentido
-  // rechazar sin dar una razón.
+  // rechazar (o pedir corrección) sin dar una razón.
   const handleConfirmar = () => {
     if (!motivo.trim()) {
-      toast(
-        "Para poder confirmar un rechazo de solicitud, es necesario que des una razón valida",
-        {
-          duration: 6000,
-        }
-      );
+      toast(mensajeValidacion, { duration: 6000 });
       return;
     }
     onConfirmar(motivo);
@@ -34,15 +39,13 @@ export default function ModalRechazo({ show, onCerrar, onConfirmar }) {
   };
 
   return (
-    <Modal show={show} onHide={handleCerrar}   centered className="solicitud-modal">
+    <Modal show={show} onHide={handleCerrar} centered className="solicitud-modal">
       <Modal.Header closeButton>
-        <Modal.Title className="modal-title-top">Motivo de rechazo</Modal.Title>
+        <Modal.Title className="modal-title-top">{titulo}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form.Group>
-          <Form.Label htmlFor="motivo-rechazo">
-            Explica por qué se rechaza esta solicitud:
-          </Form.Label>
+          <Form.Label htmlFor="motivo-rechazo">{etiqueta}</Form.Label>
           <Form.Control
             id="motivo-rechazo"
             as="textarea"
@@ -54,7 +57,7 @@ export default function ModalRechazo({ show, onCerrar, onConfirmar }) {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleCerrar}>Cancelar</Button>
-        <Button variant="danger" onClick={handleConfirmar}>Confirmar rechazo</Button>
+        <Button variant={varianteConfirmar} onClick={handleConfirmar}>{textoConfirmar}</Button>
       </Modal.Footer>
     </Modal>
   );

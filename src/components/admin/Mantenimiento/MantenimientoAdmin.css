@@ -26,18 +26,18 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: white;
+  background: var(--color-primary);
   border: 1px solid var(--border);
   border-radius: var(--pill);
   padding: 8px 16px;
-  color: var(--color-dark);
+  color: var(--color-light);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
 .btn-refrescar:hover {
-  background: var(--color-bg);
+  background: var(--color-hover);
 }
 
 .girando {
@@ -160,6 +160,13 @@
   color: #2563eb;
 }
 
+.badge-cancelado {
+  background: #f3f4f6;
+  color: #6b7280;
+  text-decoration: line-through;
+}
+
+/* Botón cancelar */
 .btn-cancelar-mantenimiento {
   background: #fee2e2;
   color: #ef4444;

@@ -7,7 +7,6 @@ import {
   FaChevronRight,
   FaTrash,
 } from "react-icons/fa";
-import Swal from "sweetalert2";
 
 import HeaderPromo from "./HeaderPromo";
 import PromoInfoBasica from "./PromoInfoBasica";
@@ -265,154 +264,8 @@ export default function CrearPromocion() {
     dispatch({ type: "SET_INDICE_IMAGEN", payload: next });
   };
 
-  const validarFormulario = () => {
-    if (!state.titulo.trim()) {
-      Swal.fire({
-        icon: "warning",
-        title: "Título requerido",
-        text: "Por favor ingresa el título de la promoción.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (!state.descripcion.trim()) {
-      Swal.fire({
-        icon: "warning",
-        title: "Descripción requerida",
-        text: "Por favor ingresa una descripción de la promoción.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (!state.tipo) {
-      Swal.fire({
-        icon: "warning",
-        title: "Tipo requerido",
-        text: "Por favor selecciona un tipo de promoción.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (!state.localId) {
-      Swal.fire({
-        icon: "warning",
-        title: "Local requerido",
-        text: "Por favor selecciona un local asociado.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (!state.fechaInicio) {
-      Swal.fire({
-        icon: "warning",
-        title: "Fecha de inicio requerida",
-        text: "Por favor selecciona la fecha de inicio.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (!state.fechaFin) {
-      Swal.fire({
-        icon: "warning",
-        title: "Fecha de fin requerida",
-        text: "Por favor selecciona la fecha de fin.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (state.imagenes.length === 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Imágenes requeridas",
-        text: "Por favor sube al menos una imagen de la promoción.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (state.limiteUsos !== "") {
-      const limite = parseInt(state.limiteUsos, 10);
-      if (isNaN(limite) || limite < 10 || limite > 1000) {
-        Swal.fire({
-          icon: "warning",
-          title: "Límite de usos inválido",
-          text: "El límite de usos debe estar entre 10 y 1000.",
-          confirmButtonColor: "#806fbe",
-        });
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  const handlePublicar = async () => {
-    if (!validarFormulario()) return;
-
-    dispatch
-    dispatch({ type: "SET_ESTADO", payload: estadoCalculado });
-
-    Swal.fire({
-      title: "Publicando promoción...",
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
-    });
-
-    try {
-      const payload = {
-        titulo: state.titulo,
-        descripcion: state.descripcion,
-        tipo: state.tipo,
-        localId: state.localId,
-        fechaInicio: state.fechaInicio,
-        fechaFin: state.fechaFin,
-        limiteUsos: state.limiteUsos === "" ? null : parseInt(state.limiteUsos, 10),
-        estado: estadoCalculado,
-      };
-
-      console.log("Payload a enviar:", payload);
-      // Aquí va tu llamada a la API
-
-      Swal.close();
-      await Swal.fire({
-        icon: "success",
-        title: "¡Promoción publicada!",
-        text: "Tu promoción ya está activa.",
-        timer: 2000,
-        showConfirmButton: false,
-        timerProgressBar: true,
-      });
-    } catch (error) {
-      Swal.close();
-      const mensaje =
-        error.response?.data?.mensaje ||
-        error.response?.data?.message ||
-        "Ocurrió un error al publicar la promoción.";
-
-      Swal.fire({
-        icon: "error",
-        title: "Error al publicar",
-        text: mensaje,
-        confirmButtonColor: "#806fbe",
-      });
-    }
-  };
-
-  const handlePreview = () => {
-    const previewEl = document.getElementById("preview-promo");
-    if (previewEl) {
-      previewEl.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   const handleSubmit = () => {
-    console.log("Payload a enviar:", {
+    const payload = {
       titulo: state.titulo,
       descripcion: state.descripcion,
       tipo: state.tipo,
@@ -421,7 +274,9 @@ export default function CrearPromocion() {
       fechaFin: state.fechaFin,
       limiteUsos: state.limiteUsos === "" ? null : parseInt(state.limiteUsos),
       estado: estadoCalculado,
-    });
+    };
+    console.log("Payload a enviar:", payload);
+    // Aquí va tu llamada a la API
   };
 
   return (
@@ -453,7 +308,17 @@ export default function CrearPromocion() {
         <PromoPreview state={state} estado={estadoCalculado} />
 
         <div className="d-flex justify-content-end gap-3 mt-4">
-          <PromoBotones onPreview={handlePreview} onPublish={handlePublicar} />
+          <PromoBotones></PromoBotones>
+          {/* <button type="button" className="btn btn-secondary">
+            Guardar borrador
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleSubmit}
+          >
+            Publicar Promoción
+          </button> */}
         </div>
       </div>
     </div>

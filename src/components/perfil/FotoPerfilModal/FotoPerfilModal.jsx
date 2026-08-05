@@ -3,17 +3,21 @@ import "./FotoPerfilModal.css";
 
 export default function FotoPerfilModal({ show, onHide, foto, nombre }) {
   return (
-    <Modal 
-      show={show} 
-      onHide={onHide} 
-      centered 
+    <Modal
+      show={show}
+      onHide={onHide}
+      centered
       className="foto-perfil-modal"
-      backdrop="static"       
+      backdrop={true}
       keyboard={true}
     >
       <Modal.Body
         className="foto-perfil-modal-body"
-        onClick={onHide}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            onHide();
+          }
+        }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             onHide();
@@ -23,6 +27,14 @@ export default function FotoPerfilModal({ show, onHide, foto, nombre }) {
         tabIndex={0}
       >
         <div className="foto-perfil-container-modal" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            className="foto-perfil-close-btn"
+            onClick={onHide}
+            aria-label="Cerrar foto de perfil"
+          >
+            ×
+          </button>
           <img
             src={foto}
             alt={`Foto de perfil de ${nombre}`}

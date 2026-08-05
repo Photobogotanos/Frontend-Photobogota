@@ -43,6 +43,17 @@ export default function MenuItems({ rol, cerrar }) {
         activo={esRutaActiva("/perfil")}
       />
 
+      {/* Enviar notificaciones: solo moderadores y administradores */}
+      {(rol === "MOD" || rol === "ADMIN") && (
+        <SidebarLink
+          icon={<FaBullhorn />}
+          texto="Enviar Notificación"
+          to="/admin/enviar-notificacion"
+          onClick={cerrar}
+          activo={esRutaActiva("/admin/enviar-notificacion")}
+        />
+      )}
+
       {/* Menú para socios */}
       {rol === "SOCIO" && (
         <>
@@ -141,9 +152,9 @@ export default function MenuItems({ rol, cerrar }) {
           <SidebarLink
             icon={<FaBell />}
             texto="Notificaciones de Mantenimiento"
-            to="/notificaciones-mantenimiento"
+            to="/admin/notificaciones-mantenimiento"
             onClick={cerrar}
-            activo={esRutaActiva("/notificaciones-mantenimiento")}
+            activo={esRutaActiva("/admin/notificaciones-mantenimiento")}
           />
           <SidebarLink
             icon={<FaFileAlt />}

@@ -8,7 +8,6 @@ import RevisionSolicitudesSocioPage from "@/pages/moderador/RevisionSolicitudesS
 import CreacionDeCuentaPage from "@/pages/auth/CreacionDeCuentaPage/CreacionDeCuentaPage.jsx";
 import RecuperarContraPage from "@/pages/auth/RecuperarContraPage/RecuperarContraPage.jsx";
 import MiPerfil from "@/pages/perfil/MiPerfilPage/MiPerfilPage.jsx";
-import UsuarioPerfilPage from "@/pages/perfil/UsuarioPerfilPage/UsuarioPerfilPage.jsx";
 import Nosotros from "@/pages/pagina-inicio/Nosotros/Nosotros.jsx";
 import ConfirmacionCodigoPage from "@/pages/auth/ConfirmacionCodigoPage/ConfirmacionCodigoPage.jsx";
 import Mapa from "@/pages/mapa/MapaPage/MapaPage.jsx";
@@ -23,12 +22,14 @@ import CrearCuentasAdminPage from "@/pages/admin/CrearCuentasAdmin/CrearCuentasA
 import AdminUsuariosPage from "@/pages/admin/AdminUsuarios/AdminUsuariosPage";
 import AdminLogsPage from "@/pages/admin/AdminLogs/AdminLogsPage";
 import MantenimientoPage from "@/pages/admin/Mantenimiento/MantenimientoPage";
+import EnviarNotificacionPage from "@/pages/admin/EnviarNotificacion/EnviarNotificacionPage";
 import GestionCategoriasPage from "../pages/moderador/GestionCategoriasPage/GestionCategoriasPage";
 import PreferenciasNotificacionesPage from "@/pages/notificaciones/PreferenciasNotificaciones/PreferenciasNotificacionesPage";
 import DashboardReportesPage from "@/pages/moderador/DashboardReportesPage/DashboardReportesPage";
 import AdminReportesPage from "@/pages/admin/AdminReportesPage/AdminReportesPage";
 import AdminEliminacionesPage from "@/pages/admin/AdminEliminacionesPage/AdminEliminacionesPage";
 import ProtectedRoute from "./ProtectedRoute";
+import SocioLocalesPage from "@/pages/socio/SocioLocalesPage/SocioLocalesPage.jsx";
 
 const AppRouter = () => {
   return (
@@ -52,23 +53,14 @@ const AppRouter = () => {
         <Route path="/solicitud-enviada" element={<SolicitudEnviadaPage />} />
 
         {/* ── RUTAS AUTENTICADAS (cualquier rol) ── */}
-         <Route
-           path="/perfil"
-           element={
-             <ProtectedRoute>
-               <MiPerfil />
-             </ProtectedRoute>
-           }
-         />
-         {/* Perfil público/ajeno: se redirige a /perfil si es el propio usuario */}
-         <Route
-           path="/usuario/:nombreUsuario"
-           element={
-             <ProtectedRoute>
-               <UsuarioPerfilPage />
-             </ProtectedRoute>
-           }
-         />
+        <Route
+          path="/perfil"
+          element={
+            <ProtectedRoute>
+              <MiPerfil />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/perfil/preferencias-notificaciones"
           element={
@@ -108,6 +100,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute roles={["SOCIO"]}>
               <EstadisticasSocioPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/locales"
+          element={
+            <ProtectedRoute roles={["SOCIO"]}>
+              <SocioLocalesPage />
             </ProtectedRoute>
           }
         />
@@ -212,10 +212,18 @@ const AppRouter = () => {
           }
         />
         <Route
-          path="/admin/mantenimiento"
+          path="/admin/notificaciones-mantenimiento"
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <MantenimientoPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/enviar-notificacion"
+          element={
+            <ProtectedRoute roles={["ADMIN", "MOD"]}>
+              <EnviarNotificacionPage />
             </ProtectedRoute>
           }
         />

@@ -6,6 +6,7 @@ import {
   eliminarNotificacion,
   getPreferenciasNotificaciones,
   actualizarPreferenciasApi,
+  postEnviarNotificacion,
 } from "@/api/notificacionApi";
 
 export const obtenerMisNotificaciones = async (
@@ -25,7 +26,7 @@ export const obtenerMisNotificaciones = async (
 export const obtenerContadorNoLeidas = async () => {
   try {
     const res = await getContadorNoLeidas();
-    return res.data.cantidad || 0;
+    return res.data.noLeidas || 0;
   } catch {
     return 0;
   }
@@ -84,6 +85,25 @@ export const actualizarPreferenciasNotificaciones = async (dto) => {
     return { 
       exitoso: false, 
       mensaje: error.response?.data?.mensaje || "Error al guardar preferencias" 
+    };
+  }
+};
+
+/**
+ * Enviar una notificación manual / anuncio (solo MOD y ADMIN)
+ */
+export const enviarNotificacionManual = async (dto) => {
+  try {
+    await postEnviarNotificacion(dto);
+    return { exitoso: true };
+  } catch (error) {
+    console.error("Error al enviar notificación:", error);
+    return {
+      exitoso: false,
+      mensaje:
+        error.response?.data?.message ||
+        error.response?.data ||
+        "Error al enviar la notificación",
     };
   }
 };

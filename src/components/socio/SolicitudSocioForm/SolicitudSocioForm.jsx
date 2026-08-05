@@ -22,7 +22,7 @@ import validateForm from "@/utils/validacionesSolicitudSocio";
 
 // Importar servicio
 
-import { crearAspirante } from "@/services/aspirante.service";
+import { crearAspirante, subirDocumentoAspirante } from "@/services/aspirante.service";
 
 // Importar estilos
 import "./SolicitudSocioForm.css";
@@ -79,6 +79,11 @@ const SolicitudSocioForm = () => {
     setCargando(true);
 
     try {
+      // Primero subimos el documento adjunto (RUT/cédula). La validación del
+      // formulario ya garantiza que formData.rutDocumento existe.
+      const { url: rutaArchivo } = await subirDocumentoAspirante(formData.rutDocumento);
+      const tipoArchivo = formData.rutDocumento.type === "application/pdf" ? "pdf" : "imagen";
+
       // Mapear campos del formulario al DTO del backend
       const solicitudData = {
         nombres: formData.nombres,
@@ -94,8 +99,8 @@ const SolicitudSocioForm = () => {
         razonSocial: formData.razonSocial,
         categoria: formData.categoria,
         localidad: formData.localidad,
-        rutaArchivo: null,
-        tipoArchivo: null,
+        rutaArchivo,
+        tipoArchivo,
       };
 
       const respuesta = await crearAspirante(solicitudData);

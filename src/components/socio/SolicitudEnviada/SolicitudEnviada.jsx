@@ -2,6 +2,7 @@ import { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import { Badge } from "react-bootstrap";
+import toast from "react-hot-toast";
 import {
   FiSearch,
   FiAlertCircle,
@@ -13,28 +14,28 @@ import {
   FiUser,
   FiCalendar,
   FiTag,
+  FiUploadCloud,
 } from "react-icons/fi";
 import "./SolicitudEnviada.css";
 import BackButton from "@/components/common/BackButton";
-import { obtenerAspirantePorCodigo } from "@/services/aspirante.service";
-
-const ESTADO_LABELS = {
-  PENDIENTE: "Pendiente de revisión",
-  APROBADO: "Aprobada",
-  RECHAZADO: "Rechazada",
-};
-
-const ESTADO_VARIANTS = {
-  PENDIENTE: "warning",
-  APROBADO: "success",
-  RECHAZADO: "danger",
-};
+import {
+  obtenerAspirantePorCodigo,
+  reenviarDocumentosAspirante,
+  subirDocumentoAspirante,
+} from "@/services/aspirante.service";
+import { getEstadoMeta } from "@/utils/estadoAspiranteUtils";
 
 const SolicitudEnviada = () => {
   const [solicitudData, setSolicitudData] = useState(null);
   const [searchId, setSearchId] = useState("");
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
+
+  // Estado para el reenvío de documentos cuando la solicitud
+  // fue devuelta para corrección.
+  const [archivoReenvio, setArchivoReenvio] = useState(null);
+  const [enviandoReenvio, setEnviandoReenvio] = useState(false);
+  const [errorReenvio, setErrorReenvio] = useState("");
 
   const handleSearch = async () => {
     const codigo = searchId.trim();
@@ -69,6 +70,34 @@ const SolicitudEnviada = () => {
     setSolicitudData(null);
     setSearchId("");
     setError("");
+    setArchivoReenvio(null);
+    setErrorReenvio("");
+  };
+
+  // El aspirante sube su nuevo documento y esto reactiva la solicitud,
+  // pasándola de vuelta a PENDIENTE para que el moderador la revise otra vez.
+  const handleReenviarDocumentos = async () => {
+    if (!archivoReenvio) {
+      setErrorReenvio("Selecciona el archivo que quieres volver a enviar.");
+      return;
+    }
+
+    setEnviandoReenvio(true);
+    setErrorReenvio("");
+
+    try {
+      const { url: rutaArchivo } = await subirDocumentoAspirante(archivoReenvio);
+      const tipoArchivo = archivoReenvio.type === "application/pdf" ? "pdf" : "imagen";
+      const actualizada = await reenviarDocumentosAspirante(solicitudData.codigo, rutaArchivo, tipoArchivo);
+      setSolicitudData(actualizada);
+      setArchivoReenvio(null);
+      toast.success("¡Documentos reenviados! Tu solicitud vuelve a estar en revisión.");
+    } catch (err) {
+      console.error("Error al reenviar documentos:", err);
+      setErrorReenvio("No se pudo reenviar el documento. Intenta de nuevo.");
+    } finally {
+      setEnviandoReenvio(false);
+    }
   };
 
   if (!solicitudData) {
@@ -90,7 +119,7 @@ const SolicitudEnviada = () => {
               <FiSearch className="input-icon" />
               <Form.Control
                 type="text"
-                placeholder="Ej: ABC-12345678"
+                placeholder="Ej: SOL-123456"
                 value={searchId}
                 onChange={(e) => setSearchId(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -135,8 +164,9 @@ const SolicitudEnviada = () => {
       })
     : "No disponible";
 
-  const estadoLabel = ESTADO_LABELS[solicitudData.estado] ?? solicitudData.estado;
-  const estadoVariant = ESTADO_VARIANTS[solicitudData.estado] ?? "secondary";
+  const { label: estadoLabel, variant: estadoVariant } = getEstadoMeta(solicitudData.estado);
+  const requiereCorreccion = solicitudData.estado === "EN_CORRECCION";
+  const esPendiente = solicitudData.estado === "PENDIENTE";
 
   return (
     <div className="solicitud-result-page mt-5">
@@ -168,13 +198,95 @@ const SolicitudEnviada = () => {
                   <FiClock className="status-icon" />
                   <div className="status-content">
                     <span className="status-label">Estado:</span>
-                    <Badge bg={estadoVariant} className="status-badge">
+                    <Badge bg={estadoVariant}>
                       {estadoLabel}
                     </Badge>
                   </div>
                 </div>
 
-                <div className="info-grid-compact">
+                {/* Si el moderador pidió correcciones, mostramos el motivo
+                    y el formulario para volver a subir el documento */}
+                {requiereCorreccion && (
+                  <div className="next-steps mt-3" style={{ borderLeft: "4px solid #0dcaf0" }}>
+                    <div className="next-steps-content">
+                      <FiAlertCircle className="next-steps-icon" />
+                      <div>
+                        <p className="next-steps-text mb-2">
+                          <strong>El moderador solicitó una corrección:</strong><br />
+                          {solicitudData.motivoDecision}
+                        </p>
+                        <Form.Group className="mb-2">
+                          <Form.Label className="mb-1" style={{ fontSize: "0.9rem" }}>
+                            Sube el documento corregido:
+                          </Form.Label>
+                          <Form.Control
+                            type="file"
+                            accept="application/pdf,image/*"
+                            onChange={(e) => setArchivoReenvio(e.target.files?.[0] ?? null)}
+                            disabled={enviandoReenvio}
+                          />
+                        </Form.Group>
+                        {errorReenvio && (
+                          <div className="error-message mb-2">
+                            <FiAlertCircle className="error-icon" />
+                            <span>{errorReenvio}</span>
+                          </div>
+                        )}
+                        <button
+                          className="search-button"
+                          onClick={handleReenviarDocumentos}
+                          disabled={enviandoReenvio}
+                        >
+                          <FiUploadCloud className="btn-icon" />
+                          {enviandoReenvio ? "Enviando..." : "Reenviar documento"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Cuando ya se le crearon las credenciales, le indicamos
+                    que revise su correo (nunca mostramos la contraseña aquí) */}
+                {solicitudData.estado === "APROBADO" && solicitudData.nombreUsuarioGenerado && (
+                  <div className="next-steps mt-3" style={{ borderLeft: "4px solid #198754" }}>
+                    <div className="next-steps-content">
+                      <FiCheckCircle className="next-steps-icon" />
+                      <p className="next-steps-text">
+                        <strong>¡Ya eres socio de PhotoBogota!</strong><br />
+                        Te enviamos un correo a <strong>{solicitudData.email}</strong> con tu usuario
+                        (<strong>{solicitudData.nombreUsuarioGenerado}</strong>), tu contraseña temporal,
+                        el manual del socio y el contacto de soporte por si lo necesitas.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {solicitudData.estado === "ENVIO_CREDENCIALES" && (
+                  <div className="next-steps mt-3" style={{ borderLeft: "4px solid #20c997" }}>
+                    <div className="next-steps-content">
+                      <FiClock className="next-steps-icon" />
+                      <p className="next-steps-text">
+                        <strong>¡Tu solicitud fue aprobada!</strong><br />
+                        Estamos preparando tu cuenta de socio. En breve recibirás un correo con tus
+                        credenciales de acceso, el manual del socio y el contacto de soporte.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {solicitudData.estado === "RECHAZADO" && solicitudData.motivoDecision && (
+                  <div className="next-steps mt-3" style={{ borderLeft: "4px solid #dc3545" }}>
+                    <div className="next-steps-content">
+                      <FiAlertCircle className="next-steps-icon" />
+                      <p className="next-steps-text">
+                        <strong>Motivo del rechazo:</strong><br />
+                        {solicitudData.motivoDecision}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="info-grid-compact mt-3">
                   <div className="info-row">
                     <div className="info-label-with-icon">
                       <FiCalendar className="info-icon" />
@@ -196,7 +308,7 @@ const SolicitudEnviada = () => {
                       <FiUser className="info-icon" />
                       <div className="info-label-small">Propietario</div>
                     </div>
-                    <div className="info-value-small">{solicitudData.propietario}</div>
+                    <div className="info-value-small">{solicitudData.nombrePropietario}</div>
                   </div>
 
                   <div className="info-row">
@@ -204,10 +316,7 @@ const SolicitudEnviada = () => {
                       <FiTag className="info-icon" />
                       <div className="info-label-small">Categoría</div>
                     </div>
-                    <div>
-                      <div className="info-value-small">{solicitudData.categoria}</div>
-                      <span className="category-tag">{solicitudData.categoria}</span>
-                    </div>
+                    <span className="category-tag">{solicitudData.categoria}</span>
                   </div>
 
                   <div className="info-row">
@@ -228,16 +337,18 @@ const SolicitudEnviada = () => {
                 </div>
               </div>
 
-              <div className="next-steps">
-                <div className="next-steps-content">
-                  <FiAlertCircle className="next-steps-icon" />
-                  <p className="next-steps-text">
-                    Te notificaremos por correo cuando tu solicitud sea
-                    revisada. Proceso: <strong>hasta 7 días hábiles</strong>.
-                    Usa tu código para consultar el estado.
-                  </p>
+              {esPendiente && (
+                <div className="next-steps">
+                  <div className="next-steps-content">
+                    <FiAlertCircle className="next-steps-icon" />
+                    <p className="next-steps-text">
+                      Te notificaremos por correo cuando tu solicitud sea
+                      revisada. Proceso: <strong>hasta 7 días hábiles</strong>.
+                      Usa tu código para consultar el estado.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="justify-content-center d-flex mt-3">
                 <button className="search-button" onClick={handleResetSearch}>
