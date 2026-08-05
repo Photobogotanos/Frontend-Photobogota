@@ -1,4 +1,4 @@
-import { useReducer, useRef, useState } from "react";
+import { useReducer, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
@@ -12,6 +12,7 @@ import "./CreacionSpotForm.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Swal from "sweetalert2";
+import { useAuth } from "@/context/AuthContext";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 import SpotPreviewModal from "../SpotPreviewModal/SpotPreviewModal";
 import HeaderSpot from "./HeaderSpot";
@@ -287,6 +288,10 @@ export default function CrearSpot() {
   const [state, dispatch] = useReducer(spotFormReducer, initialState);
   const navigate = useNavigate();
 
+  const { usuario } = useAuth();
+  const esSocio = usuario?.rol === "SOCIO";
+
+  // opcional: useEffect para fijar tipo
   useEffect(() => {
     dispatch({
       type: "SET_TIPO",
