@@ -34,7 +34,7 @@ jobs:
           cache: "pnpm"
 
       - name: Instalar dependencias
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Construir proyecto (Vite)
         run: pnpm run build
