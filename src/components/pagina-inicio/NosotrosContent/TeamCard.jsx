@@ -17,12 +17,10 @@ export default function TeamCard({ member, index, flipped, playing, onCardClick,
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
     >
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, react-doctor/no-static-element-interactions */}
       <div
         className={`team-card-3d ${flipped ? "flipped" : ""}`}
         onClick={onCardClick}
-        onKeyDown={(e) => e.key === "Enter" && onCardClick()}
-        role="button"
-        tabIndex={0}
       >
         <div className="team-card-inner-3d">
           {/* Front */}
@@ -34,6 +32,16 @@ export default function TeamCard({ member, index, flipped, playing, onCardClick,
             <div className="team-front-info">
               <h4 className="team-name">{member.name}</h4>
               <p className="team-role">{member.role}</p>
+              <button
+                type="button"
+                className="team-flip-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCardClick();
+                }}
+              >
+                Ver perfil
+              </button>
             </div>
           </div>
 

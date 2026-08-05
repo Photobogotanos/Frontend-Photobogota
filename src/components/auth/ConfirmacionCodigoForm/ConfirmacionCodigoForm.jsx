@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { postSolicitarRecuperacion } from "@/api/usuarioApi";
 
 const RESEND_SECONDS = 60;
+const DIGIT_SLOTS = ["d0", "d1", "d2", "d3", "d4", "d5"];
 
 export default function ConfirmacionCodigoForm() {
   const navegar = useNavigate();
@@ -13,7 +14,6 @@ export default function ConfirmacionCodigoForm() {
   // Email recibido desde RecuperarContraForm
   const email = location.state?.email || "";
 
-  const DIGIT_SLOTS = ["d0", "d1", "d2", "d3", "d4", "d5"];
   const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);
   const inputsRef = useRef([]);
 

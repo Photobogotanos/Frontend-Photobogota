@@ -1,4 +1,4 @@
-import { getSpots, getSpotById, postCrearSpot, postCrearResena } from "@/api/spotApi";
+import { getSpots, getSpotById, postCrearSpot } from "@/api/spotApi";
 import { obtenerAccessToken, obtenerSesion } from "@/utils/sessionHelper";
 import { getSpots as getMockSpots, getSpotById as getMockSpotById } from "@/mocks/spots.helpers";
 
@@ -159,60 +159,6 @@ export const crearSpot = async (spotData) => {
       }
     } else if (error.request) {
       mensaje = "No se pudo conectar con el servidor. Verifica tu conexión.";
-    }
-
-    return {
-      exitoso: false,
-      datos: null,
-      mensaje: mensaje,
-      esMock: false,
-    };
-  }
-};
-
-/**
- * Agregar una reseña a un spot
- * (No tiene fallback a mock porque requiere autenticación)
- */
-export const agregarResena = async (spotId, resenaData) => {
-  try {
-    const token = obtenerAccessToken();
-    
-    if (!token) {
-      return {
-        exitoso: false,
-        datos: null,
-        mensaje: "Debes iniciar sesión para agregar una reseña",
-      };
-    }
-
-    console.log("Agregando reseña al spot:", spotId, resenaData);
-
-    const response = await postCrearResena(spotId, resenaData);
-
-    console.log("Respuesta del backend:", response.data);
-
-    return {
-      exitoso: true,
-      datos: response.data,
-      mensaje: "Reseña agregada exitosamente",
-      esMock: false,
-    };
-  } catch (error) {
-    console.error("Error al agregar reseña:", error);
-
-    let mensaje = "Error al agregar la reseña";
-
-    if (error.response) {
-      mensaje = error.response.data?.message || error.response.data?.mensaje || mensaje;
-      
-      if (error.response.status === 401) {
-        mensaje = "Tu sesión ha expirado. Por favor inicia sesión nuevamente.";
-      } else if (error.response.status === 404) {
-        mensaje = "El spot no existe";
-      }
-    } else if (error.request) {
-      mensaje = "No se pudo conectar con el servidor";
     }
 
     return {

@@ -22,6 +22,29 @@ const promocionesEjemplo = [
   
 ];
 
+// Obtener el color del badge según el estado
+const getBadgeColor = (estado) => {
+  switch (estado) {
+    case "activa":
+      return "success";
+    case "expirada":
+      return "danger";
+    case "proximamente":
+      return "info";
+    default:
+      return "secondary";
+  }
+};
+
+// Formatear fecha
+const formatFecha = (fecha) => {
+  return new Date(fecha).toLocaleDateString("es-CO", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+};
+
 const SocioPromociones = () => {
   const [filtroEstado, setFiltroEstado] = useState("todas");
 
@@ -30,29 +53,6 @@ const SocioPromociones = () => {
   /* const promocionesFiltradas = filtroEstado === "todas"
     ? promocionesEjemplo
     : promocionesEjemplo.filter(p => p.estado === filtroEstado);*/
-
-  // Obtener el color del badge según el estado
-  const getBadgeColor = (estado) => {
-    switch (estado) {
-      case "activa":
-        return "success";
-      case "expirada":
-        return "danger";
-      case "proximamente":
-        return "info";
-      default:
-        return "secondary";
-    }
-  };
-
-  // Formatear fecha
-  const formatFecha = (fecha) => {
-    return new Date(fecha).toLocaleDateString("es-CO", {
-      day: "numeric",
-      month: "short",
-      year: "numeric"
-    });
-  };
 
   return (
     <Container className="promociones-container">
@@ -81,24 +81,28 @@ const SocioPromociones = () => {
       {/* Filtros */}
       <div className="filtros-promociones">
         <button
+          type="button"
           className={`filtro-btn ${filtroEstado === "todas" ? "activo" : ""}`}
           onClick={() => setFiltroEstado("todas")}
         >
           Todas ({promocionesEjemplo.length})
         </button>
         <button
+          type="button"
           className={`filtro-btn ${filtroEstado === "activa" ? "activo" : ""}`}
           onClick={() => setFiltroEstado("activa")}
         >
           Activas ({promocionesEjemplo.filter(p => p.estado === "activa").length})
         </button>
         <button
+          type="button"
           className={`filtro-btn ${filtroEstado === "proximamente" ? "activo" : ""}`}
           onClick={() => setFiltroEstado("proximamente")}
         >
           Próximamente ({promocionesEjemplo.filter(p => p.estado === "proximamente").length})
         </button>
         <button
+          type="button"
           className={`filtro-btn ${filtroEstado === "expirada" ? "activo" : ""}`}
           onClick={() => setFiltroEstado("expirada")}
         >

@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 import {
   obtenerSesion,
   estaLogueado,
@@ -15,12 +15,7 @@ const AuthContext = createContext(null);
 /**
  * Verificar si estamos en modo demo
  */
-const isModoDemo = () => {
-  return (
-    localStorage.getItem("modoDemo") === "true" ||
-    sessionStorage.getItem("modoDemo") === "true"
-  );
-};
+const isModoDemo = () => localStorage.getItem("modoDemo") === "true";
 
 /**
  * Proveedor de contexto de autenticación
@@ -91,16 +86,16 @@ export function AuthProvider({ children }) {
    * Inicia sesión guardando el usuario en el contexto
    * @param {Object} datosUsuario - Datos del usuario desde el servicio de login
    */
-  const iniciarSesion = (datosUsuario) => {
+  const iniciarSesion = useCallback((datosUsuario) => {
     setUsuario(datosUsuario);
     setLogueado(true);
-  };
+  }, []);
 
   /**
    * Cierra la sesión del usuario
    * Llama al backend para invalidar la sesión y luego limpia el estado local
    */
-  const cerrarSesion = async () => {
+  const cerrarSesion = useCallback(async () => {
     try {
       // Verificar si estamos en modo demo
       const modoDemo = isModoDemo();
@@ -134,13 +129,13 @@ export function AuthProvider({ children }) {
       setUsuario(null);
       setLogueado(false);
     }
-  };
+  }, []);
 
   /**
    * Actualiza los datos del usuario en el contexto y en localStorage
    * @param {Object} datosActualizados - Datos actualizados del usuario
    */
-  const actualizarUsuario = (datosActualizados) => {
+  const actualizarUsuario = useCallback((datosActualizados) => {
     // Actualizar en memoria (React state)
     setUsuario((prev) => ({
       ...prev,
@@ -148,13 +143,13 @@ export function AuthProvider({ children }) {
     }));
     // Actualizar en localStorage para persistencia
     actualizarSesion(datosActualizados);
-  };
+  }, []);
 
   /**
    * Recarga los datos del usuario desde el backend
    * Útil después de actualizar el perfil o cambiar la contraseña
    */
-  const recargarUsuario = async () => {
+  const recargarUsuario = useCallback(async () => {
     // En modo demo, no intentamos recargar del backend
     if (isModoDemo()) {
       console.log("Modo demo - No se puede recargar usuario del backend");
@@ -170,18 +165,21 @@ export function AuthProvider({ children }) {
       console.error("Error al recargar datos del usuario:", error);
       throw error;
     }
-  };
+  }, []);
 
-  const valor = {
-    usuario,
-    logueado,
-    cargando,
-    iniciarSesion,
-    cerrarSesion,
-    actualizarUsuario,
-    recargarUsuario,
-    isModoDemo: isModoDemo(), // Exponer estado de modo demo
-  };
+  const valor = useMemo(
+    () => ({
+      usuario,
+      logueado,
+      cargando,
+      iniciarSesion,
+      cerrarSesion,
+      actualizarUsuario,
+      recargarUsuario,
+      isModoDemo: isModoDemo(), // Exponer estado de modo demo
+    }),
+    [usuario, logueado, cargando, iniciarSesion, cerrarSesion, actualizarUsuario, recargarUsuario],
+  );
 
   return (
     <AuthContext.Provider value={valor}>
@@ -202,5 +200,3 @@ export function useAuth() {
   }
   return contexto;
 }
-
-export default AuthContext;

@@ -179,6 +179,7 @@ export default function DashboardReportes() {
       )}
 
       <ModalCambiarEstado
+        key={reporteSeleccionado?.id}
         show={showCambiarEstado}
         reporte={reporteSeleccionado}
         onCerrar={() => setShowCambiarEstado(false)}

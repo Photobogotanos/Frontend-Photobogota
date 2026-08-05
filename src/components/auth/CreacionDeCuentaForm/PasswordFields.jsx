@@ -25,16 +25,14 @@ export default function PasswordFields({
             value={password}
             onChange={(e) => onChangePassword(e.target.value, false)}
           />
-          <span
+          <button
+            type="button"
             className="eye-icon"
             onClick={() => setMostrarContrasena(!mostrarContrasena)}
-            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setMostrarContrasena(!mostrarContrasena)}
-            tabIndex={0}
-            role="button"
             aria-label={mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'}
           >
             {mostrarContrasena ? <FaEyeSlash /> : <FaEye />}
-          </span>
+          </button>
         </div>
       </Form.Group>
 
@@ -50,16 +48,14 @@ export default function PasswordFields({
             value={password2}
             onChange={(e) => onChangePassword(e.target.value, true)}
           />
-          <span
+          <button
+            type="button"
             className="eye-icon"
             onClick={() => setMostrarContrasena2(!mostrarContrasena2)}
-            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setMostrarContrasena2(!mostrarContrasena2)}
-            tabIndex={0}
-            role="button"
             aria-label={mostrarContrasena2 ? 'Ocultar confirmación de contraseña' : 'Mostrar confirmación de contraseña'}
           >
             {mostrarContrasena2 ? <FaEyeSlash /> : <FaEye />}
-          </span>
+          </button>
         </div>
 
         {/* Indicador de coincidencia */}

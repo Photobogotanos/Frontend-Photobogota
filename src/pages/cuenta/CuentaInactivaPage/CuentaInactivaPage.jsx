@@ -45,8 +45,9 @@ export default function CuentaInactivaPage() {
         setCargando(false);
         return;
       }
-      const resultado = await obtenerEstadoEliminacionCuenta();
       if (!activo) return;
+      const resultado = await obtenerEstadoEliminacionCuenta();
+      if (!activo || !resultado) return;
       if (
         resultado.exitoso &&
         resultado.datos?.tieneSolicitudActiva &&

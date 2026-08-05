@@ -56,15 +56,6 @@ export const getSolicitudesEliminacionAdmin = ({ estado, page = 0, size = 10 } =
 };
 
 /**
- * Detalle completo de una solicitud de eliminación (incluye verificación de
- * identidad y dependencias detectadas).
- * @param {string} id
- * @returns {Promise}
- */
-export const getDetalleEliminacionAdmin = (id) =>
-    clienteApi.get(`/admin/eliminaciones/${id}`);
-
-/**
  * Fuerza el procesamiento inmediato de una solicitud: resuelve dependencias,
  * anonimiza los datos y notifica a las partes afectadas.
  * @param {string} id
@@ -73,7 +64,6 @@ export const getDetalleEliminacionAdmin = (id) =>
  */
 export const postProcesarEliminacionAdmin = (id, body = {}) =>
     clienteApi.post(`/admin/eliminaciones/${id}/procesar`, body);
-
 /**
  * Rechaza una solicitud activa y reactiva la cuenta del usuario.
  * @param {string} id

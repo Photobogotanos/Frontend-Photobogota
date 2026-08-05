@@ -37,12 +37,14 @@ export default function LoginPromptModal({ show, onHide }) {
 
           <div className="d-grid gap-2">
             <button
+              type="button"
               className="button-register-modal-demo"
               onClick={() => navigate("/creacion-cuenta")}
             >
               Regístrate Gratis
             </button>
             <button
+              type="button"
               className="button-login-modal-demo"
               onClick={() => navigate("/login")}
             >

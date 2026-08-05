@@ -1,8 +1,11 @@
 import Cookies from "js-cookie";
-import { clienteApi } from "@/api/axiosConfig";
 
 const COOKIE_EXPIRY_DAYS = 7;
 const COOKIE_OPTIONS = { expires: COOKIE_EXPIRY_DAYS, sameSite: "Strict" };
+
+// Keys de localStorage versionadas para migrar el formato si cambia
+export const STORAGE_KEY_LOGUEADO = "logueado:v1";
+export const STORAGE_KEY_MIEMBRO = "miembro:v1";
 
 // Tokens
 
@@ -23,16 +26,17 @@ const eliminarTokens = () => {
 
 // Sesión de usuario
 export const guardarSesion = (usuario) => {
-  localStorage.setItem("logueado", "true");
-  localStorage.setItem("miembro", JSON.stringify(usuario));
+  localStorage.setItem(STORAGE_KEY_LOGUEADO, "true");
+  localStorage.setItem(STORAGE_KEY_MIEMBRO, JSON.stringify(usuario));
 };
 
 export const obtenerSesion = () => {
-  const miembro = localStorage.getItem("miembro");
+  const miembro = localStorage.getItem(STORAGE_KEY_MIEMBRO);
   return miembro ? JSON.parse(miembro) : null;
 };
 
-export const estaLogueado = () => localStorage.getItem("logueado") === "true";
+export const estaLogueado = () =>
+  localStorage.getItem(STORAGE_KEY_LOGUEADO) === "true";
 
 /**
  * Actualiza parcialmente la sesión del usuario en localStorage
@@ -42,24 +46,12 @@ export const actualizarSesion = (datosActualizados) => {
   const sesionActual = obtenerSesion();
   if (sesionActual) {
     const nuevaSesion = { ...sesionActual, ...datosActualizados };
-    localStorage.setItem("miembro", JSON.stringify(nuevaSesion));
-  }
-};
-
-export const obtenerRolVerificado = async () => {
-  try {
-    const { data } = await clienteApi.get("/auth/verify-session");
-    if (data.estadoCuenta === false) {
-      throw new Error("Usuario inactivo");
-    }
-    return data.rol; // viene del JWT firmado en el servidor
-  } catch {
-    return null;
+    localStorage.setItem(STORAGE_KEY_MIEMBRO, JSON.stringify(nuevaSesion));
   }
 };
 
 export const cerrarSesion = () => {
-  localStorage.removeItem("logueado");
-  localStorage.removeItem("miembro");
+  localStorage.removeItem(STORAGE_KEY_LOGUEADO);
+  localStorage.removeItem(STORAGE_KEY_MIEMBRO);
   eliminarTokens();
 };

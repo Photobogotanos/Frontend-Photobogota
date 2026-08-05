@@ -1,6 +1,5 @@
 import {
   getCalificacionesBySpot,
-  getCalificacionById,
   postCrearCalificacion,
   putActualizarCalificacion,
 } from "@/api/calificacion";
@@ -37,41 +36,6 @@ export const obtenerCalificacionesDelSpot = async (spotId) => {
     return {
       exitoso: false,
       datos: [],
-      mensaje: mensaje,
-      esMock: false,
-    };
-  }
-};
-
-export const obtenerCalificacionPorId = async (id) => {
-  try {
-    console.log("Obteniendo calificación por ID:", id);
-
-    const response = await getCalificacionById(id);
-
-    return {
-      exitoso: true,
-      datos: response.data || null,
-      mensaje: "Calificación obtenida exitosamente",
-      esMock: false,
-    };
-  } catch (error) {
-    console.error("Error al obtener calificación:", error);
-
-    let mensaje = "Error al obtener la calificación";
-
-    if (error.response) {
-      mensaje =
-        error.response.data?.message ||
-        error.response.data?.mensaje ||
-        mensaje;
-    } else if (error.request) {
-      mensaje = "No se pudo conectar con el servidor";
-    }
-
-    return {
-      exitoso: false,
-      datos: null,
       mensaje: mensaje,
       esMock: false,
     };

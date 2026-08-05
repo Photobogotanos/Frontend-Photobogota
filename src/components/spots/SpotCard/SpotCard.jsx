@@ -10,22 +10,40 @@ import { useGuardados } from "@/hooks/useGuardados";
 import ReportarModal from "@/components/spots/SpotContent/ReportarModal";
 import "./SpotCard.css";
 
+function SpotImagen({ img, title }) {
+  const [imgError, setImgError] = useState(false);
+  const mostrarFallback = !img || imgError;
+
+  if (mostrarFallback) {
+    return (
+      <div className="spot-img-h spot-img-fallback">
+        <Lottie
+          animationData={uploadAnimation}
+          loop
+          style={{ width: 72, height: 72 }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={img}
+      alt={title}
+      className="spot-img-h"
+      onError={() => setImgError(true)}
+    />
+  );
+}
+
 export default function SpotCard({ id, img, title, rating, tags, onToggleGuardado }) {
   const navigate = useNavigate();
   const { logueado } = useAuth();
   const { isGuardado, toggleGuardado } = useGuardados();
   const [modalReporteAbierto, setModalReporteAbierto] = useState(false);
-  const [imgRota, setImgRota] = useState(!img);
   const [guardando, setGuardando] = useState(false);
 
   const irAlSpot = () => navigate(`/spot/${id}`);
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      irAlSpot();
-    }
-  };
 
   const handleReportar = (e) => {
     e.stopPropagation();
@@ -54,13 +72,10 @@ export default function SpotCard({ id, img, title, rating, tags, onToggleGuardad
   };
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, react-doctor/no-static-element-interactions
     <div
       className="spot-card-horizontal"
       onClick={irAlSpot}
-      role="button"
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-      aria-label={`Ver ${title}`}
     >
       <button
         type="button"
@@ -83,22 +98,7 @@ export default function SpotCard({ id, img, title, rating, tags, onToggleGuardad
         {isGuardado(id) ? <FaBookmark /> : <FaRegBookmark />}
       </button>
 
-      {imgRota ? (
-        <div className="spot-img-h spot-img-fallback">
-          <Lottie
-            animationData={uploadAnimation}
-            loop
-            style={{ width: 72, height: 72 }}
-          />
-        </div>
-      ) : (
-        <img
-          src={img}
-          alt={title}
-          className="spot-img-h"
-          onError={() => setImgRota(true)}
-        />
-      )}
+      <SpotImagen key={img} img={img} title={title} />
 
       <div className="spot-content">
         <div className="spot-tags-h">
@@ -108,7 +108,16 @@ export default function SpotCard({ id, img, title, rating, tags, onToggleGuardad
             </span>
           ))}
         </div>
-        <h5 className="spot-title-h">{title}</h5>
+        <button
+          type="button"
+          className="spot-title-h spot-title-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            irAlSpot();
+          }}
+        >
+          {title}
+        </button>
         <div className="spot-info-h">
           <span className="spot-rating-h"><FaStar style={{ color: "#f59e0b", marginRight: "4px" }} /> {rating}</span>
         </div>

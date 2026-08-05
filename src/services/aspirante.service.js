@@ -1,10 +1,7 @@
 import {
     crearAspiranteApi,
     obtenerAspirantesApi,
-    obtenerAspirantePorIdApi,
-    obtenerAspirantePorEmailApi,
     obtenerAspirantePorCodigoApi,
-    obtenerAspirantesPorEstadoApi,
     obtenerEstadisticasAspirantesApi,
     aprobarAspiranteApi,
     enviarCredencialesAspiranteApi,
@@ -12,7 +9,6 @@ import {
     solicitarCorreccionAspiranteApi,
     reenviarDocumentosAspiranteApi,
     agregarComentarioAspiranteApi,
-    actualizarEstadoAspiranteApi,
     subirDocumentoAspiranteApi,
 } from "@/api/aspirante";
 
@@ -24,20 +20,8 @@ export const obtenerAspirantes = async () => {
     return await obtenerAspirantesApi();
 };
 
-export const obtenerAspirantePorId = async (id) => {
-    return await obtenerAspirantePorIdApi(id);
-};
-
-export const obtenerAspirantePorEmail = async (email) => {
-    return await obtenerAspirantePorEmailApi(email);
-};
-
 export const obtenerAspirantePorCodigo = async (codigo) => {
     return await obtenerAspirantePorCodigoApi(codigo);
-};
-
-export const obtenerAspirantesPorEstado = async (estado) => {
-    return await obtenerAspirantesPorEstadoApi(estado);
 };
 
 export const obtenerEstadisticasAspirantes = async () => {
@@ -66,10 +50,6 @@ export const reenviarDocumentosAspirante = async (codigo, rutaArchivo, tipoArchi
 
 export const agregarComentarioAspirante = async (id, texto) => {
     return await agregarComentarioAspiranteApi(id, texto);
-};
-
-export const actualizarEstadoAspirante = async (id, estado) => {
-    return await actualizarEstadoAspiranteApi(id, estado);
 };
 
 export const subirDocumentoAspirante = async (file) => {

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   FaMapMarkerAlt,
   FaRegEdit,
@@ -7,18 +6,18 @@ import {
   FaBookmark,
   FaBullhorn,
   FaInfoCircle,
-  FaTimes,
 } from "react-icons/fa";
-import { GrMapLocation } from "react-icons/gr";
-import SpotCard from "../../spots/SpotCard/SpotCard";
-import ReviewCard from "../ReviewCard/ReviewCard";
 import {
   obtenerSpotsUsuario,
   obtenerResenasUsuario,
   obtenerSpotsGuardados,
 } from "@/services/usuario.service";
-
-// ─── TRANSFORMACIONES ────────────────────────────────────────────────────────
+import TabPublicaciones from "./TabPublicaciones";
+import TabResenas from "./TabResenas";
+import TabGuardados from "./TabGuardados";
+import TabLocales from "./TabLocales";
+import TabPromociones from "./TabPromociones";
+import TabComercial from "./TabComercial";
 
 const transformarSpotParaCard = (spot) => ({
   id: spot?.id,
@@ -28,11 +27,6 @@ const transformarSpotParaCard = (spot) => ({
   likes: (spot?.totalResenas ?? 0).toString(),
   img: spot?.imagen,
 });
-
-// ─── TABS POR ROL ────────────────────────────────────────────────────────────
-// MIEMBRO: publicaciones, reseñas, guardados
-// SOCIO:   locales, promociones
-// MOD / ADMIN: reseñas, guardados (no suben publicaciones)
 
 const TABS_POR_ROL = {
   MIEMBRO: [
@@ -61,34 +55,6 @@ const PRIMERA_TAB_POR_ROL = {
   ADMIN: "resenas",
 };
 
-// ─── COMPONENTES AUXILIARES ──────────────────────────────────────────────────
-
-const SinContenido = ({ icono, titulo, descripcion, textBoton, rutaBoton }) => {
-  const navigate = useNavigate();
-  return (
-    <div className="no-contenido">
-      <div className="empty-icon">{icono}</div>
-      <h4>{titulo}</h4>
-      <p>{descripcion}</p>
-      {textBoton && rutaBoton && (
-        <button className="btn-explorar" onClick={() => navigate(rutaBoton)}>
-          {textBoton}
-        </button>
-      )}
-    </div>
-  );
-};
-
-const LoadingBlock = () => (
-  <div className="text-center py-4">
-    <div className="spinner-border text-primary" role="status">
-      <span className="visually-hidden">Cargando...</span>
-    </div>
-  </div>
-);
-
-// ─── COMPONENTE PRINCIPAL ────────────────────────────────────────────────────
-
 const PerfilTabs = ({
   tab,
   dispatch,
@@ -100,14 +66,11 @@ const PerfilTabs = ({
   const rolNormalizado = (rol || "MIEMBRO").toUpperCase();
   const tabsBase = TABS_POR_ROL[rolNormalizado] || TABS_POR_ROL.MIEMBRO;
 
-  // En modo lectura (perfil ajeno) quitamos la pestaña de guardados y
-  // reetiquetamos las pestañas: "Mis X" → "X". Para SOCIO se añade un
-  // bloque de "Información comercial / certificaciones".
   const tabs =
     esPerfilPropio === false
-      ? tabsBase
-          .filter((t) => t.id !== "guardados")
-          .map((t) => ({
+      ? tabsBase.reduce((acum, t) => {
+          if (t.id === "guardados") return acum;
+          acum.push({
             ...t,
             label:
               t.id === "publicaciones"
@@ -117,10 +80,11 @@ const PerfilTabs = ({
                 : t.id === "locales"
                 ? "Locales"
                 : t.label,
-          }))
+          });
+          return acum;
+        }, [])
       : tabsBase;
 
-  // SOCIO ajeno: pestaña informativa de datos comerciales
   const tabsConComercial =
     esPerfilPropio === false && rolNormalizado === "SOCIO"
       ? [
@@ -164,6 +128,7 @@ const PerfilTabs = ({
     }
   };
 
+  // oxlint-disable-next-line react-doctor/no-set-state-after-await-in-effect -- todos los setters tras await están bajo el flag cancelado + cleanup
   useEffect(() => {
     let cancelado = false;
 
@@ -174,7 +139,6 @@ const PerfilTabs = ({
       const conteos = { totalSpots: 0, totalResenas: 0, totalGuardados: 0 };
 
       try {
-        // Spots / locales solo para miembro y socio
         if (esMiembro || esSocio) {
           try {
             const resSpots = await obtenerSpotsUsuario(nombreUsuario);
@@ -193,7 +157,6 @@ const PerfilTabs = ({
           }
         }
 
-        // Reseñas: miembro + staff
         if (esMiembro || esStaff) {
           try {
             const resResenas = await obtenerResenasUsuario(nombreUsuario);
@@ -212,7 +175,6 @@ const PerfilTabs = ({
           }
         }
 
-        // Guardados: solo para el perfil propio
         if (esPerfilPropio && (esMiembro || esStaff)) {
           try {
             const resGuardados = await obtenerSpotsGuardados();
@@ -256,7 +218,6 @@ const PerfilTabs = ({
 
   return (
     <>
-      {/* ── BOTONES DE NAVEGACIÓN ── */}
       <div className="perfil-tabs">
         {tabsConComercial.map((t) => (
           <button
@@ -270,222 +231,50 @@ const PerfilTabs = ({
         ))}
       </div>
 
-      {/* ── CONTENIDO ── */}
       <div className="perfil-tab-content">
         {errorCarga && <div className="perfil-error-banner">{errorCarga}</div>}
 
-        {/* ══════════════ MIEMBRO: MIS SPOTS ══════════════ */}
-        {tabValida === "publicaciones" &&
-          esMiembro &&
-          (cargandoDatos ? (
-            <LoadingBlock />
-          ) : spotsFormateados.length > 0 ? (
-            <div className="publicaciones-grid">
-              {spotsFormateados.map((spot) => (
-                <SpotCard
-                  key={spot.id}
-                  id={spot.id}
-                  img={spot.img}
-                  title={spot.title}
-                  rating={spot.rating}
-                  likes={spot.likes}
-                  tags={spot.tags}
-                />
-              ))}
-            </div>
-          ) : (
-            <SinContenido
-              icono={<FaMapMarkerAlt size={48} />}
-              titulo={
-                esPerfilPropio
-                  ? "No tienes publicaciones"
-                  : "Aún no tiene publicaciones"
-              }
-              descripcion={
-                esPerfilPropio
-                  ? "Comparte tus lugares favoritos para que otros los descubran"
-                  : "Este usuario aún no ha compartido spots."
-              }
-              textBoton={esPerfilPropio ? "¡Crea tu primera publicación!" : null}
-              rutaBoton={esPerfilPropio ? "/crear-spot" : null}
-            />
-          ))}
-
-        {/* ══════════════ MIEMBRO + STAFF: RESEÑAS ══════════════ */}
-        {tabValida === "resenas" &&
-          (esMiembro || esStaff) &&
-          (cargandoDatos ? (
-            <LoadingBlock />
-          ) : resenasUsuario.length > 0 ? (
-            <div className="reviews-grid">
-              {resenasUsuario.map((resena) => (
-                <ReviewCard
-                  key={resena.id}
-                  title={resena.title}
-                  rating={resena.rating}
-                  text={resena.text}
-                  likes={resena.likes}
-                  date={resena.date}
-                  placeId={resena.placeId}
-                />
-              ))}
-            </div>
-          ) : (
-            <SinContenido
-              icono={<FaRegEdit size={48} />}
-              titulo={esPerfilPropio ? "No tienes reseñas" : "Sin reseñas"}
-              descripcion={
-                esPerfilPropio
-                  ? "Comparte tu experiencia sobre los lugares que visitas"
-                  : "Este usuario aún no ha dejado reseñas."
-              }
-              textBoton={esPerfilPropio ? "Escribir primera reseña" : null}
-              rutaBoton={esPerfilPropio ? "/mapa" : null}
-            />
-          ))}
-
-        {/* ══════════════ MIEMBRO + STAFF: GUARDADOS (solo propio) ══════════════ */}
-        {esPerfilPropio &&
-          tabValida === "guardados" &&
-          (esMiembro || esStaff) &&
-          (cargandoDatos ? (
-            <LoadingBlock />
-          ) : guardadosUsuario.length > 0 ? (
-            <div className="guardados-grid">
-              {guardadosUsuario.map((spot) => {
-                const spotCard = transformarSpotParaCard(spot);
-                return (
-                  <SpotCard
-                    key={spot.id}
-                    id={spot.id}
-                    img={spotCard.img}
-                    title={spotCard.title}
-                    tags={spotCard.tags}
-                    rating={spotCard.rating}
-                    likes={spotCard.likes}
-                    onToggleGuardado={refetchGuardados}
-                  />
-                );
-              })}
-            </div>
-          ) : (
-            <SinContenido
-              icono={<GrMapLocation size={48} />}
-              titulo="No hay lugares guardados"
-              descripcion="Guarda tus lugares favoritos para visitarlos después"
-              textBoton="Explorar lugares"
-              rutaBoton="/mapa"
-            />
-          ))}
-
-        {/* ══════════════ SOCIO: MIS LOCALES ══════════════ */}
-        {tabValida === "locales" &&
-          esSocio &&
-          (cargandoDatos ? (
-            <LoadingBlock />
-          ) : spotsFormateados.length > 0 ? (
-            <div className="publicaciones-grid">
-              {spotsFormateados.map((spot) => (
-                <SpotCard
-                  key={spot.id}
-                  id={spot.id}
-                  img={spot.img}
-                  title={spot.title}
-                  rating={spot.rating}
-                  likes={spot.likes}
-                  tags={spot.tags}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="no-contenido no-contenido-socio">
-              <div className="empty-icon" style={{ color: "#e65100" }}>
-                <FaStore size={48} />
-              </div>
-              <h4 style={{ color: "#e65100" }}>
-                {esPerfilPropio ? "Tus Locales" : "Locales"}
-              </h4>
-              <p>
-                {esPerfilPropio
-                  ? "Administra los locales que tienes verificados en la plataforma."
-                  : "Este socio aún no tiene locales verificados publicados."}
-              </p>
-              {esPerfilPropio && (
-                <button
-                  className="btn-explorar"
-                  style={{ background: "#e65100" }}
-                  type="button"
-                  onClick={() => {
-                    /* navegación a /locales si existe en el router */
-                    window.location.href = "/locales";
-                  }}
-                >
-                  Gestionar mis locales
-                </button>
-              )}
-            </div>
-          ))}
-
-        {/* ══════════════ SOCIO: PROMOCIONES ══════════════ */}
-        {tabValida === "promociones" && esSocio && (
-          <div className="no-contenido no-contenido-socio">
-            <div className="empty-icon" style={{ color: "#e65100" }}>
-              <FaBullhorn size={48} />
-            </div>
-            <h4 style={{ color: "#e65100" }}>Promociones</h4>
-            <p>
-              {esPerfilPropio
-                ? "Crea y gestiona promociones para atraer más visitantes a tus locales."
-                : "Sin promociones activas en este momento."}
-            </p>
-            {esPerfilPropio && (
-              <button
-                className="btn-explorar"
-                style={{ background: "#e65100" }}
-                type="button"
-                onClick={() => {
-                  window.location.href = "/locales";
-                }}
-              >
-                Crear promoción
-              </button>
-            )}
-          </div>
+        {tabValida === "publicaciones" && esMiembro && (
+          <TabPublicaciones
+            cargandoDatos={cargandoDatos}
+            spotsFormateados={spotsFormateados}
+            esPerfilPropio={esPerfilPropio}
+          />
         )}
 
-        {/* ══════════════ SOCIO AJENO: INFORMACIÓN COMERCIAL ══════════════ */}
-        {!esPerfilPropio &&
-          tabValida === "comercial" &&
-          esSocio && (
-            <div className="no-contenido no-contenido-socio">
-              <div className="empty-icon" style={{ color: "#e65100" }}>
-                <FaInfoCircle size={48} />
-              </div>
-              <h4 style={{ color: "#e65100" }}>Información comercial</h4>
-              <p>
-                No hay información comercial disponible para este socio. Cuando
-                el negocio comparta datos de contacto, horarios o certificaciones,
-                aparecerán en esta sección.
-              </p>
-              <div
-                className="perfil-comercial-empty-rows"
-                style={{ width: "100%", marginTop: 12 }}
-              >
-                <div
-                  className="perfil-comercial-empty-row"
-                  style={{ opacity: 0.5, marginBottom: 8 }}
-                >
-                  <FaTimes style={{ marginRight: 8 }} /> Sin horarios públicos
-                </div>
-                <div
-                  className="perfil-comercial-empty-row"
-                  style={{ opacity: 0.5, marginBottom: 8 }}
-                >
-                  <FaTimes style={{ marginRight: 8 }} /> Sin certificaciones
-                </div>
-              </div>
-            </div>
+        {tabValida === "resenas" && (esMiembro || esStaff) && (
+          <TabResenas
+            cargandoDatos={cargandoDatos}
+            resenasUsuario={resenasUsuario}
+            esPerfilPropio={esPerfilPropio}
+          />
+        )}
+
+        {esPerfilPropio &&
+          tabValida === "guardados" &&
+          (esMiembro || esStaff) && (
+            <TabGuardados
+              cargandoDatos={cargandoDatos}
+              guardadosUsuario={guardadosUsuario}
+              refetchGuardados={refetchGuardados}
+            />
           )}
+
+        {tabValida === "locales" && esSocio && (
+          <TabLocales
+            cargandoDatos={cargandoDatos}
+            spotsFormateados={spotsFormateados}
+            esPerfilPropio={esPerfilPropio}
+          />
+        )}
+
+        {tabValida === "promociones" && esSocio && (
+          <TabPromociones esPerfilPropio={esPerfilPropio} />
+        )}
+
+        {!esPerfilPropio && tabValida === "comercial" && esSocio && (
+          <TabComercial />
+        )}
       </div>
     </>
   );

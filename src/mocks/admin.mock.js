@@ -74,34 +74,6 @@ export const paginarDemo = (usuarios, page, size) => {
     };
 };
 
-// Función para crear usuario en modo demo
-export const crearUsuarioDemo = async (datos) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const nuevoUsuario = {
-                id: Date.now().toString(),
-                nombresCompletos: datos.nombresCompletos,
-                nombreUsuario: datos.nombreUsuario,
-                email: datos.email,
-                rol: datos.rol?.toUpperCase() || "MIEMBRO",
-                estadoCuenta: true,
-                fechaRegistro: new Date().toISOString(),
-                telefono: datos.telefono || null,
-                biografia: datos.biografia || null
-            };
-            
-            // Agregar al array de demo (para que aparezca en la lista)
-            USUARIOS_DEMO_ADMIN.unshift(nuevoUsuario);
-            
-            resolve({
-                exitoso: true,
-                mensaje: "Usuario creado exitosamente (modo demo)",
-                datos: nuevoUsuario
-            });
-        }, 800);
-    });
-};
-
 // Función para actualizar estado en modo demo
 export const actualizarEstadoUsuarioDemo = async (usuarioId, activo) => {
     return new Promise((resolve, reject) => {

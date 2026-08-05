@@ -39,6 +39,8 @@ export default function UsuarioPerfil() {
   const [mostrarReporte, setMostrarReporte] = useState(false);
 
   useEffect(() => {
+    let activo = true;
+
     const cargarPerfil = async () => {
       if (!nombreUsuarioParam) return;
 
@@ -47,7 +49,11 @@ export default function UsuarioPerfil() {
       setNoExiste(false);
 
       try {
+        if (!activo) return;
+
         const resultado = await obtenerPerfil(nombreUsuarioParam);
+
+        if (!activo || !resultado) return;
 
         if (resultado?.exitoso && resultado.datos) {
           setPerfilData((prev) => ({
@@ -87,13 +93,17 @@ export default function UsuarioPerfil() {
           }
         }
       } catch {
+        if (!activo) return;
         setError("Error al cargar el perfil. Intenta más tarde.");
       } finally {
-        setLoading(false);
+        if (activo) setLoading(false);
       }
     };
 
     cargarPerfil();
+    return () => {
+      activo = false;
+    };
   }, [nombreUsuarioParam]);
 
   // Si el perfil visto es el del usuario logueado → redirigir a Mi Perfil

@@ -178,6 +178,80 @@
   box-shadow: 0 6px 16px rgba(128, 111, 190, 0.15);
 }
 
+/* ── Modal de notificaciones (dialog nativo) ────────────── */
+.perfil-notif-dialog {
+  border: none;
+  border-radius: 20px;
+  padding: 0;
+  max-width: 420px;
+  width: calc(100% - 2rem);
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.perfil-notif-dialog::backdrop {
+  background: rgba(20, 15, 40, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.perfil-notif-panel {
+  padding: 1.5rem;
+}
+
+.perfil-notif-title {
+  font-family: "Playfair Display", serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 0.4rem;
+}
+
+.perfil-notif-sub {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.perfil-notif-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f0edf8;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.perfil-notif-row:last-of-type {
+  border-bottom: none;
+}
+
+.perfil-notif-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.perfil-notif-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #888;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.perfil-notif-close:hover {
+  background: #f3f1fb;
+  color: var(--color-primary);
+}
+
 .btn-reportar-perfil {
   background: white;
   color: #b91c1c;

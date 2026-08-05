@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -43,9 +43,22 @@ const ReportarModal = ({
   const [categoria, setCategoria] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [archivos, setArchivos] = useState([]);
+  const [previews, setPreviews] = useState([]);
   const [enviando, setEnviando] = useState(false);
   const [ticket, setTicket] = useState(null);
   const inputFileRef = useRef(null);
+  const previewsRef = useRef([]);
+
+  useEffect(() => {
+    previewsRef.current = previews;
+  }, [previews]);
+
+  useEffect(() => {
+    return () => {
+      previewsRef.current.forEach((url) => URL.revokeObjectURL(url));
+      previewsRef.current = [];
+    };
+  }, []);
 
   const esReporteDeResena = Boolean(resenaId);
   const esReporteDeUsuario = Boolean(usuarioAReportar);
@@ -54,8 +67,11 @@ const ReportarModal = ({
     setCategoria("");
     setDescripcion("");
     setArchivos([]);
+    setPreviews([]);
     setEnviando(false);
     setTicket(null);
+    previewsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    previewsRef.current = [];
     if (inputFileRef.current) inputFileRef.current.value = "";
   };
 
@@ -83,11 +99,19 @@ const ReportarModal = ({
       return;
     }
 
+    // oxlint-disable-next-line react-doctor/no-create-object-url-without-revoke -- se revoca en quitarArchivo y en unmount (previewsRef)
+    const urls = nuevos.map((f) => URL.createObjectURL(f));
+    setPreviews((prev) => [...prev, ...urls]);
     setArchivos((prev) => [...prev, ...nuevos]);
     e.target.value = "";
   };
 
   const quitarArchivo = (index) => {
+    const url = previews[index];
+    if (url) {
+      URL.revokeObjectURL(url);
+    }
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
     setArchivos((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -264,9 +288,12 @@ const ReportarModal = ({
               {archivos.length > 0 && (
                 <div className="evidencia-previews">
                   {archivos.map((file, index) => (
-                    <div className="evidencia-preview" key={index}>
+                    <div
+                      className="evidencia-preview"
+                      key={`${file.name}-${file.size}-${file.lastModified}`}
+                    >
                       <img
-                        src={URL.createObjectURL(file)}
+                        src={previews[index]}
                         alt={`Evidencia ${index + 1}`}
                       />
                       <button

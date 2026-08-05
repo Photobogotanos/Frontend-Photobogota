@@ -53,10 +53,10 @@ const FiltrosMapa = ({ onFiltrar }) => {
       </div>
 
       <div className="filtros-acciones">
-        <button className="filtro-aplicar" onClick={aplicar}>
+        <button type="button" className="filtro-aplicar" onClick={aplicar}>
           Aplicar filtros
         </button>
-        <button className="filtro-limpiar" onClick={limpiar}>
+        <button type="button" className="filtro-limpiar" onClick={limpiar}>
           Limpiar filtros
         </button>
       </div>

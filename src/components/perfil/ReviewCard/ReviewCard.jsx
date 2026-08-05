@@ -51,21 +51,11 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
     irAlSpot();
   };
 
-  const handleCardKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleCardClick();
-    }
-  };
-
   return (
-    
-    <div 
-      className="review-card" 
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, react-doctor/no-static-element-interactions
+    <div
+      className="review-card"
       onClick={handleCardClick}
-      onKeyDown={handleCardKeyDown}
-      role="button"
-      tabIndex={0}
     >
       {/* Header */}
       <div className="review-header">

@@ -1,4 +1,4 @@
-import { useState, useReducer } from "react";
+import { useState, useReducer, useRef } from "react";
 import Form from "react-bootstrap/Form";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -57,8 +57,7 @@ function AdminCreacionDeCuentaForm() {
     const navegar = useNavigate();
     const [state, dispatch] = useReducer(formReducer, initialState);
     const [errorRol, setErrorRol] = useState("");
-    // eslint-disable-next-line no-unused-vars
-    const [modoDemo, setModoDemo] = useState(false);
+    const modoDemo = useRef(false);
 
     const handlePasswordChange = (valor, esConfirmacion) => {
         const nuevoPassword = esConfirmacion ? state.password : valor;
@@ -145,7 +144,7 @@ function AdminCreacionDeCuentaForm() {
 
             // Verificar modo offline
             const isOnline = await obtenerEstadoServidor();
-            setModoDemo(!isOnline);
+            modoDemo.current = !isOnline;
 
             const resultado = await crearUsuarioAdmin({
                 nombresCompletos: `${state.nombres} ${state.apellidos}`,

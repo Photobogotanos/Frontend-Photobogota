@@ -3,14 +3,13 @@ import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import "./PaginaInicioPage.css";
 import PaginaInicioContent from "@/components/pagina-inicio/PaginaInicioContent/PaginaInicioContent";
+import { estaLogueado } from "@/utils/sessionHelper";
 
 function PaginaInicioPage() {
   const navegar = useNavigate();
 
   useEffect(() => {
-    const estaLogueado = localStorage.getItem("logueado") === "true";
-
-    if (estaLogueado) {
+    if (estaLogueado()) {
       navegar("/mapa");
     }
   }, [navegar]);

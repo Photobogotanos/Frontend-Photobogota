@@ -193,6 +193,7 @@ export default function DashboardEliminaciones() {
       {totalPaginas > 1 && (
         <div className="elim-paginacion">
           <button
+            type="button"
             className="page-btn"
             disabled={pagina === 0}
             onClick={() => setPagina((p) => p - 1)}
@@ -204,6 +205,7 @@ export default function DashboardEliminaciones() {
             {pagina + 1} de {totalPaginas}
           </span>
           <button
+            type="button"
             className="page-btn"
             disabled={pagina >= totalPaginas - 1}
             onClick={() => setPagina((p) => p + 1)}
@@ -215,6 +217,7 @@ export default function DashboardEliminaciones() {
       )}
 
       <ModalGestionEliminacion
+        key={solicitudSeleccionada?.id}
         show={showModal}
         solicitud={solicitudSeleccionada}
         procesando={procesando}

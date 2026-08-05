@@ -16,6 +16,7 @@ const EstadisticasHeader = ({ periodo, setPeriodo }) => {
       <div className="header-controles">
         <div className="selector-periodo">
           <button
+            type="button"
             className={`periodo-btn ${periodo === "semana" ? "activo" : ""}`}
             onClick={() => setPeriodo("semana")}
             aria-pressed={periodo === "semana"}
@@ -23,6 +24,7 @@ const EstadisticasHeader = ({ periodo, setPeriodo }) => {
             Semana
           </button>
           <button
+            type="button"
             className={`periodo-btn ${periodo === "mes" ? "activo" : ""}`}
             onClick={() => setPeriodo("mes")}
             aria-pressed={periodo === "mes"}
@@ -30,6 +32,7 @@ const EstadisticasHeader = ({ periodo, setPeriodo }) => {
             Mes
           </button>
           <button
+            type="button"
             className={`periodo-btn ${periodo === "ano" ? "activo" : ""}`}
             onClick={() => setPeriodo("ano")}
             aria-pressed={periodo === "ano"}

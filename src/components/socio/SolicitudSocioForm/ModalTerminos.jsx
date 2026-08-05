@@ -167,6 +167,7 @@ const ModalTerminos = ({ showModal, setShowModal, formData, setFormData }) => {
           Cerrar
         </Button>
         <button
+          type="button"
           onClick={() => {
             setFormData({ ...formData, aceptaTerminos: true });
             setShowModal(false);

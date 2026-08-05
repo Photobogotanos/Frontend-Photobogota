@@ -20,6 +20,7 @@ import DemoAccountsPanel from "./DemoAccountsPanel";
 const CUENTAS_ESPECIALES = ["SOCIO", "MOD", "ADMIN", "MIEMBRO"];
 const MAX_INTENTOS = 5;
 const TIEMPO_BLOQUEO = 5 * 60 * 1000; // 5 minutos
+const ORDEN_ROL = { MIEMBRO: 1, SOCIO: 2, MOD: 3, ADMIN: 4 };
 
 // Reducer function
 function loginReducer(state, action) {
@@ -103,10 +104,9 @@ export default function LoginForm() {
   };
 
   // Ordenar por rol: MIEMBRO, SOCIO, MOD, ADMIN
-  const ordenRol = { MIEMBRO: 1, SOCIO: 2, MOD: 3, ADMIN: 4 };
   const cuentasEspeciales = USUARIOS_DEMO.filter((u) =>
     CUENTAS_ESPECIALES.includes(u.rol),
-  ).sort((a, b) => ordenRol[a.rol] - ordenRol[b.rol]);
+  ).sort((a, b) => ORDEN_ROL[a.rol] - ORDEN_ROL[b.rol]);
 
   const manejarEnvio = async (e) => {
     e.preventDefault();

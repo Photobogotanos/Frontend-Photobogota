@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useRef } from "react";
 import { Container } from "react-bootstrap";
 import EditarPerfilModal from "../EditarPerfilModal/EditarPerfilModal";
 import FotoPerfilModal from "../FotoPerfilModal/FotoPerfilModal";
@@ -8,6 +8,7 @@ import PerfilTabs from "./PerfilTabs";
 import "./MiPerfil.css";
 import { useAuth } from "../../../context/AuthContext";
 import { obtenerPerfil } from "../../../services/usuario.service";
+import { STORAGE_KEY_MIEMBRO } from "../../../utils/sessionHelper";
 
 // Tabs por rol (alineado con PerfilTabs)
 const PRIMERA_TAB_POR_ROL = {
@@ -113,6 +114,8 @@ export default function MiPerfil() {
 
   // Cargar datos del backend; si falla (500 u otro), no romper la UI
   useEffect(() => {
+    let activo = true;
+
     const cargarPerfil = async () => {
       // Resolver nombreUsuario: contexto (post /auth/me) → contexto (post login) → localStorage
       let nombreUsuario =
@@ -122,7 +125,7 @@ export default function MiPerfil() {
 
       if (!nombreUsuario) {
         try {
-          const miembroStorage = localStorage.getItem("miembro");
+          const miembroStorage = localStorage.getItem(STORAGE_KEY_MIEMBRO);
           if (miembroStorage) {
             const miembro = JSON.parse(miembroStorage);
             nombreUsuario =
@@ -141,7 +144,11 @@ export default function MiPerfil() {
       dispatch({ type: "SET_ERROR", payload: null });
 
       try {
+        if (!activo) return;
+
         const resultado = await obtenerPerfil(nombreUsuario);
+
+        if (!activo || !resultado) return;
 
         if (resultado?.exitoso && resultado.datos) {
           const data = resultado.datos;
@@ -200,6 +207,7 @@ export default function MiPerfil() {
           });
         }
       } catch {
+        if (!activo) return;
         // Cualquier 500 / red: no cargar datos rotos
         dispatch({
           type: "SET_ERROR",
@@ -218,13 +226,28 @@ export default function MiPerfil() {
           },
         });
       } finally {
-        dispatch({ type: "SET_LOADING", payload: false });
+        if (activo) dispatch({ type: "SET_LOADING", payload: false });
       }
     };
 
     cargarPerfil();
+    return () => {
+      activo = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario]);
+
+  const notificacionesRef = useRef(null);
+
+  useEffect(() => {
+    if (state.mostrarNotificaciones && notificacionesRef.current) {
+      notificacionesRef.current.showModal();
+    }
+  }, [state.mostrarNotificaciones]);
+
+  const cerrarNotificaciones = () => {
+    dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false });
+  };
 
   const handlePerfilActualizado = (datosActualizados) => {
     dispatch({ type: "UPDATE_PERFIL_DATA", payload: datosActualizados });
@@ -304,39 +327,29 @@ export default function MiPerfil() {
         nombre={state.perfilData.nombresCompletos}
       />
 
-      {/* Modal simple de notificaciones (placeholder) */}
+      {/* Modal de notificaciones (placeholder) */}
       {state.mostrarNotificaciones && (
-        <div
-          className="perfil-notif-overlay"
-          onClick={() =>
-            dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
-          }
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false });
-            }
-            if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
-              dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false });
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions, react-doctor/no-noninteractive-element-interactions
+        <dialog
+          ref={notificacionesRef}
+          className="perfil-notif-dialog"
+          aria-labelledby="perfil-notif-title"
+          onClose={cerrarNotificaciones}
+          onCancel={(e) => {
+            e.preventDefault();
+            cerrarNotificaciones();
+          }}
+          onClick={(e) => {
+            if (e.target === notificacionesRef.current) {
+              cerrarNotificaciones();
             }
           }}
-          role="button"
-          tabIndex={0}
-          aria-label="Cerrar notificaciones"
         >
-          {/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */}
-          <div
-            className="perfil-notif-panel"
-            onMouseDown={(e) => e.stopPropagation()}
-            onTouchStart={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Configurar notificaciones"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="perfil-notif-title">Notificaciones</h3>
-            <p className="perfil-notif-sub">
-              Elige qué avisos quieres recibir.
-            </p>
+          <div className="perfil-notif-panel">
+            <h3 id="perfil-notif-title" className="perfil-notif-title">
+              Notificaciones
+            </h3>
+            <p className="perfil-notif-sub">Elige qué avisos quieres recibir.</p>
             <label className="perfil-notif-row">
               <input type="checkbox" defaultChecked />
               <span>Nuevas reseñas en tus spots</span>
@@ -357,15 +370,20 @@ export default function MiPerfil() {
               type="button"
               className="btn-editar-perfil"
               style={{ width: "100%", justifyContent: "center", marginTop: 16 }}
-              onClick={() =>
-                dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false })
-              }
+              onClick={cerrarNotificaciones}
             >
               Guardar preferencias
             </button>
+            <button
+              type="button"
+              className="perfil-notif-close"
+              onClick={cerrarNotificaciones}
+              aria-label="Cerrar"
+            >
+              ×
+            </button>
           </div>
-          {/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */}
-        </div>
+        </dialog>
       )}
     </Container>
   );

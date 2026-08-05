@@ -1,19 +1,8 @@
-import { useReducer, useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Lottie from "lottie-react";
-import uploadAnimation from "@/assets/animations/Upload.json";
-import {
-  FaCamera,
-  FaChevronLeft,
-  FaChevronRight,
-  FaTrash,
-} from "react-icons/fa";
+import { useReducer, useRef, useEffect } from "react";
 import "./CreacionSpotForm.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Swal from "sweetalert2";
 import { useAuth } from "@/context/AuthContext";
-import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 import SpotPreviewModal from "../SpotPreviewModal/SpotPreviewModal";
 import HeaderSpot from "./HeaderSpot";
 import SpotInformacionBasica from "./SpotInformacionBasica";
@@ -21,272 +10,27 @@ import SpotCategorizacion from "./SpotCategorizacion";
 import SpotDescripcion from "./SpotDescripcion";
 import SpotBotones from "./SpotBotones";
 import SpotDatosLocal from "./SpotDatosLocal";
-import { crearSpot } from "@/services/spot.service";
-import { subirImagenesSpot } from "@/services/imagen.service";
-
-// ============================================================
-// REDUCER
-// ============================================================
-const spotFormReducer = (state, action) => {
-  switch (action.type) {
-    case "SET_IMAGENES":
-      return { ...state, imagenes: action.payload };
-    case "SET_PREVIEWS":
-      return { ...state, previews: action.payload };
-    case "SET_INDICE_IMAGEN":
-      return { ...state, indiceImagenActual: action.payload };
-    case "SET_NOMBRE_LUGAR":
-      return { ...state, nombreLugar: action.payload };
-    case "SET_DIRECCION":
-      return { ...state, direccion: action.payload };
-    case "SET_LATITUD":
-      return { ...state, latitud: action.payload };
-    case "SET_LONGITUD":
-      return { ...state, longitud: action.payload };
-    case "SET_DESCRIPCION":
-      return { ...state, descripcionImagen: action.payload };
-    case "SET_RECOMENDACION":
-      return { ...state, recomendacion: action.payload };
-    case "SET_TIPS_FOTO":
-      return { ...state, tipsFoto: action.payload };
-    case "SET_CATEGORIA":
-      return { ...state, categoria: action.payload };
-    case "SET_LOCALIDAD":
-      return { ...state, localidad: action.payload };
-    case "SET_SHOW_MODAL":
-      return { ...state, showModal: action.payload };
-    case "SET_CARGANDO":
-      return { ...state, cargando: action.payload };
-    case "SET_TIPO":
-      return { ...state, tipo: action.payload };
-    case "SET_TELEFONO":
-      return { ...state, telefono: action.payload };
-    case "SET_HORARIO":
-      return { ...state, horario: action.payload };
-    case "SET_SITIO_WEB":
-      return { ...state, sitioWeb: action.payload };
-    case "RESET_FORM":
-      return initialState;
-    default:
-      return state;
-  }
-};
-
-// ============================================================
-// ESTADO INICIAL
-// ============================================================
-const initialState = {
-  imagenes: [],
-  previews: [],
-  indiceImagenActual: 0,
-  nombreLugar: "",
-  direccion: "",
-  latitud: null,
-  longitud: null,
-  descripcionImagen: "",
-  recomendacion: "",
-  tipsFoto: "",
-  categoria: null,
-  localidad: null,
-  showModal: false,
-  cargando: false,
-  tipo: "SPOT", // se sobrescribe según rol
-  telefono: "",
-  horario: "",
-  sitioWeb: "",
-};
-
-// ============================================================
-// COMPONENTE IMAGE UPLOADER
-// ============================================================
-function ImageUploader({
-  previews,
-  onImageChange,
-  onRemove,
-  onNavigate,
-  indice,
-  onSelectIndice,
-}) {
-  const [isDragging, setIsDragging] = useState(false);
-  const inputRef = useRef();
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const files = Array.from(e.dataTransfer.files).filter((f) =>
-      f.type.startsWith("image/"),
-    );
-    if (files.length) onImageChange(files);
-  };
-
-  const handleFileInput = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length) onImageChange(files);
-  };
-
-  const total = previews.length;
-
-  return (
-    <div className="uploader-wrapper">
-      {total === 0 ? (
-        // Estado sin imágenes - Zona de drop
-        <div
-          className={`drop-zone${isDragging ? " dragging" : ""}`}
-          role="button"
-          tabIndex={0}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setIsDragging(true);
-          }}
-          onDragLeave={() => setIsDragging(false)}
-          onDrop={handleDrop}
-          onClick={() => inputRef.current.click()}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              inputRef.current.click();
-            }
-          }}
-        >
-          <div className="drop-zone-lottie">
-            <Lottie
-              animationData={uploadAnimation}
-              loop
-              style={{ width: 110, height: 110 }}
-            />
-          </div>
-          <p className="drop-zone-title">Arrastra tus fotos aquí</p>
-          <p className="drop-zone-sub">o haz clic para seleccionar</p>
-          <span className="drop-zone-badge">JPG · PNG · WEBP · múltiples</span>
-        </div>
-      ) : (
-        // Estado con imágenes - Carrusel de previews
-        <div className="uploader-con-imagenes">
-          <div
-            className="preview-carousel"
-            role="button"
-            tabIndex={0}
-            onClick={() => onNavigate("next")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onNavigate("next");
-              }
-            }}
-          >
-            <img
-              src={previews[indice]}
-              alt={`Preview ${indice + 1}`}
-              className="preview-img"
-            />
-            <span className="preview-counter">
-              {indice + 1} / {total}
-            </span>
-
-            {total > 1 && (
-              <>
-                <button
-                  type="button"
-                  className="preview-nav prev"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onNavigate("prev");
-                  }}
-                  aria-label="Anterior"
-                >
-                  <FaChevronLeft />
-                </button>
-                <button
-                  type="button"
-                  className="preview-nav next"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onNavigate("next");
-                  }}
-                  aria-label="Siguiente"
-                >
-                  <FaChevronRight />
-                </button>
-              </>
-            )}
-
-            <button
-              type="button"
-              className="preview-remove"
-              onClick={(e) => {
-                e.stopPropagation();
-                onRemove(indice);
-              }}
-              aria-label="Eliminar imagen"
-            >
-              <FaTrash />
-            </button>
-          </div>
-
-          {/* Miniaturas */}
-          <div className="thumbnails-strip">
-            {previews.map((src, idx) => (
-              <div
-                key={src}
-                className={`thumbnail-item${idx === indice ? " active" : ""}`}
-                role="button"
-                tabIndex={0}
-                onClick={() => onSelectIndice(idx)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    onSelectIndice(idx);
-                  }
-                }}
-                aria-label={`Seleccionar imagen ${idx + 1}`}
-              >
-                <img src={src} alt={`Thumb ${idx + 1}`} />
-                <button
-                  type="button"
-                  className="thumb-remove"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRemove(idx);
-                  }}
-                  aria-label={`Eliminar imagen ${idx + 1}`}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-
-            {/* Botón para agregar más imágenes */}
-            <button
-              type="button"
-              className="thumbnail-add"
-              onClick={() => inputRef.current.click()}
-              aria-label="Añadir imagen"
-            >
-              <span className="thumbnail-add-icon">+</span>
-              <span className="thumbnail-add-text">Añadir</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        multiple
-        style={{ display: "none" }}
-        onChange={handleFileInput}
-      />
-    </div>
-  );
-}
+import SeccionImagenes from "./SeccionImagenes";
+import { spotFormReducer, initialState } from "./creacionSpotReducer";
+import { usePublicacionSpot } from "./usePublicacionSpot";
 
 // ============================================================
 // COMPONENTE PRINCIPAL CrearSpot
 // ============================================================
 export default function CrearSpot() {
   const [state, dispatch] = useReducer(spotFormReducer, initialState);
-  const navigate = useNavigate();
+  const previewsRef = useRef([]);
+
+  useEffect(() => {
+    previewsRef.current = state.previews;
+  }, [state.previews]);
+
+  useEffect(() => {
+    return () => {
+      previewsRef.current.forEach((url) => URL.revokeObjectURL(url));
+      previewsRef.current = [];
+    };
+  }, []);
 
   const { usuario } = useAuth();
   const esSocio = usuario?.rol === "SOCIO";
@@ -299,10 +43,13 @@ export default function CrearSpot() {
     });
   }, [esSocio]);
 
+  const { handlePublicar } = usePublicacionSpot({ state, dispatch, esSocio });
+
   // ============================================================
   // HANDLERS DE IMÁGENES
   // ============================================================
   const handleImagen = (files) => {
+    // oxlint-disable-next-line react-doctor/no-create-object-url-without-revoke -- se revoca en handleRemoveImagen y en unmount (previewsRef)
     const newPreviews = files.map((f) => URL.createObjectURL(f));
     dispatch({ type: "SET_IMAGENES", payload: [...state.imagenes, ...files] });
     dispatch({
@@ -313,6 +60,8 @@ export default function CrearSpot() {
   };
 
   const handleRemoveImagen = (idx) => {
+    const url = state.previews[idx];
+    if (url) URL.revokeObjectURL(url);
     const newImagenes = state.imagenes.filter((_, i) => i !== idx);
     const newPreviews = state.previews.filter((_, i) => i !== idx);
     dispatch({ type: "SET_IMAGENES", payload: newImagenes });
@@ -330,180 +79,6 @@ export default function CrearSpot() {
         ? (state.indiceImagenActual + 1) % total
         : (state.indiceImagenActual - 1 + total) % total;
     dispatch({ type: "SET_INDICE_IMAGEN", payload: next });
-  };
-
-  // ============================================================
-  // VALIDACIÓN DEL FORMULARIO
-  // ============================================================
-  const validarFormulario = () => {
-    if (!state.nombreLugar.trim()) {
-      Swal.fire({
-        icon: "warning",
-        title: "Nombre requerido",
-        text: "Por favor ingresa el nombre del lugar.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (!state.direccion.trim()) {
-      Swal.fire({
-        icon: "warning",
-        title: "Dirección requerida",
-        text: "Por favor ingresa la dirección del lugar.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (!state.categoria) {
-      Swal.fire({
-        icon: "warning",
-        title: "Categoría requerida",
-        text: "Por favor selecciona una categoría.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (!state.localidad) {
-      Swal.fire({
-        icon: "warning",
-        title: "Localidad requerida",
-        text: "Por favor selecciona una localidad.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (!state.descripcionImagen.trim()) {
-      Swal.fire({
-        icon: "warning",
-        title: "Descripción requerida",
-        text: "Por favor ingresa una descripción del lugar.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (state.imagenes.length === 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Imágenes requeridas",
-        text: "Por favor sube al menos una imagen del lugar.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    if (!state.latitud || !state.longitud) {
-      Swal.fire({
-        icon: "warning",
-        title: "Ubicación GPS requerida",
-        text: "Usa el botón de ubicación para obtener las coordenadas del lugar.",
-        confirmButtonColor: "#806fbe",
-      });
-      return false;
-    }
-
-    return true;
-  };
-
-  // ============================================================
-  // HANDLER DE PUBLICACIÓN
-  // ============================================================
-  const handlePublicar = async () => {
-    if (!validarFormulario()) return;
-
-    dispatch({ type: "SET_CARGANDO", payload: true });
-
-    Swal.fire({
-      title: "Subiendo imágenes...",
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
-    });
-
-    try {
-      // 1. Subir imágenes usando el service
-      const resultadoImagenes = await subirImagenesSpot(state.imagenes);
-
-      if (!resultadoImagenes.exitoso) {
-        Swal.close();
-        dispatch({ type: "SET_CARGANDO", payload: false });
-        Swal.fire({
-          icon: "error",
-          title: "Error al subir imágenes",
-          text: resultadoImagenes.mensaje,
-          confirmButtonColor: "#806fbe",
-        });
-        return;
-      }
-
-      // 2. Crear el spot con las URLs reales
-      Swal.update({ title: "Publicando spot..." });
-
-      const spotParaEnviar = {
-        nombre: state.nombreLugar,
-        latitud: parseFloat(state.latitud),
-        longitud: parseFloat(state.longitud),
-        direccion: state.direccion,
-        categoria: state.categoria?.value || state.categoria,
-        localidad: state.localidad?.value || state.localidad,
-        descripcion: state.descripcionImagen,
-        recomendacion: state.recomendacion || "",
-        tipsFoto: state.tipsFoto || "",
-        imagenes: resultadoImagenes.urls,
-        tipo: esSocio ? "LOCAL" : "SPOT",
-      };
-
-      if (esSocio) {
-        spotParaEnviar.telefono = state.telefono || "";
-        spotParaEnviar.horario = state.horario || "";
-        spotParaEnviar.sitioWeb = state.sitioWeb || "";
-      }
-
-      const resultado = await crearSpot(spotParaEnviar);
-
-      Swal.close();
-      dispatch({ type: "SET_CARGANDO", payload: false });
-
-      if (resultado.exitoso) {
-        await Swal.fire({
-          icon: "success",
-          title: esSocio ? "Local creado" : "Spot publicado",
-          text:
-            "Tu " +
-            (esSocio ? "local" : "spot") +
-            " ya está visible en el mapa.",
-          timer: 2000,
-          showConfirmButton: false,
-          timerProgressBar: true,
-        });
-        navigate(`/spot/${resultado.datos.id}`);
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error al publicar",
-          text: resultado.mensaje,
-          confirmButtonColor: "#806fbe",
-        });
-      }
-    } catch (error) {
-      Swal.close();
-      dispatch({ type: "SET_CARGANDO", payload: false });
-
-      const mensaje =
-        error.response?.data?.mensaje ||
-        error.response?.data?.message ||
-        "Ocurrió un error al publicar el spot.";
-
-      Swal.fire({
-        icon: "error",
-        title: "Error inesperado",
-        text: mensaje,
-        confirmButtonColor: "#806fbe",
-      });
-    }
   };
 
   // ============================================================
@@ -533,12 +108,7 @@ export default function CrearSpot() {
 
         <Row className="g-4">
           <Col xs={12}>
-            {/* Sección de imágenes */}
-            <label className="spot-label mb-2" htmlFor="foto-lugar">
-              <FaCamera className="me-2" />
-              Foto del lugar <RequiredMark />
-            </label>
-            <ImageUploader
+            <SeccionImagenes
               previews={state.previews}
               indice={state.indiceImagenActual}
               onImageChange={handleImagen}

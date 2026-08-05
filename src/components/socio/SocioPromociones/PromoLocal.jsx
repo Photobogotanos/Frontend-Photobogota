@@ -1,17 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 import Select from "react-select";
 
 export default function PromoLocal({ state, dispatch }) {
-  const [locales, setLocales] = useState([]);
-
-  useEffect(() => {
   // TODO: reemplazar por getLocalesBySocio() cuando el endpoint esté listo
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
-  setLocales([
+  const [locales] = useState([
     { id: 1, nombre: "Local de prueba" },
   ]);
-}, []);
 
   const opcionesLocales = locales.map((local) => ({
     value: local.id,

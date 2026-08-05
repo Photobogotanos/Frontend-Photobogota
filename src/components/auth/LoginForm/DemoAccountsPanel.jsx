@@ -23,6 +23,8 @@ const CREDENCIALES_DEMO = {
     miembro: "miembro123",
 };
 
+const ORDEN_ROL = { MIEMBRO: 1, SOCIO: 2, MOD: 3, ADMIN: 4 };
+
 const getRolIcon = (rol) => {
     switch (rol) {
         case "ADMIN":
@@ -77,8 +79,7 @@ export default function DemoAccountsPanel({ cuentas, onSelectAccount, selectedAc
         setIsOpen(false); // Cierra el panel automáticamente al seleccionar
     };
 
-    const ordenRol = { MIEMBRO: 1, SOCIO: 2, MOD: 3, ADMIN: 4 };
-    const cuentasOrdenadas = [...cuentas].sort((a, b) => ordenRol[a.rol] - ordenRol[b.rol]);
+    const cuentasOrdenadas = cuentas.toSorted((a, b) => ORDEN_ROL[a.rol] - ORDEN_ROL[b.rol]);
 
     return (
         <div className="demo-accounts-modern">

@@ -54,12 +54,13 @@ export default function SolicitudModal({
               >
                 <FiFileText className="me-2 text-muted" />
                 <button
+                  type="button"
                   style={{ fontSize: "0.9rem", fontWeight: "500", color: "#333", background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                  onClick={() => window.open(solicitud.rutaArchivo, "_blank")}
+                  onClick={() => window.open(solicitud.rutaArchivo, "_blank", "noopener,noreferrer")}
                 >
                   {solicitud.tipoArchivo === "pdf" ? "Documento (PDF)" : "Documento (imagen)"}
                 </button>
-                <a href={solicitud.rutaArchivo} download className="ms-3 text-dark d-flex align-items-center" style={{ textDecoration: "none" }}>
+                <a href={solicitud.rutaArchivo} download className="ms-3 text-dark d-flex align-items-center" style={{ textDecoration: "none" }} aria-label="Descargar documento adjunto">
                   <FiDownload style={{ fontSize: "1.1rem" }} />
                 </a>
               </div>
@@ -179,9 +180,9 @@ export default function SolicitudModal({
 
             {solicitud.comentariosInternos && solicitud.comentariosInternos.length > 0 ? (
               <div className="comentarios-lista mb-3">
-                {solicitud.comentariosInternos.map((comentario, idx) => (
+                {solicitud.comentariosInternos.map((comentario) => (
                   <div
-                    key={idx}
+                    key={`${comentario.autor}-${comentario.fecha}-${comentario.texto}`}
                     className="comentario-item p-2 mb-2"
                     style={{ backgroundColor: "#f8f9fa", borderRadius: "8px", borderLeft: "3px solid #0d6efd" }}
                   >

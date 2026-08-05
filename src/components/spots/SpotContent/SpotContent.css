@@ -633,19 +633,23 @@ button.star {
   font-size: 13px;
   font-weight: 700;
   color: #1a1a1a;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .usuario-avatar[role="button"],
-.usuario-nombre[role="button"] {
+.usuario-nombre[role="button"],
+button.usuario-nombre {
   cursor: pointer;
 }
 
 .usuario-avatar[role="button"]:hover .avatar-placeholder,
-.usuario-nombre[role="button"]:hover {
+.usuario-nombre:hover {
   color: var(--color-primary);
 }
 
-.usuario-nombre[role="button"]:hover {
+.usuario-nombre:hover {
   text-decoration: underline;
   text-decoration-color: rgba(128, 111, 190, 0.25);
   text-underline-offset: 2px;

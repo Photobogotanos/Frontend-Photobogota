@@ -13,6 +13,3 @@ export const getSpotById = (id) =>
 export const postCrearSpot = (body) =>
   clienteApi.post("/spots", body);
 
-export const postCrearResena = (spotId, body) =>
-  clienteApi.post(`/spots/${spotId}/resenas`, body); 
-

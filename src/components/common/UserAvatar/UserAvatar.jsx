@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./UserAvatar.css";
 
 /**
@@ -18,12 +18,13 @@ export default function UserAvatar({
   onKeyDown,
 }) {
   const [error, setError] = useState(false);
+  const [prevSrc, setPrevSrc] = useState(src);
 
-  // Si cambia la URL, reintentar mostrar foto
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
+  // Si cambia la URL, reintentar mostrar foto (ajuste durante render, sin effect)
+  if (src !== prevSrc) {
+    setPrevSrc(src);
     setError(false);
-  }, [src]);
+  }
 
   const tieneFoto = Boolean(src) && !error;
 

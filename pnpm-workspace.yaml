@@ -1,5 +1,9 @@
 allowBuilds:
   esbuild: true
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  - semver@6.3.1
 minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - eslint@10.8.0

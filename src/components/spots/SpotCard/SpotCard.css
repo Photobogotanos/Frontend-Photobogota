@@ -155,6 +155,16 @@
   margin-top: 6px;
 }
 
+.spot-title-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
 .spot-info-h {
   justify-content: center;
   display: flex;
