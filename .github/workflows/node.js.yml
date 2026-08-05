@@ -1,10 +1,10 @@
 name: Frontend-Photobogota
 
-on:
+"on":
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 # Permisos necesarios para que el Action pueda escribir en la rama gh-pages
 permissions:
@@ -19,29 +19,29 @@ jobs:
         node-version: [20.x]
 
     steps:
-    - name: Checkout del código
-      uses: actions/checkout@v4
+      - name: Checkout del código
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-    - name: Instalar pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 9          # la versión que estemos usando
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@a15d269cd4658e1107c09f1fabf4cbd7bd1f308a # v4.4.0
+        with:
+          version: 9 # la versión que estemos usando
 
-    - name: Configurar Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'      
+      - name: Configurar Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
 
-    - name: Instalar dependencias
-      run: pnpm install
+      - name: Instalar dependencias
+        run: pnpm install
 
-    - name: Construir proyecto (Vite)
-      run: pnpm run build
+      - name: Construir proyecto (Vite)
+        run: pnpm run build
 
-    - name: Deploy
-      if: github.event_name == 'push'
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        folder: dist
-        branch: gh-pages
+      - name: Deploy
+        if: github.event_name == 'push'
+        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
+        with:
+          folder: dist
+          branch: gh-pages
