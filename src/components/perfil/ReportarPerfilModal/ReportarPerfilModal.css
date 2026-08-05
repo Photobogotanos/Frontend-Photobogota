@@ -1,0 +1,52 @@
+/* ──────────────────────────────────────────────────────────────
+   ReportarPerfilModal.css
+   Reutiliza las clases compartidas de EditarPerfilModal.css vía @import
+   (header, spacing, inputs y botones) para mantener la misma familia
+   visual. Solo se añaden las reglas propias del shell y del subtexto.
+   ────────────────────────────────────────────────────────────── */
+
+/* Reutiliza EXACTAMENTE las mismas clases visuales de EditarPerfilModal:
+   modal-header-custom, modal-title-custom, mh-icon-box,
+   modal-body-custom, form-block, block-sep, block-heading, bh-icon,
+   fgroup, flabel, finput, finput.ftextarea, char-hint,
+   modal-actions, btn-cancelar, btn-guardar (+ responsive global). */
+@import "../EditarPerfilModal/EditarPerfilModal.css";
+
+/* ── MODAL SHELL (espejo idéntico de EditarPerfilModal) ────── */
+.reportar-perfil-modal .modal-dialog {
+  max-width: 620px;
+}
+
+.reportar-perfil-modal .modal-content {
+  border-radius: 22px;
+  border: none;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* ── SUBTEXTO INFORMATIVO ───────────────────────────────────── */
+.reportar-subtexto {
+  margin: 0 26px 4px;
+  padding: 16px 0 6px;
+  font-size: 0.86rem;
+  color: #6b6b6b;
+  line-height: 1.5;
+}
+
+/* Alineación responsive heredada (modal-actions pasa a columna) */
+@media (max-width: 768px) {
+  .reportar-subtexto {
+    margin: 0 18px 4px;
+  }
+}
+
+/* Consistencia visual móvil del shell (igual que EditarPerfilModal) */
+@media (max-width: 480px) {
+  .reportar-perfil-modal .modal-content {
+    border-radius: 16px;
+  }
+  .reportar-perfil-modal .modal-dialog {
+    margin: 0.5rem;
+  }
+}

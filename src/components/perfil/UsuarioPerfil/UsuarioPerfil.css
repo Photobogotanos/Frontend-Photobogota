@@ -8,6 +8,8 @@
   cursor: pointer;
   margin-bottom: 8px;
   padding: 4px 2px;
+  background-color: transparent;
+  border-color: transparent;
 }
 
 .perfil-ajeno-back:hover {
