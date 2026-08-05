@@ -74,10 +74,12 @@ export default function DashboardEliminaciones() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarSolicitudes();
   }, [cargarSolicitudes]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     cargarMetricas();
   }, [cargarMetricas]);
 

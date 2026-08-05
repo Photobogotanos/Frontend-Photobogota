@@ -19,7 +19,6 @@ const LogDetailModal = ({
   onNavigate,
 }) => {
   const [isRawExpanded, setIsRawExpanded] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
 
   if (!log) return null;
 
@@ -30,7 +29,6 @@ const LogDetailModal = ({
   const handleCopy = async (text, type = "line") => {
     try {
       await navigator.clipboard.writeText(text);
-      setIsCopied(true);
       toast.success(
         `${type === "line" ? "Línea" : "Mensaje"} copiado al portapapeles`,
         {
@@ -38,7 +36,6 @@ const LogDetailModal = ({
           icon: "📋",
         },
       );
-      setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       toast.error("Error al copiar al portapapeles " + err);
     }
