@@ -1,0 +1,10 @@
+.moderacion-apelaciones-page .contenido-apelacion {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.moderacion-apelaciones-page .motivo-apelacion {
+  max-width: 280px;
+}

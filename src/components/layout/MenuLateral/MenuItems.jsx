@@ -15,6 +15,9 @@ import {
   FaCog,
   FaBell,
   FaUserSlash,
+  FaShieldAlt,
+  FaHistory,
+  FaGavel,
 } from "react-icons/fa";
 import SidebarLink from "./SidebarLink";
 
@@ -155,6 +158,27 @@ export default function MenuItems({ rol, cerrar }) {
             to="/admin/notificaciones-mantenimiento"
             onClick={cerrar}
             activo={esRutaActiva("/admin/notificaciones-mantenimiento")}
+          />
+          <SidebarLink
+            icon={<FaShieldAlt />}
+            texto="Filtro de contenido"
+            to="/admin/moderacion/palabras"
+            onClick={cerrar}
+            activo={esRutaActiva("/admin/moderacion/palabras")}
+          />
+          <SidebarLink
+            icon={<FaHistory />}
+            texto="Historial de moderación"
+            to="/admin/moderacion/historial"
+            onClick={cerrar}
+            activo={esRutaActiva("/admin/moderacion/historial")}
+          />
+          <SidebarLink
+            icon={<FaGavel />}
+            texto="Apelaciones"
+            to="/admin/moderacion/apelaciones"
+            onClick={cerrar}
+            activo={esRutaActiva("/admin/moderacion/apelaciones")}
           />
           <SidebarLink
             icon={<FaFileAlt />}

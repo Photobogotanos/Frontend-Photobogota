@@ -1,0 +1,7 @@
+.moderacion-palabras-page .moderacion-tabla td {
+  vertical-align: middle;
+}
+
+.moderacion-palabras-page .excepciones-lista {
+  max-width: 280px;
+}

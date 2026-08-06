@@ -11,6 +11,7 @@ import MantenimientoOverlay from "@/components/common/MantenimientoOverlay/Mante
 import { useAuth } from "@/context/AuthContext";
 import { MotionConfig } from "framer-motion";
 import CuentaInactivaPage from "@/pages/cuenta/CuentaInactivaPage/CuentaInactivaPage";
+import CuentaSancionadaPage from "@/pages/cuenta/CuentaSancionadaPage/CuentaSancionadaPage";
 
 function App() {
   const { isBlocked, remainingCooldown } = useRefreshLimit();
@@ -39,6 +40,12 @@ function App() {
   // mostramos únicamente la pantalla de recuperación / aviso correspondiente.
   if (!cargando && logueado && usuario?.estadoCuenta === false) {
     return <CuentaInactivaPage />;
+  }
+
+  // Usuario con sanción activa que bloquea la publicación (mute, suspensión o
+  // ban): bloqueamos la app y mostramos la pantalla de sanción/apelación.
+  if (!cargando && logueado && usuario?.sancion?.bloqueaPublicacion) {
+    return <CuentaSancionadaPage />;
   }
 
   // El backend bloquea toda la API durante el mantenimiento excepto las

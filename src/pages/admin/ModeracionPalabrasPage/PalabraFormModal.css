@@ -1,0 +1,4 @@
+.palabra-form-modal .modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}

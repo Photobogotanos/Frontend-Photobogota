@@ -1,0 +1,10 @@
+.moderacion-historial-page .contenido-original {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.moderacion-historial-page .palabras-detectadas {
+  max-width: 200px;
+}
