@@ -58,12 +58,55 @@ export default function SpotInformacionBasica({
   onDireccionChange,
   onLatitudChange,
   onLongitudChange,
+  esSocio
 }) {
   const [metodo, setMetodo] = useState("direccion");
   const [buscando, setBuscando] = useState(false);
   const [showMapPicker, setShowMapPicker] = useState(false);
 
   const metodoActual = METODOS.find((m) => m.value === metodo);
+
+  // ─────────────────────────────────────────────
+  // Geocodificación inversa (coordenadas -> dirección)
+  // ─────────────────────────────────────────────
+  const acortarDireccion = (data) => {
+    const a = data?.address;
+    if (!a) return data?.display_name || "";
+
+    const partes = [];
+
+    if (a.road) {
+      partes.push(
+        `${a.house_number ? `${a.house_number} ` : ""}${a.road}`.trim(),
+      );
+    }
+
+    if (a.neighbourhood) partes.push(a.neighbourhood);
+    else if (a.suburb) partes.push(a.suburb);
+    else if (a.city_district) partes.push(a.city_district);
+
+    if (a.city || a.town || a.village || a.municipality)
+      partes.push(a.city || a.town || a.village || a.municipality);
+
+    return partes.join(", ");
+  };
+
+  const obtenerDireccionDesdeCoordenadas = async (lat, lng) => {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=es`;
+      const response = await fetch(url, {
+        headers: {
+          "User-Agent": "Photobogota/1.0 (photobogota123@gmail.com)",
+        },
+      });
+      if (!response.ok) throw new Error("Error en la respuesta del servidor");
+      const data = await response.json();
+      return acortarDireccion(data);
+    } catch (error) {
+      console.error("Error reverse geocoding:", error);
+      return "";
+    }
+  };
 
   // ─────────────────────────────────────────────
   // 1. Geocodificar dirección escrita
@@ -153,9 +196,15 @@ export default function SpotInformacionBasica({
     setBuscando(true);
 
     navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
+      async ({ coords }) => {
         onLatitudChange(coords.latitude);
         onLongitudChange(coords.longitude);
+
+        const direccionObtenida = await obtenerDireccionDesdeCoordenadas(
+          coords.latitude,
+          coords.longitude,
+        );
+        if (direccionObtenida) onDireccionChange(direccionObtenida);
 
         Swal.fire({
           icon: "success",
@@ -211,9 +260,12 @@ export default function SpotInformacionBasica({
   // ─────────────────────────────────────────────
   // 3. Confirmar pin del mapa
   // ─────────────────────────────────────────────
-  const handleConfirmPin = (lat, lng) => {
+  const handleConfirmPin = async (lat, lng) => {
     onLatitudChange(lat);
     onLongitudChange(lng);
+
+    const direccionObtenida = await obtenerDireccionDesdeCoordenadas(lat, lng);
+    if (direccionObtenida) onDireccionChange(direccionObtenida);
 
     Swal.fire({
       icon: "success",
@@ -239,7 +291,7 @@ export default function SpotInformacionBasica({
       <Row className="g-3 mb-2 mt-1">
         <Col xs={12}>
           <label className="spot-label" htmlFor="nombre-lugar">
-            Nombre del lugar <RequiredMark />
+            {esSocio ? "Nombre de la publicación" : "Nombre del establecimiento"} <RequiredMark />
           </label>
           <input
             id="nombre-lugar"

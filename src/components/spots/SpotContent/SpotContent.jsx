@@ -22,6 +22,7 @@ import {
   FaEdit,
   FaBookmark,
   FaRegBookmark,
+  FaClock,
 } from "react-icons/fa";
 import { obtenerSpotPorId } from "@/services/spot.service";
 import {
@@ -305,6 +306,13 @@ const MapaContent = () => {
             <FaMapMarkerAlt className="location-icon" />
             {spot.direccion}
           </p>
+
+          {spot.horario && (
+            <p className="lugar-horario">
+              <FaClock className="location-icon" />
+              {spot.horario}
+            </p>
+          )}
 
           <div className="lugar-badges">
             {spot.categoria && (

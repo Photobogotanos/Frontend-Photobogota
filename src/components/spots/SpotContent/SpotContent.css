@@ -123,7 +123,8 @@
   margin-top: 6px;
 }
 
-.lugar-direccion {
+.lugar-direccion,
+.lugar-horario {
   font-size: 14px;
   color: #666;
   margin-bottom: 20px;
@@ -868,7 +869,8 @@ button.star {
     font-size: 22px;
   }
 
-  .lugar-direccion {
+  .lugar-direccion,
+  .lugar-horario {
     font-size: 13px;
   }
 
@@ -1054,7 +1056,8 @@ button.star {
     font-size: 20px;
   }
 
-  .lugar-direccion {
+  .lugar-direccion,
+  .lugar-horario {
     font-size: 12px;
   }
 

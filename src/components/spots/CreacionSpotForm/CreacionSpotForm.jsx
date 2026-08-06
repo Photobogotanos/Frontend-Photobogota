@@ -406,6 +406,26 @@ export default function CrearSpot() {
       return false;
     }
 
+    if (esSocio && !state.telefono.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Teléfono requerido",
+        text: "Por favor ingresa el teléfono del local.",
+        confirmButtonColor: "#806fbe",
+      });
+      return false;
+    }
+
+    if (esSocio && !state.horario.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Horario requerido",
+        text: "Por favor define los días y el rango de horas de atención del local.",
+        confirmButtonColor: "#806fbe",
+      });
+      return false;
+    }
+
     return true;
   };
 
@@ -512,6 +532,7 @@ export default function CrearSpot() {
   const spotData = {
     nombre: state.nombreLugar || "Nombre del lugar",
     direccion: state.direccion || "Dirección del lugar",
+    horario: state.horario || null,
     imagen: state.previews[0] || null,
     rating: 0,
     totalResenas: 0,
