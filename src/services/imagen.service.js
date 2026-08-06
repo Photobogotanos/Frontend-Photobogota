@@ -1,14 +1,18 @@
 import { postSubirImagenSpot, postSubirAvatar } from "@/api/imagenApi";
+import { redimensionarImagen } from "@/utils/imagen.util";
 
 /**
  * Sube múltiples imágenes de un spot al servidor.
- * Retorna un array de URLs listas para guardar en el spot.
+ * Antes de subir, cada imagen se redimensiona/compacta para que no supere el
+ * límite de tamaño del backend (5 MB). Retorna un array de URLs listas para
+ * guardar en el spot.
  */
 export const subirImagenesSpot = async (archivos) => {
   try {
     const urls = await Promise.all(
       archivos.map(async (file) => {
-        const { data } = await postSubirImagenSpot(file);
+        const archivoPreparado = await redimensionarImagen(file);
+        const { data } = await postSubirImagenSpot(archivoPreparado);
         return data.url;
       }),
     );
@@ -19,16 +23,22 @@ export const subirImagenesSpot = async (archivos) => {
       mensaje: "Imágenes subidas exitosamente",
     };
   } catch (error) {
-    const mensaje =
+    const mensajeServidor =
       error.response?.data?.mensaje ||
       error.response?.data?.message ||
-      "Error al subir las imágenes";
+      "";
+    const esLimiteTamano =
+      error.response?.status === 413 ||
+      /(size|tamaño|maximum|max).*(exceeded|excede|excedido|máximo|permitido)|max-(file|upload)-size/i.test(
+        mensajeServidor,
+      );
 
-    if (error.response?.status === 413) {
+    if (esLimiteTamano) {
       return {
         exitoso: false,
         urls: [],
-        mensaje: "Una o más imágenes superan el tamaño máximo permitido (5MB)",
+        mensaje:
+          "Una o más imágenes superan el tamaño máximo permitido (5MB). Se intentó reducir su peso automáticamente; prueba con una imagen más liviana.",
       };
     }
 
@@ -43,7 +53,8 @@ export const subirImagenesSpot = async (archivos) => {
     return {
       exitoso: false,
       urls: [],
-      mensaje,
+      mensaje:
+        mensajeServidor || "Error al subir las imágenes. Revisa tu conexión e inténtalo de nuevo.",
     };
   }
 };

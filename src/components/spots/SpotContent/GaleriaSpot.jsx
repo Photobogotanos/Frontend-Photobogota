@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useState } from "react";
 import {
   LazyMotion,
   m,
@@ -7,62 +7,27 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import { FaImages, FaCamera } from "react-icons/fa";
+import { FaImages, FaMapMarkerAlt } from "react-icons/fa";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
 
-const GaleriaSpot = ({ imagenes, spotNombre, onAbrirImagen }) => {
-  const heroRef = useRef(null);
+const GaleriaSpot = ({ imagenes, spotNombre, spotDireccion, onAbrirImagen }) => {
+  const [errorImagen, setErrorImagen] = useState(false);
 
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-
+  const { scrollY } = useScroll();
   const escalaImagen = useSpring(
-    useTransform(scrollYProgress, [0, 1], [1, 1.22]),
+    useTransform(scrollY, [0, 900], [1, 1.08]),
     { stiffness: 120, damping: 30 },
   );
-  const opacidadHero = useTransform(scrollYProgress, [0, 0.85], [1, 0.1]);
+  const opacidadCaption = useTransform(scrollY, [0, 420], [1, 0]);
 
   const imagenPrincipal = imagenes[0];
+  const sinImagen = !imagenPrincipal || errorImagen;
 
   return (
-    <>
-      <div className="lugar-imagen-principal" ref={heroRef}>
-        {imagenPrincipal ? (
-          <LazyMotion features={domAnimation}>
-            <m.button
-              type="button"
-              className="lugar-imagen-hero"
-              style={{ opacity: opacidadHero }}
-              onClick={() => onAbrirImagen(0)}
-              aria-label={`Ver imagen de ${spotNombre}`}
-            >
-              <m.img
-                src={imagenPrincipal.src}
-                alt={imagenPrincipal.alt}
-                style={{ scale: escalaImagen }}
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  const fallback =
-                    e.currentTarget.parentElement?.nextElementSibling;
-                  if (fallback) fallback.style.display = "flex";
-                }}
-              />
-              {imagenes.length > 1 && (
-                <span className="lugar-galeria-badge">
-                  <FaImages />
-                  <span>{imagenes.length} fotos</span>
-                </span>
-              )}
-            </m.button>
-          </LazyMotion>
-        ) : null}
-        <div
-          className="lugar-imagen-fallback"
-          style={{ display: imagenPrincipal ? "none" : "flex" }}
-        >
+    <div className="lugar-imagen-principal">
+      {sinImagen ? (
+        <div className="lugar-imagen-fallback">
           <Lottie
             animationData={uploadAnimation}
             loop
@@ -70,53 +35,43 @@ const GaleriaSpot = ({ imagenes, spotNombre, onAbrirImagen }) => {
           />
           <span>Sin imagen</span>
         </div>
-      </div>
+      ) : (
+        <LazyMotion features={domAnimation}>
+          <m.button
+            type="button"
+            className="lugar-imagen-hero"
+            onClick={() => onAbrirImagen(0)}
+            aria-label={`Ver imagen de ${spotNombre}`}
+          >
+            <m.img
+              src={imagenPrincipal.src}
+              alt={imagenPrincipal.alt}
+              style={{ scale: escalaImagen }}
+              onError={() => setErrorImagen(true)}
+            />
+          </m.button>
 
-      {imagenes.length > 1 && (
-        <section
-          className="lugar-galeria-scroll"
-          aria-label={`Galería de fotos de ${spotNombre}`}
-        >
-          <header className="lugar-galeria-scroll-head">
-            <h2 className="lugar-galeria-titulo">
-              <FaImages /> Galería de fotos
-            </h2>
-            <span className="lugar-galeria-total">
-              {imagenes.length} fotos
-            </span>
-          </header>
-
-          <LazyMotion features={domAnimation}>
-            {imagenes.map((imagen, index) => (
-              <m.button
-                key={`stack-${imagen.src}-${index}`}
-                type="button"
-                className="lugar-foto-stack"
-                style={{ "--stack-offset": `${Math.min(index, 6) * 12}px` }}
-                onClick={() => onAbrirImagen(index)}
-                aria-label={`Ampliar foto ${index + 1} de ${imagenes.length}`}
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.55, ease: "easeOut" }}
-              >
-                <img
-                  src={imagen.src}
-                  alt={imagen.alt || `${spotNombre} — foto ${index + 1}`}
-                  loading="lazy"
-                />
-                <span className="lugar-foto-counter">
-                  {index + 1} / {imagenes.length}
-                </span>
-                <span className="lugar-foto-caption">
-                  <FaCamera /> {spotNombre}
-                </span>
-              </m.button>
-            ))}
-          </LazyMotion>
-        </section>
+          <m.div
+            className="lugar-hero-caption"
+            style={{ opacity: opacidadCaption }}
+          >
+            <span className="lugar-hero-nombre">{spotNombre}</span>
+            {spotDireccion && (
+              <span className="lugar-hero-direccion">
+                <FaMapMarkerAlt className="lugar-hero-direccion-icon" />
+                {spotDireccion}
+              </span>
+            )}
+            {imagenes.length > 1 && (
+              <span className="lugar-galeria-badge">
+                <FaImages />
+                {imagenes.length} fotos
+              </span>
+            )}
+          </m.div>
+        </LazyMotion>
       )}
-    </>
+    </div>
   );
 };
 

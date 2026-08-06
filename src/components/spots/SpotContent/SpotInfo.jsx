@@ -9,6 +9,7 @@ import {
   FaStar,
   FaHeart,
   FaCamera,
+  FaImages,
   FaChevronLeft,
   FaChevronRight,
   FaTimes,
@@ -81,6 +82,7 @@ const SpotInfo = ({
       <GaleriaSpot
         imagenes={imagenes}
         spotNombre={spot.nombre}
+        spotDireccion={spot.direccion}
         onAbrirImagen={abrirImagen}
       />
 
@@ -135,7 +137,7 @@ const SpotInfo = ({
               <div className="spot-image-modal-thumbs">
                 {imagenes.map((imagen, index) => (
                   <button
-                    key={`thumb-${imagen.src}-${index}`}
+                    key={`thumb-${imagen.src}`}
                     type="button"
                     className={`spot-image-thumb-btn ${index === imagenActiva ? "active" : ""}`}
                     onClick={() => setImagenActiva(index)}
@@ -150,80 +152,104 @@ const SpotInfo = ({
       )}
 
       <div className="lugar-info-container">
-        <div className="lugar-nombre-fila">
-          <h1 className="lugar-nombre">{spot.nombre}</h1>
-          <div className="lugar-acciones-header">
-            <button
-              type="button"
-              className={`btn-guardar-spot-detalle ${esGuardado ? "guardado" : ""}`}
-              onClick={handleGuardarSpot}
-              aria-label={esGuardado ? "Quitar de guardados" : "Guardar spot"}
-              disabled={guardandoSpot}
-            >
-              {esGuardado ? <FaBookmark /> : <FaRegBookmark />}
-              {esGuardado ? "Guardado" : "Guardar"}
-            </button>
-            <button
-              type="button"
-              className="btn-reportar-spot"
-              onClick={abrirReporteSpot}
-            >
-              <FaFlag className="btn-icon" />
-              Reportar
-            </button>
+        <div className="lugar-info-inner">
+          <div className="lugar-nombre-fila">
+            <h1 className="lugar-nombre">{spot.nombre}</h1>
+            <div className="lugar-acciones-header">
+              <button
+                type="button"
+                className={`btn-guardar-spot-detalle ${esGuardado ? "guardado" : ""}`}
+                onClick={handleGuardarSpot}
+                aria-label={esGuardado ? "Quitar de guardados" : "Guardar spot"}
+                disabled={guardandoSpot}
+              >
+                {esGuardado ? <FaBookmark /> : <FaRegBookmark />}
+                {esGuardado ? "Guardado" : "Guardar"}
+              </button>
+              <button
+                type="button"
+                className="btn-reportar-spot"
+                onClick={abrirReporteSpot}
+              >
+                <FaFlag className="btn-icon" />
+                Reportar
+              </button>
+            </div>
           </div>
-        </div>
-        <p className="lugar-direccion">
-          <FaMapMarkerAlt className="location-icon" />
-          {spot.direccion}
-        </p>
 
-        <div className="lugar-badges">
-          {spot.categoria && (
-            <span className="badge-categoria">
-              <FaTag className="category-icon" />
-              {spot.categoria}
-            </span>
+          {imagenes.length > 1 && (
+            <div className="lugar-galeria-tira">
+              <h3 className="lugar-galeria-tira-titulo">
+                <FaImages className="lugar-galeria-tira-icon" /> Fotos del spot
+              </h3>
+              <div className="lugar-galeria-tira-scroll">
+                {imagenes.map((imagen, index) => (
+                  <button
+                    key={`tira-${imagen.src}`}
+                    type="button"
+                    className={`lugar-galeria-tira-thumb ${index === imagenActiva ? "activa" : ""}`}
+                    onClick={() => abrirImagen(index)}
+                    aria-label={`Ver foto ${index + 1} de ${imagenes.length}`}
+                  >
+                    <img src={imagen.src} alt={imagen.alt} loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
-          {spot.localidad && (
-            <span className="badge-localidad">
-              <FaMapMarkerAlt className="category-icon" />
-              {spot.localidad}
-            </span>
+
+          <p className="lugar-direccion">
+            <FaMapMarkerAlt className="location-icon" />
+            {spot.direccion}
+          </p>
+
+          <div className="lugar-badges">
+            {spot.categoria && (
+              <span className="badge-categoria">
+                <FaTag className="category-icon" />
+                {spot.categoria}
+              </span>
+            )}
+            {spot.localidad && (
+              <span className="badge-localidad">
+                <FaMapMarkerAlt className="category-icon" />
+                {spot.localidad}
+              </span>
+            )}
+            <div className="lugar-rating-badge">
+              <FaStar className="star-icon" />
+              <span className="rating-text">{spot.rating}</span>
+              <span className="reviews-text">({spot.totalResenas} reseñas)</span>
+            </div>
+          </div>
+
+          {spot.descripcion && (
+            <div className="lugar-descripcion">
+              <h3>
+                <FaMapMarkerAlt className="section-icon" /> Descripción
+              </h3>
+              <p>{spot.descripcion}</p>
+            </div>
           )}
-          <div className="lugar-rating-badge">
-            <FaStar className="star-icon" />
-            <span className="rating-text">{spot.rating}</span>
-            <span className="reviews-text">({spot.totalResenas} reseñas)</span>
-          </div>
+
+          {spot.recomendacion && (
+            <div className="lugar-recomendacion">
+              <h3>
+                <FaHeart className="section-icon" /> ¿Por qué recomendarlo?
+              </h3>
+              <p>{spot.recomendacion}</p>
+            </div>
+          )}
+
+          {spot.tipsFoto && (
+            <div className="lugar-tips">
+              <h3>
+                <FaCamera className="section-icon" /> Tips de fotografía
+              </h3>
+              <p>{spot.tipsFoto}</p>
+            </div>
+          )}
         </div>
-
-        {spot.descripcion && (
-          <div className="lugar-descripcion">
-            <h3>
-              <FaMapMarkerAlt className="section-icon" /> Descripción
-            </h3>
-            <p>{spot.descripcion}</p>
-          </div>
-        )}
-
-        {spot.recomendacion && (
-          <div className="lugar-recomendacion">
-            <h3>
-              <FaHeart className="section-icon" /> ¿Por qué recomendarlo?
-            </h3>
-            <p>{spot.recomendacion}</p>
-          </div>
-        )}
-
-        {spot.tipsFoto && (
-          <div className="lugar-tips">
-            <h3>
-              <FaCamera className="section-icon" /> Tips de fotografía
-            </h3>
-            <p>{spot.tipsFoto}</p>
-          </div>
-        )}
       </div>
     </>
   );
