@@ -1,0 +1,241 @@
+/* ═══════════════════════════════════════════════════════════════
+   MODERACIÓN ADMIN — ESTILO COMPARTIDO
+   Patrón visual de "Enviar notificación": header con subtítulo,
+   título con icono, línea degradada y descripción + tarjeta blanca.
+   ═══════════════════════════════════════════════════════════════ */
+
+.moderacion-page {
+  padding: 24px;
+  max-width: 1250px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Tarjeta ────────────────────────────────────────────────── */
+.moderacion-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(128, 111, 190, 0.1);
+  margin-bottom: 24px;
+}
+
+.moderacion-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.moderacion-card-title {
+  font-weight: 700;
+  color: var(--color-dark);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Labels / inputs ────────────────────────────────────────── */
+.moderacion-label {
+  font-weight: 600;
+  color: var(--color-dark);
+  margin-bottom: 8px;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.moderacion-input {
+  height: 52px;
+  border-radius: var(--pill) !important;
+  border: 1.5px solid var(--border) !important;
+  background: #fafafa !important;
+  color: var(--color-dark);
+  font-weight: 500;
+  padding: 0 18px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.moderacion-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 4px var(--purple-shadow) !important;
+  background: #fff !important;
+  outline: none;
+}
+
+/* ── Botones ────────────────────────────────────────────────── */
+.btn-mod {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 26px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(128, 111, 190, 0.3);
+}
+
+.btn-mod:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(128, 111, 190, 0.4);
+  color: #fff;
+}
+
+.btn-mod:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-mod-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  color: var(--color-dark);
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-mod-outline:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: #f8f5ff;
+}
+
+.btn-mod-outline.btn-mod-success:hover {
+  border-color: #198754;
+  color: #198754;
+  background: #f2fbf6;
+}
+
+.btn-mod-outline.btn-mod-danger:hover {
+  border-color: #dc3545;
+  color: #dc3545;
+  background: #fff5f5;
+}
+
+.btn-mod-outline.btn-mod-warning:hover {
+  border-color: #ffc107;
+  color: #997a00;
+  background: #fffdf0;
+}
+
+.btn-mod-sm {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+}
+
+/* ── Tabla ──────────────────────────────────────────────────── */
+.moderacion-table {
+  margin-bottom: 0;
+}
+
+.moderacion-table thead th {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+  padding: 12px;
+}
+
+.moderacion-table tbody td {
+  vertical-align: middle;
+  border-color: #f1f1f1;
+  padding: 14px 12px;
+}
+
+.moderacion-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.moderacion-table tbody tr:hover {
+  background: #faf8ff;
+}
+
+/* ── Filtros ────────────────────────────────────────────────── */
+.moderacion-filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 1.75rem;
+}
+
+.moderacion-filtro-botones {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ── Buscador ───────────────────────────────────────────────── */
+.moderacion-buscador {
+  position: relative;
+  max-width: 420px;
+  margin-bottom: 1.5rem;
+}
+
+.moderacion-buscador-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  z-index: 2;
+}
+
+.moderacion-buscador .moderacion-input {
+  padding-left: 44px;
+}
+
+/* ── Pie de tabla (registros + paginación) ──────────────────── */
+.moderacion-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 1.25rem;
+}
+
+.moderacion-footer .page-link {
+  border-radius: 8px;
+  margin: 0 2px;
+  color: var(--color-primary);
+}
+
+.moderacion-footer .page-item.active .page-link {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+/* ── Estados vacíos ─────────────────────────────────────────── */
+.moderacion-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 20px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.moderacion-vacio svg {
+  font-size: 2rem;
+  color: var(--purple-light);
+}

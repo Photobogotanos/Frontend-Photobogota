@@ -1,14 +1,12 @@
 import PreferenciasNotificaciones from "@/components/notificaciones/PreferenciasNotificaciones/PreferenciasNotificaciones";
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import "./PreferenciasNotificacionesPage.css";
 
 const PreferenciasNotificacionesPage = () => {
   return (
-    <div className="preferencias-page mt-3">
-      <Container fluid className="mt-3">
-        <PreferenciasNotificaciones />
-      </Container>
-    </div>
+    <PageContainer className="preferencias-page mt-3" containerClassName="mt-3">
+      <PreferenciasNotificaciones />
+    </PageContainer>
   );
 };
 

@@ -1,14 +1,11 @@
-import Container from "react-bootstrap/Container";
-import "./MantenimientoPage.css";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import MantenimientoAdmin from "@/components/admin/Mantenimiento/MantenimientoAdmin";
 
 const MantenimientoPage = () => {
   return (
-    <div className="mantenimiento-page">
-      <Container fluid className="p-0">
-        <MantenimientoAdmin />
-      </Container>
-    </div>
+    <PageContainer content>
+      <MantenimientoAdmin />
+    </PageContainer>
   );
 };
 

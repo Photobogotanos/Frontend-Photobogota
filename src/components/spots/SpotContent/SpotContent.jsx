@@ -250,30 +250,32 @@ const MapaContent = () => {
           abrirReporteSpot={abrirReporteSpot}
         />
         <div className="resenas-container">
-          <h3 className="resenas-titulo">
-            <FaCommentDots className="section-icon" /> Calificaciones
-          </h3>
-          <NuevaResenaCard
-            logueado={logueado}
-            miCalificacion={miCalificacion}
-            editandoResena={editandoResena}
-            setEditandoResena={setEditandoResena}
-            handleSubmitCalificacion={handleSubmitCalificacion}
-            estadoResena={estadoResena}
-            dispatchResena={dispatchResena}
-            enviandoCalificacion={enviandoCalificacion}
-            handleCancelarEdicion={handleCancelarEdicion}
-            maxComentario={MAX_COMENTARIO}
-          />
-          <ResenasLista
-            cargandoCalificaciones={cargandoCalificaciones}
-            calificaciones={calificaciones}
-            usuario={usuario}
-            navigate={navigate}
-            abrirReporteResena={abrirReporteResena}
-            obtenerIdAutorCalificacion={obtenerIdAutorCalificacion}
-            obtenerNombreAutorCalificacion={obtenerNombreAutorCalificacion}
-          />
+          <div className="resenas-inner">
+            <h3 className="resenas-titulo">
+              <FaCommentDots className="section-icon" /> Calificaciones
+            </h3>
+            <NuevaResenaCard
+              logueado={logueado}
+              miCalificacion={miCalificacion}
+              editandoResena={editandoResena}
+              setEditandoResena={setEditandoResena}
+              handleSubmitCalificacion={handleSubmitCalificacion}
+              estadoResena={estadoResena}
+              dispatchResena={dispatchResena}
+              enviandoCalificacion={enviandoCalificacion}
+              handleCancelarEdicion={handleCancelarEdicion}
+              maxComentario={MAX_COMENTARIO}
+            />
+            <ResenasLista
+              cargandoCalificaciones={cargandoCalificaciones}
+              calificaciones={calificaciones}
+              usuario={usuario}
+              navigate={navigate}
+              abrirReporteResena={abrirReporteResena}
+              obtenerIdAutorCalificacion={obtenerIdAutorCalificacion}
+              obtenerNombreAutorCalificacion={obtenerNombreAutorCalificacion}
+            />
+          </div>
         </div>
         <ReportarModal
           show={modalReporteAbierto}

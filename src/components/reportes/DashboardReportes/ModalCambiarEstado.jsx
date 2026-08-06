@@ -2,7 +2,13 @@ import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import { ESTADOS_REPORTE } from "@/services/reporte.service";
+
+const OPCIONES_ESTADO = ESTADOS_REPORTE.map((e) => ({
+  value: e.valor,
+  label: e.etiqueta,
+}));
 
 // Modal para cambiar el estado de un reporte. Si el nuevo estado es
 // RESUELTO, avisamos que eso dispara la validación del moderador
@@ -34,17 +40,15 @@ export default function ModalCambiarEstado({ show, reporte, onCerrar, onConfirma
 
         <Form.Group className="mb-3">
           <Form.Label htmlFor="nuevo-estado">Nuevo estado</Form.Label>
-          <Form.Select
-            id="nuevo-estado"
-            value={estado}
-            onChange={(e) => setEstado(e.target.value)}
-          >
-            {ESTADOS_REPORTE.map((e) => (
-              <option key={e.valor} value={e.valor}>
-                {e.etiqueta}
-              </option>
-            ))}
-          </Form.Select>
+          <Select
+            inputId="nuevo-estado"
+            classNamePrefix="spot-select"
+            options={OPCIONES_ESTADO}
+            value={OPCIONES_ESTADO.find((o) => o.value === estado)}
+            onChange={(opcion) => setEstado(opcion ? opcion.value : "")}
+            placeholder="Selecciona un estado..."
+            isClearable
+          />
         </Form.Group>
 
         <Form.Group>

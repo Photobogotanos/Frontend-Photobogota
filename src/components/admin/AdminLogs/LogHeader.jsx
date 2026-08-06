@@ -1,4 +1,5 @@
 import { FaTerminal, FaFileAlt, FaSync } from "react-icons/fa";
+import PageHeader from "@/components/common/PageHeader/PageHeader";
 
 const LogHeader = ({
   modoDemo,
@@ -9,28 +10,21 @@ const LogHeader = ({
   NIVELES_LOG,
 }) => {
   return (
-    <div className="log-viewer-header">
-      <div className="header-info">
-        <h1 className="header-titulo">
-          <FaTerminal /> Visualizador de Logs
-          {modoDemo && (
-            <span
-              style={{
-                fontSize: "0.75rem",
-                fontWeight: 500,
-                background: "#fef3c7",
-                color: "#92400e",
-                padding: "2px 10px",
-                borderRadius: 20,
-                marginLeft: 8,
-              }}
-            >
-              DEMO
-            </span>
-          )}
-        </h1>
+    <div className="log-header-wrap">
+      <PageHeader
+        subtitle="Administración"
+        icon={<FaTerminal />}
+        title="Visualizador de logs"
+        description={
+          modoDemo
+            ? "Consulta en vivo los logs del sistema. Modo demo: se muestran datos simulados."
+            : "Consulta en vivo los logs del sistema: errores, advertencias, información y depuración."
+        }
+      />
+
+      <div className="log-stats-bar">
         <div className="log-stats-badges">
-          <span className="stat-badge">
+          <span className="stat-badge stat-total">
             <FaFileAlt /> Total: {logsFiltrados.length} líneas
           </span>
           {Object.entries(estadisticas).map(
@@ -39,26 +33,24 @@ const LogHeader = ({
                 <span
                   key={nivel}
                   className={`stat-badge stat-${nivel.toLowerCase()}`}
-                  style={{
-                    backgroundColor: NIVELES_LOG[nivel].bg,
-                    color: NIVELES_LOG[nivel].color,
-                  }}
                 >
                   {NIVELES_LOG[nivel].icon} {nivel}: {count}
                 </span>
               ),
           )}
         </div>
-      </div>
-      <div className="log-stats">
-        <button
-          type="button"
-          className={`auto-refresh-btn ${autoRefresh ? "active" : ""}`}
-          onClick={onToggleAutoRefresh}
-        >
-          <FaSync className={autoRefresh ? "spin" : ""} />
-          {autoRefresh ? "Auto-refresh ON" : "Auto-refresh OFF"}
-        </button>
+
+        <div className="log-stats-actions">
+          {modoDemo && <span className="log-demo-badge">DEMO</span>}
+          <button
+            type="button"
+            className={`auto-refresh-btn ${autoRefresh ? "active" : ""}`}
+            onClick={onToggleAutoRefresh}
+          >
+            <FaSync className={autoRefresh ? "spin" : ""} />
+            {autoRefresh ? "Auto-refresh activo" : "Auto-refresh"}
+          </button>
+        </div>
       </div>
     </div>
   );

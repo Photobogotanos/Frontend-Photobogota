@@ -127,22 +127,22 @@
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
+  align-items: end;
   margin-bottom: 1.25rem;
 }
 
 .elim-filtro-campo {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 200px;
+  min-width: 260px;
 }
 
 .elim-filtro-campo label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #999;
+  font-weight: 600;
+  color: var(--color-dark);
+  margin-bottom: 8px;
+  display: block;
+  font-size: 0.9rem;
 }
 
 /* ── Estado de carga / vacío ────────────────────────────── */

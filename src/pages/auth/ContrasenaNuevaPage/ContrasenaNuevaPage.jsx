@@ -1,14 +1,12 @@
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import "./ContrasenaNuevaPage.css";
 import PasswordResetForm from "../../../components/auth/RecuperarContraForm/PasswordResetForm";
 
 function ContrasenaNuevaPage() {
   return (
-    <div className="nueva-contrasena">
-      <Container>
-        <PasswordResetForm></PasswordResetForm>
-      </Container>
-    </div>
+    <PageContainer className="nueva-contrasena" fluid={false} containerClassName="">
+      <PasswordResetForm></PasswordResetForm>
+    </PageContainer>
   );
 }
 

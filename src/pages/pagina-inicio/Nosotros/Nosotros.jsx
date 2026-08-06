@@ -1,16 +1,12 @@
 import "./Nosotros.css";
 import NosotrosContent from "@/components/pagina-inicio/NosotrosContent/NosotrosContent";
-import { Container } from "react-bootstrap";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 
 const Nosotros = () => {
   return (
-    <>
-      <div className="nosotros-page">
-        <Container className="mt-3">
-          <NosotrosContent></NosotrosContent>
-        </Container>
-      </div>
-    </>
+    <PageContainer className="nosotros-page" fluid={false} containerClassName="mt-3">
+      <NosotrosContent></NosotrosContent>
+    </PageContainer>
   );
 };
 

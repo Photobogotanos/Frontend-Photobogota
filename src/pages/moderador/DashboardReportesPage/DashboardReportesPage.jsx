@@ -1,14 +1,11 @@
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import DashboardReportes from "@/components/reportes/DashboardReportes/DashboardReportes";
-import "./DashboardReportesPage.css";
 
 const DashboardReportesPage = () => {
   return (
-    <div className="dashboard-reportes-page">
-      <Container fluid className="p-0">
-        <DashboardReportes />
-      </Container>
-    </div>
+    <PageContainer content>
+      <DashboardReportes />
+    </PageContainer>
   );
 };
 

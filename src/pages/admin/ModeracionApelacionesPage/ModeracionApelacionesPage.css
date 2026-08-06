@@ -1,3 +1,9 @@
+.moderacion-apelaciones-page {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
 .moderacion-apelaciones-page .contenido-apelacion {
   max-width: 260px;
   overflow: hidden;

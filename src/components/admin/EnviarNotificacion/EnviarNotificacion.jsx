@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaPaperPlane, FaBullhorn } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { enviarNotificacionManual } from "@/services/notificacion.service";
+import PageHeader from "@/components/common/PageHeader/PageHeader";
 import "./EnviarNotificacion.css";
 
 const ALCANCE_OPCIONES = [
@@ -109,20 +110,12 @@ export default function EnviarNotificacion() {
 
   return (
     <div className="enviar-notif-admin">
-      <div className="enviar-notif-header">
-        <div className="enviar-notif-title-wrap">
-          <span className="enviar-notif-subtitle">Administración</span>
-          <h2 className="enviar-notif-title">
-            <FaBullhorn className="enviar-notif-icon" /> Enviar notificación
-          </h2>
-          <span className="enviar-notif-line" />
-        </div>
-        <p className="enviar-notif-descripcion">
-          Envía un anuncio a todos los usuarios, a un rol específico o a
-          usuarios puntuales. Solo moderadores y administradores pueden
-          hacerlo.
-        </p>
-      </div>
+      <PageHeader
+        subtitle="Administración"
+        icon={<FaBullhorn />}
+        title="Enviar notificación"
+        description="Envía un anuncio a todos los usuarios, a un rol específico o a usuarios puntuales. Solo moderadores y administradores pueden hacerlo."
+      />
 
       <form className="enviar-notif-form" onSubmit={handleSubmit}>
         <div className="form-group">
