@@ -89,6 +89,14 @@
   text-align: left;
 }
 
+.csp-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 6px;
+}
+
 .csp-textarea {
   width: 100%;
   border: 1px solid #e2e0da;

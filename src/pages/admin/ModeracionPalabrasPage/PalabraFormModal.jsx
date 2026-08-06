@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
@@ -23,40 +23,60 @@ const CATEGORIA_OPCIONES = [
   { value: "OTRO", label: "Otro" },
 ];
 
+const FORM_INICIAL = {
+  texto: "",
+  tipo: "PALABRA",
+  categoria: "OFENSIVO",
+  activo: true,
+  excepciones: "",
+};
+
+function formReducer(state, action) {
+  switch (action.type) {
+    case "INICIALIZAR":
+      return action.form;
+    case "CAMBIAR":
+      return { ...state, [action.campo]: action.valor };
+    default:
+      return state;
+  }
+}
+
 const PalabraFormModal = ({ mostrar, onCerrar, palabra, onGuardado }) => {
   const esEdicion = Boolean(palabra?.id);
 
-  const [texto, setTexto] = useState("");
-  const [tipo, setTipo] = useState("PALABRA");
-  const [categoria, setCategoria] = useState("OFENSIVO");
-  const [activo, setActivo] = useState(true);
-  const [excepciones, setExcepciones] = useState("");
+  const [form, dispatch] = useReducer(formReducer, FORM_INICIAL);
   const [guardando, setGuardando] = useState(false);
 
   useEffect(() => {
     if (!mostrar) return;
     /* eslint-disable react-hooks/set-state-in-effect -- sincronizar el formulario al abrir el modal */
-    setTexto(palabra?.texto || "");
-    setTipo(palabra?.tipo || "PALABRA");
-    setCategoria(palabra?.categoria || "OFENSIVO");
-    setActivo(palabra?.activo ?? true);
-    setExcepciones((palabra?.excepciones || []).join("\n"));
+    dispatch({
+      type: "INICIALIZAR",
+      form: {
+        texto: palabra?.texto || "",
+        tipo: palabra?.tipo || "PALABRA",
+        categoria: palabra?.categoria || "OFENSIVO",
+        activo: palabra?.activo ?? true,
+        excepciones: (palabra?.excepciones || []).join("\n"),
+      },
+    });
     /* eslint-enable react-hooks/set-state-in-effect */
   }, [mostrar, palabra]);
 
   const manejarGuardar = async (e) => {
     e.preventDefault();
-    if (!texto.trim()) {
+    if (!form.texto.trim()) {
       toast.error("El texto es obligatorio");
       return;
     }
     setGuardando(true);
     const body = {
-      texto: texto.trim(),
-      tipo,
-      categoria,
-      activo,
-      excepciones: excepciones
+      texto: form.texto.trim(),
+      tipo: form.tipo,
+      categoria: form.categoria,
+      activo: form.activo,
+      excepciones: form.excepciones
         .split("\n")
         .map((s) => s.trim())
         .filter(Boolean),
@@ -100,10 +120,16 @@ const PalabraFormModal = ({ mostrar, onCerrar, palabra, onGuardado }) => {
               <Form.Control
                 id="palabra-texto"
                 type="text"
-                value={texto}
-                onChange={(e) => setTexto(e.target.value)}
+                value={form.texto}
+                onChange={(e) =>
+                  dispatch({ type: "CAMBIAR", campo: "texto", valor: e.target.value })
+                }
                 className="finput"
-                placeholder={tipo === "FRASE" ? "Ej: compra seguidores" : "Ej: palabra prohibida"}
+                placeholder={
+                  form.tipo === "FRASE"
+                    ? "Ej: compra seguidores"
+                    : "Ej: palabra prohibida"
+                }
               />
               <span className="char-hint">Se detecta ignorando mayúsculas y tildes.</span>
             </div>
@@ -116,8 +142,14 @@ const PalabraFormModal = ({ mostrar, onCerrar, palabra, onGuardado }) => {
                 inputId="palabra-tipo"
                 classNamePrefix="spot-select"
                 options={TIPO_OPCIONES}
-                value={TIPO_OPCIONES.find((o) => o.value === tipo)}
-                onChange={(opcion) => setTipo(opcion ? opcion.value : "PALABRA")}
+                value={TIPO_OPCIONES.find((o) => o.value === form.tipo)}
+                onChange={(opcion) =>
+                  dispatch({
+                    type: "CAMBIAR",
+                    campo: "tipo",
+                    valor: opcion ? opcion.value : "PALABRA",
+                  })
+                }
                 placeholder="Selecciona el tipo"
               />
             </div>
@@ -130,8 +162,14 @@ const PalabraFormModal = ({ mostrar, onCerrar, palabra, onGuardado }) => {
                 inputId="palabra-categoria"
                 classNamePrefix="spot-select"
                 options={CATEGORIA_OPCIONES}
-                value={CATEGORIA_OPCIONES.find((o) => o.value === categoria)}
-                onChange={(opcion) => setCategoria(opcion ? opcion.value : "OFENSIVO")}
+                value={CATEGORIA_OPCIONES.find((o) => o.value === form.categoria)}
+                onChange={(opcion) =>
+                  dispatch({
+                    type: "CAMBIAR",
+                    campo: "categoria",
+                    valor: opcion ? opcion.value : "OFENSIVO",
+                  })
+                }
                 placeholder="Selecciona la categoría"
               />
             </div>
@@ -144,8 +182,14 @@ const PalabraFormModal = ({ mostrar, onCerrar, palabra, onGuardado }) => {
                 id="palabra-excepciones"
                 as="textarea"
                 rows={3}
-                value={excepciones}
-                onChange={(e) => setExcepciones(e.target.value)}
+                value={form.excepciones}
+                onChange={(e) =>
+                  dispatch({
+                    type: "CAMBIAR",
+                    campo: "excepciones",
+                    valor: e.target.value,
+                  })
+                }
                 className="finput ftextarea"
                 placeholder="Frases permitidas que contengan el texto, una por línea"
               />
@@ -159,8 +203,14 @@ const PalabraFormModal = ({ mostrar, onCerrar, palabra, onGuardado }) => {
                 type="switch"
                 id="regla-activa"
                 label="Regla activa"
-                checked={activo}
-                onChange={(e) => setActivo(e.target.checked)}
+                checked={form.activo}
+                onChange={(e) =>
+                  dispatch({
+                    type: "CAMBIAR",
+                    campo: "activo",
+                    valor: e.target.checked,
+                  })
+                }
               />
             </div>
           </div>

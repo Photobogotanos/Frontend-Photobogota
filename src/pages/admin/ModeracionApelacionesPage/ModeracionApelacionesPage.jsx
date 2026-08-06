@@ -28,6 +28,7 @@ const ModeracionApelacionesPage = () => {
   const [apelaciones, setApelaciones] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [modal, setModal] = useState(null);
+  const [intentoModal, setIntentoModal] = useState(0);
 
   const cargar = useCallback(async () => {
     setCargando(true);
@@ -46,6 +47,7 @@ const ModeracionApelacionesPage = () => {
   }, [cargar]);
 
   const abrirResolver = (apelacion, aprobar) => {
+    setIntentoModal((n) => n + 1);
     setModal({ apelacion, aprobar });
   };
 
@@ -135,6 +137,7 @@ const ModeracionApelacionesPage = () => {
       </div>
 
       <ResolverApelacionModal
+        key={intentoModal}
         mostrar={modal !== null}
         aprobar={modal?.aprobar}
         nombreUsuario={modal?.apelacion?.nombreUsuario}

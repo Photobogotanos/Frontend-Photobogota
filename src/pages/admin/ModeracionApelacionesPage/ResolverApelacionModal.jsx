@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -15,13 +15,6 @@ const ResolverApelacionModal = ({
 }) => {
   const [respuesta, setRespuesta] = useState("");
   const [guardando, setGuardando] = useState(false);
-
-  useEffect(() => {
-    if (!mostrar) return;
-    /* eslint-disable react-hooks/set-state-in-effect -- sincronizar el formulario al abrir el modal */
-    setRespuesta("");
-    /* eslint-enable react-hooks/set-state-in-effect */
-  }, [mostrar]);
 
   const manejarConfirmar = async (e) => {
     e.preventDefault();

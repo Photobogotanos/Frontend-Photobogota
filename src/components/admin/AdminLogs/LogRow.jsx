@@ -1,4 +1,4 @@
-const LogRow = ({ linea, parsed, NIVELES_LOG, index, onSelect }) => {
+const LogRow = ({ linea, parsed, NIVELES_LOG, index, onSelect, id }) => {
   const nivel = parsed.level;
 
   let nivelVisual = null;
@@ -15,11 +15,11 @@ const LogRow = ({ linea, parsed, NIVELES_LOG, index, onSelect }) => {
   return (
     <div
       className={`log-line ${nivelVisual ? `log-${nivelVisual.toLowerCase()}` : ""}`}
-      onClick={() => onSelect({ raw: linea, parsed, id: index })}
+      onClick={() => onSelect({ raw: linea, parsed, id })}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          onSelect({ raw: linea, parsed, id: index });
+          onSelect({ raw: linea, parsed, id });
         }
       }}
       role="button"
