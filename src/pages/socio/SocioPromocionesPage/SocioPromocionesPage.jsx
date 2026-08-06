@@ -1,14 +1,12 @@
 import "./SocioPromocionesPage.css";
 import SocioPromociones from "@/components/socio/SocioPromociones/SocioPromociones";
-import { Container } from "react-bootstrap";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 
 const SocioPromocionesPage = () => {
   return (
-    <div className="socio-promociones">
-      <Container>
-        <SocioPromociones></SocioPromociones>
-      </Container>
-    </div>
+    <PageContainer className="socio-promociones" fluid={false} containerClassName="">
+      <SocioPromociones></SocioPromociones>
+    </PageContainer>
   );
 };
 

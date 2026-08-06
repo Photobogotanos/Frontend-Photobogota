@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { obtenerEstadoMantenimiento } from "@/services/mantenimiento.service";
+import {
+  getCurrentServerStatus,
+  suscribirEstadoServidor,
+} from "@/utils/serverStatus";
 
 const POLLING_INTERVAL_MS = 20000; // 20s: es info pública y liviana, no hace falta más frecuencia
 
@@ -23,6 +27,10 @@ export function useMantenimientoEstado() {
   const ultimaConsultaId = useRef(0);
 
   const consultar = useCallback(async () => {
+    // Si el servidor está caído, no tiene sentido golpear el endpoint: el
+    // monitoreo global (serverStatus) detectará el regreso y nos re-sincronizará.
+    if (getCurrentServerStatus() === false) return;
+
     const idConsulta = ++ultimaConsultaId.current;
     const res = await obtenerEstadoMantenimiento();
 
@@ -49,7 +57,15 @@ export function useMantenimientoEstado() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido
     consultar();
     const interval = setInterval(consultar, POLLING_INTERVAL_MS);
-    return () => clearInterval(interval);
+    // Cuando el servidor vuelve a estar online, re-consultamos de inmediato
+    // en lugar de esperar al siguiente tick del interval.
+    const unsubscribir = suscribirEstadoServidor((online) => {
+      if (online) consultar();
+    });
+    return () => {
+      clearInterval(interval);
+      unsubscribir();
+    };
   }, [consultar]);
 
   return { ...estado, refrescar: consultar };

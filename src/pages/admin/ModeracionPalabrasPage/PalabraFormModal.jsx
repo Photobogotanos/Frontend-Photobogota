@@ -1,14 +1,27 @@
 import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Spinner from "react-bootstrap/Spinner";
+import Select from "react-select";
+import { FaPlus, FaEdit, FaBan } from "react-icons/fa";
+import { MdOutlineCancel } from "react-icons/md";
 import toast from "react-hot-toast";
 import {
   crearPalabraProhibida,
   actualizarPalabraProhibida,
 } from "@/services/moderacion.service";
 import "./PalabraFormModal.css";
+
+const TIPO_OPCIONES = [
+  { value: "PALABRA", label: "Palabra (coincidencia exacta)" },
+  { value: "FRASE", label: "Frase (dentro del texto)" },
+];
+
+const CATEGORIA_OPCIONES = [
+  { value: "OFENSIVO", label: "Ofensivo" },
+  { value: "SPAM", label: "Spam" },
+  { value: "OTRO", label: "Otro" },
+];
 
 const PalabraFormModal = ({ mostrar, onCerrar, palabra, onGuardado }) => {
   const esEdicion = Boolean(palabra?.id);
@@ -64,77 +77,104 @@ const PalabraFormModal = ({ mostrar, onCerrar, palabra, onGuardado }) => {
   };
 
   return (
-    <Modal show={mostrar} onHide={onCerrar} centered>
+    <Modal show={mostrar} onHide={onCerrar} centered className="palabra-form-modal">
+      <Modal.Header closeButton className="modal-header-custom">
+        <div className="modal-title-custom">
+          <span className="mh-icon-box">{esEdicion ? <FaEdit /> : <FaPlus />}</span>
+          {esEdicion ? "Editar regla" : "Nueva regla"}
+        </div>
+      </Modal.Header>
+
       <Form onSubmit={manejarGuardar}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {esEdicion ? "Editar regla" : "Nueva regla"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group className="mb-3">
-            <Form.Label>
-              Texto <span className="text-danger">*</span>
-            </Form.Label>
-            <Form.Control
-              type="text"
-              value={texto}
-              onChange={(e) => setTexto(e.target.value)}
-              placeholder={tipo === "FRASE" ? "Ej: compra seguidores" : "Ej: palabra prohibida"}
-            />
-            <Form.Text className="text-muted">
-              Se detecta ignorando mayúsculas y tildes.
-            </Form.Text>
-          </Form.Group>
+        <Modal.Body className="modal-body-custom">
+          <div className="form-block">
+            <div className="block-heading">
+              <FaBan className="bh-icon" />
+              <span>{esEdicion ? "Datos de la regla" : "Información de la regla"}</span>
+            </div>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Tipo</Form.Label>
-            <Form.Select value={tipo} onChange={(e) => setTipo(e.target.value)}>
-              <option value="PALABRA">Palabra (coincidencia exacta)</option>
-              <option value="FRASE">Frase (dentro del texto)</option>
-            </Form.Select>
-          </Form.Group>
+            <div className="fgroup mb-3">
+              <label htmlFor="palabra-texto" className="flabel">
+                Texto <span className="text-danger">*</span>
+              </label>
+              <Form.Control
+                id="palabra-texto"
+                type="text"
+                value={texto}
+                onChange={(e) => setTexto(e.target.value)}
+                className="finput"
+                placeholder={tipo === "FRASE" ? "Ej: compra seguidores" : "Ej: palabra prohibida"}
+              />
+              <span className="char-hint">Se detecta ignorando mayúsculas y tildes.</span>
+            </div>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Categoría</Form.Label>
-            <Form.Select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
-              <option value="OFENSIVO">Ofensivo</option>
-              <option value="SPAM">Spam</option>
-              <option value="OTRO">Otro</option>
-            </Form.Select>
-          </Form.Group>
+            <div className="fgroup mb-3">
+              <label htmlFor="palabra-tipo" className="flabel">
+                Tipo
+              </label>
+              <Select
+                inputId="palabra-tipo"
+                classNamePrefix="spot-select"
+                options={TIPO_OPCIONES}
+                value={TIPO_OPCIONES.find((o) => o.value === tipo)}
+                onChange={(opcion) => setTipo(opcion ? opcion.value : "PALABRA")}
+                placeholder="Selecciona el tipo"
+              />
+            </div>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Excepciones (una por línea)</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              value={excepciones}
-              onChange={(e) => setExcepciones(e.target.value)}
-              placeholder="Frases permitidas que contengan el texto, una por línea"
-            />
-            <Form.Text className="text-muted">
-              Si el texto aparece dentro de estas frases, no se sanciona.
-            </Form.Text>
-          </Form.Group>
+            <div className="fgroup mb-3">
+              <label htmlFor="palabra-categoria" className="flabel">
+                Categoría
+              </label>
+              <Select
+                inputId="palabra-categoria"
+                classNamePrefix="spot-select"
+                options={CATEGORIA_OPCIONES}
+                value={CATEGORIA_OPCIONES.find((o) => o.value === categoria)}
+                onChange={(opcion) => setCategoria(opcion ? opcion.value : "OFENSIVO")}
+                placeholder="Selecciona la categoría"
+              />
+            </div>
 
-          <Form.Check
-            type="switch"
-            id="regla-activa"
-            label="Regla activa"
-            checked={activo}
-            onChange={(e) => setActivo(e.target.checked)}
-          />
+            <div className="fgroup mb-3">
+              <label htmlFor="palabra-excepciones" className="flabel">
+                Excepciones (una por línea)
+              </label>
+              <Form.Control
+                id="palabra-excepciones"
+                as="textarea"
+                rows={3}
+                value={excepciones}
+                onChange={(e) => setExcepciones(e.target.value)}
+                className="finput ftextarea"
+                placeholder="Frases permitidas que contengan el texto, una por línea"
+              />
+              <span className="char-hint">
+                Si el texto aparece dentro de estas frases, no se sanciona.
+              </span>
+            </div>
+
+            <div className="fgroup">
+              <Form.Check
+                type="switch"
+                id="regla-activa"
+                label="Regla activa"
+                checked={activo}
+                onChange={(e) => setActivo(e.target.checked)}
+              />
+            </div>
+          </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onCerrar}>
-            Cancelar
-          </Button>
-          <Button type="submit" variant="primary" disabled={guardando}>
+
+        <div className="modal-actions">
+          <button type="button" className="btn-cancelar" onClick={onCerrar}>
+            <MdOutlineCancel /> Cancelar
+          </button>
+          <button type="submit" className="btn-guardar" disabled={guardando}>
             {guardando && <Spinner as="span" animation="border" size="sm" className="me-1" />}
             {esEdicion ? "Guardar cambios" : "Agregar"}
-          </Button>
-        </Modal.Footer>
+          </button>
+        </div>
       </Form>
     </Modal>
   );

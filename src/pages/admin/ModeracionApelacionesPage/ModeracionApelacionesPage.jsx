@@ -1,17 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
-import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/Card";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
+import PageHeader from "@/components/common/PageHeader/PageHeader";
 import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
-import Badge from "react-bootstrap/Badge";
 import Spinner from "react-bootstrap/Spinner";
-import { FaCheck, FaTimes, FaUserCheck } from "react-icons/fa";
+import { FaCheck, FaTimes, FaUserCheck, FaInbox } from "react-icons/fa";
 import toast from "react-hot-toast";
 import {
   listarApelacionesPendientes,
   resolverApelacion,
 } from "@/services/moderacion.service";
 import ResolverApelacionModal from "./ResolverApelacionModal";
+import "../moderacion-admin.css";
 import "./ModeracionApelacionesPage.css";
 
 const formatearFecha = (fecha) => {
@@ -66,91 +65,88 @@ const ModeracionApelacionesPage = () => {
   };
 
   return (
-    <div className="moderacion-apelaciones-page">
-      <Container fluid>
-        <Card className="shadow-sm">
-          <Card.Header>
-            <h4 className="mb-0">
-              <FaUserCheck className="me-2" />
-              Apelaciones de suspensión
-            </h4>
-          </Card.Header>
-          <Card.Body>
-            {cargando ? (
-              <div className="text-center py-5">
-                <Spinner animation="border" variant="primary" />
-              </div>
-            ) : (
-              <Table hover responsive>
-                <thead>
-                  <tr>
-                    <th>Usuario</th>
-                    <th>Fecha</th>
-                    <th>Contenido sancionado</th>
-                    <th>Motivo de la apelación</th>
-                    <th className="text-end">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {apelaciones.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="text-center text-muted py-4">
-                        No hay apelaciones pendientes.
-                      </td>
-                    </tr>
-                  )}
-                  {apelaciones.map((a) => (
-                    <tr key={a.id}>
-                      <td className="fw-semibold">@{a.nombreUsuario}</td>
-                      <td className="text-nowrap">{formatearFecha(a.fechaApelacion || a.fecha)}</td>
-                      <td className="contenido-apelacion" title={a.contenidoOriginal}>
-                        {a.contenidoOriginal || "—"}
-                      </td>
-                      <td className="motivo-apelacion">{a.motivoApelacion || "—"}</td>
-                      <td className="text-end text-nowrap">
-                        <Button
-                          variant="outline-success"
-                          size="sm"
-                          className="me-1"
-                          onClick={() => abrirResolver(a, true)}
-                        >
-                          <FaCheck className="me-1" /> Aprobar
-                        </Button>
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => abrirResolver(a, false)}
-                        >
-                          <FaTimes className="me-1" /> Rechazar
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            )}
-
-            {apelaciones.length === 0 && !cargando && (
-              <div className="text-center text-muted">
-                <Badge bg="light" text="secondary">
-                  Cuando un usuario apela su suspensión, aparecerá aquí para revisarla.
-                </Badge>
-              </div>
-            )}
-          </Card.Body>
-        </Card>
-
-        <ResolverApelacionModal
-          mostrar={modal !== null}
-          aprobar={modal?.aprobar}
-          nombreUsuario={modal?.apelacion?.nombreUsuario}
-          onCerrar={() => setModal(null)}
-          onConfirmar={(respuesta) =>
-            manejarResuelta(modal.apelacion.id, { aprobar: modal.aprobar, respuesta })
-          }
+    <PageContainer className="moderacion-apelaciones-page">
+      <div className="moderacion-page">
+        <PageHeader
+          subtitle="Administración"
+          icon={<FaUserCheck />}
+          title="Apelaciones de suspensión"
+          description="Revisa las apelaciones de usuarios sancionados. Aprueba la apelación para reactivar la cuenta o recházala para mantener la suspensión."
         />
-      </Container>
-    </div>
+
+        <div className="moderacion-card">
+          {cargando ? (
+            <div className="text-center py-5">
+              <Spinner animation="border" variant="primary" />
+            </div>
+          ) : apelaciones.length === 0 ? (
+            <div className="moderacion-vacio">
+              <FaInbox />
+              <p className="mb-0">No hay apelaciones pendientes.</p>
+              <p className="small mb-0">
+                Cuando un usuario apela su suspensión, aparecerá aquí para
+                revisarla.
+              </p>
+            </div>
+          ) : (
+            <Table hover responsive className="moderacion-table">
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Fecha</th>
+                  <th>Contenido sancionado</th>
+                  <th>Motivo de la apelación</th>
+                  <th className="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {apelaciones.map((a) => (
+                  <tr key={a.id}>
+                    <td className="fw-semibold">@{a.nombreUsuario}</td>
+                    <td className="text-nowrap">
+                      {formatearFecha(a.fechaApelacion || a.fecha)}
+                    </td>
+                    <td className="contenido-apelacion" title={a.contenidoOriginal}>
+                      {a.contenidoOriginal || "—"}
+                    </td>
+                    <td className="motivo-apelacion">{a.motivoApelacion || "—"}</td>
+                    <td className="text-end text-nowrap">
+                      <button
+                        type="button"
+                        className="btn-mod-outline btn-mod-success btn-mod-sm me-1"
+                        onClick={() => abrirResolver(a, true)}
+                      >
+                        <FaCheck /> Aprobar
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-mod-outline btn-mod-danger btn-mod-sm"
+                        onClick={() => abrirResolver(a, false)}
+                      >
+                        <FaTimes /> Rechazar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </div>
+      </div>
+
+      <ResolverApelacionModal
+        mostrar={modal !== null}
+        aprobar={modal?.aprobar}
+        nombreUsuario={modal?.apelacion?.nombreUsuario}
+        onCerrar={() => setModal(null)}
+        onConfirmar={(respuesta) =>
+          manejarResuelta(modal.apelacion.id, {
+            aprobar: modal.aprobar,
+            respuesta,
+          })
+        }
+      />
+    </PageContainer>
   );
 };
 

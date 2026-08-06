@@ -1,4 +1,4 @@
-import Container from 'react-bootstrap/Container';
+import PageContainer from '@/components/common/PageContainer/PageContainer';
 import { useNavigate } from 'react-router-dom';
 import { FaUserPlus, FaUsers } from 'react-icons/fa';
 import './AdminUsuariosPage.css';
@@ -19,8 +19,7 @@ const AdminUsuariosPage = () => {
     };
 
     return (
-        <div className="admin-usuarios-page">
-            <Container fluid className="p-0">
+        <PageContainer className="admin-usuarios-page">
                 {/* Header con acciones */}
                 <div className="usuarios-page-header">
                     <div className="header-left">
@@ -38,8 +37,7 @@ const AdminUsuariosPage = () => {
                 </div>
 
                 <ListaUsuarios key={refreshKey} onUsuarioCreado={handleUsuarioCreado} />
-            </Container>
-        </div>
+        </PageContainer>
     );
 };
 

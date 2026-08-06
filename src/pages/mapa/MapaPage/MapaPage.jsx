@@ -1,14 +1,12 @@
 import MapaContent from "@/components/mapa/MapaContent/MapaContent";
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import "./MapaPage.css";
 
 const MapaPage = () => {
   return (
-    <div className="mapa-page">
-      <Container fluid className="p-0">
-        <MapaContent />
-      </Container>
-    </div>
+    <PageContainer className="mapa-page">
+      <MapaContent />
+    </PageContainer>
   );
 };
 

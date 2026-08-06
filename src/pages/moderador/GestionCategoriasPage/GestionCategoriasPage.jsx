@@ -4,15 +4,14 @@ import { FaTags, FaMapMarkerAlt } from "react-icons/fa";
 import CategoriaList from "@/components/moderador/GestionCategorias/CategoriaList";
 import LocalidadList from "@/components/moderador/GestionCategorias/LocalidadList";
 import "./GestionCategoriasPage.css";
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 
 const GestionCategoriasPage = () => {
   const [key, setKey] = useState("categorias");
 
   return (
-    <div className="gestion-categorias-page">
-      <Container className="mt-3">
-        <div className="page-header">
+    <PageContainer className="gestion-categorias-page" fluid={false} containerClassName="mt-3">
+      <div className="page-header">
           <h1 className="page-title">Gestión de Categorías y Localidades</h1>
           <p className="page-subtitle">
             Administra las categorías de establecimiento y las localidades
@@ -53,8 +52,7 @@ const GestionCategoriasPage = () => {
             </Tab>
           </Tabs>
         </div>
-      </Container>
-    </div>
+    </PageContainer>
   );
 };
 

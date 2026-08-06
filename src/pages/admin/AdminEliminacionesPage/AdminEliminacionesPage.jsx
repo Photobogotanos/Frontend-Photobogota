@@ -1,14 +1,11 @@
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import DashboardEliminaciones from "@/components/admin/AdminEliminaciones/DashboardEliminaciones";
-import "./AdminEliminacionesPage.css";
 
 const AdminEliminacionesPage = () => {
   return (
-    <div className="admin-eliminaciones-page">
-      <Container fluid className="p-0">
-        <DashboardEliminaciones />
-      </Container>
-    </div>
+    <PageContainer content>
+      <DashboardEliminaciones />
+    </PageContainer>
   );
 };
 

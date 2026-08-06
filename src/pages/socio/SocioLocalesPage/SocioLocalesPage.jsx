@@ -1,14 +1,12 @@
 import "./SocioLocalesPage.css";
 import SocioLocales from "@/components/socio/SocioLocales/SocioLocales";
-import { Container } from "react-bootstrap";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 
 const SocioLocalesPage = () => {
   return (
-    <div className="locales">
-      <Container>
-        <SocioLocales></SocioLocales>
-      </Container>
-    </div>
+    <PageContainer className="locales" fluid={false} containerClassName="">
+      <SocioLocales></SocioLocales>
+    </PageContainer>
   );
 };
 

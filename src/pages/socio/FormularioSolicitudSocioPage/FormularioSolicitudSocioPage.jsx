@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SolicitudSocioForm from "@/components/socio/SolicitudSocioForm/SolicitudSocioForm";
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import "./FormularioSolicitudSocioPage.css";
 
 const FormularioSolicitudSocioPage = () => {
@@ -27,11 +27,9 @@ const FormularioSolicitudSocioPage = () => {
   }, [navigate]);
 
   return (
-    <div className="formulario-solicitud-socio-page">
-      <Container className=" ">
-        <SolicitudSocioForm />
-      </Container>
-    </div>
+    <PageContainer className="formulario-solicitud-socio-page" fluid={false} containerClassName="">
+      <SolicitudSocioForm />
+    </PageContainer>
   );
 };
 

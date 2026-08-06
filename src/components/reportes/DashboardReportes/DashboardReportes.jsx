@@ -12,6 +12,7 @@ import ReporteCard from "./ReporteCard";
 import ModalCambiarEstado from "./ModalCambiarEstado";
 import ModalEscalar from "./ModalEscalar";
 import "./DashboardReportes.css";
+import PageHeader from "../../common/PageHeader/PageHeader";
 
 const FILTROS_INICIALES = {
   estado: "",
@@ -115,24 +116,16 @@ export default function DashboardReportes() {
   };
 
   return (
-    <div className="dashboard-reportes-main-container mt-4">
-      <div className="dashboard-reportes-header">
-        <span className="dashboard-reportes-top-text">
-          {esModerador ? "Panel de moderación" : "Panel de administración"}
-        </span>
-        <div className="dashboard-reportes-title-group">
-          <h2 className="dashboard-reportes-title">
-            <FiFlag className="header-icon" />
-            Dashboard de reportes
-          </h2>
-          <p className="dashboard-reportes-subtitle">
-            {esModerador
-              ? "Revisá, cambiá el estado o escalá a un administrador los reportes asignados a moderación."
-              : "Visibilidad total sobre los reportes de la comunidad, incluyendo los escalados por moderación."}
-          </p>
-        </div>
-        <span className="spot-header-line" />
-      </div>
+    <div className="dashboard-reportes-main-container">
+      <PageHeader
+        subtitle={esModerador ? "Moderación" : "Administración"}
+        title="Dashboard de reportes"
+        description={
+          esModerador
+            ? "Revisa, cambia el estado o escala a un administrador los reportes asignados a moderación."
+            : "Visibilidad total sobre los reportes de la comunidad, incluyendo los escalados por moderación."
+        }
+      ></PageHeader>
 
       <div className="reporte-stats">
         <span className="reporte-stat-badge stat-nuevo">

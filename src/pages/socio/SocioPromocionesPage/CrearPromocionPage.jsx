@@ -1,14 +1,12 @@
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import CrearPromocion from "@/components/socio/SocioPromociones/CrearPromocion";
 import "./CrearPromocionPage.css";
 
 const CrearPromocionPage = () => {
   return (
-    <div className="crear-promocion mt-3">
-      <Container fluid className="mt-3">
-        <CrearPromocion></CrearPromocion>
-      </Container>
-    </div>
+    <PageContainer className="crear-promocion mt-3" containerClassName="mt-3">
+      <CrearPromocion></CrearPromocion>
+    </PageContainer>
   );
 };
 

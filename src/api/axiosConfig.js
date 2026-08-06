@@ -1,5 +1,6 @@
 import axios from "axios";
 import { obtenerAccessToken, obtenerRefreshToken, guardarTokens, cerrarSesion } from "@/utils/sessionHelper";
+import { deberiaFallarRapido, asegurarMonitoreo } from "@/utils/serverStatus";
 import { toast } from "react-hot-toast";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
@@ -20,6 +21,23 @@ clienteApi.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+
+        // Fail-fast cuando sabemos que el servidor está caído: rechazamos al
+        // instante sin tocar la red (evita esperas de 5s por timeout). El
+        // health check, el login y el refresh siempre deben intentar la red.
+        const esEndpointCritico =
+            config._silent ||
+            config.url?.includes("/actuator/health") ||
+            config.url?.includes("/auth/login") ||
+            config.url?.includes("/auth/refresh");
+        if (!esEndpointCritico && deberiaFallarRapido()) {
+            asegurarMonitoreo();
+            const error = new Error("Servidor no disponible");
+            error.code = "ERR_OFFLINE";
+            error.isAxiosError = true;
+            return Promise.reject(error);
+        }
+
         return config;
     },
     (error) => Promise.reject(error)

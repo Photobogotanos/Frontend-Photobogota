@@ -1,14 +1,11 @@
 import SpotContent from "@/components/spots/SpotContent/SpotContent";
-import Container from 'react-bootstrap/Container';
-import './SpotPage.css';
+import PageContainer from '@/components/common/PageContainer/PageContainer';
 
 const SpotPage = () => {
   return (
-    <div className="lugar-page">
-      <Container fluid className="p-0">
-        <SpotContent />
-      </Container>
-    </div>
+    <PageContainer content>
+      <SpotContent />
+    </PageContainer>
   );
 };
 

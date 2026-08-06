@@ -1,14 +1,12 @@
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import FormularioCreacion from "@/components/auth/CreacionDeCuentaForm/CreacionDeCuentaForm";
 import "./CreacionDeCuentaPage.css";
 
 function CreacionDeCuentaPage() {
   return (
-    <div className="creacion-cuenta">
-      <Container>
-        <FormularioCreacion></FormularioCreacion>
-      </Container>
-    </div>
+    <PageContainer className="creacion-cuenta" fluid={false} containerClassName="">
+      <FormularioCreacion></FormularioCreacion>
+    </PageContainer>
   );
 }
 

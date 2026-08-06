@@ -1,14 +1,12 @@
 import UsuarioPerfil from "@/components/perfil/UsuarioPerfil/UsuarioPerfil";
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import "./UsuarioPerfilPage.css";
 
 const UsuarioPerfilPage = () => {
   return (
-    <div className="perfil-page mt-3">
-      <Container fluid className="mt-3">
-        <UsuarioPerfil />
-      </Container>
-    </div>
+    <PageContainer className="perfil-page mt-3" containerClassName="mt-3">
+      <UsuarioPerfil />
+    </PageContainer>
   );
 };
 
