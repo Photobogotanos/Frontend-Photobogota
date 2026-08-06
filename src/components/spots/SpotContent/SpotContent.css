@@ -354,7 +354,8 @@
   margin-top: 6px;
 }
 
-.lugar-direccion {
+.lugar-direccion,
+.lugar-horario {
   font-size: 14px;
   color: #666;
   margin-bottom: 20px;
@@ -1135,7 +1136,8 @@ button.usuario-nombre {
     font-size: 22px;
   }
 
-  .lugar-direccion {
+  .lugar-direccion,
+  .lugar-horario {
     font-size: 13px;
   }
 
@@ -1335,7 +1337,8 @@ button.usuario-nombre {
     font-size: 20px;
   }
 
-  .lugar-direccion {
+  .lugar-direccion,
+  .lugar-horario {
     font-size: 12px;
   }
 

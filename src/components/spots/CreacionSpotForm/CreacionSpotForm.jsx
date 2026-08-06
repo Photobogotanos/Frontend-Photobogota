@@ -87,6 +87,7 @@ export default function CrearSpot() {
   const spotData = {
     nombre: state.nombreLugar || "Nombre del lugar",
     direccion: state.direccion || "Dirección del lugar",
+    horario: state.horario || null,
     imagen: state.previews[0] || null,
     rating: 0,
     totalResenas: 0,

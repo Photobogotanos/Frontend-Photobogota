@@ -246,6 +246,50 @@
   box-shadow: 0 6px 16px rgba(128, 111, 190, 0.3);
 }
 
+/* ── Chips de días de la semana (horario) ── */
+.horario-dias-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.horario-dia-chip {
+  background: #fafafa;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    transform 0.15s;
+}
+
+.horario-dia-chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.horario-dia-chip.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.horario-dia-chip.active.start {
+  background: #5d4f97;
+  border-color: #5d4f97;
+}
+
+.horario-dia-chip.active.end {
+  background: #5d4f97;
+  border-color: #5d4f97;
+}
+
 /* ───────────────────────────────────────────────
    DRAG & DROP UPLOADER
 ─────────────────────────────────────────────── */
