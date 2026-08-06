@@ -5,6 +5,7 @@ name: Frontend-Photobogota
     branches: ["main"]
   pull_request:
     branches: ["main"]
+  workflow_dispatch: 
 
 # Permisos necesarios para que el Action pueda escribir en la rama gh-pages
 permissions:
