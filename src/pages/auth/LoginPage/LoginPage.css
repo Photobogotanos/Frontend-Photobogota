@@ -4,10 +4,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1rem;
+  padding: calc(68px + 2rem) 1rem 2rem;
 }
 
 .login .cajon {
   max-width: 500px;
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .login {
+    align-items: flex-start;
+    padding: calc(58px + 1.5rem) 0.75rem 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .login {
+    padding: calc(50px + 1.25rem) 0.75rem 1.25rem;
+  }
 }

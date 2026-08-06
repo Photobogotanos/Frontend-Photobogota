@@ -125,7 +125,7 @@ export default function NosotrosContent() {
   const prevSlide = () => setCurrentSlide((prev) => (prev === 0 ? carouselImages.length - 1 : prev - 1));
 
   const handleCardClick = (index, e) => {
-    if (e.target.closest("button, a")) return;
+    if (e && e.target.closest && e.target.closest("a, .song-btn")) return;
     setFlipped((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
@@ -137,16 +137,19 @@ export default function NosotrosContent() {
     if (playing[index]) {
       audio.pause();
       setPlaying((prev) => ({ ...prev, [index]: false }));
-    } else {
-      audioRefs.current.forEach(({ audio: a }, i) => {
-        if (i !== index && a && !a.paused) a.pause();
-      });
-      setPlaying({});
-      audio.currentTime = 0;
-      audio.play()
-        .then(() => setPlaying({ [index]: true }))
-        .catch((err) => console.error("Error audio:", err));
+      return;
     }
+
+    audioRefs.current.forEach((other, i) => {
+      if (i !== index && other && !other.paused) other.pause();
+    });
+
+    setPlaying({ [index]: true });
+    audio.currentTime = 0;
+    audio.play().catch((err) => {
+      console.error("Error audio:", err);
+      setPlaying({});
+    });
   };
 
   return (

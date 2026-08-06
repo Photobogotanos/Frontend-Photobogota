@@ -37,7 +37,7 @@ export default function TeamCard({ member, index, flipped, playing, onCardClick,
                 className="team-flip-btn"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onCardClick();
+                  onCardClick(e);
                 }}
               >
                 Ver perfil
