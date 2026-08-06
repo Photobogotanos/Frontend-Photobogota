@@ -110,8 +110,12 @@ const ModeracionPalabrasPage = () => {
 
           <div className="moderacion-buscador">
             <FaSearch className="moderacion-buscador-icon" />
+            <label htmlFor="buscador-reglas" className="visually-hidden">
+              Buscar reglas
+            </label>
             <input
               type="text"
+              id="buscador-reglas"
               className="form-control moderacion-input"
               placeholder="Buscar por texto..."
               value={buscando}
@@ -158,9 +162,9 @@ const ModeracionPalabrasPage = () => {
                       <td>
                         {p.excepciones && p.excepciones.length > 0 ? (
                           <div className="excepciones-lista">
-                            {p.excepciones.map((exc, i) => (
+                            {p.excepciones.map((exc) => (
                               <Badge
-                                key={i}
+                                key={exc}
                                 pill
                                 bg="light"
                                 text="dark"

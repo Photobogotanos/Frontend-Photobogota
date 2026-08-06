@@ -251,8 +251,8 @@ const ModeracionHistorialPage = () => {
                         </td>
                         <td>
                           <div className="palabras-detectadas">
-                            {(r.palabrasDetectadas || []).map((p, i) => (
-                              <Badge key={i} pill bg="danger" className="me-1 mb-1">
+                            {(r.palabrasDetectadas || []).map((p) => (
+                              <Badge key={p} pill bg="danger" className="me-1 mb-1">
                                 {p}
                               </Badge>
                             ))}

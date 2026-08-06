@@ -132,7 +132,11 @@ export default function CuentaSancionadaPage() {
 
         {tipo === "BAN" && sancion?.puedeApelar && !apelacionEnviada && (
           <form onSubmit={manejarApelar} className="csp-form">
+            <label htmlFor="motivo-apelacion" className="csp-label">
+              Motivo de la apelación
+            </label>
             <textarea
+              id="motivo-apelacion"
               className="csp-textarea"
               rows={4}
               placeholder="Explica por qué crees que la suspensión es un error..."
