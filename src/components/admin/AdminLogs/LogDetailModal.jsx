@@ -6,6 +6,13 @@ import {
   FaDownload,
   FaChevronLeft,
   FaChevronRight,
+  FaCalendarAlt,
+  FaBolt,
+  FaCodeBranch,
+  FaTag,
+  FaCommentDots,
+  FaTerminal,
+  FaCogs,
 } from "react-icons/fa";
 import { useState } from "react";
 import "./LogDetailModal.css";
@@ -117,15 +124,17 @@ Raw: ${log.raw}
       >
         <div className="log-modal-header">
           <div className="header-left">
-            <h3>
-              <FaFileAlt className="header-icon" />
-              Detalle del Log
-            </h3>
-            {logs.length > 1 && (
-              <span className="log-counter">
-                {currentIndex + 1} / {logs.length}
-              </span>
-            )}
+            <span className="mh-icon-box">
+              <FaFileAlt />
+            </span>
+            <div>
+              <h3 className="log-modal-title">Detalle del Log</h3>
+              {logs.length > 1 && (
+                <span className="log-counter">
+                  {currentIndex + 1} / {logs.length}
+                </span>
+              )}
+            </div>
           </div>
           <div className="header-actions">
             <button
@@ -149,11 +158,16 @@ Raw: ${log.raw}
         </div>
 
         <div className="log-modal-body">
-          <div className="detail-section">
+          <div className="log-detail-block">
+            <span className="log-block-heading">
+              <FaCalendarAlt className="bh-icon" /> Información
+            </span>
             <div className="detail-grid">
               {log.parsed.timestamp && (
                 <div className="detail-item">
-                  <span className="detail-label">📅 Timestamp</span>
+                  <span className="detail-label">
+                    <FaCalendarAlt className="dl-icon" /> Timestamp
+                  </span>
                   <span className="detail-value timestamp-value">
                     {formatTimestamp(log.parsed.timestamp)}
                   </span>
@@ -162,7 +176,9 @@ Raw: ${log.raw}
 
               {log.parsed.level && (
                 <div className="detail-item">
-                  <span className="detail-label">⚡ Level</span>
+                  <span className="detail-label">
+                    <FaBolt className="dl-icon" /> Level
+                  </span>
                   <span
                     className="detail-value level-value"
                     style={{
@@ -178,7 +194,9 @@ Raw: ${log.raw}
 
               {log.parsed.thread && (
                 <div className="detail-item">
-                  <span className="detail-label">🧵 Thread</span>
+                  <span className="detail-label">
+                    <FaCodeBranch className="dl-icon" /> Thread
+                  </span>
                   <span className="detail-value thread-value">
                     {log.parsed.thread}
                   </span>
@@ -187,58 +205,65 @@ Raw: ${log.raw}
 
               {log.parsed.logger && (
                 <div className="detail-item full-width">
-                  <span className="detail-label">📝 Logger</span>
+                  <span className="detail-label">
+                    <FaTag className="dl-icon" /> Logger
+                  </span>
                   <span className="detail-value logger-value">
                     {log.parsed.logger}
                   </span>
                 </div>
               )}
             </div>
+          </div>
 
-            <div className="detail-section-content">
-              <div className="section-header">
-                <span className="detail-label">💬 Mensaje</span>
-                <button
-                  type="button"
-                  className="section-copy-btn"
-                  onClick={handleCopyMessage}
-                  title="Copiar mensaje"
-                >
-                  <FaCopy size={12} /> Copiar
-                </button>
-              </div>
-              <pre className="message-content">{log.parsed.message}</pre>
-            </div>
-
-            <div className="detail-section-content">
-              <div className="section-header">
-                <span className="detail-label">📄 Línea completa (raw)</span>
-                <button
-                  type="button"
-                  className="section-copy-btn"
-                  onClick={() => handleCopy(log.raw, "raw")}
-                  title="Copiar línea completa"
-                >
-                  <FaCopy size={12} /> Copiar
-                </button>
-              </div>
-              <pre
-                className={`raw-log-content ${isRawExpanded ? "expanded" : ""}`}
+          <div className="log-detail-block">
+            <div className="block-section-head">
+              <span className="log-block-heading">
+                <FaCommentDots className="bh-icon" /> Mensaje
+              </span>
+              <button
+                type="button"
+                className="section-copy-btn"
+                onClick={handleCopyMessage}
+                title="Copiar mensaje"
               >
-                {log.raw}
+                <FaCopy size={12} /> Copiar
+              </button>
+            </div>
+            <pre className="message-content">{log.parsed.message}</pre>
+          </div>
+
+          <div className="log-detail-block">
+            <div className="block-section-head">
+              <span className="log-block-heading">
+                <FaTerminal className="bh-icon" /> Línea completa (raw)
+              </span>
+              <button
+                type="button"
+                className="section-copy-btn"
+                onClick={() => handleCopy(log.raw, "raw")}
+                title="Copiar línea completa"
+              >
+                <FaCopy size={12} /> Copiar
+              </button>
+            </div>
+            <pre
+              className={`raw-log-content ${isRawExpanded ? "expanded" : ""}`}
+            >
+              {log.raw}
+            </pre>
+          </div>
+
+          {log.metadata && Object.keys(log.metadata).length > 0 && (
+            <div className="log-detail-block">
+              <span className="log-block-heading">
+                <FaCogs className="bh-icon" /> Metadata
+              </span>
+              <pre className="metadata-content">
+                {JSON.stringify(log.metadata, null, 2)}
               </pre>
             </div>
-
-            {/* Metadata adicional si existe */}
-            {log.metadata && Object.keys(log.metadata).length > 0 && (
-              <div className="detail-section-content">
-                <span className="detail-label">🔧 Metadata</span>
-                <pre className="metadata-content">
-                  {JSON.stringify(log.metadata, null, 2)}
-                </pre>
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
         <div className="log-modal-footer">

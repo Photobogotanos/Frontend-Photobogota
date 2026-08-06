@@ -12,28 +12,173 @@
 .lugar-imagen-principal {
   position: relative;
   width: 100%;
-  height: 40vh;
-  min-height: 280px;
-  max-height: 400px;
+  height: 68vh;
+  min-height: 420px;
+  max-height: 820px;
   overflow: hidden;
-  border-radius: 0 0 20px 20px;
+  border-radius: 0 0 28px 28px;
+  background: #111;
 }
 
 .lugar-imagen-principal::before {
   content: "";
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 60%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.15) 45%, transparent 80%);
   z-index: 1;
+  pointer-events: none;
 }
 
-.lugar-imagen-principal img {
+.lugar-imagen-hero {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: zoom-in;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+.lugar-imagen-hero img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.lugar-galeria-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-primary);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+/* Galería con efecto "stack" al hacer scroll */
+.lugar-galeria-scroll {
+  position: relative;
+  z-index: 5;
+  padding: 40px 16px 32px;
+  max-width: 100%;
+}
+
+.lugar-galeria-scroll-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 900px;
+  margin: 0 auto 24px;
+  padding: 0 8px;
+}
+
+.lugar-galeria-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
+.lugar-galeria-titulo svg {
+  color: var(--color-primary);
+}
+
+.lugar-galeria-total {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+.lugar-foto-stack {
+  position: sticky;
+  top: calc(76px + var(--stack-offset, 0px));
+  display: block;
+  width: 100%;
+  max-width: 900px;
+  height: 62vh;
+  min-height: 360px;
+  margin: 0 auto 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #111;
+  cursor: zoom-in;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.26);
+  will-change: transform;
+}
+
+.lugar-foto-stack img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s ease;
+}
+
+.lugar-foto-stack:hover img {
+  transform: scale(1.04);
+}
+
+.lugar-foto-stack::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.08) 42%, transparent 70%);
+  pointer-events: none;
+}
+
+.lugar-foto-counter {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.lugar-foto-caption {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 14px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.lugar-foto-caption svg {
+  font-size: 1rem;
 }
 
 .lugar-imagen-fallback {
@@ -50,15 +195,105 @@
   font-weight: 500;
 }
 
+.spot-image-modal .modal-content {
+  background: rgba(0, 0, 0, 0.95);
+  border: 0;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.spot-image-modal-body {
+  position: relative;
+  padding: 16px 16px 20px;
+  background: transparent;
+}
+
+.spot-image-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  border: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+  cursor: pointer;
+}
+
+.spot-image-modal-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 70vh;
+  padding: 24px 56px 12px;
+}
+
+.spot-image-modal-view img {
+  max-width: 100%;
+  max-height: 68vh;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.32);
+}
+
+.spot-image-modal-nav {
+  border: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.spot-image-modal-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.spot-image-thumb-btn {
+  border: 2px solid transparent;
+  padding: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: transparent;
+  cursor: pointer;
+}
+
+.spot-image-thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.spot-image-thumb-btn.active {
+  border-color: white;
+}
+
 .lugar-info-container {
   max-width: 900px;
-  margin: -30px auto 0;
+  margin: -28px auto 0;
   padding: 30px 24px;
   position: relative;
   z-index: 10;
   background: white;
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
 }
 
 .lugar-nombre {
@@ -854,9 +1089,38 @@ button.usuario-nombre {
   }
 
   .lugar-imagen-principal {
-    height: 30vh;
-    min-height: 200px;
+    height: 52vh;
+    min-height: 320px;
     border-radius: 0 0 16px 16px;
+  }
+
+  .lugar-galeria-scroll {
+    padding: 28px 10px 20px;
+  }
+
+  .lugar-galeria-scroll-head {
+    margin-bottom: 16px;
+  }
+
+  .lugar-galeria-titulo {
+    font-size: 17px;
+  }
+
+  .lugar-galeria-total {
+    font-size: 0.78rem;
+    padding: 5px 12px;
+  }
+
+  .lugar-foto-stack {
+    top: calc(72px + var(--stack-offset, 0px));
+    height: 58vh;
+    min-height: 300px;
+    border-radius: 16px;
+  }
+
+  .lugar-foto-caption {
+    font-size: 0.8rem;
+    bottom: 12px;
   }
 
   .lugar-info-container {
@@ -915,6 +1179,20 @@ button.usuario-nombre {
     font-size: 12px;
     flex: 1;
     justify-content: center;
+  }
+
+  .spot-image-modal-view {
+    padding: 20px 8px 8px;
+    min-height: auto;
+  }
+
+  .spot-image-modal-view img {
+    max-height: 60vh;
+  }
+
+  .spot-image-modal-nav {
+    width: 38px;
+    height: 38px;
   }
 
   .lugar-descripcion {

@@ -35,7 +35,7 @@ const LogsView = ({
         <div className="logs-list">
           {logsFiltrados.map((log, index) => (
             <LogRow
-              key={log}
+              key={`${index}-${log}`}
               linea={log}
               parsed={parseLogLine(log)}
               NIVELES_LOG={NIVELES_LOG}

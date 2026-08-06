@@ -291,7 +291,7 @@
 }
 
 /* Overlay de carga */
-.loading-overlay {
+.admin-creacion-container .loading-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -303,6 +303,12 @@
     align-items: center;
     justify-content: center;
     z-index: 1000;
+}
+
+.admin-creacion-container .loading-overlay .spinner-loader-container {
+    background-color: transparent;
+    min-height: auto;
+    padding: 20px;
 }
 
 /* Layout responsivo */

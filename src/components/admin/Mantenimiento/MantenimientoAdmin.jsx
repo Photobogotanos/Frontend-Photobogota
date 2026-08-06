@@ -11,6 +11,7 @@ import {
   cancelarMantenimiento,
 } from "@/services/mantenimiento.service";
 import "./MantenimientoAdmin.css";
+import PageHeader from "@/components/common/PageHeader/PageHeader";
 
 flatpickr.localize(Spanish);
 
@@ -40,7 +41,10 @@ const formatearParaMostrar = (iso) => {
 
 const estaActivoAhora = (m) => {
   const ahora = Date.now();
-  return new Date(m.fechaInicio).getTime() <= ahora && ahora <= new Date(m.fechaFin).getTime();
+  return (
+    new Date(m.fechaInicio).getTime() <= ahora &&
+    ahora <= new Date(m.fechaFin).getTime()
+  );
 };
 
 export default function MantenimientoAdmin() {
@@ -63,7 +67,9 @@ export default function MantenimientoAdmin() {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: resultado.mensaje || "No se pudieron cargar los mantenimientos programados",
+        text:
+          resultado.mensaje ||
+          "No se pudieron cargar los mantenimientos programados",
       });
     }
     setCargando(false);
@@ -81,7 +87,9 @@ export default function MantenimientoAdmin() {
       time_24hr: true,
       dateFormat: FORMATO_FLATPICKR,
       minDate: "today",
-      onChange: ([date]) => { fechaInicio.current = date || null; },
+      onChange: ([date]) => {
+        fechaInicio.current = date || null;
+      },
     });
 
     const pickerFin = flatpickr(finRef.current, {
@@ -89,7 +97,9 @@ export default function MantenimientoAdmin() {
       time_24hr: true,
       dateFormat: FORMATO_FLATPICKR,
       minDate: "today",
-      onChange: ([date]) => { fechaFin.current = date || null; },
+      onChange: ([date]) => {
+        fechaFin.current = date || null;
+      },
     });
 
     return () => {
@@ -178,7 +188,11 @@ export default function MantenimientoAdmin() {
 
     const resultado = await cancelarMantenimiento(mantenimiento.id);
     if (resultado.exitoso) {
-      Swal.fire({ icon: "success", title: "Cancelado", text: "El mantenimiento fue cancelado" });
+      Swal.fire({
+        icon: "success",
+        title: "Cancelado",
+        text: "El mantenimiento fue cancelado",
+      });
       cargarProgramados();
     } else {
       Swal.fire({ icon: "error", title: "Error", text: resultado.mensaje });
@@ -187,26 +201,36 @@ export default function MantenimientoAdmin() {
 
   return (
     <div className="mantenimiento-admin">
-      <div className="mantenimiento-admin-header">
-        <h2>
-          <FaTools /> Mantenimiento del sistema
-        </h2>
-        <button type="button" className="btn-refrescar" onClick={cargarProgramados} disabled={cargando}>
-          <FaSync className={cargando ? "girando" : ""} /> Refrescar
-        </button>
-      </div>
+      <PageHeader
+        subtitle="Gestión de Mantenimientos"
+        title="Mantenimiento del sistema"
+        icon={<FaTools />}
+        description="Programa y administra los mantenimientos del sistema"
+      />
 
       <form className="mantenimiento-form" onSubmit={handleSubmit}>
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="fechaInicio">Inicio</label>
-            <input ref={inicioRef} className="form-control rounded-pill" placeholder="Selecciona fecha y hora" aria-label="Fecha y hora de inicio del mantenimiento" readOnly />
+            <input
+              ref={inicioRef}
+              className="form-control rounded-pill"
+              placeholder="Selecciona fecha y hora"
+              aria-label="Fecha y hora de inicio del mantenimiento"
+              readOnly
+            />
           </div>
           <div className="form-group">
             <label htmlFor="fechaFin">Fin</label>
-            <input ref={finRef} className="form-control rounded-pill" placeholder="Selecciona fecha y hora" aria-label="Fecha y hora de fin del mantenimiento" readOnly />
+            <input
+              ref={finRef}
+              className="form-control rounded-pill"
+              placeholder="Selecciona fecha y hora"
+              aria-label="Fecha y hora de fin del mantenimiento"
+              readOnly
+            />
           </div>
-        </div> 
+        </div>
 
         <div className="form-group">
           <label htmlFor="motivo">Motivo</label>
@@ -222,7 +246,9 @@ export default function MantenimientoAdmin() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="mensajePersonalizado">Mensaje personalizado (opcional)</label>
+          <label htmlFor="mensajePersonalizado">
+            Mensaje personalizado (opcional)
+          </label>
           <textarea
             name="mensajePersonalizado"
             className="form-control"
@@ -235,16 +261,21 @@ export default function MantenimientoAdmin() {
         </div>
 
         <button type="submit" className="btn-programar" disabled={enviando}>
-          <FaPlus /> {enviando ? "Programando..." : "Programar y notificar a todos"}
+          <FaPlus />{" "}
+          {enviando ? "Programando..." : "Programar y notificar a todos"}
         </button>
       </form>
 
-      <h3 className="mantenimiento-admin-subtitulo">Mantenimientos programados</h3>
+      <h3 className="mantenimiento-admin-subtitulo">
+        Mantenimientos programados
+      </h3>
 
       {cargando ? (
         <SpinnerLoader texto="Cargando..." />
       ) : programados.length === 0 ? (
-        <p className="text-muted">No hay mantenimientos programados actualmente.</p>
+        <p className="text-muted">
+          No hay mantenimientos programados actualmente.
+        </p>
       ) : (
         <div className="tabla-mantenimientos-wrapper">
           <table className="tabla-mantenimientos">
@@ -271,7 +302,9 @@ export default function MantenimientoAdmin() {
                         Activo ahora
                       </span>
                     ) : (
-                      <span className="badge-estado badge-pendiente">Próximo</span>
+                      <span className="badge-estado badge-pendiente">
+                        Próximo
+                      </span>
                     )}
                   </td>
                   <td>{formatearParaMostrar(m.fechaInicio)}</td>

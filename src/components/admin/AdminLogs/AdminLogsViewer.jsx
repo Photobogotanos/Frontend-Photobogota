@@ -274,7 +274,7 @@ const AdminLogsViewer = () => {
         <LogDetailModal
           log={logSeleccionado}
           onClose={() => setLogSeleccionado(null)}
-          NIVELES_LOG={NIVELES_LOG}
+          nivelesLog={NIVELES_LOG}
           logs={logsFiltrados.map((raw, i) => ({
             raw,
             parsed: parseLogLine(raw),
