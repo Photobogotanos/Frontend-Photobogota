@@ -60,6 +60,25 @@
   background: linear-gradient(90deg, #806fbe 0%, #a294d0 60%, transparent 100%);
 }
 
+/* Sección de reportes pendientes de validación (solo MOD) */
+.reportes-pendientes-validacion {
+  margin: 1rem 0 1.5rem 0;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.pendientes-validacion-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 4px;
+}
+
 /* Fila de contadores (resumen rápido del estado del dashboard) */
 .reporte-stats {
   display: flex;

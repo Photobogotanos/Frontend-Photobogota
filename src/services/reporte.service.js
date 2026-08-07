@@ -4,6 +4,9 @@ import {
   getDashboardReportes,
   patchCambiarEstadoReporte,
   patchEscalarReporte,
+  getReportesAsignadosSocio,
+  getReportesPendientesValidacion,
+  patchValidarReporte,
 } from "@/api/reporteApi";
 import { obtenerAccessToken } from "@/utils/sessionHelper";
 
@@ -20,9 +23,18 @@ export const CATEGORIAS_REPORTE = [
 export const ESTADOS_REPORTE = [
   { valor: "NUEVO", etiqueta: "Nuevo", variant: "primary" },
   { valor: "EN_REVISION", etiqueta: "En revisión", variant: "warning" },
+  { valor: "PENDIENTE_VALIDACION", etiqueta: "Pendiente de validación", variant: "info" },
   { valor: "RESUELTO", etiqueta: "Resuelto", variant: "success" },
   { valor: "RECHAZADO", etiqueta: "Rechazado", variant: "secondary" },
 ];
+
+// Estados que un SOCIO o un ADMIN pueden elegir directamente desde el
+// modal de "cambiar estado". RESUELTO también está disponible: el backend
+// se encarga de convertirlo en PENDIENTE_VALIDACION hasta que un MOD lo
+// apruebe (por eso no se ofrece PENDIENTE_VALIDACION como opción manual).
+export const ESTADOS_SELECCIONABLES = ESTADOS_REPORTE.filter(
+  (e) => e.valor !== "PENDIENTE_VALIDACION",
+);
 
 // Etiquetas y color para el enum Gravedad (usado para priorizar el dashboard).
 export const GRAVEDADES_REPORTE = [
@@ -223,16 +235,17 @@ export const cambiarEstadoReporte = async (id, body) => {
 };
 
 /**
- * Escala un reporte de moderación a administración. body: { motivo }
- * Solo puede hacerlo un MOD sobre un reporte de su propia cola.
+ * Escala un reporte al siguiente nivel de la cadena SOCIO -> MOD -> ADMIN.
+ * body: { motivo }. Un SOCIO solo puede escalar lo suyo (pasa a MOD), un
+ * MOD solo lo suyo (pasa a ADMIN).
  */
-export const escalarReporte = async (id, body) => {
+export const escalarReporte = async (id, body, siguienteNivelEtiqueta = "el siguiente nivel") => {
   try {
     const response = await patchEscalarReporte(id, body);
     return {
       exitoso: true,
       datos: response.data,
-      mensaje: "Reporte escalado a un administrador",
+      mensaje: `Reporte escalado a ${siguienteNivelEtiqueta}`,
     };
   } catch (error) {
     let mensaje = "Error al escalar el reporte";
@@ -240,9 +253,79 @@ export const escalarReporte = async (id, body) => {
       mensaje =
         error.response.data?.message || error.response.data?.mensaje || mensaje;
       if (error.response.status === 400) {
-        mensaje = "Este reporte ya había sido escalado.";
+        mensaje = "Este reporte ya está en el nivel más alto de escalamiento.";
       } else if (error.response.status === 403) {
         mensaje = "No tienes permiso para escalar este reporte.";
+      } else if (error.response.status === 404) {
+        mensaje = "No se encontró el reporte.";
+      }
+    } else if (error.request) {
+      mensaje = "No se pudo conectar con el servidor. Verifica tu conexión.";
+    }
+    return { exitoso: false, datos: null, mensaje };
+  }
+};
+
+/**
+ * Cola de reportes sobre los locales del socio autenticado.
+ */
+export const obtenerReportesAsignadosSocio = async () => {
+  try {
+    const response = await getReportesAsignadosSocio();
+    return { exitoso: true, datos: response.data || [], mensaje: "" };
+  } catch (error) {
+    let mensaje = "Error al obtener tus reportes";
+    if (error.response) {
+      mensaje =
+        error.response.data?.message || error.response.data?.mensaje || mensaje;
+    } else if (error.request) {
+      mensaje = "No se pudo conectar con el servidor. Verifica tu conexión.";
+    }
+    return { exitoso: false, datos: [], mensaje };
+  }
+};
+
+/**
+ * Reportes marcados como Solucionado por SOCIO/ADMIN que esperan
+ * aprobación de un MOD (solo visible para MOD).
+ */
+export const obtenerReportesPendientesValidacion = async () => {
+  try {
+    const response = await getReportesPendientesValidacion();
+    return { exitoso: true, datos: response.data || [], mensaje: "" };
+  } catch (error) {
+    let mensaje = "Error al obtener los reportes pendientes de validación";
+    if (error.response) {
+      mensaje =
+        error.response.data?.message || error.response.data?.mensaje || mensaje;
+    } else if (error.request) {
+      mensaje = "No se pudo conectar con el servidor. Verifica tu conexión.";
+    }
+    return { exitoso: false, datos: [], mensaje };
+  }
+};
+
+/**
+ * Un MOD aprueba o rechaza la solución propuesta por un SOCIO/ADMIN.
+ * body: { aprobado, observacion }
+ */
+export const validarReporte = async (id, body) => {
+  try {
+    const response = await patchValidarReporte(id, body);
+    return {
+      exitoso: true,
+      datos: response.data,
+      mensaje: body.aprobado
+        ? "Solución aprobada, se notificó al miembro afectado"
+        : "Solución rechazada, vuelve a la cola de quien la propuso",
+    };
+  } catch (error) {
+    let mensaje = "Error al validar el reporte";
+    if (error.response) {
+      mensaje =
+        error.response.data?.message || error.response.data?.mensaje || mensaje;
+      if (error.response.status === 400) {
+        mensaje = "Este reporte no está pendiente de validación.";
       } else if (error.response.status === 404) {
         mensaje = "No se encontró el reporte.";
       }

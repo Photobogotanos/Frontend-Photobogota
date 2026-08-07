@@ -31,6 +31,7 @@ import AdminReportesPage from "@/pages/admin/AdminReportesPage/AdminReportesPage
 import AdminEliminacionesPage from "@/pages/admin/AdminEliminacionesPage/AdminEliminacionesPage";
 import ProtectedRoute from "./ProtectedRoute";
 import SocioLocalesPage from "@/pages/socio/SocioLocalesPage/SocioLocalesPage.jsx";
+import SocioReportesPage from "@/pages/socio/SocioReportesPage/SocioReportesPage.jsx";
 
 const AppRouter = () => {
   return (
@@ -134,6 +135,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute roles={["SOCIO"]}>
               <CrearPromocionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/socio/reportes"
+          element={
+            <ProtectedRoute roles={["SOCIO"]}>
+              <SocioReportesPage />
             </ProtectedRoute>
           }
         />
