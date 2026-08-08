@@ -3,9 +3,10 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-// Modal para escalar un reporte a un administrador. El motivo es opcional
-// en el backend, pero lo pedimos igual para que quede registro de por qué.
-export default function ModalEscalar({ show, reporte, onCerrar, onConfirmar }) {
+// Modal para escalar un reporte al siguiente nivel de la cadena
+// SOCIO -> MOD -> ADMIN. El motivo es opcional en el backend, pero lo
+// pedimos igual para que quede registro de por qué.
+export default function ModalEscalar({ show, reporte, siguienteNivelEtiqueta = "un administrador", onCerrar, onConfirmar }) {
   const [motivo, setMotivo] = useState("");
 
   const handleCerrar = () => {
@@ -21,13 +22,13 @@ export default function ModalEscalar({ show, reporte, onCerrar, onConfirmar }) {
   return (
     <Modal show={show} onHide={handleCerrar} centered className="solicitud-modal">
       <Modal.Header closeButton>
-        <Modal.Title className="modal-title-top">Escalar a un administrador</Modal.Title>
+        <Modal.Title className="modal-title-top">Escalar a {siguienteNivelEtiqueta}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {reporte && (
           <p className="text-muted mb-3">
-            Ticket <strong>{reporte.numeroTicket}</strong> pasará a estar asignado a
-            administración con gravedad crítica.
+            Ticket <strong>{reporte.numeroTicket}</strong> pasará a estar asignado a {siguienteNivelEtiqueta}{" "}
+            con gravedad crítica.
           </p>
         )}
         <Form.Group>
@@ -37,7 +38,7 @@ export default function ModalEscalar({ show, reporte, onCerrar, onConfirmar }) {
             as="textarea"
             rows={3}
             maxLength={500}
-            placeholder="Explicá por qué este reporte necesita revisión de un administrador..."
+            placeholder={`Explicá por qué este reporte necesita revisión de ${siguienteNivelEtiqueta}...`}
             value={motivo}
             onChange={(e) => setMotivo(e.target.value)}
           />

@@ -81,6 +81,13 @@ export default function MenuItems({ rol, cerrar }) {
             onClick={cerrar}
             activo={esRutaActiva("/estadisticas")}
           />
+          <SidebarLink
+            icon={<FaFileAlt />}
+            texto="Reportes de mis locales"
+            to="/socio/reportes"
+            onClick={cerrar}
+            activo={esRutaActiva("/socio/reportes")}
+          />
         </>
       )}
 

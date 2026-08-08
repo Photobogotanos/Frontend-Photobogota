@@ -8,12 +8,15 @@ import {
   FiEdit3,
   FiMapPin,
   FiMessageSquare,
+  FiCheckCircle,
 } from "react-icons/fi";
 import {
   obtenerEtiquetaCategoria,
   obtenerEstado,
   obtenerGravedad,
 } from "@/services/reporte.service";
+
+const ETIQUETAS_ROL = { SOCIO: "socio", MOD: "moderación", ADMIN: "administración" };
 
 const formatearFecha = (fecha) => {
   if (!fecha) return "";
@@ -26,7 +29,7 @@ const formatearFecha = (fecha) => {
   });
 };
 
-export default function ReporteCard({ reporte, puedeEscalar, onCambiarEstado, onEscalar }) {
+export default function ReporteCard({ reporte, puedeEscalar, puedeValidar, onCambiarEstado, onEscalar, onValidar }) {
   const estado = obtenerEstado(reporte.estado);
   const gravedad = obtenerGravedad(reporte.gravedad);
   const esResena = reporte.tipoObjetivo === "RESENA";
@@ -65,6 +68,11 @@ export default function ReporteCard({ reporte, puedeEscalar, onCambiarEstado, on
           <FiCalendar className="info-icon" />
           <span>{formatearFecha(reporte.fechaCreacion)}</span>
         </div>
+        {reporte.asignadoA && (
+          <div className="info-row">
+            <span>Asignado a {ETIQUETAS_ROL[reporte.asignadoA] || reporte.asignadoA.toLowerCase()}</span>
+          </div>
+        )}
 
         <p className="reporte-descripcion">{reporte.descripcion}</p>
 
@@ -80,21 +88,36 @@ export default function ReporteCard({ reporte, puedeEscalar, onCambiarEstado, on
 
         {reporte.escalado && (
           <p className="reporte-motivo-escalado">
-            Escalado por {reporte.escaladoPor} — {reporte.motivoEscalado || "sin motivo indicado"}
+            {reporte.escaladoAutomaticamente ? "Escalado automáticamente" : `Escalado por ${reporte.escaladoPor}`}
+            {" — "}
+            {reporte.motivoEscalado || "sin motivo indicado"}
+          </p>
+        )}
+
+        {reporte.estado === "PENDIENTE_VALIDACION" && (
+          <p className="reporte-motivo-escalado">
+            {reporte.resueltoPor} lo marcó como solucionado, esperando validación de un moderador.
           </p>
         )}
       </div>
 
       <div className="reporte-card-actions">
         <Stack direction="horizontal" gap={2}>
-          <Button
-            variant="outline-primary"
-            size="sm"
-            onClick={() => onCambiarEstado(reporte)}
-          >
-            <FiEdit3 /> Cambiar estado
-          </Button>
-          {puedeEscalar && !reporte.escalado && (
+          {puedeValidar && (
+            <Button variant="success" size="sm" onClick={() => onValidar(reporte)}>
+              <FiCheckCircle /> Validar
+            </Button>
+          )}
+          {!puedeValidar && reporte.estado !== "PENDIENTE_VALIDACION" && (
+            <Button
+              variant="outline-primary"
+              size="sm"
+              onClick={() => onCambiarEstado(reporte)}
+            >
+              <FiEdit3 /> Cambiar estado
+            </Button>
+          )}
+          {puedeEscalar && !puedeValidar && !reporte.escalado && reporte.estado !== "PENDIENTE_VALIDACION" && (
             <Button
               variant="outline-dark"
               size="sm"

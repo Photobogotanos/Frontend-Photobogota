@@ -10,10 +10,10 @@ const OPCIONES_ESTADO = ESTADOS_REPORTE.map((e) => ({
   label: e.etiqueta,
 }));
 
-// Modal para cambiar el estado de un reporte. Si el nuevo estado es
-// RESUELTO, avisamos que eso dispara la validación del moderador
-// (Etapa 2, punto 4) una vez esté conectado el sistema de notificaciones.
-export default function ModalCambiarEstado({ show, reporte, onCerrar, onConfirmar }) {
+// Modal para cambiar el estado de un reporte. Si quien lo marca como
+// RESUELTO es un SOCIO o un ADMIN, el backend lo deja pendiente de que un
+// MOD lo valide antes de notificar al miembro (HU 15/16).
+export default function ModalCambiarEstado({ show, reporte, esModerador, onCerrar, onConfirmar }) {
   const [estado, setEstado] = useState(reporte?.estado || "");
   const [observacion, setObservacion] = useState("");
 
@@ -64,9 +64,15 @@ export default function ModalCambiarEstado({ show, reporte, onCerrar, onConfirma
           />
         </Form.Group>
 
-        {estado === "RESUELTO" && (
+        {estado === "RESUELTO" && !esModerador && (
           <p className="reporte-aviso-notificacion">
-            Al marcar como resuelto se debería notificar al moderador para su validación.
+            Al marcar como resuelto, un moderador debe validar tu solución antes de que se notifique al
+            miembro afectado.
+          </p>
+        )}
+        {estado === "RESUELTO" && esModerador && (
+          <p className="reporte-aviso-notificacion">
+            Al marcar como resuelto se notificará de inmediato al miembro que hizo el reporte.
           </p>
         )}
       </Modal.Body>
