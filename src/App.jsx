@@ -4,7 +4,7 @@ import ScrollToTop from "@/components/common/ScrollToTop";
 
 import Lottie from "lottie-react";
 import SecurityAnimation from "@/assets/animations/SecurityLock.json";
-import { useRefreshLimit } from "@/hooks/useRefreshLimit";
+//import { useRefreshLimit } from "@/hooks/useRefreshLimit";
 import "@/hooks/useRefreshLimit.css";
 import { useMantenimientoEstado } from "@/hooks/useMantenimientoEstado";
 import MantenimientoOverlay from "@/components/common/MantenimientoOverlay/MantenimientoOverlay";
@@ -14,10 +14,11 @@ import CuentaInactivaPage from "@/pages/cuenta/CuentaInactivaPage/CuentaInactiva
 import CuentaSancionadaPage from "@/pages/cuenta/CuentaSancionadaPage/CuentaSancionadaPage";
 
 function App() {
-  const { isBlocked, remainingCooldown } = useRefreshLimit();
+  // const { isBlocked, remainingCooldown } = useRefreshLimit();
   const { logueado, usuario, cargando } = useAuth();
   const mantenimiento = useMantenimientoEstado();
-
+  {
+    /* 
   if (isBlocked) {
     return (
       <div className="limit-screen-container">
@@ -33,6 +34,8 @@ function App() {
         </div>
       </div>
     );
+  }
+    */
   }
 
   // Cuenta desactivada (suspendida por un admin, o dentro del período de 30 días
