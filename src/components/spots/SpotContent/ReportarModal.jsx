@@ -32,6 +32,14 @@ const MAX_EVIDENCIAS = 3;
 // perfil de otro usuario. No existe endpoint dedicado, por lo que se reenvía
 // a POST /reportes con spotId/resenaId en undefined y el nombre de usuario
 // como contexto en la descripción (ver reportarUsuario en reporte.service).
+
+const esUrlSegura = (url) => {
+  return (
+    typeof url === "string" &&
+    (url.startsWith("blob:") || url.startsWith("data:image/"))
+  );
+};
+
 const ReportarModal = ({
   show,
   onCerrar,
@@ -216,19 +224,19 @@ const ReportarModal = ({
       ) : (
         <>
           <Modal.Body>
-          {esReporteDeResena && (
-            <div className="reportar-contexto">
-              Estás reportando la reseña de{" "}
-              <strong>{nombreAutorResena}</strong>
-            </div>
-          )}
+            {esReporteDeResena && (
+              <div className="reportar-contexto">
+                Estás reportando la reseña de{" "}
+                <strong>{nombreAutorResena}</strong>
+              </div>
+            )}
 
-          {esReporteDeUsuario && (
-            <div className="reportar-contexto">
-              Estás reportando el perfil de{" "}
-              <strong>@{usuarioAReportar}</strong>
-            </div>
-          )}
+            {esReporteDeUsuario && (
+              <div className="reportar-contexto">
+                Estás reportando el perfil de{" "}
+                <strong>@{usuarioAReportar}</strong>
+              </div>
+            )}
 
             <Form.Group className="mb-3">
               <Form.Label>Categoría</Form.Label>
@@ -293,7 +301,9 @@ const ReportarModal = ({
                       key={`${file.name}-${file.size}-${file.lastModified}`}
                     >
                       <img
-                        src={previews[index]}
+                        src={
+                          esUrlSegura(previews[index]) ? previews[index] : ""
+                        }
                         alt={`Evidencia ${index + 1}`}
                       />
                       <button
@@ -314,11 +324,7 @@ const ReportarModal = ({
             <Button variant="secondary" onClick={handleCerrar}>
               Cancelar
             </Button>
-            <Button
-              variant="danger"
-              onClick={handleEnviar}
-              disabled={enviando}
-            >
+            <Button variant="danger" onClick={handleEnviar} disabled={enviando}>
               {enviando ? "Enviando..." : "Enviar reporte"}
             </Button>
           </Modal.Footer>
