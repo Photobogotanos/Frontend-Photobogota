@@ -63,7 +63,9 @@ const ReportarModal = ({
 
   useEffect(() => {
     return () => {
-      previewsRef.current.forEach((url) => URL.revokeObjectURL(url));
+      previewsRef.current.forEach((preview) => {
+        if (preview?.url) URL.revokeObjectURL(preview.url);
+      });
       previewsRef.current = [];
     };
   }, []);
@@ -78,7 +80,9 @@ const ReportarModal = ({
     setPreviews([]);
     setEnviando(false);
     setTicket(null);
-    previewsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    previewsRef.current.forEach((preview) => {
+      if (preview?.url) URL.revokeObjectURL(preview.url);
+    });
     previewsRef.current = [];
     if (inputFileRef.current) inputFileRef.current.value = "";
   };
@@ -108,16 +112,16 @@ const ReportarModal = ({
     }
 
     // oxlint-disable-next-line react-doctor/no-create-object-url-without-revoke -- se revoca en quitarArchivo y en unmount (previewsRef)
-    const urls = nuevos.map((f) => URL.createObjectURL(f));
-    setPreviews((prev) => [...prev, ...urls]);
+    const nuevosPreviews = nuevos.map((f) => ({ file: f, url: URL.createObjectURL(f) }));
+    setPreviews((prev) => [...prev, ...nuevosPreviews]);
     setArchivos((prev) => [...prev, ...nuevos]);
     e.target.value = "";
   };
 
   const quitarArchivo = (index) => {
-    const url = previews[index];
-    if (url) {
-      URL.revokeObjectURL(url);
+    const preview = previews[index];
+    if (preview?.url) {
+      URL.revokeObjectURL(preview.url);
     }
     setPreviews((prev) => prev.filter((_, i) => i !== index));
     setArchivos((prev) => prev.filter((_, i) => i !== index));
@@ -302,7 +306,11 @@ const ReportarModal = ({
                     >
                       <img
                         src={
-                          esUrlSegura(previews[index]) ? previews[index] : ""
+                          previews[index]?.url &&
+                          previews[index].url.startsWith("blob:") &&
+                          esUrlSegura(previews[index].url)
+                            ? previews[index].url
+                            : ""
                         }
                         alt={`Evidencia ${index + 1}`}
                       />
