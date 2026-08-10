@@ -32,6 +32,14 @@ const MAX_EVIDENCIAS = 3;
 // perfil de otro usuario. No existe endpoint dedicado, por lo que se reenvía
 // a POST /reportes con spotId/resenaId en undefined y el nombre de usuario
 // como contexto en la descripción (ver reportarUsuario en reporte.service).
+
+const esUrlSegura = (url) => {
+  return (
+    typeof url === "string" &&
+    (url.startsWith("blob:") || url.startsWith("data:image/"))
+  );
+};
+
 const ReportarModal = ({
   show,
   onCerrar,
@@ -55,7 +63,9 @@ const ReportarModal = ({
 
   useEffect(() => {
     return () => {
-      previewsRef.current.forEach((url) => URL.revokeObjectURL(url));
+      previewsRef.current.forEach((preview) => {
+        if (preview?.url) URL.revokeObjectURL(preview.url);
+      });
       previewsRef.current = [];
     };
   }, []);
@@ -70,7 +80,9 @@ const ReportarModal = ({
     setPreviews([]);
     setEnviando(false);
     setTicket(null);
-    previewsRef.current.forEach((url) => URL.revokeObjectURL(url));
+    previewsRef.current.forEach((preview) => {
+      if (preview?.url) URL.revokeObjectURL(preview.url);
+    });
     previewsRef.current = [];
     if (inputFileRef.current) inputFileRef.current.value = "";
   };
@@ -100,16 +112,16 @@ const ReportarModal = ({
     }
 
     // oxlint-disable-next-line react-doctor/no-create-object-url-without-revoke -- se revoca en quitarArchivo y en unmount (previewsRef)
-    const urls = nuevos.map((f) => URL.createObjectURL(f));
-    setPreviews((prev) => [...prev, ...urls]);
+    const nuevosPreviews = nuevos.map((f) => ({ file: f, url: URL.createObjectURL(f) }));
+    setPreviews((prev) => [...prev, ...nuevosPreviews]);
     setArchivos((prev) => [...prev, ...nuevos]);
     e.target.value = "";
   };
 
   const quitarArchivo = (index) => {
-    const url = previews[index];
-    if (url) {
-      URL.revokeObjectURL(url);
+    const preview = previews[index];
+    if (preview?.url) {
+      URL.revokeObjectURL(preview.url);
     }
     setPreviews((prev) => prev.filter((_, i) => i !== index));
     setArchivos((prev) => prev.filter((_, i) => i !== index));
@@ -216,19 +228,19 @@ const ReportarModal = ({
       ) : (
         <>
           <Modal.Body>
-          {esReporteDeResena && (
-            <div className="reportar-contexto">
-              Estás reportando la reseña de{" "}
-              <strong>{nombreAutorResena}</strong>
-            </div>
-          )}
+            {esReporteDeResena && (
+              <div className="reportar-contexto">
+                Estás reportando la reseña de{" "}
+                <strong>{nombreAutorResena}</strong>
+              </div>
+            )}
 
-          {esReporteDeUsuario && (
-            <div className="reportar-contexto">
-              Estás reportando el perfil de{" "}
-              <strong>@{usuarioAReportar}</strong>
-            </div>
-          )}
+            {esReporteDeUsuario && (
+              <div className="reportar-contexto">
+                Estás reportando el perfil de{" "}
+                <strong>@{usuarioAReportar}</strong>
+              </div>
+            )}
 
             <Form.Group className="mb-3">
               <Form.Label>Categoría</Form.Label>
@@ -293,7 +305,13 @@ const ReportarModal = ({
                       key={`${file.name}-${file.size}-${file.lastModified}`}
                     >
                       <img
-                        src={previews[index]}
+                        src={
+                          previews[index]?.url &&
+                          previews[index].url.startsWith("blob:") &&
+                          esUrlSegura(previews[index].url)
+                            ? previews[index].url
+                            : ""
+                        }
                         alt={`Evidencia ${index + 1}`}
                       />
                       <button
@@ -314,11 +332,7 @@ const ReportarModal = ({
             <Button variant="secondary" onClick={handleCerrar}>
               Cancelar
             </Button>
-            <Button
-              variant="danger"
-              onClick={handleEnviar}
-              disabled={enviando}
-            >
+            <Button variant="danger" onClick={handleEnviar} disabled={enviando}>
               {enviando ? "Enviando..." : "Enviar reporte"}
             </Button>
           </Modal.Footer>

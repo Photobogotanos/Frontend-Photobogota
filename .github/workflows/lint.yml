@@ -6,6 +6,9 @@ name: Lint
   push:
     branches: ["main"]
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
