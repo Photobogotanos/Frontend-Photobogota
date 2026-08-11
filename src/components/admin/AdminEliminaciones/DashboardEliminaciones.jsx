@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import {
   FiUserX,
   FiSearch,
@@ -18,6 +18,12 @@ import SolicitudEliminacionCard from "./SolicitudEliminacionCard";
 import ModalGestionEliminacion from "./ModalGestionEliminacion";
 import MetricasEliminacion from "./MetricasEliminacion";
 import "./DashboardEliminaciones.css";
+import PageHeader from "../../common/PageHeader/PageHeader";
+
+const OPCIONES_ESTADO = [
+  { value: "", label: "Todos los estados" },
+  ...ESTADOS_ELIMINACION.map((e) => ({ value: e.valor, label: e.etiqueta })),
+];
 
 export default function DashboardEliminaciones() {
   const [solicitudes, setSolicitudes] = useState([]);
@@ -127,42 +133,32 @@ export default function DashboardEliminaciones() {
   };
 
   return (
-    <div className="dashboard-eliminaciones-main-container mt-4">
-      <div className="dashboard-eliminaciones-header">
-        <span className="dashboard-eliminaciones-top-text">
-          Panel de administración
-        </span>
-        <div className="dashboard-eliminaciones-title-group">
-          <h2 className="dashboard-eliminaciones-title">
-            <FiUserX className="header-icon" />
-            Solicitudes de eliminación de cuenta
-          </h2>
-          <p className="dashboard-eliminaciones-subtitle">
-            Verifica la identidad, resuelve dependencias y procesa las
-            eliminaciones de cuenta de la plataforma.
-          </p>
-        </div>
-        <span className="elim-header-line" />
-      </div>
+    <div className="dashboard-eliminaciones-main-container">
+      <PageHeader
+        subtitle="Administración"
+        title="Solicitudes de eliminación de cuenta"
+        icon={<FiUserX />}
+        description="Revisa y gestiona las solicitudes de eliminación de cuenta enviadas por los usuarios. Puedes aprobar o rechazar cada solicitud según corresponda."
+      />
 
       <MetricasEliminacion metricas={metricas} cargando={cargandoMetricas} />
 
       <div className="elim-filtros">
         <div className="elim-filtro-campo">
-          <label htmlFor="estado-filtro">Estado</label>
-          <Form.Select
-            id="estado-filtro"
-            size="sm"
-            value={estadoFiltro}
-            onChange={(e) => handleCambiarFiltro(e.target.value)}
-          >
-            <option value="">Todos</option>
-            {ESTADOS_ELIMINACION.map((e) => (
-              <option key={e.valor} value={e.valor}>
-                {e.etiqueta}
-              </option>
-            ))}
-          </Form.Select>
+          <label className="reporte-filtro-label" htmlFor="estado-filtro">
+            Estado
+          </label>
+          <Select
+            inputId="estado-filtro"
+            classNamePrefix="spot-select"
+            options={OPCIONES_ESTADO}
+            value={OPCIONES_ESTADO.find((o) => o.value === estadoFiltro)}
+            onChange={(opcion) =>
+              handleCambiarFiltro(opcion ? opcion.value : "")
+            }
+            placeholder="Todos los estados"
+            isClearable
+          />
         </div>
       </div>
 

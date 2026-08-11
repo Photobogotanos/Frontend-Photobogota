@@ -1,0 +1,195 @@
+.cuenta-sancionada-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  padding: 24px;
+}
+
+.csp-card {
+  background: white;
+  border-radius: 22px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.12);
+  max-width: 460px;
+  width: 100%;
+  padding: 40px 34px 34px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.csp-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #ece9e1;
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: csp-spin 0.8s linear infinite;
+  margin: 0 auto 14px;
+}
+
+@keyframes csp-spin {
+  to { transform: rotate(360deg); }
+}
+
+.csp-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  font-size: 1.9rem;
+  margin-bottom: 20px;
+  background: #fdf2f2;
+  border: 2px solid #f3caca;
+  color: #c0392b;
+}
+
+.csp-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 12px;
+}
+
+.csp-text {
+  font-size: 0.9rem;
+  color: #888;
+  line-height: 1.6;
+  margin: 0 0 12px;
+}
+
+.csp-badge {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.csp-badge-info { background: #e8f1fb; color: #1f6fb2; }
+.csp-badge-warning { background: #fdf4e3; color: #b7791f; }
+.csp-badge-danger { background: #fdeaea; color: #c0392b; }
+.csp-badge-success { background: #e8f6ee; color: #1e8449; }
+.csp-badge-secondary { background: #f0f0f0; color: #666; }
+
+.csp-detalle {
+  font-size: 0.85rem;
+  color: #999;
+  margin: 4px 0;
+}
+
+.csp-form {
+  width: 100%;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.csp-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.csp-textarea {
+  width: 100%;
+  border: 1px solid #e2e0da;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  resize: vertical;
+  background: #faf9f6;
+}
+
+.csp-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.csp-btn-recover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 0;
+  border: none;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all 0.22s;
+  margin-top: 12px;
+}
+
+.csp-btn-recover:hover:not(:disabled) {
+  background: var(--color-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(128, 111, 190, 0.32);
+}
+
+.csp-btn-recover:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.csp-success {
+  font-size: 0.88rem;
+  color: #1e8449;
+  background: #e8f6ee;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 14px;
+  width: 100%;
+}
+
+.csp-btn-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: none;
+  border: 1px solid #e2e0da;
+  border-radius: 12px;
+  color: #666;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  padding: 10px 16px;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.csp-btn-check:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.csp-btn-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 14px;
+  padding: 4px;
+}
+
+.csp-btn-logout:hover {
+  color: #c0392b;
+}

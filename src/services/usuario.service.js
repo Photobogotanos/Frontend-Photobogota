@@ -125,7 +125,7 @@ const obtenerPerfilDemo = (nombreUsuario = "demo_user") => {
 export const iniciarSesion = async (login, contrasena) => {
   try {
     const respuesta = await postLogin({ login, contrasena });
-    const { token, refreshToken, nombreUsuario, email, rol, nivel, mensaje, estadoCuenta } =
+    const { token, refreshToken, nombreUsuario, email, rol, nivel, mensaje, estadoCuenta, sancion } =
       respuesta.data;
 
     guardarTokens(token, refreshToken);
@@ -136,6 +136,7 @@ export const iniciarSesion = async (login, contrasena) => {
       email,
       rol: (rol || "").toUpperCase(),
       estadoCuenta,
+      sancion: sancion ?? null,
       ...((rol || "").toUpperCase() === "MIEMBRO" && nivel !== undefined && { nivel }),
     };
 

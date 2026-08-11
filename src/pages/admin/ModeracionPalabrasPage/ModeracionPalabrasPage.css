@@ -1,0 +1,9 @@
+.moderacion-palabras-page {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.moderacion-palabras-page .excepciones-lista {
+  max-width: 280px;
+}

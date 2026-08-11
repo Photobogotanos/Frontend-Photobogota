@@ -1,4 +1,4 @@
-.dashboard-reportes-page {
+.page-container {
   background-color: var(--color-bg);
   display: flex;
   flex-direction: column;
@@ -9,7 +9,8 @@
   min-height: calc(100vh - 68px);
 }
 
-.dashboard-reportes-page .container {
+.page-container .container,
+.page-container .container-fluid {
   max-width: 100%;
   width: 100%;
 }

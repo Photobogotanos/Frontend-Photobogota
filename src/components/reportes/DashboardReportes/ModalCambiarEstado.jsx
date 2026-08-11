@@ -2,12 +2,18 @@ import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Select from "react-select";
 import { ESTADOS_REPORTE } from "@/services/reporte.service";
 
-// Modal para cambiar el estado de un reporte. Si el nuevo estado es
-// RESUELTO, avisamos que eso dispara la validación del moderador
-// (Etapa 2, punto 4) una vez esté conectado el sistema de notificaciones.
-export default function ModalCambiarEstado({ show, reporte, onCerrar, onConfirmar }) {
+const OPCIONES_ESTADO = ESTADOS_REPORTE.map((e) => ({
+  value: e.valor,
+  label: e.etiqueta,
+}));
+
+// Modal para cambiar el estado de un reporte. Si quien lo marca como
+// RESUELTO es un SOCIO o un ADMIN, el backend lo deja pendiente de que un
+// MOD lo valide antes de notificar al miembro (HU 15/16).
+export default function ModalCambiarEstado({ show, reporte, esModerador, onCerrar, onConfirmar }) {
   const [estado, setEstado] = useState(reporte?.estado || "");
   const [observacion, setObservacion] = useState("");
 
@@ -34,17 +40,15 @@ export default function ModalCambiarEstado({ show, reporte, onCerrar, onConfirma
 
         <Form.Group className="mb-3">
           <Form.Label htmlFor="nuevo-estado">Nuevo estado</Form.Label>
-          <Form.Select
-            id="nuevo-estado"
-            value={estado}
-            onChange={(e) => setEstado(e.target.value)}
-          >
-            {ESTADOS_REPORTE.map((e) => (
-              <option key={e.valor} value={e.valor}>
-                {e.etiqueta}
-              </option>
-            ))}
-          </Form.Select>
+          <Select
+            inputId="nuevo-estado"
+            classNamePrefix="spot-select"
+            options={OPCIONES_ESTADO}
+            value={OPCIONES_ESTADO.find((o) => o.value === estado)}
+            onChange={(opcion) => setEstado(opcion ? opcion.value : "")}
+            placeholder="Selecciona un estado..."
+            isClearable
+          />
         </Form.Group>
 
         <Form.Group>
@@ -60,9 +64,15 @@ export default function ModalCambiarEstado({ show, reporte, onCerrar, onConfirma
           />
         </Form.Group>
 
-        {estado === "RESUELTO" && (
+        {estado === "RESUELTO" && !esModerador && (
           <p className="reporte-aviso-notificacion">
-            Al marcar como resuelto se debería notificar al moderador para su validación.
+            Al marcar como resuelto, un moderador debe validar tu solución antes de que se notifique al
+            miembro afectado.
+          </p>
+        )}
+        {estado === "RESUELTO" && esModerador && (
+          <p className="reporte-aviso-notificacion">
+            Al marcar como resuelto se notificará de inmediato al miembro que hizo el reporte.
           </p>
         )}
       </Modal.Body>

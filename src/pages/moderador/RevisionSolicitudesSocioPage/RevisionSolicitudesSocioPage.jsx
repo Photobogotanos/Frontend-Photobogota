@@ -1,13 +1,11 @@
 import SolicitudSocio from "@/components/moderador/SolicitudSocio/SolicitudSocio";
 import "./RevisionSolicitudesSocioPage.css";
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 
 export default function RevisionSolicitudesSocioPage() {
   return (
-    <div className="revision-solicitudes-socio mt-5">
-      <Container className="mt-3">
-        <SolicitudSocio></SolicitudSocio>
-      </Container>
-    </div>
+    <PageContainer className="revision-solicitudes-socio mt-5" fluid={false} containerClassName="mt-3">
+      <SolicitudSocio></SolicitudSocio>
+    </PageContainer>
   );
 }

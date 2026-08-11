@@ -6,34 +6,169 @@
 }
 
 .lugar-content-wrapper {
+  width: 100%;
   margin-bottom: 40px;
 }
 
 .lugar-imagen-principal {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 1;
   width: 100%;
-  height: 40vh;
-  min-height: 280px;
-  max-height: 400px;
+  height: 100vh;
+  min-height: 480px;
   overflow: hidden;
-  border-radius: 0 0 20px 20px;
+  background: #111;
 }
 
 .lugar-imagen-principal::before {
   content: "";
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 60%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.18) 45%, transparent 75%);
   z-index: 1;
+  pointer-events: none;
 }
 
-.lugar-imagen-principal img {
+.lugar-imagen-hero {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: zoom-in;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.lugar-imagen-hero img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.lugar-hero-caption {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 32px 24px;
+  pointer-events: none;
+}
+
+.lugar-hero-nombre {
+  font-size: clamp(28px, 4.5vw, 46px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.15;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+  max-width: 900px;
+}
+
+.lugar-hero-direccion {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 15px;
+  font-weight: 500;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  max-width: 900px;
+}
+
+.lugar-hero-direccion-icon {
+  font-size: 0.9rem;
+}
+
+.lugar-galeria-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-primary);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+/* Tira de miniaturas dentro del panel de info */
+.lugar-galeria-tira {
+  margin: 4px 0 24px;
+}
+
+.lugar-galeria-tira-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+
+.lugar-galeria-tira-icon {
+  color: var(--color-primary);
+}
+
+.lugar-galeria-tira-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lugar-galeria-tira-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.lugar-galeria-tira-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.lugar-galeria-tira-thumb {
+  flex: 0 0 auto;
+  width: 128px;
+  height: 88px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0;
+  background: #eee;
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.lugar-galeria-tira-thumb:hover {
+  transform: translateY(-2px);
+}
+
+.lugar-galeria-tira-thumb.activa {
+  border-color: var(--color-primary);
+}
+
+.lugar-galeria-tira-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .lugar-imagen-fallback {
@@ -50,15 +185,111 @@
   font-weight: 500;
 }
 
+.spot-image-modal .modal-content {
+  background: rgba(0, 0, 0, 0.95);
+  border: 0;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.spot-image-modal-body {
+  position: relative;
+  padding: 16px 16px 20px;
+  background: transparent;
+}
+
+.spot-image-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  border: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+  cursor: pointer;
+}
+
+.spot-image-modal-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 70vh;
+  padding: 24px 56px 12px;
+}
+
+.spot-image-modal-view img {
+  max-width: 100%;
+  max-height: 68vh;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.32);
+}
+
+.spot-image-modal-nav {
+  border: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.spot-image-modal-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.spot-image-thumb-btn {
+  border: 2px solid transparent;
+  padding: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: transparent;
+  cursor: pointer;
+}
+
+.spot-image-thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.spot-image-thumb-btn.active {
+  border-color: white;
+}
+
 .lugar-info-container {
-  max-width: 900px;
-  margin: -30px auto 0;
-  padding: 30px 24px;
   position: relative;
   z-index: 10;
-  background: white;
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.14);
+}
+
+.lugar-info-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px 28px;
 }
 
 .lugar-nombre {
@@ -123,7 +354,8 @@
   margin-top: 6px;
 }
 
-.lugar-direccion {
+.lugar-direccion,
+.lugar-horario {
   font-size: 14px;
   color: #666;
   margin-bottom: 20px;
@@ -300,10 +532,18 @@
 }
 
 .resenas-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 60px;
+  background: #fff;
+}
+
+.resenas-inner {
   max-width: 900px;
   margin: 0 auto;
-  padding: 30px 24px 50px;
-  background: linear-gradient(to bottom, transparent, #fafafa 20%);
+  padding: 4px 24px 0;
 }
 
 .resenas-titulo {
@@ -841,8 +1081,8 @@ button.usuario-nombre {
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .lugar-info-container,
-  .resenas-container {
+  .lugar-info-inner,
+  .resenas-inner {
     padding-left: 30px;
     padding-right: 30px;
   }
@@ -854,17 +1094,41 @@ button.usuario-nombre {
   }
 
   .lugar-imagen-principal {
-    height: 30vh;
-    min-height: 200px;
-    border-radius: 0 0 16px 16px;
+    height: 100svh;
+    min-height: 100svh;
   }
 
-  .lugar-info-container {
+  .lugar-hero-caption {
+    padding: 24px 18px;
+  }
+
+  .lugar-hero-nombre {
+    font-size: clamp(24px, 6.5vw, 34px);
+  }
+
+  .lugar-hero-direccion {
+    font-size: 13px;
+  }
+
+  .lugar-galeria-badge {
+    top: 12px;
+    right: 12px;
+  }
+
+  .lugar-galeria-tira-thumb {
+    width: 104px;
+    height: 74px;
+  }
+
+  .lugar-info-inner {
     padding: 20px 16px;
-    margin-top: -20px;
   }
 
   .resenas-container {
+    padding: 0 0 40px;
+  }
+
+  .resenas-inner {
     padding: 20px 16px 40px;
   }
 
@@ -872,7 +1136,8 @@ button.usuario-nombre {
     font-size: 22px;
   }
 
-  .lugar-direccion {
+  .lugar-direccion,
+  .lugar-horario {
     font-size: 13px;
   }
 
@@ -915,6 +1180,20 @@ button.usuario-nombre {
     font-size: 12px;
     flex: 1;
     justify-content: center;
+  }
+
+  .spot-image-modal-view {
+    padding: 20px 8px 8px;
+    min-height: auto;
+  }
+
+  .spot-image-modal-view img {
+    max-height: 60vh;
+  }
+
+  .spot-image-modal-nav {
+    width: 38px;
+    height: 38px;
   }
 
   .lugar-descripcion {
@@ -1046,19 +1325,20 @@ button.usuario-nombre {
     margin-bottom: 20px;
   }
 
-  .lugar-info-container {
+  .lugar-info-inner {
     padding: 16px 14px;
   }
 
-  .resenas-container {
-    padding: 16px 14px 30px;
+  .resenas-inner {
+    padding: 12px 14px 30px;
   }
 
   .lugar-nombre {
     font-size: 20px;
   }
 
-  .lugar-direccion {
+  .lugar-direccion,
+  .lugar-horario {
     font-size: 12px;
   }
 

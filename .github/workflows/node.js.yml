@@ -5,6 +5,7 @@ name: Frontend-Photobogota
     branches: ["main"]
   pull_request:
     branches: ["main"]
+  workflow_dispatch: #Para poder correr el workflow manualmente
 
 # Permisos necesarios para que el Action pueda escribir en la rama gh-pages
 permissions:
@@ -23,7 +24,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Instalar pnpm
-        uses: pnpm/action-setup@a15d269cd4658e1107c09f1fabf4cbd7bd1f308a # v4.4.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
         with:
           version: 9 # la versión que estemos usando
 
@@ -40,7 +41,7 @@ jobs:
         run: pnpm run build
 
       - name: Deploy
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
         with:
           folder: dist

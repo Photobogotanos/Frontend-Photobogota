@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
-import { FaMapMarkerAlt, FaTag, FaStar, FaHeart, FaCamera, FaFlag } from "react-icons/fa";
+import { FaMapMarkerAlt, FaTag, FaStar, FaHeart, FaCamera, FaFlag, FaClock } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
 import ReportarModal from "@/components/spots/SpotContent/ReportarModal";
@@ -68,6 +68,13 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
             <FaMapMarkerAlt className="preview-icon" />
             {data.direccion}
           </p>
+
+          {data.horario && (
+            <p className="preview-horario">
+              <FaClock className="preview-icon" />
+              {data.horario}
+            </p>
+          )}
           
           <div className="preview-badges">
             {data.categoria && (

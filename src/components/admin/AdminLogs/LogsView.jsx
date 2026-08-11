@@ -35,9 +35,10 @@ const LogsView = ({
         <div className="logs-list">
           {logsFiltrados.map((log, index) => (
             <LogRow
-              key={log}
-              linea={log}
-              parsed={parseLogLine(log)}
+              key={log.id}
+              linea={log.raw}
+              id={log.id}
+              parsed={parseLogLine(log.raw)}
               NIVELES_LOG={NIVELES_LOG}
               index={index}
               onSelect={onSelectLog}

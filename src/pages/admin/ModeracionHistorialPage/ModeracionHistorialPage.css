@@ -1,0 +1,16 @@
+.moderacion-historial-page {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.moderacion-historial-page .contenido-original {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.moderacion-historial-page .palabras-detectadas {
+  max-width: 200px;
+}

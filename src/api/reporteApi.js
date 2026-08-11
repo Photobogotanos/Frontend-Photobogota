@@ -32,6 +32,19 @@ export const getDashboardReportes = (filtros = {}) => {
 export const patchCambiarEstadoReporte = (id, body) =>
   clienteApi.patch(`/reportes/${id}/estado`, body);
 
-// Escala un reporte de moderación a administración. body: { motivo }
+// Escala un reporte al siguiente nivel (SOCIO -> MOD o MOD -> ADMIN). body: { motivo }
 export const patchEscalarReporte = (id, body) =>
   clienteApi.patch(`/reportes/${id}/escalar`, body);
+
+// Cola de reportes asignados a los locales del socio autenticado.
+export const getReportesAsignadosSocio = () =>
+  clienteApi.get("/reportes/asignados/socio");
+
+// Reportes marcados como Solucionado por SOCIO/ADMIN que esperan
+// aprobación de un moderador.
+export const getReportesPendientesValidacion = () =>
+  clienteApi.get("/reportes/pendientes-validacion");
+
+// Un MOD aprueba o rechaza una solución. body: { aprobado, observacion }
+export const patchValidarReporte = (id, body) =>
+  clienteApi.patch(`/reportes/${id}/validar`, body);

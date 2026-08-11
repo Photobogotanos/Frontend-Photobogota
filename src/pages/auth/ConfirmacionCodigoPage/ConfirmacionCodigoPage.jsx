@@ -1,12 +1,10 @@
-import Container from "react-bootstrap/Container";
+import PageContainer from "@/components/common/PageContainer/PageContainer";
 import ConfirmacionCodigoForm from "@/components/auth/ConfirmacionCodigoForm/ConfirmacionCodigoForm";
 import "./ConfirmacionCodigoPage.css";
 export default function ConfirmacionCodigoPage() {
   return (
-    <div className="confirmacion-codigo">
-      <Container>
-        <ConfirmacionCodigoForm></ConfirmacionCodigoForm>
-      </Container>
-    </div>
+    <PageContainer className="confirmacion-codigo" fluid={false} containerClassName="">
+      <ConfirmacionCodigoForm></ConfirmacionCodigoForm>
+    </PageContainer>
   );
 }

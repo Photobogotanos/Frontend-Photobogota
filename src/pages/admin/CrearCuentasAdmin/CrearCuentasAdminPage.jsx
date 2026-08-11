@@ -1,14 +1,11 @@
-import Container from 'react-bootstrap/Container';
-import './CrearCuentasAdminPage.css';
+import PageContainer from '@/components/common/PageContainer/PageContainer';
 import CrearCuentasAdmin from '@/components/admin/CrearCuentasAdmin/AdminCreacionDeCuentaForm';
 
 const CrearCuentasAdminPage = () => {
   return (
-    <div className="crear-cuentas-page">
-      <Container fluid className="p-0">
-          <CrearCuentasAdmin />
-      </Container>
-    </div>
+    <PageContainer content>
+      <CrearCuentasAdmin />
+    </PageContainer>
   );
 };
 

@@ -84,6 +84,7 @@ const AdminLogsViewer = () => {
 
   const containerRef = useRef(null);
   const intervaloRef = useRef(null);
+  const proximoIdRef = useRef(0);
 
   const opcionesArchivo = archivos.map((arc) => ({
     value: arc.nombre,
@@ -124,7 +125,9 @@ const AdminLogsViewer = () => {
     );
 
     if (resultado.exitoso) {
-      setLogs(resultado.data);
+      setLogs(
+        resultado.data.map((raw) => ({ id: proximoIdRef.current++, raw })),
+      );
       setModoDemo(resultado.esDemo);
     } else {
       setError("No se pudieron cargar los logs.");
@@ -144,8 +147,9 @@ const AdminLogsViewer = () => {
       intervaloRef.current = setInterval(() => {
         if (modoDemo) {
           // En modo demo añadimos logs ficticios
+          const demo = { id: proximoIdRef.current++, raw: generarLogDemo() };
           setLogs((prev) => [
-            generarLogDemo(),
+            demo,
             ...prev.slice(0, filtros.lines - 1),
           ]);
         } else {
@@ -164,7 +168,8 @@ const AdminLogsViewer = () => {
   // ── Filtrado local ─────────────────────────────────────────────────────────
   const logsFiltrados = React.useMemo(() => {
     const filtrados = [];
-    for (const raw of logs) {
+    for (const item of logs) {
+      const raw = item.raw;
       const parsed = parseLogLine(raw);
       const matchesBusqueda =
         !filtros.busqueda ||
@@ -184,7 +189,7 @@ const AdminLogsViewer = () => {
         matchesSoloError &&
         matchesLogger
       ) {
-        filtrados.push(raw);
+        filtrados.push(item);
       }
     }
     return filtrados;
@@ -193,8 +198,8 @@ const AdminLogsViewer = () => {
   // ── Estadísticas (derivadas de logsFiltrados, no necesitan estado propio) ──
   const estadisticas = React.useMemo(() => {
     const stats = { ERROR: 0, WARN: 0, INFO: 0, DEBUG: 0 };
-    logsFiltrados.forEach((log) => {
-      const parsed = parseLogLine(log);
+    logsFiltrados.forEach((item) => {
+      const parsed = parseLogLine(item.raw);
       if (parsed.level && stats[parsed.level] !== undefined) {
         stats[parsed.level]++;
       }
@@ -214,14 +219,16 @@ const AdminLogsViewer = () => {
 
   const copiarLogs = async () => {
     try {
-      await navigator.clipboard.writeText(logsFiltrados.join("\n"));
+      await navigator.clipboard.writeText(
+        logsFiltrados.map((item) => item.raw).join("\n"),
+      );
     } catch (err) {
       console.error("Error al copiar:", err);
     }
   };
 
   const descargarLogs = () => {
-    const contenido = logsFiltrados.join("\n");
+    const contenido = logsFiltrados.map((item) => item.raw).join("\n");
     const blob = new Blob([contenido], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -274,11 +281,11 @@ const AdminLogsViewer = () => {
         <LogDetailModal
           log={logSeleccionado}
           onClose={() => setLogSeleccionado(null)}
-          NIVELES_LOG={NIVELES_LOG}
-          logs={logsFiltrados.map((raw, i) => ({
-            raw,
-            parsed: parseLogLine(raw),
-            id: i,
+          nivelesLog={NIVELES_LOG}
+          logs={logsFiltrados.map((item) => ({
+            raw: item.raw,
+            parsed: parseLogLine(item.raw),
+            id: item.id,
           }))}
           onNavigate={(nuevoLog) => setLogSeleccionado(nuevoLog)}
         />

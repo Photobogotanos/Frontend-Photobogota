@@ -1,0 +1,249 @@
+/* ── MODAL SHELL ─────────────────────────────────────────── */
+.palabra-form-modal .modal-dialog {
+  max-width: 560px;
+}
+
+.palabra-form-modal .modal-content {
+  border-radius: 22px;
+  border: none;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.palabra-form-modal .modal-header-custom {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  align-items: center;
+}
+
+.palabra-form-modal .modal-title-custom {
+  font-weight: 700;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.01em;
+}
+
+.palabra-form-modal .mh-icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 9px;
+  font-size: 0.9rem;
+}
+
+.palabra-form-modal .modal-header-custom .btn-close {
+  filter: invert(1);
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+
+.palabra-form-modal .modal-header-custom .btn-close:hover {
+  opacity: 1;
+}
+
+/* ── BODY ───────────────────────────────────────────────── */
+.palabra-form-modal .modal-body-custom {
+  padding: 0;
+  max-height: 72vh;
+  overflow-y: auto;
+  background: var(--color-bg);
+}
+
+.palabra-form-modal .modal-body-custom::-webkit-scrollbar {
+  width: 4px;
+}
+
+.palabra-form-modal .modal-body-custom::-webkit-scrollbar-thumb {
+  background: rgba(128, 111, 190, 0.22);
+  border-radius: 4px;
+}
+
+/* ── BLOQUES ────────────────────────────────────────────── */
+.palabra-form-modal .form-block {
+  background: white;
+  padding: 24px 26px;
+}
+
+.palabra-form-modal .block-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  background: color-mix(in srgb, var(--color-primary) 9%, white);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, white);
+  border-radius: 50px;
+  padding: 5px 14px;
+  margin-bottom: 18px;
+}
+
+.palabra-form-modal .bh-icon {
+  font-size: 0.78rem;
+  flex-shrink: 0;
+}
+
+/* ── FIELDS ─────────────────────────────────────────────── */
+.palabra-form-modal .fgroup {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.palabra-form-modal .flabel {
+  font-size: 0.79rem;
+  font-weight: 600;
+  color: #5a5a5a;
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+}
+
+.palabra-form-modal .finput {
+  border: 1.5px solid #e6e2da;
+  border-radius: 11px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  color: #1a1a2e;
+  background: #fbf9f5;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  width: 100%;
+}
+
+.palabra-form-modal .finput:focus {
+  border-color: var(--color-primary) !important;
+  background: white !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 18%, transparent) !important;
+  outline: none !important;
+}
+
+.palabra-form-modal .finput::placeholder {
+  color: #c5c0b8;
+}
+
+.palabra-form-modal .finput.ftextarea {
+  resize: none;
+  line-height: 1.55;
+  padding-top: 11px;
+}
+
+.palabra-form-modal .char-hint {
+  font-size: 0.71rem;
+  color: #bbb;
+  margin-top: 4px;
+}
+
+/* react-select dentro del modal */
+.palabra-form-modal .spot-select__control {
+  min-height: 44px;
+}
+
+/* Switch "Regla activa" */
+.palabra-form-modal .form-check {
+  padding-left: 2.4em;
+  min-height: 1.4em;
+}
+
+.palabra-form-modal .form-check-input:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.palabra-form-modal .form-check-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+/* ── ACCIONES ───────────────────────────────────────────── */
+.palabra-form-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 17px 26px 22px;
+  background: white;
+  border-top: 1px solid #ece9e1;
+}
+
+.palabra-form-modal .btn-cancelar {
+  padding: 10px 26px;
+  border-radius: 11px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border: 1.5px solid #e0ddd8;
+  background: white;
+  color: #666;
+  transition: all 0.22s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.palabra-form-modal .btn-cancelar:hover {
+  transform: translateY(-2px);
+  color: #c0392b;
+  background: #fff5f5;
+  border-color: #ccc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+.palabra-form-modal .btn-guardar {
+  padding: 10px 28px;
+  border-radius: 11px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  transition: all 0.22s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+}
+
+.palabra-form-modal .btn-guardar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: var(--color-hover);
+  box-shadow: 0 6px 20px rgba(128, 111, 190, 0.36);
+}
+
+.palabra-form-modal .btn-guardar:active {
+  transform: translateY(0);
+}
+
+.palabra-form-modal .btn-guardar:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 576px) {
+  .palabra-form-modal .modal-actions {
+    flex-direction: column-reverse;
+    padding: 14px 18px 18px;
+  }
+
+  .palabra-form-modal .btn-cancelar,
+  .palabra-form-modal .btn-guardar {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .palabra-form-modal .form-block {
+    padding: 20px 18px;
+  }
+}

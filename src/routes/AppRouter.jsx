@@ -29,9 +29,13 @@ import PreferenciasNotificacionesPage from "@/pages/notificaciones/PreferenciasN
 import DashboardReportesPage from "@/pages/moderador/DashboardReportesPage/DashboardReportesPage";
 import AdminReportesPage from "@/pages/admin/AdminReportesPage/AdminReportesPage";
 import AdminEliminacionesPage from "@/pages/admin/AdminEliminacionesPage/AdminEliminacionesPage";
+import ModeracionPalabrasPage from "@/pages/admin/ModeracionPalabrasPage/ModeracionPalabrasPage";
+import ModeracionHistorialPage from "@/pages/admin/ModeracionHistorialPage/ModeracionHistorialPage";
+import ModeracionApelacionesPage from "@/pages/admin/ModeracionApelacionesPage/ModeracionApelacionesPage";
 import AdminPuntosPage from "@/pages/admin/AdminPuntosPage/AdminPuntosPage";
 import ProtectedRoute from "./ProtectedRoute";
 import SocioLocalesPage from "@/pages/socio/SocioLocalesPage/SocioLocalesPage.jsx";
+import SocioReportesPage from "@/pages/socio/SocioReportesPage/SocioReportesPage.jsx";
 
 const AppRouter = () => {
   return (
@@ -138,6 +142,14 @@ const AppRouter = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/socio/reportes"
+          element={
+            <ProtectedRoute roles={["SOCIO"]}>
+              <SocioReportesPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ── RUTAS DE MODERADOR ── */}
         <Route
@@ -219,6 +231,30 @@ const AppRouter = () => {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <AdminEliminacionesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/moderacion/palabras"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <ModeracionPalabrasPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/moderacion/historial"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <ModeracionHistorialPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/moderacion/apelaciones"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <ModeracionApelacionesPage />
             </ProtectedRoute>
           }
         />

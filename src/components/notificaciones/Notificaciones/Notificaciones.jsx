@@ -10,6 +10,10 @@ import {
   obtenerContadorNoLeidas,
 } from "@/services/notificacion.service";
 import { useAuth } from "@/context/AuthContext";
+import {
+  getCurrentServerStatus,
+  suscribirEstadoServidor,
+} from "@/utils/serverStatus";
 
 export default function Notificaciones() {
   const { usuario } = useAuth();
@@ -37,6 +41,9 @@ export default function Notificaciones() {
     let activo = true;
 
     const cargarContadorSeguro = async () => {
+      // Si el servidor está caído, omitimos la consulta: el monitoreo global
+      // re-disparará el contador cuando vuelva a estar online.
+      if (getCurrentServerStatus() === false) return;
       const contadorRes = await obtenerContadorNoLeidas();
       if (activo) setContador(contadorRes);
     };
@@ -46,9 +53,15 @@ export default function Notificaciones() {
     cargarContadorSeguro();
     // Polling cada 30 segundos
     const interval = setInterval(cargarContadorSeguro, 30000);
+    // Cuando el servidor vuelve a estar online, actualizamos el contador
+    // de inmediato en lugar de esperar al siguiente tick del interval.
+    const unsubscribir = suscribirEstadoServidor((online) => {
+      if (online) cargarContadorSeguro();
+    });
     return () => {
       activo = false;
       clearInterval(interval);
+      unsubscribir();
     };
   }, [usuario]);
 
