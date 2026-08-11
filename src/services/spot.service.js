@@ -50,6 +50,37 @@ export const obtenerSpots = async (filtros = {}) => {
 };
 
 /**
+ * Obtener los spots del socio logueado que son de tipo LOCAL.
+ * Contrato con backend: GET /spots?tipo=LOCAL&mios=true (autenticado).
+ * Sin fallback a mocks: si no hay locales (o el backend aún no responde con
+ * el filtro), retorna lista vacía para que la UI muestre el estado vacío.
+ */
+export const obtenerMisLocales = async () => {
+  try {
+    console.log("Obteniendo mis locales (tipo=LOCAL, mios=true)...");
+
+    const response = await getSpots({ tipo: "LOCAL", mios: true });
+
+    console.log("Locales obtenidos del backend:", response.data?.length || 0);
+
+    return {
+      exitoso: true,
+      datos: response.data || [],
+      mensaje: "Locales obtenidos exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    console.warn("No se pudieron obtener los locales propios:", error);
+    return {
+      exitoso: true,
+      datos: [],
+      mensaje: "Aún no tienes locales registrados.",
+      esMock: false,
+    };
+  }
+};
+
+/**
  * Obtener un spot por su ID
  * Con fallback a mocks si el servidor no está disponible
  */

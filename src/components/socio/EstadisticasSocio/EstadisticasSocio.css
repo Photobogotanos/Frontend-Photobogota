@@ -9,9 +9,16 @@
 /* Header */
 .estadisticas-header {
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: 1.5rem;
+  gap: 0.5rem;
+}
+
+.estadisticas-header-superior {
+  display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 28px;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 20px;
 }
@@ -21,14 +28,25 @@
   flex-direction: column;
 }
 
+.estadisticas-top-text {
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
 .header-titulo {
-  font-size: 1.75rem;
+  font-family: "Playfair Display", serif;
+  font-size: 2rem;
   font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 6px;
+  color: var(--color-text, #1a1a1a);
+  margin: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.5rem;
 }
 
 .header-icon {
@@ -37,9 +55,19 @@
 }
 
 .header-subtitulo {
-  font-size: 0.95rem;
-  color: #666;
-  margin: 0;
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0.25rem 0 0 0;
+  font-weight: 400;
+}
+
+.estadisticas-header-line {
+  display: flex;
+  height: 1.5px;
+  margin-top: 10px;
+  width: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #806fbe 0%, #a294d0 60%, transparent 100%);
 }
 
 /* Selector de período */
@@ -385,9 +413,9 @@
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .estadisticas-header {
+  .estadisticas-header-superior {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
   
   .header-controles {

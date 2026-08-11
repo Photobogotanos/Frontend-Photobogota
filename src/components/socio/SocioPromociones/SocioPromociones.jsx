@@ -58,24 +58,28 @@ const SocioPromociones = () => {
     <Container className="promociones-container">
       {/* Header */}
       <div className="promociones-header">
-        <div className="header-info">
-          <h1 className="header-titulo">
-            <span className="header-icon"><CiShoppingTag /></span>
-            Mis Promociones
-          </h1>
-          <p className="header-subtitulo">
-            Gestiona y administra las ofertas y descuentos para tus clientes
-          </p>
-        </div>
-        <Link 
-          to="/crear-promocion"
-          className= {`btn-crear-promocion`}
-          aria-label="Crear nueva promoción"
+        <div className="promociones-header-superior">
+          <div className="header-info">
+            <span className="promociones-top-text">Mis ofertas</span>
+            <h1 className="header-titulo">
+              <span className="header-icon"><CiShoppingTag /></span>
+              Mis Promociones
+            </h1>
+            <p className="header-subtitulo">
+              Gestiona y administra las ofertas y descuentos para tus clientes
+            </p>
+          </div>
+          <Link 
+            to="/crear-promocion"
+            className="btn-crear-promocion"
+            aria-label="Crear nueva promoción"
           >
-          <FaPlus />
-          <span className="texto-completo">Crear Promoción</span>
-          <span className="texto-corto"></span> 
-        </Link>
+            <FaPlus />
+            <span className="texto-completo">Crear Promoción</span>
+            <span className="texto-corto"></span> 
+          </Link>
+        </div>
+        <span className="promociones-header-line" />
       </div>
 
       {/* Filtros */}
