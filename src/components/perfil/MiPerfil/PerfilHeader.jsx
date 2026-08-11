@@ -47,9 +47,26 @@ const PerfilHeader = ({
   usandoMock = false,
   esPerfilPropio = true,
   onReportar,
+  puntosTotales,
+  puntosParaSiguienteNivel,
+  puntosHoy,
+  limiteDiario,
+  progresoPercent,
+  puntosCargados = false,
 }) => {
   const mostrarNivel =
     rol === "MIEMBRO" && nivel !== null && nivel !== undefined;
+
+  // La barra se muestra en cuanto GET /usuarios/me/puntos respondió OK para
+  // el perfil propio de un MIEMBRO, sin importar si los puntos son 0 (barra
+  // vacía visible, no se oculta el bloque).
+  const mostrarProgreso =
+    esPerfilPropio && rol === "MIEMBRO" && puntosCargados;
+
+  // El porcentaje SIEMPRE viene del backend (progresoPercent); nunca se
+  // recalcula en el front. Solo se aclara (clamp) a un rango válido 0-100
+  // por si el backend envía algo fuera de rango o nulo.
+  const progreso = Math.min(100, Math.max(0, Number(progresoPercent) || 0));
 
   const fotoSrc = esFotoReal(perfilData?.fotoPerfil)
     ? perfilData.fotoPerfil
@@ -87,6 +104,30 @@ const PerfilHeader = ({
           {mostrarNivel && <span className="badge-nivel">Nivel {nivel}</span>}
           {usandoMock && <span className="badge-demo">Demo</span>}
         </div>
+
+        {mostrarProgreso && (
+          <div className="perfil-progreso-nivel">
+            <div className="perfil-progreso-info">
+              <span className="perfil-progreso-puntos">{puntosTotales} pts</span>
+              <span className="perfil-progreso-siguiente">
+                {puntosParaSiguienteNivel > 0
+                  ? `${puntosParaSiguienteNivel} pts para nivel ${(nivel || 1) + 1}`
+                  : "Nivel máximo"}
+              </span>
+            </div>
+            <div className="perfil-progreso-barra">
+              <div
+                className="perfil-progreso-fill"
+                style={{ width: `${progreso}%` }}
+              />
+            </div>
+            {typeof puntosHoy === "number" && typeof limiteDiario === "number" && (
+              <span className="perfil-progreso-hoy">
+                Hoy: {puntosHoy} / {limiteDiario} pts
+              </span>
+            )}
+          </div>
+        )}
 
         <h2 className="perfil-nombre">
           {perfilData.nombresCompletos || "Usuario"}

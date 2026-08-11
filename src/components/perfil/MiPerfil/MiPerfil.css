@@ -96,6 +96,46 @@
   color: var(--color-primary);
   border: 1px solid color-mix(in srgb, var(--color-primary) 22%, white);
 }
+.perfil-progreso-nivel {
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+.perfil-progreso-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+}
+.perfil-progreso-puntos {
+  color: var(--color-primary);
+}
+.perfil-progreso-siguiente {
+  color: #888;
+  font-size: 0.8rem;
+}
+.perfil-progreso-barra {
+  width: 100%;
+  height: 8px;
+  background: #e9e5f6;
+  border-radius: 50px;
+  overflow: hidden;
+}
+.perfil-progreso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #9c7cff);
+  border-radius: 50px;
+  transition: width 0.4s ease;
+}
+.perfil-progreso-hoy {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: #777;
+  font-weight: 500;
+}
 .badge-demo {
   background: #f5f5f5;
   color: #888;

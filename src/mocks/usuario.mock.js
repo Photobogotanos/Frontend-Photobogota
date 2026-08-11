@@ -61,6 +61,10 @@ export const USUARIOS_DEMO = [
     apellido: "Demo",
     rol: "MIEMBRO",
     nivel: 5,
+    puntosTotales: 1250,
+    puntosParaSiguienteNivel: 250,
+    puntosHoy: 35,
+    limiteDiario: 100,
     fechaNacimiento: "2004-11-05",
   },
 ];
@@ -103,5 +107,36 @@ export const registrarUsuarioDemo = async (datos) => {
     exitoso: true,
     mensaje: `Cuenta demo creada. Tu usuario es: ${nombreUsuario}`,
     nombreUsuario,
+  };
+};
+
+export const obtenerPuntosDemo = () => {
+  const usuarioDemo = USUARIOS_DEMO.find((u) => u.rol === "MIEMBRO");
+  if (!usuarioDemo) {
+    return {
+      puntosTotales: 0,
+      nivel: 1,
+      puntosParaSiguienteNivel: 100,
+      puntosHoy: 0,
+      limiteDiario: 100,
+      progresoPercent: 0,
+    };
+  }
+  const puntosTotales = usuarioDemo.puntosTotales ?? 0;
+  const puntosParaSiguienteNivel = usuarioDemo.puntosParaSiguienteNivel ?? 100;
+  return {
+    puntosTotales,
+    nivel: usuarioDemo.nivel ?? 1,
+    puntosParaSiguienteNivel,
+    puntosHoy: usuarioDemo.puntosHoy ?? 0,
+    limiteDiario: usuarioDemo.limiteDiario ?? 100,
+    // Solo para el modo demo (sin backend real) se aproxima acá; en producción
+    // progresoPercent siempre viene del API y nunca se recalcula en el cliente.
+    progresoPercent:
+      puntosTotales + puntosParaSiguienteNivel > 0
+        ? Math.round(
+            (puntosTotales / (puntosTotales + puntosParaSiguienteNivel)) * 100,
+          )
+        : 0,
   };
 };

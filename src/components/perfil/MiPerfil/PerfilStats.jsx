@@ -1,8 +1,8 @@
-const PerfilStats = ({ rol, stats = {}, esPerfilPropio = true }) => {
+const PerfilStats = ({ rol, stats = {}, esPerfilPropio = true, puntosTotales }) => {
   const rolNormalizado = (rol || "MIEMBRO").toUpperCase();
   const esSocio = rolNormalizado === "SOCIO";
-  // ADMIN y MOD: solo reseñas y guardados (sin spots/publicaciones)
   const esStaff = rolNormalizado === "ADMIN" || rolNormalizado === "MOD";
+  const esMiembro = rolNormalizado === "MIEMBRO";
 
   const totalSpots = stats.totalSpots ?? 0;
   const totalResenas = stats.totalResenas ?? 0;

@@ -7,6 +7,9 @@ import {
   postProcesarEliminacionAdmin,
   postRechazarEliminacionAdmin,
   getMetricasEliminacionAdmin,
+  getConfiguracionPuntosAdmin,
+  putConfiguracionPuntosAdmin,
+  postAjustePuntosAdmin,
 } from "@/api/adminApi";
 import {
   actualizarEstadoUsuarioDemo,
@@ -258,3 +261,62 @@ export const obtenerEstadoEliminacionInfo = (valor) =>
     etiqueta: valor,
     variant: "secondary",
   };
+
+// ── Sistema de puntos y niveles ──
+
+/**
+ * Obtiene la configuración actual de puntos.
+ * @returns {Promise<{ exitoso: boolean, datos?: Object, mensaje?: string }>}
+ */
+export const obtenerConfiguracionPuntosAdmin = async () => {
+  try {
+    const respuesta = await getConfiguracionPuntosAdmin();
+    return { exitoso: true, datos: respuesta.data, mensaje: "Configuración obtenida" };
+  } catch (error) {
+    console.error("Error al obtener configuración de puntos:", error);
+    return {
+      exitoso: false,
+      datos: null,
+      mensaje: extraerMensajeErrorAdmin(error, "Error al obtener la configuración"),
+    };
+  }
+};
+
+/**
+ * Actualiza la configuración de puntos.
+ * @param {Object} config - { puntosSpot, puntosResena, puntosGuardado, puntosBase, limiteDiario }
+ * @returns {Promise<{ exitoso: boolean, datos?: Object, mensaje?: string }>}
+ */
+export const actualizarConfiguracionPuntosAdmin = async (config) => {
+  try {
+    const respuesta = await putConfiguracionPuntosAdmin(config);
+    return { exitoso: true, datos: respuesta.data, mensaje: respuesta.data?.mensaje || "Configuración actualizada" };
+  } catch (error) {
+    console.error("Error al actualizar configuración de puntos:", error);
+    return {
+      exitoso: false,
+      datos: null,
+      mensaje: extraerMensajeErrorAdmin(error, "Error al actualizar la configuración"),
+    };
+  }
+};
+
+/**
+ * Ajusta manualmente los puntos de un usuario.
+ * @param {string} usuarioId
+ * @param {Object} body - { delta: number, motivo: string }
+ * @returns {Promise<{ exitoso: boolean, datos?: Object, mensaje?: string }>}
+ */
+export const ajustarPuntosUsuarioAdmin = async (usuarioId, body) => {
+  try {
+    const respuesta = await postAjustePuntosAdmin(usuarioId, body);
+    return { exitoso: true, datos: respuesta.data, mensaje: respuesta.data?.mensaje || "Puntos ajustados" };
+  } catch (error) {
+    console.error("Error al ajustar puntos:", error);
+    return {
+      exitoso: false,
+      datos: null,
+      mensaje: extraerMensajeErrorAdmin(error, "Error al ajustar los puntos"),
+    };
+  }
+};

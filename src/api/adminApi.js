@@ -74,8 +74,36 @@ export const postRechazarEliminacionAdmin = (id, body = {}) =>
     clienteApi.post(`/admin/eliminaciones/${id}/rechazar`, body);
 
 /**
- * Métricas agregadas sobre las solicitudes de eliminación de cuenta.
+ * Obtener métricas agregadas sobre las solicitudes de eliminación de cuenta.
  * @returns {Promise}
  */
 export const getMetricasEliminacionAdmin = () =>
-    clienteApi.get("/admin/eliminaciones/metricas");
+  clienteApi.get("/admin/eliminaciones/metricas");
+
+/**
+ * ADMIN API - Sistema de puntos y niveles
+ */
+
+/**
+ * Obtener configuración actual de puntos
+ * @returns {Promise}
+ */
+export const getConfiguracionPuntosAdmin = () =>
+  clienteApi.get("/admin/puntos/configuracion");
+
+/**
+ * Actualizar configuración de puntos
+ * @param {Object} body
+ * @returns {Promise}
+ */
+export const putConfiguracionPuntosAdmin = (body) =>
+  clienteApi.put("/admin/puntos/configuracion", body);
+
+/**
+ * Ajustar puntos de un usuario manualmente
+ * @param {string} usuarioId
+ * @param {Object} body - { delta: number, motivo: string }
+ * @returns {Promise}
+ */
+export const postAjustePuntosAdmin = (usuarioId, body) =>
+  clienteApi.post(`/admin/puntos/usuarios/${usuarioId}/ajuste`, body);

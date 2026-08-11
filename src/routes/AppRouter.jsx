@@ -29,6 +29,7 @@ import PreferenciasNotificacionesPage from "@/pages/notificaciones/PreferenciasN
 import DashboardReportesPage from "@/pages/moderador/DashboardReportesPage/DashboardReportesPage";
 import AdminReportesPage from "@/pages/admin/AdminReportesPage/AdminReportesPage";
 import AdminEliminacionesPage from "@/pages/admin/AdminEliminacionesPage/AdminEliminacionesPage";
+import AdminPuntosPage from "@/pages/admin/AdminPuntosPage/AdminPuntosPage";
 import ProtectedRoute from "./ProtectedRoute";
 import SocioLocalesPage from "@/pages/socio/SocioLocalesPage/SocioLocalesPage.jsx";
 
@@ -234,6 +235,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute roles={["ADMIN", "MOD"]}>
               <EnviarNotificacionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/puntos"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <AdminPuntosPage />
             </ProtectedRoute>
           }
         />

@@ -7,8 +7,9 @@ import PerfilStats from "./PerfilStats";
 import PerfilTabs from "./PerfilTabs";
 import "./MiPerfil.css";
 import { useAuth } from "../../../context/AuthContext";
-import { obtenerPerfil } from "../../../services/usuario.service";
+import { obtenerPerfil, obtenerPuntos } from "../../../services/usuario.service";
 import { STORAGE_KEY_MIEMBRO } from "../../../utils/sessionHelper";
+import { toast } from "react-hot-toast";
 
 // Tabs por rol (alineado con PerfilTabs)
 const PRIMERA_TAB_POR_ROL = {
@@ -25,8 +26,33 @@ const perfilReducer = (state, action) => {
       return { ...state, tab: action.payload };
     case "SET_LOADING":
       return { ...state, loading: action.payload };
-    case "SET_PERFIL_DATA":
-      return { ...state, perfilData: action.payload };
+    case "SET_PERFIL_DATA": {
+      const puntosData = state.puntosData;
+      return {
+        ...state,
+        perfilData: {
+          ...action.payload,
+          puntosTotales:
+            puntosData.puntosTotales > 0
+              ? puntosData.puntosTotales
+              : (action.payload.puntosTotales ?? 0),
+          puntosParaSiguienteNivel:
+            puntosData.puntosParaSiguienteNivel > 0
+              ? puntosData.puntosParaSiguienteNivel
+              : (action.payload.puntosParaSiguienteNivel ?? 0),
+          puntosHoy:
+            puntosData.puntosHoy > 0
+              ? puntosData.puntosHoy
+              : (action.payload.puntosHoy ?? 0),
+          limiteDiario:
+            puntosData.limiteDiario > 0
+              ? puntosData.limiteDiario
+              : (action.payload.limiteDiario ?? 100),
+        },
+      };
+    }
+    case "SET_PUNTOS_DATA":
+      return { ...state, puntosData: action.payload, puntosCargados: true };
     case "SET_USANDO_MOCK":
       return { ...state, usandoMock: action.payload };
     case "SET_ERROR":
@@ -92,6 +118,15 @@ const crearEstadoInicial = () => {
     loading: true,
     usandoMock: false,
     error: null,
+    puntosData: {
+      puntosTotales: 0,
+      nivel: 1,
+      puntosParaSiguienteNivel: 0,
+      puntosHoy: 0,
+      limiteDiario: 100,
+      progresoPercent: 0,
+    },
+    puntosCargados: false,
     perfilData: {
       nombresCompletos: "",
       nombreUsuario: "",
@@ -104,6 +139,10 @@ const crearEstadoInicial = () => {
       totalSpots: 0,
       totalResenas: 0,
       totalGuardados: 0,
+      puntosTotales: 0,
+      puntosParaSiguienteNivel: 0,
+      puntosHoy: 0,
+      limiteDiario: 100,
     },
   };
 };
@@ -167,6 +206,10 @@ export default function MiPerfil() {
               totalSpots: data.totalSpots ?? 0,
               totalResenas: data.totalResenas ?? 0,
               totalGuardados: data.totalGuardados ?? 0,
+              puntosTotales: data.puntosTotales ?? 0,
+              puntosParaSiguienteNivel: data.puntosParaSiguienteNivel ?? 0,
+              puntosHoy: data.puntosHoy ?? 0,
+              limiteDiario: data.limiteDiario ?? 100,
             },
           });
           dispatch({
@@ -237,6 +280,46 @@ export default function MiPerfil() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario]);
 
+  // oxlint-disable-next-line react-doctor/no-set-state-after-await-in-effect -- todos los setters tras await están bajo el flag activo + cleanup
+  useEffect(() => {
+    let activo = true;
+
+    const cargarPuntos = async () => {
+      if (!activo) return;
+      const resultado = await obtenerPuntos();
+      if (!activo || !resultado?.exitoso || !resultado.datos) return;
+
+      const datos = resultado.datos;
+      const puntosData = {
+        puntosTotales: datos.puntosTotales ?? 0,
+        nivel: datos.nivel ?? 1,
+        puntosParaSiguienteNivel: datos.puntosParaSiguienteNivel ?? 0,
+        puntosHoy: datos.puntosHoy ?? 0,
+        limiteDiario: datos.limiteDiario ?? 100,
+        progresoPercent: datos.progresoPercent ?? null,
+      };
+
+      dispatch({ type: "SET_PUNTOS_DATA", payload: puntosData });
+
+      const nivelAnterior = sessionStorage.getItem("nivelAnterior");
+      const nivelActual = String(puntosData.nivel);
+
+      if (nivelAnterior && Number(nivelAnterior) < Number(puntosData.nivel)) {
+        toast.success(`¡Subiste de nivel! Ahora eres nivel ${puntosData.nivel}`, {
+          duration: 4000,
+          icon: "🎉",
+        });
+      }
+
+      sessionStorage.setItem("nivelAnterior", nivelActual);
+    };
+
+    cargarPuntos();
+    return () => {
+      activo = false;
+    };
+  }, [usuario, dispatch]);
+
   const notificacionesRef = useRef(null);
 
   useEffect(() => {
@@ -275,6 +358,8 @@ export default function MiPerfil() {
     totalGuardados: state.perfilData.totalGuardados,
   };
 
+  const esPerfilPropio = true;
+
   return (
     <Container fluid className="perfil-container">
       {state.error && (
@@ -289,11 +374,23 @@ export default function MiPerfil() {
         rol={state.perfilData.rol}
         nivel={state.perfilData.nivel}
         usandoMock={state.usandoMock}
+        esPerfilPropio={esPerfilPropio}
+        puntosTotales={state.puntosData.puntosTotales}
+        puntosParaSiguienteNivel={state.puntosData.puntosParaSiguienteNivel}
+        puntosHoy={state.puntosData.puntosHoy}
+        limiteDiario={state.puntosData.limiteDiario}
+        progresoPercent={state.puntosData.progresoPercent}
+        puntosCargados={state.puntosCargados}
       />
 
       <div className="line-divider" />
 
-      <PerfilStats rol={state.perfilData.rol} stats={stats} />
+      <PerfilStats
+        rol={state.perfilData.rol}
+        stats={stats}
+        esPerfilPropio={esPerfilPropio}
+        puntosTotales={state.puntosData.puntosTotales}
+      />
 
       <div className="line-divider" />
 

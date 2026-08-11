@@ -137,6 +137,16 @@ export const postCancelarEliminacionCuenta = () =>
   clienteApi.post("/usuarios/me/eliminacion/cancelar");
 
 /**
+ * Obtener puntos del usuario autenticado
+ * NOTA: el backend responde con la clave "puntos" (no "puntosTotales").
+ * La normalización a "puntosTotales" (nombre usado en el resto del front)
+ * ocurre en usuario.service.js -> obtenerPuntos.
+ * @returns {Promise<{ data: { puntos: number, nivel: number, puntosHoy: number, limiteDiario: number, puntosParaSiguienteNivel: number, progresoPercent: number } }>}
+ */
+export const getPuntosUsuario = () =>
+  clienteApi.get("/usuarios/me/puntos");
+
+/**
  * Obtener el estado de la solicitud de eliminación de cuenta del usuario autenticado.
  * @returns {Promise<{ data: EstadoEliminacionDTO }>}
  */

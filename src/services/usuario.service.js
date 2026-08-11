@@ -13,12 +13,14 @@ import {
   postConfirmarEliminacionCuenta,
   postCancelarEliminacionCuenta,
   getEstadoEliminacionCuenta,
+  getPuntosUsuario,
 } from "@/api/usuarioApi";
 import { getSpots } from "@/api/spotApi";
 import {
   registrarUsuarioDemo,
   USUARIOS_DEMO,
   hashearContrasena,
+  obtenerPuntosDemo,
 } from "@/mocks/usuario.mock";
 import { SPOTS } from "@/mocks/spots.mock";
 import { obtenerEstadoServidor } from "@/utils/serverStatus";
@@ -246,6 +248,10 @@ export const obtenerPerfil = async (nombreUsuario) => {
       totalSpots: data.totalSpots ?? 0,
       totalResenas: data.totalResenas ?? 0,
       totalGuardados: data.totalGuardados ?? 0,
+      puntosTotales: data.puntos ?? data.puntosTotales ?? 0,
+      puntosParaSiguienteNivel: data.puntosParaSiguienteNivel ?? 0,
+      puntosHoy: data.puntosHoy ?? 0,
+      limiteDiario: data.limiteDiario ?? 100,
     };
 
     return {
@@ -270,6 +276,56 @@ export const obtenerPerfil = async (nombreUsuario) => {
     }
 
     const mockData = obtenerPerfilDemo(nombreUsuario);
+    return {
+      exitoso: true,
+      datos: mockData,
+      mensaje: "Mostrando datos de demostración",
+      esMock: true,
+    };
+  }
+};
+
+export const obtenerPuntos = async () => {
+  try {
+    const response = await getPuntosUsuario();
+    const data = response.data || {};
+
+    // Causa raíz del bug de "total en 0": el backend responde la clave
+    // "puntos" (ver contrato HU #51), pero el resto del front consume
+    // "puntosTotales". Normalizamos acá, en el único lugar que toca la
+    // respuesta cruda de /usuarios/me/puntos, para no tener que tocar el
+    // nombre de la prop en todos los componentes que ya la consumen.
+    // progresoPercent se toma tal cual lo da el backend: nunca se recalcula
+    // en el cliente (regla explícita de la HU).
+    const datosNormalizados = {
+      puntosTotales: data.puntos ?? data.puntosTotales ?? 0,
+      nivel: data.nivel ?? 1,
+      puntosParaSiguienteNivel: data.puntosParaSiguienteNivel ?? 0,
+      puntosHoy: data.puntosHoy ?? 0,
+      limiteDiario: data.limiteDiario ?? 100,
+      progresoPercent: data.progresoPercent ?? null,
+    };
+
+    return {
+      exitoso: true,
+      datos: datosNormalizados,
+      mensaje: "Puntos obtenidos exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    const isNetworkError = !error.response;
+
+    if (!isNetworkError) {
+      let mensaje = "Error al cargar los puntos";
+      if (error.response?.data?.mensaje) {
+        mensaje = error.response.data.mensaje;
+      } else if (error.response?.data?.message) {
+        mensaje = error.response.data.message;
+      }
+      return { exitoso: false, datos: null, mensaje, esMock: false };
+    }
+
+    const mockData = obtenerPuntosDemo();
     return {
       exitoso: true,
       datos: mockData,
