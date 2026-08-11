@@ -25,7 +25,6 @@ import AdminLogsPage from "@/pages/admin/AdminLogs/AdminLogsPage";
 import MantenimientoPage from "@/pages/admin/Mantenimiento/MantenimientoPage";
 import EnviarNotificacionPage from "@/pages/admin/EnviarNotificacion/EnviarNotificacionPage";
 import GestionCategoriasPage from "../pages/moderador/GestionCategoriasPage/GestionCategoriasPage";
-import PreferenciasNotificacionesPage from "@/pages/notificaciones/PreferenciasNotificaciones/PreferenciasNotificacionesPage";
 import DashboardReportesPage from "@/pages/moderador/DashboardReportesPage/DashboardReportesPage";
 import AdminReportesPage from "@/pages/admin/AdminReportesPage/AdminReportesPage";
 import AdminEliminacionesPage from "@/pages/admin/AdminEliminacionesPage/AdminEliminacionesPage";
@@ -77,15 +76,7 @@ const AppRouter = () => {
             }
           />
          <Route
-           path="/perfil/preferencias-notificaciones"
-          element={
-            <ProtectedRoute>
-              <PreferenciasNotificacionesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/crear-spot"
+           path="/crear-spot"
           element={
             <ProtectedRoute>
               <CreacionSpotPage />

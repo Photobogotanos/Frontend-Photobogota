@@ -2,6 +2,7 @@ import { useReducer, useEffect, useRef } from "react";
 import { Container } from "react-bootstrap";
 import EditarPerfilModal from "../EditarPerfilModal/EditarPerfilModal";
 import FotoPerfilModal from "../FotoPerfilModal/FotoPerfilModal";
+import PreferenciasNotificaciones from "../../notificaciones/PreferenciasNotificaciones/PreferenciasNotificaciones";
 import PerfilHeader from "./PerfilHeader";
 import PerfilStats from "./PerfilStats";
 import PerfilTabs from "./PerfilTabs";
@@ -424,7 +425,7 @@ export default function MiPerfil() {
         nombre={state.perfilData.nombresCompletos}
       />
 
-      {/* Modal de notificaciones (placeholder) */}
+      {/* Modal de preferencias de notificaciones */}
       {state.mostrarNotificaciones && (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions, react-doctor/no-noninteractive-element-interactions
         <dialog
@@ -443,34 +444,6 @@ export default function MiPerfil() {
           }}
         >
           <div className="perfil-notif-panel">
-            <h3 id="perfil-notif-title" className="perfil-notif-title">
-              Notificaciones
-            </h3>
-            <p className="perfil-notif-sub">Elige qué avisos quieres recibir.</p>
-            <label className="perfil-notif-row">
-              <input type="checkbox" defaultChecked />
-              <span>Nuevas reseñas en tus spots</span>
-            </label>
-            <label className="perfil-notif-row">
-              <input type="checkbox" defaultChecked />
-              <span>Respuestas a tus reseñas</span>
-            </label>
-            <label className="perfil-notif-row">
-              <input type="checkbox" defaultChecked />
-              <span>Promociones de locales</span>
-            </label>
-            <label className="perfil-notif-row">
-              <input type="checkbox" />
-              <span>Novedades de la plataforma</span>
-            </label>
-            <button
-              type="button"
-              className="btn-editar-perfil"
-              style={{ width: "100%", justifyContent: "center", marginTop: 16 }}
-              onClick={cerrarNotificaciones}
-            >
-              Guardar preferencias
-            </button>
             <button
               type="button"
               className="perfil-notif-close"
@@ -479,6 +452,17 @@ export default function MiPerfil() {
             >
               ×
             </button>
+            <h3 id="perfil-notif-title" className="perfil-notif-title">
+              Preferencias de Notificaciones
+            </h3>
+            <p className="perfil-notif-sub">
+              Configura cómo quieres recibir los avisos.
+            </p>
+            <PreferenciasNotificaciones
+              enModal
+              onCerrar={cerrarNotificaciones}
+              onGuardado={cerrarNotificaciones}
+            />
           </div>
         </dialog>
       )}

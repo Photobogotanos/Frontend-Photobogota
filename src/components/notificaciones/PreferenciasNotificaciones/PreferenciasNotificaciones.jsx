@@ -136,6 +136,7 @@ const PreferenciasNotificaciones = ({
             classNamePrefix="spot-select"
             isSearchable={false}
             isDisabled={!preferencias.notificacionesActivas}
+            menuPosition="fixed"
           />
         </div>
         {/* Botones */}
