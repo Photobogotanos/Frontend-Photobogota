@@ -1,11 +1,11 @@
-import { useReducer, useEffect, useRef } from "react";
+import { useReducer, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import EditarPerfilModal from "../EditarPerfilModal/EditarPerfilModal";
 import FotoPerfilModal from "../FotoPerfilModal/FotoPerfilModal";
-import PreferenciasNotificaciones from "../../notificaciones/PreferenciasNotificaciones/PreferenciasNotificaciones";
 import PerfilHeader from "./PerfilHeader";
 import PerfilStats from "./PerfilStats";
 import PerfilTabs from "./PerfilTabs";
+import PanelNotificaciones from "./PanelNotificaciones";
 import "./MiPerfil.css";
 import { useAuth } from "../../../context/AuthContext";
 import { obtenerPerfil, obtenerPuntos } from "../../../services/usuario.service";
@@ -148,9 +148,54 @@ const crearEstadoInicial = () => {
   };
 };
 
+// Carga los puntos/nivel del usuario y muestra el toast al subir de nivel.
+function useCargarPuntos(dispatch, usuario) {
+  // oxlint-disable-next-line react-doctor/no-set-state-after-await-in-effect -- todos los setters tras await están bajo el flag activo + cleanup
+  useEffect(() => {
+    let activo = true;
+
+    const cargarPuntos = async () => {
+      if (!activo) return;
+      const resultado = await obtenerPuntos();
+      if (!activo || !resultado?.exitoso || !resultado.datos) return;
+
+      const datos = resultado.datos;
+      const puntosData = {
+        puntosTotales: datos.puntosTotales ?? 0,
+        nivel: datos.nivel ?? 1,
+        puntosParaSiguienteNivel: datos.puntosParaSiguienteNivel ?? 0,
+        puntosHoy: datos.puntosHoy ?? 0,
+        limiteDiario: datos.limiteDiario ?? 100,
+        progresoPercent: datos.progresoPercent ?? null,
+      };
+
+      dispatch({ type: "SET_PUNTOS_DATA", payload: puntosData });
+
+      const nivelAnterior = sessionStorage.getItem("nivelAnterior");
+      const nivelActual = String(puntosData.nivel);
+
+      if (nivelAnterior && Number(nivelAnterior) < Number(puntosData.nivel)) {
+        toast.success(`¡Subiste de nivel! Ahora eres nivel ${puntosData.nivel}`, {
+          duration: 4000,
+          icon: "🎉",
+        });
+      }
+
+      sessionStorage.setItem("nivelAnterior", nivelActual);
+    };
+
+    cargarPuntos();
+    return () => {
+      activo = false;
+    };
+  }, [usuario, dispatch]);
+}
+
 export default function MiPerfil() {
   const [state, dispatch] = useReducer(perfilReducer, null, crearEstadoInicial);
   const { usuario, recargarUsuario } = useAuth();
+
+  useCargarPuntos(dispatch, usuario);
 
   // Cargar datos del backend; si falla (500 u otro), no romper la UI
   useEffect(() => {
@@ -281,54 +326,6 @@ export default function MiPerfil() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario]);
 
-  // oxlint-disable-next-line react-doctor/no-set-state-after-await-in-effect -- todos los setters tras await están bajo el flag activo + cleanup
-  useEffect(() => {
-    let activo = true;
-
-    const cargarPuntos = async () => {
-      if (!activo) return;
-      const resultado = await obtenerPuntos();
-      if (!activo || !resultado?.exitoso || !resultado.datos) return;
-
-      const datos = resultado.datos;
-      const puntosData = {
-        puntosTotales: datos.puntosTotales ?? 0,
-        nivel: datos.nivel ?? 1,
-        puntosParaSiguienteNivel: datos.puntosParaSiguienteNivel ?? 0,
-        puntosHoy: datos.puntosHoy ?? 0,
-        limiteDiario: datos.limiteDiario ?? 100,
-        progresoPercent: datos.progresoPercent ?? null,
-      };
-
-      dispatch({ type: "SET_PUNTOS_DATA", payload: puntosData });
-
-      const nivelAnterior = sessionStorage.getItem("nivelAnterior");
-      const nivelActual = String(puntosData.nivel);
-
-      if (nivelAnterior && Number(nivelAnterior) < Number(puntosData.nivel)) {
-        toast.success(`¡Subiste de nivel! Ahora eres nivel ${puntosData.nivel}`, {
-          duration: 4000,
-          icon: "🎉",
-        });
-      }
-
-      sessionStorage.setItem("nivelAnterior", nivelActual);
-    };
-
-    cargarPuntos();
-    return () => {
-      activo = false;
-    };
-  }, [usuario, dispatch]);
-
-  const notificacionesRef = useRef(null);
-
-  useEffect(() => {
-    if (state.mostrarNotificaciones && notificacionesRef.current) {
-      notificacionesRef.current.showModal();
-    }
-  }, [state.mostrarNotificaciones]);
-
   const cerrarNotificaciones = () => {
     dispatch({ type: "SET_MOSTRAR_NOTIFICACIONES", payload: false });
   };
@@ -390,7 +387,6 @@ export default function MiPerfil() {
         rol={state.perfilData.rol}
         stats={stats}
         esPerfilPropio={esPerfilPropio}
-        puntosTotales={state.puntosData.puntosTotales}
       />
 
       <div className="line-divider" />
@@ -427,44 +423,7 @@ export default function MiPerfil() {
 
       {/* Modal de preferencias de notificaciones */}
       {state.mostrarNotificaciones && (
-        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions, react-doctor/no-noninteractive-element-interactions
-        <dialog
-          ref={notificacionesRef}
-          className="perfil-notif-dialog"
-          aria-labelledby="perfil-notif-title"
-          onClose={cerrarNotificaciones}
-          onCancel={(e) => {
-            e.preventDefault();
-            cerrarNotificaciones();
-          }}
-          onClick={(e) => {
-            if (e.target === notificacionesRef.current) {
-              cerrarNotificaciones();
-            }
-          }}
-        >
-          <div className="perfil-notif-panel">
-            <button
-              type="button"
-              className="perfil-notif-close"
-              onClick={cerrarNotificaciones}
-              aria-label="Cerrar"
-            >
-              ×
-            </button>
-            <h3 id="perfil-notif-title" className="perfil-notif-title">
-              Preferencias de Notificaciones
-            </h3>
-            <p className="perfil-notif-sub">
-              Configura cómo quieres recibir los avisos.
-            </p>
-            <PreferenciasNotificaciones
-              enModal
-              onCerrar={cerrarNotificaciones}
-              onGuardado={cerrarNotificaciones}
-            />
-          </div>
-        </dialog>
+        <PanelNotificaciones onCerrar={cerrarNotificaciones} />
       )}
     </Container>
   );

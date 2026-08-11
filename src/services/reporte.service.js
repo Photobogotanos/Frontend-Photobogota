@@ -4,7 +4,6 @@ import {
   getDashboardReportes,
   patchCambiarEstadoReporte,
   patchEscalarReporte,
-  getReportesAsignadosSocio,
   getReportesPendientesValidacion,
   patchValidarReporte,
 } from "@/api/reporteApi";
@@ -28,13 +27,9 @@ export const ESTADOS_REPORTE = [
   { valor: "RECHAZADO", etiqueta: "Rechazado", variant: "secondary" },
 ];
 
-// Estados que un SOCIO o un ADMIN pueden elegir directamente desde el
-// modal de "cambiar estado". RESUELTO también está disponible: el backend
-// se encarga de convertirlo en PENDIENTE_VALIDACION hasta que un MOD lo
-// apruebe (por eso no se ofrece PENDIENTE_VALIDACION como opción manual).
-export const ESTADOS_SELECCIONABLES = ESTADOS_REPORTE.filter(
-  (e) => e.valor !== "PENDIENTE_VALIDACION",
-);
+// Nota: un SOCIO/ADMIN elige entre ESTADOS_REPORTE sin
+// PENDIENTE_VALIDACION (RESUELTO lo convierte el backend en
+// PENDIENTE_VALIDACION hasta que un MOD lo apruebe).
 
 // Etiquetas y color para el enum Gravedad (usado para priorizar el dashboard).
 export const GRAVEDADES_REPORTE = [
@@ -263,25 +258,6 @@ export const escalarReporte = async (id, body, siguienteNivelEtiqueta = "el sigu
       mensaje = "No se pudo conectar con el servidor. Verifica tu conexión.";
     }
     return { exitoso: false, datos: null, mensaje };
-  }
-};
-
-/**
- * Cola de reportes sobre los locales del socio autenticado.
- */
-export const obtenerReportesAsignadosSocio = async () => {
-  try {
-    const response = await getReportesAsignadosSocio();
-    return { exitoso: true, datos: response.data || [], mensaje: "" };
-  } catch (error) {
-    let mensaje = "Error al obtener tus reportes";
-    if (error.response) {
-      mensaje =
-        error.response.data?.message || error.response.data?.mensaje || mensaje;
-    } else if (error.request) {
-      mensaje = "No se pudo conectar con el servidor. Verifica tu conexión.";
-    }
-    return { exitoso: false, datos: [], mensaje };
   }
 };
 

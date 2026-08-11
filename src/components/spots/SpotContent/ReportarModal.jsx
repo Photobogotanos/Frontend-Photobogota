@@ -7,8 +7,6 @@ import {
   FaFlag,
   FaPaperclip,
   FaTimes,
-  FaCheckCircle,
-  FaCopy,
 } from "react-icons/fa";
 import {
   CATEGORIAS_REPORTE,
@@ -16,6 +14,7 @@ import {
   crearReporte,
   reportarUsuario,
 } from "@/services/reporte.service";
+import TicketConfirmacion from "./TicketConfirmacion";
 import "./ReportarModal.css";
 
 const MAX_DESCRIPCION = 1000;
@@ -173,12 +172,6 @@ const ReportarModal = ({
     }
   };
 
-  const copiarTicket = () => {
-    if (!ticket) return;
-    navigator.clipboard.writeText(ticket);
-    toast.success("Número de ticket copiado");
-  };
-
   return (
     <Modal
       show={show}
@@ -194,37 +187,7 @@ const ReportarModal = ({
       </Modal.Header>
 
       {ticket ? (
-        <>
-          <Modal.Body className="reportar-confirmacion">
-            <FaCheckCircle className="confirmacion-icono" />
-            <p className="confirmacion-texto">
-              Gracias, tu reporte fue enviado y quedará asignado al equipo
-              correspondiente para su revisión.
-            </p>
-            <div className="ticket-box">
-              <span className="ticket-label">Número de ticket</span>
-              <div className="ticket-valor-fila">
-                <span className="ticket-valor">{ticket}</span>
-                <button
-                  type="button"
-                  className="btn-copiar-ticket"
-                  onClick={copiarTicket}
-                  aria-label="Copiar número de ticket"
-                >
-                  <FaCopy />
-                </button>
-              </div>
-            </div>
-            <p className="confirmacion-nota">
-              Guarda este número para hacer seguimiento a tu reporte.
-            </p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCerrar}>
-              Cerrar
-            </Button>
-          </Modal.Footer>
-        </>
+        <TicketConfirmacion ticket={ticket} onCerrar={handleCerrar} />
       ) : (
         <>
           <Modal.Body>

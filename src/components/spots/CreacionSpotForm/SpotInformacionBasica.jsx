@@ -7,6 +7,46 @@ import Swal from "sweetalert2";
 import MapPickerModal from "@/components/mapa/MapPickerModal/MapPickerModal";
 import UbicacionLugar from "./UbicacionLugar";
 
+// Geocodificación inversa (coordenadas -> dirección)
+const acortarDireccion = (data) => {
+  const a = data?.address;
+  if (!a) return data?.display_name || "";
+
+  const partes = [];
+
+  if (a.road) {
+    partes.push(
+      `${a.house_number ? `${a.house_number} ` : ""}${a.road}`.trim(),
+    );
+  }
+
+  if (a.neighbourhood) partes.push(a.neighbourhood);
+  else if (a.suburb) partes.push(a.suburb);
+  else if (a.city_district) partes.push(a.city_district);
+
+  if (a.city || a.town || a.village || a.municipality)
+    partes.push(a.city || a.town || a.village || a.municipality);
+
+  return partes.join(", ");
+};
+
+const obtenerDireccionDesdeCoordenadas = async (lat, lng) => {
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=es`;
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Photobogota/1.0 (photobogota123@gmail.com)",
+      },
+    });
+    if (!response.ok) throw new Error("Error en la respuesta del servidor");
+    const data = await response.json();
+    return acortarDireccion(data);
+  } catch (error) {
+    console.error("Error reverse geocoding:", error);
+    return "";
+  }
+};
+
 export default function SpotInformacionBasica({
   nombreLugar,
   direccion,
@@ -21,48 +61,6 @@ export default function SpotInformacionBasica({
   const [metodo, setMetodo] = useState("direccion");
   const [buscando, setBuscando] = useState(false);
   const [showMapPicker, setShowMapPicker] = useState(false);
-
-  // ─────────────────────────────────────────────
-  // Geocodificación inversa (coordenadas -> dirección)
-  // ─────────────────────────────────────────────
-  const acortarDireccion = (data) => {
-    const a = data?.address;
-    if (!a) return data?.display_name || "";
-
-    const partes = [];
-
-    if (a.road) {
-      partes.push(
-        `${a.house_number ? `${a.house_number} ` : ""}${a.road}`.trim(),
-      );
-    }
-
-    if (a.neighbourhood) partes.push(a.neighbourhood);
-    else if (a.suburb) partes.push(a.suburb);
-    else if (a.city_district) partes.push(a.city_district);
-
-    if (a.city || a.town || a.village || a.municipality)
-      partes.push(a.city || a.town || a.village || a.municipality);
-
-    return partes.join(", ");
-  };
-
-  const obtenerDireccionDesdeCoordenadas = async (lat, lng) => {
-    try {
-      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=es`;
-      const response = await fetch(url, {
-        headers: {
-          "User-Agent": "Photobogota/1.0 (photobogota123@gmail.com)",
-        },
-      });
-      if (!response.ok) throw new Error("Error en la respuesta del servidor");
-      const data = await response.json();
-      return acortarDireccion(data);
-    } catch (error) {
-      console.error("Error reverse geocoding:", error);
-      return "";
-    }
-  };
 
   // ─────────────────────────────────────────────
   // 1. Geocodificar dirección escrita
