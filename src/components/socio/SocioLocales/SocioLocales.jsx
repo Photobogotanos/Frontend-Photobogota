@@ -2,49 +2,74 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Card, Button, Spinner } from "react-bootstrap";
 import { FaStore, FaPlus, FaMapMarkerAlt, FaPhone, FaClock } from "react-icons/fa";
-import { obtenerSpots } from "@/services/spot.service";
+import { obtenerMisLocales } from "@/services/spot.service";
+import { useAuth } from "@/context/AuthContext";
 import "./SocioLocales.css";
 
+// Red de seguridad cliente mientras el backend termina de implementar el
+// contrato (GET /spots?tipo=LOCAL&mios=true): nunca muestra locales que no
+// pertenezcan a la cuenta logueada.
+const esLocalPropio = (local, usuarioLogueado) => {
+  const tipo = (local.tipo || "").toUpperCase();
+  if (tipo !== "LOCAL") return false;
+
+  const identificadoresSpot = [
+    local.creador?.nombreUsuario,
+    local.creador?.username,
+    local.creadorId,
+    local.creadorUsername,
+    local.nombreUsuarioCreador,
+    local.usernameCreador,
+  ]
+    .filter((v) => v !== undefined && v !== null)
+    .map((v) => String(v).toLowerCase());
+
+  const identificadoresUsuario = [
+    usuarioLogueado?.id,
+    usuarioLogueado?.username?.replace(/^@/, ""),
+    usuarioLogueado?.nombreUsuario,
+    usuarioLogueado?.nombre,
+  ]
+    .filter((v) => v !== undefined && v !== null)
+    .map((v) => String(v).toLowerCase());
+
+  // Sin identificador de creador ni de usuario activo: confiamos en el filtro
+  // mios del backend y no descartamos el local.
+  if (identificadoresSpot.length === 0 || identificadoresUsuario.length === 0) {
+    return true;
+  }
+
+  return identificadoresSpot.some((creador) =>
+    identificadoresUsuario.includes(creador),
+  );
+};
+
 export default function SocioLocales() {
-const [locales, setLocales] = useState([]);
+  const { usuario } = useAuth();
+  const [locales, setLocales] = useState([]);
   const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     let cancelado = false;
 
     const cargarLocales = async () => {
       setCargando(true);
-      setError(null);
 
       try {
-        // Pide al backend solo los del socio logueado y tipo LOCAL
-        // Ajusta los params a lo que acepte tu API (mios, creadorId, tipo, etc.)
-        const resultado = await obtenerSpots({ tipo: "LOCAL", mios: true });
+        // Contrato con backend: GET /spots?tipo=LOCAL&mios=true (sin mocks).
+        // Si no hay locales responde lista vacía y se muestra el estado vacío.
+        const resultado = await obtenerMisLocales();
 
         if (cancelado) return;
 
-        if (!resultado.exitoso) {
-          setError(resultado.mensaje || "No se pudieron cargar los locales.");
-          setLocales([]);
-          return;
-        }
-
-        const lista = (resultado.datos || []).filter(
-          (item) =>
-            item.tipo === "LOCAL" ||
-            item.tipo === "local" ||
-            // si el backend aún no manda tipo, confía en el filtro mios
-            resultado.esMock
-              ? item.rol === "SOCIO" || item.tipo === "LOCAL"
-              : true
+        const lista = (resultado.datos || []).filter((item) =>
+          esLocalPropio(item, usuario),
         );
 
         setLocales(lista);
       } catch (err) {
         if (cancelado) return;
-        console.error("Error al cargar locales:", err);
-        setError("Ocurrió un error al cargar tus locales.");
+        console.error("Error al cargar locales propios:", err);
         setLocales([]);
       } finally {
         if (!cancelado) setCargando(false);
@@ -55,6 +80,7 @@ const [locales, setLocales] = useState([]);
     return () => {
       cancelado = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo se cargan al montar
   }, []);
 
   // ── Cargando ──────────────────────────────────────────────
@@ -67,33 +93,36 @@ const [locales, setLocales] = useState([]);
     );
   }
 
-  // ── Error de red / backend ────────────────────────────────
-  if (error) {
-    return (
-      <div className="locales-estado alert alert-danger mb-4">
-        <strong>No se pudieron cargar los locales.</strong>
-        <p className="mb-0">{error}</p>
-      </div>
-    );
-  }
-
-  // ── Sin locales (mismo estilo que PromoLocal) ─────────────
+  // ── Sin locales ───────────────────────────────────────────
   if (locales.length === 0) {
     return (
-      <div className="locales-vacio">
-        <div className="alert alert-warning mb-4">
-          <strong>No tienes locales creados.</strong>
-          <p className="mb-2">
-            Crea tu primer local para que aparezca aquí y puedas asociarle
-            promociones.
+      <div className="locales-container">
+        <div className="locales-header">
+          <span className="locales-top-text">Mis establecimientos</span>
+          <div className="locales-title-group">
+            <h1 className="locales-titulo">
+              <FaStore className="locales-header-icon" />
+              Mis Locales
+            </h1>
+            <p className="locales-subtitulo">
+              Administra los establecimientos asociados a tu cuenta de socio
+            </p>
+          </div>
+          <span className="locales-header-line" />
+        </div>
+
+        <div className="locales-vacio">
+          <FaStore className="locales-vacio-icon" />
+          <p className="locales-vacio-texto mb-0">
+            <strong>Aún no tienes locales registrados,</strong> puedes
+            intentar creando tu primer local.
           </p>
           <Link
             to="/crear-spot"
-            className="btn btn-sm"
-            style={{ background: "#806fbe", color: "#fff", border: "none" }}
+            className="btn btn-sm locales-vacio-btn"
           >
             <FaPlus className="me-1" />
-            Crear local
+            Crear mi primer local
           </Link>
         </div>
       </div>
@@ -103,24 +132,18 @@ const [locales, setLocales] = useState([]);
   // ── Lista de locales ──────────────────────────────────────
   return (
     <div className="locales-container">
-      <div className="locales-header d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-        <div>
-          <h1 className="locales-titulo mb-1">
-            <FaStore className="me-2" />
+      <div className="locales-header">
+        <span className="locales-top-text">Mis establecimientos</span>
+        <div className="locales-title-group">
+          <h1 className="locales-titulo">
+            <FaStore className="locales-header-icon" />
             Mis Locales
           </h1>
-          <p className="text-muted mb-0">
+          <p className="locales-subtitulo">
             Administra los establecimientos asociados a tu cuenta de socio
           </p>
         </div>
-        <Link
-          to="/crear-spot"
-          className="btn"
-          style={{ background: "#806fbe", color: "#fff", border: "none" }}
-        >
-          <FaPlus className="me-1" />
-          Crear local
-        </Link>
+        <span className="locales-header-line" />
       </div>
 
       <Row className="g-3">
@@ -174,8 +197,13 @@ const [locales, setLocales] = useState([]);
                     <Button
                       as={Link}
                       to={`/spot/${local.id}`}
-                      variant="outline-primary"
+                      variant="outline-secondary"
                       size="sm"
+                      style={{
+                        background: "#806fbe",
+                        color: "#fff",
+                        border: "none",
+                      }}
                     >
                       Ver detalle
                     </Button>
@@ -184,6 +212,12 @@ const [locales, setLocales] = useState([]);
                       to="/crear-promocion"
                       variant="outline-secondary"
                       size="sm"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, #fff3e0, #ffe0b2)",
+                        color: "#e65100",
+                        border: "1px solid #ffb74d",
+                      }}
                     >
                       Crear promoción
                     </Button>
