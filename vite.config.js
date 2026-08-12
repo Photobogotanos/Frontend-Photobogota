@@ -6,9 +6,15 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// base se define por entorno:
+//   - Vercel: usa "/" (por defecto, sin base path).
+//   - GitHub Pages: se pasa VITE_BASE_PATH="/Frontend-Photobogota/".
+// Definir VITE_BASE_PATH como variable de entorno en el build.
+const base = process.env.VITE_BASE_PATH || "/";
+
 export default defineConfig({
   plugins: [react()],
-  base: "/Frontend-Photobogota/",
+  base,
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),

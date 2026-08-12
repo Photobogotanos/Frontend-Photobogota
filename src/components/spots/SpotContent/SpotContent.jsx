@@ -2,6 +2,7 @@ import { useState, useEffect, useReducer, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaCommentDots } from "react-icons/fa";
 import { obtenerSpotPorId } from "@/services/spot.service";
+import { obtenerPromocionActivaDeSpot } from "@/services/promocion.service";
 import {
   obtenerCalificacionesDelSpot,
   crearCalificacion,
@@ -47,6 +48,7 @@ const MapaContent = () => {
   const { isGuardado, toggleGuardado } = useGuardados();
   const [spot, setSpot] = useState(null);
   const [cargandoSpot, setCargandoSpot] = useState(false);
+  const [promocion, setPromocion] = useState(null);
   const [filtrosVisibles, setFiltrosVisibles] = useState(true);
   const [filtrosActivos, setFiltrosActivos] = useState({});
   const [guardandoSpot, setGuardandoSpot] = useState(false);
@@ -123,6 +125,15 @@ const MapaContent = () => {
       if (!activo || !resultado) return;
       if (resultado.exitoso) {
         setSpot(resultado.datos);
+        setPromocion(null);
+        // Si el local tiene una promoción vigente (flag del backend), la
+        // cargamos para mostrarla en la página del local.
+        if (resultado.datos?.tienePromocion) {
+          const promo = await obtenerPromocionActivaDeSpot(resultado.datos.id || id);
+          if (activo && promo.exitoso) {
+            setPromocion(promo.datos);
+          }
+        }
       } else {
         toast.error(resultado.mensaje);
       }
@@ -265,6 +276,7 @@ const MapaContent = () => {
       <div className="lugar-content-wrapper">
         <SpotInfo
           spot={spot}
+          promocion={promocion}
           esGuardado={isGuardado(spot.id)}
           guardandoSpot={guardandoSpot}
           handleGuardarSpot={handleGuardarSpot}

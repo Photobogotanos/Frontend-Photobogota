@@ -87,11 +87,32 @@ src/
 
 ## Configuración del Entorno
 
-Crea un archivo `.env` en la raíz del proyecto (si es necesario):
+Crea un archivo `.env` para desarrollo (ver `.env.example`):
 
 ```env
-VITE_API_URL=http://localhost:3000
+# Backend local
+VITE_API_URL=http://localhost:8080/api/v1
+# Backend desplegado
+# VITE_API_URL=https://tu-backend.up.railway.app/api/v1
 ```
+
+> Las variables `VITE_*` solo se leen en build. Si cambias el `.env`,
+> reinicia el servidor dev o vuelve a ejecutar el build.
+
+## Despliegue en Vercel
+
+1. Sube el repo a GitHub e importa el proyecto en [vercel.com](https://vercel.com)
+   (Vercel detecta Vite + pnpm automáticamente).
+2. En **Settings → Environment Variables** define, para Production y Preview:
+   - `VITE_API_URL` → la URL de tu backend desplegado, ej. `https://tu-backend.up.railway.app/api/v1`
+3. `vercel.json` redirige las rutas SPA al `index.html`; `base` de Vite usa `/`,
+   por lo que no requiere `VITE_BASE_PATH`.
+4. El **backend desplegado** debe:
+   - Permitir tu dominio en CORS: `CORS_ALLOWED_ORIGINS=https://tu-proyecto.vercel.app`
+   - Servir las imágenes apuntando a su dominio:
+     `storage.local.url-base=https://tu-backend.up.railway.app/uploads`
+     (o configurar `CLOUDINARY_URL`).
+5. Push/Pull Request crean previews; el merge a la rama conectada publica prod.
 
 ## Rutas Principales
 

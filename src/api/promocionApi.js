@@ -8,6 +8,10 @@ export const getPromocionesMias = () => clienteApi.get("/promociones/mias");
 // Detalle de una promoción.
 export const getPromocionById = (id) => clienteApi.get(`/promociones/${id}`);
 
+// Promoción vigente y activa de un local (para la página del local).
+export const getPromocionActivaDeSpot = (spotId) =>
+  clienteApi.get(`/promociones/spot/${spotId}/activa`);
+
 // Crea una promoción. body: { spotId, titulo, descripcion, tipo, descuento,
 // codigo, imagenes, fechaInicio, fechaFin, usosMaximos }
 export const postCrearPromocion = (body) =>

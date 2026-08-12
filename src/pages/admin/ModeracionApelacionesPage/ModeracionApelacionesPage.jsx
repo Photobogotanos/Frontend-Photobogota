@@ -57,7 +57,7 @@ const ModeracionApelacionesPage = () => {
       toast.success(
         body.aprobar
           ? "Apelación aprobada: la cuenta fue reactivada"
-          : "Apelación rechazada: se mantiene el ban",
+          : "Apelación rechazada: se mantiene la sanción",
       );
       setModal(null);
       cargar();

@@ -39,6 +39,8 @@ jobs:
 
       - name: Construir proyecto (Vite)
         run: pnpm run build
+        env:
+          VITE_BASE_PATH: /Frontend-Photobogota/
 
       - name: Deploy
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'

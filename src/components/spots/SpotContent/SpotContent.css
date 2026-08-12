@@ -455,6 +455,150 @@
   font-weight: 500;
 }
 
+/* Promoción activa del local */
+.spot-promocion {
+  display: flex;
+  gap: 18px;
+  align-items: stretch;
+  margin-bottom: 26px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, #fbfaff 0%, #f3efff 100%);
+  border: 1.5px solid #e4dcff;
+  border-radius: 16px;
+  box-shadow: 0 6px 22px rgba(128, 111, 190, 0.12);
+}
+
+.spot-promocion-imagen {
+  flex-shrink: 0;
+  width: 128px;
+  min-height: 128px;
+  border-radius: 12px;
+  overflow: hidden;
+  align-self: center;
+}
+
+.spot-promocion-imagen img {
+  width: 100%;
+  height: 128px;
+  object-fit: cover;
+  display: block;
+}
+
+.spot-promocion-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spot-promocion-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.spot-promocion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #f63b3b;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.spot-promocion-descuento {
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ff8a00, #f63b3b);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.spot-promocion-titulo {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.spot-promocion-descripcion {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #555;
+}
+
+.spot-promocion-codigo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  padding: 7px 14px;
+  background: #fff;
+  border: 1.5px dashed #b9a8ff;
+  border-radius: 10px;
+}
+
+.codigo-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #777;
+}
+
+.codigo-valor {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-primary);
+}
+
+.btn-cpy {
+  padding: 3px 10px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.btn-cpy:hover {
+  opacity: 0.85;
+}
+
+.spot-promocion-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #777;
+}
+
+.spot-promocion-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.meta-icon {
+  color: #8f7bd8;
+  font-size: 12px;
+}
+
 .lugar-acciones {
   display: flex;
   gap: 12px;
@@ -1359,5 +1503,19 @@ button.usuario-nombre {
   .btn-galeria {
     padding: 10px 16px;
     font-size: 12px;
+  }
+
+  .spot-promocion {
+    flex-direction: column;
+    padding: 14px 14px 16px;
+  }
+
+  .spot-promocion-imagen {
+    width: 100%;
+  }
+
+  .spot-promocion-imagen img {
+    height: 160px;
+    width: 100%;
   }
 }

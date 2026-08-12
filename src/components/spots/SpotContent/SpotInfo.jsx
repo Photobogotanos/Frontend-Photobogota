@@ -13,8 +13,19 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaTimes,
+  FaClock,
+  FaTicketAlt,
 } from "react-icons/fa";
 import GaleriaSpot from "./GaleriaSpot";
+
+const formatearFecha = (fecha) => {
+  if (!fecha) return "—";
+  return new Date(fecha).toLocaleDateString("es-CO", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
 
 const normalizarImagenes = (spot) => {
   const fuentes = [];
@@ -53,6 +64,7 @@ const normalizarImagenes = (spot) => {
 
 const SpotInfo = ({
   spot,
+  promocion,
   esGuardado,
   guardandoSpot,
   handleGuardarSpot,
@@ -222,6 +234,69 @@ const SpotInfo = ({
               <span className="reviews-text">({spot.totalResenas} reseñas)</span>
             </div>
           </div>
+
+          {promocion && (
+            <div className="spot-promocion">
+              {promocion.imagen && (
+                <div className="spot-promocion-imagen">
+                  <img src={promocion.imagen} alt={promocion.titulo} loading="lazy" />
+                </div>
+              )}
+              <div className="spot-promocion-body">
+                <div className="spot-promocion-cabecera">
+                  <span className="spot-promocion-badge">
+                    <FaTicketAlt /> Promoción activa
+                  </span>
+                  {promocion.descuento && (
+                    <span className="spot-promocion-descuento">
+                      {promocion.descuento} OFF
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="spot-promocion-titulo">
+                  {promocion.titulo || "Promoción del local"}
+                </h3>
+
+                {promocion.descripcion && (
+                  <p className="spot-promocion-descripcion">
+                    {promocion.descripcion}
+                  </p>
+                )}
+
+                {promocion.codigo && (
+                  <div className="spot-promocion-codigo">
+                    <span className="codigo-label">Código:</span>
+                    <code className="codigo-valor">{promocion.codigo}</code>
+                    <button
+                      type="button"
+                      className="btn-cpy"
+                      onClick={() => navigator.clipboard.writeText(promocion.codigo)}
+                    >
+                      Copiar
+                    </button>
+                  </div>
+                )}
+
+                <div className="spot-promocion-meta">
+                  {(promocion.fechaInicio || promocion.fechaFin) && (
+                    <span>
+                      <FaClock className="meta-icon" />
+                      {formatearFecha(promocion.fechaInicio)} —{" "}
+                      {formatearFecha(promocion.fechaFin)}
+                    </span>
+                  )}
+                  {promocion.usosMaximos ? (
+                    <span>
+                      Usos: {promocion.usos} / {promocion.usosMaximos}
+                    </span>
+                  ) : (
+                    <span>Usos ilimitados</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {spot.descripcion && (
             <div className="lugar-descripcion">

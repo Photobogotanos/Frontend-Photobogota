@@ -28,8 +28,10 @@ const TIPO_TITULO = {
 };
 
 const TIPO_DESCRIPCION = {
-  MUTE: "No puedes publicar contenido mientras dure el silencio.",
-  SUSPENSION: "No puedes publicar contenido mientras dure la suspensión.",
+  MUTE:
+    "No puedes publicar contenido mientras dure el silencio. Si crees que es un error, puedes enviar una apelación.",
+  SUSPENSION:
+    "No puedes publicar contenido mientras dure la suspensión. Si crees que es un error, puedes enviar una apelación.",
   BAN: "No puedes publicar contenido. Puedes enviar una apelación para que un administrador revise tu caso.",
 };
 
@@ -130,7 +132,7 @@ export default function CuentaSancionadaPage() {
           </p>
         )}
 
-        {tipo === "BAN" && sancion?.puedeApelar && !apelacionEnviada && (
+        {sancion?.puedeApelar && !apelacionEnviada && (
           <form onSubmit={manejarApelar} className="csp-form">
             <label htmlFor="motivo-apelacion" className="csp-label">
               Motivo de la apelación
@@ -150,7 +152,7 @@ export default function CuentaSancionadaPage() {
           </form>
         )}
 
-        {tipo === "BAN" && apelacionEnviada && (
+        {apelacionEnviada && (
           <p className="csp-success">
             Tu apelación fue enviada. Un administrador la revisará y te notificará la
             decisión.

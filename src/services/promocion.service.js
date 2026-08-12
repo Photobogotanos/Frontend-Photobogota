@@ -1,6 +1,7 @@
 import {
   getPromocionesMias,
   getPromocionById,
+  getPromocionActivaDeSpot,
   postCrearPromocion,
   putActualizarPromocion,
   patchTogglePromocion,
@@ -58,6 +59,26 @@ export const obtenerPromocionPorId = async (id) => {
       error.response?.data?.message ||
       error.response?.data?.mensaje ||
       "No se pudo cargar la promoción";
+    return { exitoso: false, datos: null, mensaje };
+  }
+};
+
+/**
+ * Promoción vigente y activa de un local (página del local / "ir al local").
+ * Es público; si no hay promoción activa devuelve exitoso:false sin datos.
+ */
+export const obtenerPromocionActivaDeSpot = async (spotId) => {
+  try {
+    const response = await getPromocionActivaDeSpot(spotId);
+    return { exitoso: true, datos: response.data || null, mensaje: "" };
+  } catch (error) {
+    if (error.response?.status === 404) {
+      return { exitoso: false, datos: null, mensaje: "" };
+    }
+    const mensaje =
+      error.response?.data?.message ||
+      error.response?.data?.mensaje ||
+      "No se pudo cargar la promoción del local";
     return { exitoso: false, datos: null, mensaje };
   }
 };

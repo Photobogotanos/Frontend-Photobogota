@@ -16,13 +16,13 @@ const DETALLES = {
   MUTE: {
     titulo: "Has sido silenciado",
     descripcion:
-      "No puedes publicar contenido mientras dure el silencio. Ya no se te permite publicar reseñas hasta que expire.",
+      "No puedes publicar contenido mientras dure el silencio. Si crees que es un error, puedes enviar una apelación.",
     variant: "warning",
   },
   SUSPENSION: {
     titulo: "Tu cuenta está suspendida temporalmente",
     descripcion:
-      "No puedes publicar contenido mientras dure la suspensión. Tu cuenta será restaurada automáticamente al vencer.",
+      "No puedes publicar contenido mientras dure la suspensión. Si crees que es un error, puedes enviar una apelación.",
     variant: "danger",
   },
   BAN: {
@@ -56,6 +56,12 @@ export default function ModalSancion({ sancion, show, onCerrar, onVerEstado }) {
   const tipo = sancion.tipo;
   const esBan = tipo === "BAN";
   const esSancionBloqueante = tipo !== "NOTIFICACION";
+  // MUTE, SUSPENSION y BAN son apelables; si el backend ya informa
+  // "puedeApelar", se respeta ese valor.
+  const puedeApelar =
+    sancion.puedeApelar !== undefined
+      ? Boolean(sancion.puedeApelar)
+      : ["MUTE", "SUSPENSION", "BAN"].includes(tipo);
   const info = DETALLES[tipo] || DETALLES.NOTIFICACION;
 
   const manejarApelar = async (e) => {
@@ -117,7 +123,7 @@ export default function ModalSancion({ sancion, show, onCerrar, onVerEstado }) {
           </p>
         )}
 
-        {esBan && !apelacionEnviada && (
+        {puedeApelar && !apelacionEnviada && (
           <Form onSubmit={manejarApelar} className="ms-form">
             <Form.Label className="ms-label" htmlFor="motivo-apelacion">
               Motivo de la apelación
@@ -140,7 +146,7 @@ export default function ModalSancion({ sancion, show, onCerrar, onVerEstado }) {
           </Form>
         )}
 
-        {esBan && apelacionEnviada && (
+        {puedeApelar && apelacionEnviada && (
           <p className="ms-success">
             Tu apelación fue enviada. Un administrador la revisará y te notificará la
             decisión.
