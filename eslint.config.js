@@ -51,4 +51,12 @@ export default defineConfig([
       "react-doctor/no-noninteractive-element-interactions": "off",
     },
   },
+  {
+    // Archivos que corren en Node (no en el navegador): vite.config.js usa
+    // process.env para la ruta base según el entorno (Vercel / GitHub Pages).
+    files: ["vite.config.js", "eslint.config.js"],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ]);

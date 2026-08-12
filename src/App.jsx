@@ -1,4 +1,10 @@
 import { BrowserRouter } from "react-router-dom";
+
+// El basename del router se deduce del base de Vite, para que la app funcione
+// en todos los entornos:
+//   - Local / Vercel:   base "/"              -> basename "/"
+//   - GitHub Pages:     base "/Frontend-Photobogota/" -> basename "/Frontend-Photobogota"
+const basename = import.meta.env.BASE_URL.replace(/\/+$/, "") || "/";
 import AppRouter from "@/routes/AppRouter";
 import ScrollToTop from "@/components/common/ScrollToTop";
 
@@ -68,7 +74,7 @@ function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <BrowserRouter basename="/Frontend-Photobogota">
+      <BrowserRouter basename={basename}>
         <ScrollToTop />
         <AppRouter />
       </BrowserRouter>
