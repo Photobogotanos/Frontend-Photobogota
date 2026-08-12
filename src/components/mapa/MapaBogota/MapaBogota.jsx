@@ -12,6 +12,7 @@ import "leaflet/dist/leaflet.css";
 import "./MapaBogota.css";
 import camaraIcon from "@/assets/images/icons/camara.jpg";
 import localIcon from "@/assets/images/icons/local.jpg";
+import cuponIcon from "@/assets/images/icons/cupon.jpg";
 import { FaPlus, FaMinus, FaLocationArrow } from "react-icons/fa";
 import SpotPreviewModal from "@/components/spots/SpotPreviewModal/SpotPreviewModal";
 import { obtenerSpots } from "@/services/spot.service";
@@ -25,8 +26,12 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-const createCustomIcon = (esLocal) => {
-  const iconUrl = esLocal ? localIcon : camaraIcon;
+const createCustomIcon = (esLocal, tienePromocion = false) => {
+  const iconUrl = esLocal
+    ? tienePromocion
+      ? cuponIcon
+      : localIcon
+    : camaraIcon;
   return new L.Icon({
     iconUrl,
     iconRetinaUrl: iconUrl,
@@ -180,6 +185,7 @@ const MapaBogota = ({ filtros = {} }) => {
           tipsFoto: spot.tipsFoto,
           creadorId: spot.creadorId,
           rol: spot.rol || spot.creador?.rol,
+          tienePromocion: Boolean(spot.tienePromocion),
         }));
 
         setSpots(spotsFormateados);
@@ -244,7 +250,7 @@ const MapaBogota = ({ filtros = {} }) => {
               <Marker
                 key={lugar.id}
                 position={lugar.coord}
-                icon={createCustomIcon(esLocal)}
+                icon={createCustomIcon(esLocal, lugar.tienePromocion)}
                 eventHandlers={{
                   click: () => handleMarkerClick(lugar),
                 }}

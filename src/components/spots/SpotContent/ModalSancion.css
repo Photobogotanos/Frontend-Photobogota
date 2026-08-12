@@ -1,0 +1,71 @@
+.modal-sancion .modal-title-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+}
+
+.ms-icono {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+.ms-icono-warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.ms-icono-danger {
+  background: #f8d7da;
+  color: #842029;
+}
+
+.ms-descripcion {
+  color: #495057;
+  margin-bottom: 0.75rem;
+}
+
+.ms-castigo {
+  background: #f8f9fa;
+  border-left: 4px solid #dc3545;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.ms-mensaje {
+  color: #343a40;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.ms-detalle {
+  color: #6c757d;
+  margin-bottom: 0.35rem;
+}
+
+.ms-form {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.ms-label {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.ms-success {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background: #d1e7dd;
+  color: #0f5132;
+  font-weight: 500;
+}

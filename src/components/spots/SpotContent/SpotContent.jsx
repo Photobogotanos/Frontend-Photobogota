@@ -12,6 +12,7 @@ import { useGuardados } from "@/hooks/useGuardados";
 import { toast } from "react-hot-toast";
 import { resenaReducer, initialResenaState } from "./ResenaReducer";
 import ReportarModal from "./ReportarModal";
+import ModalSancion from "./ModalSancion";
 import SpotInfo from "./SpotInfo";
 import NuevaResenaCard from "./NuevaResenaCard";
 import ResenasLista from "./ResenasLista";
@@ -42,7 +43,7 @@ const obtenerNombreAutorCalificacion = (calificacion) =>
 const MapaContent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { usuario, logueado } = useAuth();
+  const { usuario, logueado, recargarUsuario } = useAuth();
   const { isGuardado, toggleGuardado } = useGuardados();
   const [spot, setSpot] = useState(null);
   const [cargandoSpot, setCargandoSpot] = useState(false);
@@ -67,6 +68,11 @@ const MapaContent = () => {
   // (contextoReporte con resenaId) o desde el spot en general (contextoReporte null).
   const [modalReporteAbierto, setModalReporteAbierto] = useState(false);
   const [contextoReporte, setContextoReporte] = useState(null);
+
+  // Alerta de sanción: se abre cuando el backend rechaza una reseña por el
+  // filtro de contenido y aplica (o ya tenía) un castigo. Muestra el tipo de
+  // sanción y permite apelar en caso de BAN.
+  const [sancionRecibida, setSancionRecibida] = useState(null);
 
   const abrirReporteSpot = () => {
     if (!logueado) {
@@ -209,11 +215,26 @@ const MapaContent = () => {
       toast.success(resultado.mensaje);
       await cargarCalificaciones(id);
       setEditandoResena(false);
+    } else if (resultado.sancion) {
+      // El contenido fue rechazado por moderación: mostramos la alerta con el
+      // castigo aplicado (y apelación si es un BAN) en lugar de un toast genérico.
+      setSancionRecibida(resultado.sancion);
     } else {
       toast.error(resultado.mensaje);
     }
 
     setEnviandoCalificacion(false);
+  };
+
+  // Redirige al usuario a su página de estado de cuenta (CuentaSancionadaPage).
+  // El gating en App.jsx lo lleva ahí automáticamente al recargar el usuario.
+  const verEstadoDeSancion = async () => {
+    setSancionRecibida(null);
+    try {
+      await recargarUsuario();
+    } catch {
+      // Si la recarga falla, se mantiene la vista actual sin redirigir.
+    }
   };
 
   // Descarta cambios sin guardar y vuelve a la vista de solo lectura con
@@ -283,6 +304,12 @@ const MapaContent = () => {
           spotId={spot.id}
           resenaId={contextoReporte?.resenaId ?? null}
           nombreAutorResena={contextoReporte?.nombreAutorResena ?? null}
+        />
+        <ModalSancion
+          show={Boolean(sancionRecibida)}
+          sancion={sancionRecibida}
+          onCerrar={() => setSancionRecibida(null)}
+          onVerEstado={verEstadoDeSancion}
         />
       </div>
     );

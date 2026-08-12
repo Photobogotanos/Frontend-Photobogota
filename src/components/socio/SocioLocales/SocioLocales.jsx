@@ -33,6 +33,8 @@ const esLocalPropio = (local, usuarioLogueado) => {
     .filter((v) => v !== undefined && v !== null)
     .map((v) => String(v).toLowerCase());
 
+  const identificadoresUsuarioSet = new Set(identificadoresUsuario);
+
   // Sin identificador de creador ni de usuario activo: confiamos en el filtro
   // mios del backend y no descartamos el local.
   if (identificadoresSpot.length === 0 || identificadoresUsuario.length === 0) {
@@ -40,7 +42,7 @@ const esLocalPropio = (local, usuarioLogueado) => {
   }
 
   return identificadoresSpot.some((creador) =>
-    identificadoresUsuario.includes(creador),
+    identificadoresUsuarioSet.has(creador),
   );
 };
 

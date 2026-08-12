@@ -89,7 +89,7 @@ export const getMetricasEliminacionAdmin = () =>
  * @returns {Promise}
  */
 export const getConfiguracionPuntosAdmin = () =>
-  clienteApi.get("/admin/puntos/configuracion");
+  clienteApi.get("/admin/puntos/config");
 
 /**
  * Actualizar configuración de puntos
@@ -97,7 +97,7 @@ export const getConfiguracionPuntosAdmin = () =>
  * @returns {Promise}
  */
 export const putConfiguracionPuntosAdmin = (body) =>
-  clienteApi.put("/admin/puntos/configuracion", body);
+  clienteApi.put("/admin/puntos/config", body);
 
 /**
  * Ajustar puntos de un usuario manualmente
@@ -106,4 +106,4 @@ export const putConfiguracionPuntosAdmin = (body) =>
  * @returns {Promise}
  */
 export const postAjustePuntosAdmin = (usuarioId, body) =>
-  clienteApi.post(`/admin/puntos/usuarios/${usuarioId}/ajuste`, body);
+  clienteApi.post(`/admin/puntos/usuarios/${usuarioId}/puntos`, body);

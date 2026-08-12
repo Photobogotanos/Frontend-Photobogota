@@ -7,6 +7,8 @@ import {
   FaChevronRight,
   FaTrash,
 } from "react-icons/fa";
+import { toast } from "react-hot-toast";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import HeaderPromo from "./HeaderPromo";
 import PromoInfoBasica from "./PromoInfoBasica";
@@ -14,6 +16,12 @@ import PromoLocal from "./PromoLocal";
 import PromoDisponibilidad from "./PromoDisponibilidad";
 import PromoPreview from "./PromoPreview";
 import PromoBotones from "./PromoBotones";
+import {
+  crearPromocion,
+  actualizarPromocion,
+  obtenerPromocionPorId,
+} from "@/services/promocion.service";
+import { subirImagenesSpot } from "@/services/imagen.service";
 
 import "./CrearPromocion.css";
 
@@ -35,10 +43,14 @@ const promoFormReducer = (state, action) => {
       return { ...state, limiteUsos: action.payload };
     case "SET_IMAGENES":
       return { ...state, imagenes: action.payload };
+    case "SET_IMAGENES_EXISTENTES":
+      return { ...state, imagenesExistentes: action.payload };
     case "SET_PREVIEWS":
       return { ...state, previews: action.payload };
     case "SET_INDICE_IMAGEN":
       return { ...state, indiceImagen: action.payload };
+    case "RESET":
+      return { ...initialState };
     default:
       return state;
   }
@@ -53,8 +65,16 @@ const initialState = {
   fechaFin: "",
   limiteUsos: "",
   imagenes: [],
+  imagenesExistentes: [],
   previews: [],
   indiceImagen: 0,
+};
+
+// Lleva el foco a la vista previa de la promoción (función pura, sin estado).
+const scrollAVistaPrevia = () => {
+  document
+    .getElementById("promo-preview-section")
+    ?.scrollIntoView({ behavior: "smooth", block: "center" });
 };
 
 // ============================================================
@@ -218,8 +238,14 @@ function ImageUploader({
 // Componente principal
 // ============================================================
 export default function CrearPromocion() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editingId = searchParams.get("id");
+
   const [state, dispatch] = useReducer(promoFormReducer, initialState);
   const previewsRef = useRef([]);
+  const [publicando, setPublicando] = useState(false);
+  const [cargandoPromo, setCargandoPromo] = useState(Boolean(editingId));
 
   useEffect(() => {
     previewsRef.current = state.previews;
@@ -231,6 +257,35 @@ export default function CrearPromocion() {
       previewsRef.current = [];
     };
   }, []);
+
+  // Modo edición: cargar los datos de la promoción existente.
+  useEffect(() => {
+    if (!editingId) return;
+
+    let activo = true;
+    obtenerPromocionPorId(editingId).then((resultado) => {
+      if (!activo) return;
+      setCargandoPromo(false);
+      if (resultado.exitoso && resultado.datos) {
+        const p = resultado.datos;
+        dispatch({ type: "SET_TITULO", payload: p.titulo || "" });
+        dispatch({ type: "SET_DESCRIPCION", payload: p.descripcion || "" });
+        dispatch({ type: "SET_TIPO", payload: p.tipo || "descuento" });
+        dispatch({ type: "SET_LOCAL_ID", payload: p.spotId || null });
+        dispatch({ type: "SET_FECHA_INICIO", payload: p.fechaInicio ? String(p.fechaInicio).slice(0, 10) : "" });
+        dispatch({ type: "SET_FECHA_FIN", payload: p.fechaFin ? String(p.fechaFin).slice(0, 10) : "" });
+        dispatch({ type: "SET_LIMITE_USOS", payload: p.usosMaximos ?? "" });
+        dispatch({ type: "SET_IMAGENES_EXISTENTES", payload: p.imagenes || [] });
+        dispatch({ type: "SET_PREVIEWS", payload: p.imagenes || [] });
+        dispatch({ type: "SET_INDICE_IMAGEN", payload: 0 });
+      } else {
+        toast.error(resultado.mensaje || "No se pudo cargar la promoción");
+      }
+    });
+    return () => {
+      activo = false;
+    };
+  }, [editingId]);
 
   const estadoCalculado = useMemo(() => {
     if (!state.fechaFin) return "activa";
@@ -246,14 +301,38 @@ export default function CrearPromocion() {
   };
 
   const handleRemoveImagen = (idx) => {
-    const url = state.previews[idx];
-    if (url) URL.revokeObjectURL(url);
-    const newImagenes = state.imagenes.filter((_, i) => i !== idx);
-    const newPreviews = state.previews.filter((_, i) => i !== idx);
-    dispatch({ type: "SET_IMAGENES", payload: newImagenes });
-    dispatch({ type: "SET_PREVIEWS", payload: newPreviews });
-    const nuevoIdx = Math.min(state.indiceImagen, newPreviews.length - 1);
+    const yaExistente = Array.isArray(state.imagenesExistentes)
+      ? idx < state.imagenesExistentes.length
+      : false;
+
+    if (yaExistente) {
+      // Se quita una imagen ya guardada en el backend.
+      const nuevasExistentes = state.imagenesExistentes.filter((_, i) => i !== idx);
+      const nuevosPreviews = state.previews.filter((_, i) => i !== idx);
+      dispatch({ type: "SET_IMAGENES_EXISTENTES", payload: nuevasExistentes });
+      dispatch({ type: "SET_PREVIEWS", payload: nuevosPreviews });
+    } else {
+      // Se quita un archivo local no subido aún.
+      updatePreviewCleanup();
+      const url = state.previews[idx];
+      if (url) URL.revokeObjectURL(url);
+      const indiceEnArchivos = idx - (state.imagenesExistentes?.length || 0);
+      const nuevasImagenes = state.imagenes.filter(
+        (_, i) => i !== indiceEnArchivos,
+      );
+      const nuevosPreviews = state.previews.filter((_, i) => i !== idx);
+      dispatch({ type: "SET_IMAGENES", payload: nuevasImagenes });
+      dispatch({ type: "SET_PREVIEWS", payload: nuevosPreviews });
+    }
+
+    const nuevoIdx = Math.min(state.indiceImagen, state.previews.length - 2);
     dispatch({ type: "SET_INDICE_IMAGEN", payload: Math.max(0, nuevoIdx) });
+  };
+
+  // Sincroniza previewsRef antes de modificar el estado para que el cleanup de
+  // unmount/eliminación siempre tenga la lista actual.
+  const updatePreviewCleanup = () => {
+    previewsRef.current = state.previews;
   };
 
   const handleNavigate = (dir) => {
@@ -266,30 +345,90 @@ export default function CrearPromocion() {
     dispatch({ type: "SET_INDICE_IMAGEN", payload: next });
   };
 
-  /*
-  const handleSubmit = () => {
-    const payload = {
-      titulo: state.titulo,
-      descripcion: state.descripcion,
-      tipo: state.tipo,
-      localId: state.localId,
-      fechaInicio: state.fechaInicio,
-      fechaFin: state.fechaFin,
-      limiteUsos: state.limiteUsos === "" ? null : parseInt(state.limiteUsos),
-      estado: estadoCalculado,
-    };
-    console.log("Payload a enviar:", payload);
-    // Aquí va tu llamada a la API
+  const handleSubmit = async () => {
+    if (!state.localId) {
+      toast.error("Selecciona el local al que pertenece la promoción");
+      return;
+    }
+    if (!state.titulo.trim()) {
+      toast.error("Escribe un título para la promoción");
+      return;
+    }
+    if (!state.descripcion.trim()) {
+      toast.error("Escribe una descripción para la promoción");
+      return;
+    }
+    if (!state.fechaInicio || !state.fechaFin) {
+      toast.error("Selecciona la fecha de inicio y la fecha de fin");
+      return;
+    }
+    if (new Date(state.fechaFin) < new Date(state.fechaInicio)) {
+      toast.error("La fecha de fin debe ser posterior a la fecha de inicio");
+      return;
+    }
+
+    setPublicando(true);
+    try {
+      // 1. Subir imágenes nuevas (solo archivos locales, no las URLs ya guardadas)
+      let urlsNuevas = [];
+      if (state.imagenes.length > 0) {
+        const resultadoImagenes = await subirImagenesSpot(state.imagenes);
+        if (!resultadoImagenes.exitoso) {
+          toast.error(resultadoImagenes.mensaje);
+          setPublicando(false);
+          return;
+        }
+        urlsNuevas = resultadoImagenes.urls;
+      }
+
+      const body = {
+        spotId: state.localId,
+        titulo: state.titulo.trim(),
+        descripcion: state.descripcion.trim(),
+        tipo: state.tipo,
+        imagenes: [...(state.imagenesExistentes || []), ...urlsNuevas],
+        fechaInicio: state.fechaInicio,
+        fechaFin: state.fechaFin,
+        usosMaximos:
+          state.limiteUsos === "" || !state.limiteUsos
+            ? null
+            : parseInt(state.limiteUsos, 10),
+      };
+
+      const resultado = editingId
+        ? await actualizarPromocion(editingId, body)
+        : await crearPromocion(body);
+
+      if (resultado.exitoso) {
+        toast.success(resultado.mensaje);
+        navigate("/socio-promociones");
+      } else {
+        toast.error(resultado.mensaje);
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.mensaje || error.message || "Error al publicar la promoción",
+      );
+    } finally {
+      setPublicando(false);
+    }
   };
-  */
+
+  if (cargandoPromo) {
+    return (
+      <div className="promociones-cargando text-center py-5">
+        <span className="promo-loading-text">Cargando promoción...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="promociones-container">
       <div className="formulario-contenedor">
-        <HeaderPromo />
+        <HeaderPromo editando={Boolean(editingId)} />
 
         <PromoInfoBasica state={state} dispatch={dispatch} />
-        <PromoLocal state={state} dispatch={dispatch} />
+        <PromoLocal state={state} dispatch={dispatch} edicionLocalId={state.localId} />
         <PromoDisponibilidad state={state} dispatch={dispatch} />
 
         <div className="mt-4">
@@ -310,20 +449,16 @@ export default function CrearPromocion() {
           />
         </div>
 
-        <PromoPreview state={state} estado={estadoCalculado} />
+        <div id="promo-preview-section">
+          <PromoPreview state={state} estado={estadoCalculado} />
+        </div>
 
         <div className="d-flex justify-content-end gap-3 mt-4">
-          <PromoBotones></PromoBotones>
-          {/* <button type="button" className="btn btn-secondary">
-            Guardar borrador
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleSubmit}
-          >
-            Publicar Promoción
-          </button> */}
+          <PromoBotones
+            onPreview={scrollAVistaPrevia}
+            onPublish={handleSubmit}
+            publicando={publicando}
+          />
         </div>
       </div>
     </div>
