@@ -147,14 +147,14 @@ export default function MenuItems({ rol, cerrar }) {
           />
           <SidebarLink
             icon={<FaUserSlash />}
-            texto="Eliminación de cuentas"
+            texto="Sol. Eliminación cuentas"
             to="/admin/eliminaciones"
             onClick={cerrar}
             activo={esRutaActiva("/admin/eliminaciones")}
           />
           <SidebarLink
             icon={<FaUserPlus />}
-            texto="Crear Cuentas"
+            texto="Gestión Cuentas"
             to="/admin/usuarios"
             onClick={cerrar}
             activo={esRutaActiva("/admin/usuarios")}
