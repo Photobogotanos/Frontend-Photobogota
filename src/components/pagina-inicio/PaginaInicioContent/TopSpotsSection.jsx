@@ -9,47 +9,55 @@ const topSpots = getSpots().slice(0, 3);
 
 export default function TopSpotsSection({ onImageClick }) {
   return (
-    <>
-      <h2 className="section-title">Top Spots más visitados</h2>
+    <section className="pg-section" aria-labelledby="topspots-title">
+      <h2 id="topspots-title" className="section-title">
+        Top Spots más visitados
+      </h2>
       <LazyMotion features={domAnimation}>
         <Row className="g-4">
           {topSpots.map((spot, i) => (
             <Col xs={12} md={4} key={spot.id}>
-              <m.div
-                initial={{ y: 50, opacity: 0 }}
+              <m.article
+                initial={{ y: 48, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.2 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: i * 0.12, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                 className="card-spot"
               >
                 <button
                   type="button"
-                  className="image-button"
+                  className="card-spot-media"
                   onClick={() => onImageClick(spot.imagen, spot.nombre)}
                   aria-label={`Ver ${spot.nombre}`}
-                  style={{
-                    cursor: "pointer",
-                    padding: 0,
-                    border: "none",
-                    background: "transparent",
-                  }}
                 >
-                  <img src={spot.imagen} alt={spot.nombre} />
+                  <img
+                    src={spot.imagen}
+                    alt={spot.nombre}
+                    loading="lazy"
+                    decoding="async"
+                    width={640}
+                    height={420}
+                  />
+                  <span className="card-spot-rank" aria-hidden="true">
+                    #{i + 1}
+                  </span>
                 </button>
                 <div className="card-info">
-                  <h5>{spot.nombre}</h5>
+                  <h3 className="card-info-title">{spot.nombre}</h3>
                   <div className="location">
-                    <IoPin /> {spot.localidad}
+                    <IoPin aria-hidden="true" />
+                    <span>{spot.localidad}</span>
                   </div>
                   <div className="likes">
-                    <FaRegHeart /> {spot.totalResenas.toLocaleString()} reseñas
+                    <FaRegHeart aria-hidden="true" />
+                    <span>{spot.totalResenas.toLocaleString()} reseñas</span>
                   </div>
                 </div>
-              </m.div>
+              </m.article>
             </Col>
           ))}
         </Row>
       </LazyMotion>
-    </>
+    </section>
   );
 }

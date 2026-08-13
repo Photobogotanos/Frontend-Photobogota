@@ -2,20 +2,30 @@ import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
-import Lottie from "lottie-react";
+import LottieImport from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
-import { FaMapMarkerAlt, FaTag, FaStar, FaHeart, FaCamera, FaFlag, FaClock } from "react-icons/fa";
+import {
+  FaMapMarkerAlt,
+  FaTag,
+  FaStar,
+  FaHeart,
+  FaCamera,
+  FaFlag,
+  FaClock,
+} from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
-import ReportarModal from "@/components/spots/SpotContent/ReportarModal";
+import ReportarModalImport from "@/components/spots/SpotContent/ReportarModal";
 import "./SpotPreviewModal.css";
+
+const Lottie = LottieImport?.default ?? LottieImport;
+const ReportarModal = ReportarModalImport?.default ?? ReportarModalImport;
 
 const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
   const navigate = useNavigate();
   const { logueado } = useAuth();
   const [modalReporteAbierto, setModalReporteAbierto] = useState(false);
 
-  // Aceptar datos del spot desde spotData o lugar (compatibilidad hacia atrás)
   const data = spotData || lugar;
 
   const handleIr = () => {
@@ -34,6 +44,9 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
   };
 
   if (!data) return null;
+
+  const LottieOk = typeof Lottie === "function";
+  const ReportarOk = typeof ReportarModal === "function";
 
   return (
     <Modal show={show} onHide={onHide} centered className="lugar-preview-modal">
@@ -55,13 +68,18 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
             className="preview-upload-animation"
             style={{ display: data.imagen ? "none" : "flex" }}
           >
-            <Lottie
-              animationData={uploadAnimation}
-              loop
-              style={{ width: 120, height: 120 }}
-            />
+            {LottieOk ? (
+              <Lottie
+                animationData={uploadAnimation}
+                loop
+                style={{ width: 120, height: 120 }}
+              />
+            ) : (
+              <span style={{ color: "#888", fontSize: 14 }}>Sin imagen</span>
+            )}
           </div>
         </div>
+
         <div className="preview-content">
           <h3 className="preview-title">{data.nombre}</h3>
           <p className="preview-ubicacion">
@@ -75,7 +93,7 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
               {data.horario}
             </p>
           )}
-          
+
           <div className="preview-badges">
             {data.categoria && (
               <span className="preview-badge-categoria">
@@ -94,9 +112,7 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
           <div className="preview-rating">
             <FaStar className="preview-star" />
             <span className="rating-number">{data.rating}</span>
-            <span className="reviews-count">
-              ({data.totalResenas} reseñas)
-            </span>
+            <span className="reviews-count">({data.totalResenas} reseñas)</span>
           </div>
 
           {data.descripcion && (
@@ -105,19 +121,25 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
 
           {data.recomendacion && (
             <div className="preview-recomendacion">
-              <h5><FaHeart className="preview-section-icon" /> ¿Por qué recomendarlo?</h5>
+              <h5>
+                <FaHeart className="preview-section-icon" /> ¿Por qué
+                recomendarlo?
+              </h5>
               <p>{data.recomendacion}</p>
             </div>
           )}
 
           {data.tipsFoto && (
             <div className="preview-tips">
-              <h5><FaCamera className="preview-section-icon" /> Tips de fotografía</h5>
+              <h5>
+                <FaCamera className="preview-section-icon" /> Tips de fotografía
+              </h5>
               <p>{data.tipsFoto}</p>
             </div>
           )}
         </div>
       </Modal.Body>
+
       <Modal.Footer>
         <Button
           variant="outline-danger"
@@ -134,11 +156,13 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
         </Button>
       </Modal.Footer>
 
-      <ReportarModal
-        show={modalReporteAbierto}
-        onCerrar={() => setModalReporteAbierto(false)}
-        spotId={data.id}
-      />
+      {ReportarOk && (
+        <ReportarModal
+          show={modalReporteAbierto}
+          onCerrar={() => setModalReporteAbierto(false)}
+          spotId={data.id}
+        />
+      )}
     </Modal>
   );
 };

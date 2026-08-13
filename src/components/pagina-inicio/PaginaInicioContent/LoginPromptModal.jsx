@@ -1,57 +1,81 @@
 import Modal from "react-bootstrap/Modal";
 import { LazyMotion, m, domAnimation } from "framer-motion";
-import { FaLock, FaCamera, FaStar, FaHeart, FaPlus } from "react-icons/fa";
+import { FaLock, FaCamera, FaStar, FaHeart, FaPlus, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+
+const BENEFICIOS = [
+  { icon: FaCamera, text: "Fotos detalladas de cada lugar" },
+  { icon: FaStar, text: "Reseñas completas de la comunidad" },
+  { icon: FaHeart, text: "Guarda tus spots favoritos" },
+  { icon: FaPlus, text: "Agrega nuevos lugares a la ciudad" },
+];
 
 export default function LoginPromptModal({ show, onHide }) {
   const navigate = useNavigate();
 
   return (
-    <Modal show={show} onHide={onHide} centered size="md">
-      <Modal.Header closeButton>
-        <h4>Contenido exclusivo</h4>
-      </Modal.Header>
-      <Modal.Body>
-        <div className="text-center py-3">
+    <Modal
+      show={show}
+      onHide={onHide}
+      centered
+      size="md"
+      dialogClassName="login-prompt-modal"
+      contentClassName="login-prompt-modal-content"
+      backdropClassName="inicio-modal-backdrop"
+    >
+      <Modal.Body className="login-prompt-body">
+        <button
+          type="button"
+          className="inicio-modal-close login-prompt-close"
+          onClick={onHide}
+          aria-label="Cerrar"
+        >
+          <FaTimes />
+        </button>
 
-          <div className="mb-4">
-            <LazyMotion features={domAnimation}>
-              <m.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-              >
-                <FaLock size={48} className="icono-demo-modal mb-3" />
-              </m.div>
-            </LazyMotion>
-            <h5>¡Desbloquea todas las funcionalidades!</h5>
-          </div>
+        <div className="login-prompt-inner">
+          <LazyMotion features={domAnimation}>
+            <m.div
+              className="login-prompt-icon-wrap"
+              animate={{ scale: [1, 1.08, 1] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <FaLock className="login-prompt-icon" />
+            </m.div>
+          </LazyMotion>
 
-          <p className="mb-4">Al registrarte en PhotoBogotá podrás:</p>
+          <h3 className="login-prompt-title">Contenido exclusivo</h3>
+          <p className="login-prompt-lead">
+            Desbloquea todo PhotoBogotá y forma parte de la comunidad.
+          </p>
 
-          <ul className="apple-list mb-4">
-            <li><FaCamera /> Fotos detalladas de cada lugar</li>
-            <li><FaStar />   Reseñas completas de otros usuarios</li>
-            <li><FaHeart />  Guarda tus spots favoritos</li>
-            <li><FaPlus />   Agrega nuevos lugares a la comunidad</li>
+          <ul className="login-prompt-list">
+            {BENEFICIOS.map(({ icon: Icon, text }) => (
+              <li key={text}>
+                <span className="login-prompt-list-icon">
+                  <Icon />
+                </span>
+                <span>{text}</span>
+              </li>
+            ))}
           </ul>
 
-          <div className="d-grid gap-2">
+          <div className="login-prompt-actions">
             <button
               type="button"
-              className="button-register-modal-demo"
+              className="btn-login-primary"
               onClick={() => navigate("/creacion-cuenta")}
             >
-              Regístrate Gratis
+              Regístrate gratis
             </button>
             <button
               type="button"
-              className="button-login-modal-demo"
+              className="btn-login-ghost"
               onClick={() => navigate("/login")}
             >
-              Iniciar Sesión
+              Ya tengo cuenta
             </button>
           </div>
-
         </div>
       </Modal.Body>
     </Modal>

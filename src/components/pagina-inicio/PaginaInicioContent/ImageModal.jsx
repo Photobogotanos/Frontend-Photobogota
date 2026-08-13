@@ -3,19 +3,33 @@ import { FaTimes } from "react-icons/fa";
 
 export default function ImageModal({ show, onHide, imgSrc, titulo }) {
   return (
-    <Modal show={show} onHide={onHide} centered size="lg" className="custom-modal">
-      <Modal.Body className="p-0 position-relative">
-        <button type="button" className="modal-close-btn" onClick={onHide} aria-label="Cerrar modal">
+    <Modal
+      show={show}
+      onHide={onHide}
+      centered
+      size="xl"
+      dialogClassName="inicio-image-modal"
+      contentClassName="inicio-image-modal-content"
+      backdropClassName="inicio-modal-backdrop"
+    >
+      <Modal.Body className="inicio-image-modal-body">
+        <button
+          type="button"
+          className="inicio-modal-close"
+          onClick={onHide}
+          aria-label="Cerrar modal"
+        >
           <FaTimes />
         </button>
-        {titulo && (
-          <div className="modal-title p-3">
-            <h4 className="mb-0">{titulo}</h4>
-          </div>
-        )}
-        <div className="modal-image-container">
-          <img src={imgSrc} alt="Vista previa" className="modal-image" />
-        </div>
+
+        {imgSrc ? (
+          <img
+            src={imgSrc}
+            alt={titulo || "Vista previa de la foto"}
+            className="inicio-modal-image"
+            decoding="async"
+          />
+        ) : null}
       </Modal.Body>
     </Modal>
   );

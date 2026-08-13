@@ -28,6 +28,76 @@
   transform: none;
 }
 
+.btn-fullscreen {
+  color: white;
+  position: absolute;
+  bottom: 145px;
+  right: 15px;
+  z-index: 500;
+  background: var(--color-primary);
+  border: 1.5px solid transparent;
+  padding: 10px;
+  border-radius: 15px;
+  font-size: 16px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-fullscreen:hover {
+  background: white;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+.btn-heatmap {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 30px;
+  border: 1.5px solid transparent;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 650;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-heatmap:hover {
+  background: #fff;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.btn-heatmap.activo {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+}
+
+.btn-heatmap.activo:hover {
+  filter: brightness(1.05);
+  color: #fff;
+  border-color: transparent;
+}
+
+.btn-heatmap-label {
+  line-height: 1;
+}
+
 .zoom-buttons {
   position: absolute;
   top: 106px;
@@ -74,6 +144,15 @@
   position: relative;
 }
 
+.mapa-wrapper:fullscreen {
+  background: #000;
+}
+
+.mapa-wrapper:fullscreen .mapa-bogota {
+  height: 100% !important;
+  border-radius: 0;
+}
+
 .mapa-cargando {
   position: absolute;
   top: 50%;
@@ -94,6 +173,43 @@
   font-size: 14px;
   color: #666;
   font-weight: 500;
+}
+
+/* Clusters PhotoBogotá */
+.pb-cluster {
+  background: transparent !important;
+}
+
+.pb-cluster div {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(128, 111, 190, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.marker-cluster-small.pb-cluster div {
+  background: linear-gradient(135deg, #806fbe 0%, #9b8cd4 100%);
+}
+
+.marker-cluster-medium.pb-cluster div {
+  background: linear-gradient(135deg, #6a5aad 0%, #806fbe 100%);
+  width: 46px;
+  height: 46px;
+  font-size: 14px;
+}
+
+.marker-cluster-large.pb-cluster div {
+  background: linear-gradient(135deg, #55448f 0%, #6a5aad 100%);
+  width: 52px;
+  height: 52px;
+  font-size: 15px;
 }
 
 @media (max-width: 768px) {
@@ -119,6 +235,21 @@
     padding: 10px;
     font-size: 20px;
     border-radius: 14px;
+  }
+
+  .btn-fullscreen {
+    bottom: calc(105px + env(safe-area-inset-bottom));
+    right: 15px;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 14px;
+  }
+
+  .btn-heatmap {
+    top: 14px;
+    left: 12px;
+    padding: 8px 12px;
+    font-size: 13px;
   }
 
   .zoom-buttons {
@@ -168,6 +299,22 @@
     border-radius: 16px;
   }
 
+  .btn-fullscreen {
+    bottom: calc(100px + env(safe-area-inset-bottom));
+    right: 12px;
+    padding: 12px;
+    font-size: 20px;
+    border-radius: 16px;
+  }
+
+  .btn-heatmap {
+    top: 12px;
+    left: 10px;
+    padding: 8px 11px;
+    font-size: 12px;
+    border-radius: 24px;
+  }
+
   .zoom-buttons {
     top: 100px;
     right: 12px;
@@ -214,6 +361,14 @@
     border-radius: 16px;
   }
 
+  .btn-fullscreen {
+    bottom: calc(95px + env(safe-area-inset-bottom));
+    right: 10px;
+    padding: 12px;
+    font-size: 20px;
+    border-radius: 16px;
+  }
+
   .zoom-buttons {
     top: 110px;
     right: 10px;
@@ -245,6 +400,13 @@
     right: 20px;
     padding: 12px;
     font-size: 20px;
+  }
+
+  .btn-fullscreen {
+    bottom: 160px;
+    right: 20px;
+    padding: 12px;
+    font-size: 18px;
   }
 
   .zoom-buttons {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -7,13 +7,25 @@ import {
   useMapEvents,
   useMap,
 } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
+import "leaflet.heat";
 import "./MapaBogota.css";
 import camaraIcon from "@/assets/images/icons/camara.webp";
 import localIcon from "@/assets/images/icons/local.webp";
 import cuponIcon from "@/assets/images/icons/cupon.webp";
-import { FaPlus, FaMinus, FaLocationArrow } from "react-icons/fa";
+import {
+  FaPlus,
+  FaMinus,
+  FaLocationArrow,
+  FaExpand,
+  FaCompress,
+  FaFire,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
 import SpotPreviewModal from "@/components/spots/SpotPreviewModal/SpotPreviewModal";
 import { obtenerSpots } from "@/services/spot.service";
 import { toast } from "react-hot-toast";
@@ -44,6 +56,19 @@ const createCustomIcon = (esLocal, tienePromocion = false) => {
 };
 
 const createUserLocationIcon = () => new L.Icon.Default();
+
+const createClusterCustomIcon = (cluster) => {
+  const count = cluster.getChildCount();
+  let size = "small";
+  if (count >= 25) size = "large";
+  else if (count >= 10) size = "medium";
+
+  return L.divIcon({
+    html: `<div><span>${count}</span></div>`,
+    className: `marker-cluster marker-cluster-${size} pb-cluster`,
+    iconSize: L.point(40, 40, true),
+  });
+};
 
 function BotonUbicacion() {
   const map = useMap();
@@ -103,13 +128,56 @@ function ControlesZoom() {
   const map = useMap();
   return (
     <div className="zoom-buttons">
-      <button type="button" onClick={() => map.zoomIn()} aria-label="Acercar zoom">
+      <button
+        type="button"
+        onClick={() => map.zoomIn()}
+        aria-label="Acercar zoom"
+      >
         <FaPlus />
       </button>
-      <button type="button" onClick={() => map.zoomOut()} aria-label="Alejar zoom">
+      <button
+        type="button"
+        onClick={() => map.zoomOut()}
+        aria-label="Alejar zoom"
+      >
         <FaMinus />
       </button>
     </div>
+  );
+}
+
+function BotonFullscreen({ wrapperRef }) {
+  const [isFs, setIsFs] = useState(false);
+
+  useEffect(() => {
+    const onChange = () => setIsFs(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  const toggle = async () => {
+    const el = wrapperRef?.current;
+    if (!el) return;
+    try {
+      if (!document.fullscreenElement) {
+        await el.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch {
+      toast.error("No se pudo activar pantalla completa.");
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      className="btn-fullscreen"
+      onClick={toggle}
+      aria-label={isFs ? "Salir de pantalla completa" : "Pantalla completa"}
+    >
+      {isFs ? <FaCompress /> : <FaExpand />}
+    </button>
   );
 }
 
@@ -133,12 +201,94 @@ function MapBounds() {
   return null;
 }
 
+function FitBoundsToSpots({ spots }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!spots?.length) return;
+
+    if (spots.length === 1) {
+      map.setView(spots[0].coord, 15, { animate: true });
+      return;
+    }
+
+    const bounds = L.latLngBounds(spots.map((s) => s.coord));
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, {
+        padding: [48, 48],
+        maxZoom: 15,
+        animate: true,
+      });
+    }
+  }, [spots, map]);
+
+  return null;
+}
+
+/**
+ * Capa de calor con leaflet.heat.
+ * Intensidad basada en totalResenas (fallback 1).
+ */
+function HeatmapLayer({ spots, visible }) {
+  const map = useMap();
+
+  const heatPoints = useMemo(() => {
+    if (!spots?.length) return [];
+
+    const maxResenas = Math.max(
+      1,
+      ...spots.map((s) => Number(s.totalResenas) || 1),
+    );
+
+    return spots.map((s) => {
+      const [lat, lng] = s.coord;
+      // Intensidad alta de base para que se note con pocos puntos
+      const intensidad = Math.min(
+        1,
+        0.65 + ((Number(s.totalResenas) || 1) / maxResenas) * 0.35,
+      );
+      return [lat, lng, intensidad];
+    });
+  }, [spots]);
+
+  useEffect(() => {
+    if (!visible || !heatPoints.length) return undefined;
+
+    // radius/blur altos = manchas visibles a nivel ciudad (zoom 11–14)
+    // minOpacity evita que se "apaguen" al alejar
+    const layer = L.heatLayer(heatPoints, {
+      radius: 55,
+      blur: 40,
+      maxZoom: 14,
+      max: 1,
+      minOpacity: 0.45,
+      gradient: {
+        0.15: "#806fbe",
+        0.35: "#22c55e",
+        0.55: "#eab308",
+        0.75: "#f97316",
+        1.0: "#ef4444",
+      },
+    });
+
+    layer.addTo(map);
+
+    return () => {
+      map.removeLayer(layer);
+    };
+  }, [map, heatPoints, visible]);
+
+  return null;
+}
+
 const MapaBogota = ({ filtros = {} }) => {
   const [spots, setSpots] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [usandoMock, setUsandoMock] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
+  const [wrapperEl, setWrapperEl] = useState(null);
+  const [modoCalor, setModoCalor] = useState(false);
 
   const filtrosSerializados = JSON.stringify(filtros);
 
@@ -155,7 +305,6 @@ const MapaBogota = ({ filtros = {} }) => {
       if (!activo || !resultado) return;
 
       if (resultado.exitoso) {
-        // Filtro MUCHO más estricto
         const spotsValidos = resultado.datos.filter((spot) => {
           const lat = parseFloat(spot.latitud);
           const lng = parseFloat(spot.longitud);
@@ -174,7 +323,7 @@ const MapaBogota = ({ filtros = {} }) => {
           id: spot.id,
           nombre: spot.nombre || "Sin nombre",
           direccion: spot.direccion || "",
-          coord: [parseFloat(spot.latitud), parseFloat(spot.longitud)], // ← Asegura números
+          coord: [parseFloat(spot.latitud), parseFloat(spot.longitud)],
           categoria: spot.categoria,
           localidad: spot.localidad,
           descripcion: spot.descripcion,
@@ -219,12 +368,28 @@ const MapaBogota = ({ filtros = {} }) => {
 
   return (
     <>
-      <div className="mapa-wrapper">
+      <div className="mapa-wrapper" ref={setWrapperEl}>
         {cargando && (
           <div className="mapa-cargando">
             <span>Cargando spots...</span>
           </div>
         )}
+
+        <button
+          type="button"
+          className={`btn-heatmap ${modoCalor ? "activo" : ""}`}
+          onClick={() => setModoCalor((v) => !v)}
+          aria-pressed={modoCalor}
+          aria-label={
+            modoCalor ? "Mostrar marcadores" : "Mostrar mapa de calor"
+          }
+          title={modoCalor ? "Vista marcadores" : "Mapa de calor"}
+        >
+          {modoCalor ? <FaMapMarkerAlt /> : <FaFire />}
+          <span className="btn-heatmap-label">
+            {modoCalor ? "Marcadores" : "Calor"}
+          </span>
+        </button>
 
         <MapContainer
           center={[4.6529, -74.075]}
@@ -239,30 +404,45 @@ const MapaBogota = ({ filtros = {} }) => {
           />
 
           <MapBounds />
+          <FitBoundsToSpots spots={spots} />
           <BotonUbicacion />
           <ControlesZoom />
+          {wrapperEl && <BotonFullscreen wrapperRef={{ current: wrapperEl }} />}
 
-          {spots.map((lugar) => {
-            if (!lugar.coord || lugar.coord.length !== 2) return null;
-            const esLocal = lugar.rol?.toUpperCase() === "SOCIO";
+          <HeatmapLayer spots={spots} visible={modoCalor} />
 
-            return (
-              <Marker
-                key={lugar.id}
-                position={lugar.coord}
-                icon={createCustomIcon(esLocal, lugar.tienePromocion)}
-                eventHandlers={{
-                  click: () => handleMarkerClick(lugar),
-                }}
-              >
-                <Popup>
-                  <strong>{lugar.nombre}</strong>
-                  <br />
-                  {lugar.direccion}
-                </Popup>
-              </Marker>
-            );
-          })}
+          {!modoCalor && (
+            <MarkerClusterGroup
+              chunkedLoading
+              showCoverageOnHover={false}
+              maxClusterRadius={55}
+              spiderfyOnMaxZoom
+              disableClusteringAtZoom={17}
+              iconCreateFunction={createClusterCustomIcon}
+            >
+              {spots.map((lugar) => {
+                if (!lugar.coord || lugar.coord.length !== 2) return null;
+                const esLocal = lugar.rol?.toUpperCase() === "SOCIO";
+
+                return (
+                  <Marker
+                    key={lugar.id}
+                    position={lugar.coord}
+                    icon={createCustomIcon(esLocal, lugar.tienePromocion)}
+                    eventHandlers={{
+                      click: () => handleMarkerClick(lugar),
+                    }}
+                  >
+                    <Popup>
+                      <strong>{lugar.nombre}</strong>
+                      <br />
+                      {lugar.direccion}
+                    </Popup>
+                  </Marker>
+                );
+              })}
+            </MarkerClusterGroup>
+          )}
         </MapContainer>
       </div>
 
