@@ -8,17 +8,22 @@ import {
   useTransform,
 } from "framer-motion";
 import { FaImages, FaMapMarkerAlt } from "react-icons/fa";
-import Lottie from "lottie-react";
+import LottieImport from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
-
-const GaleriaSpot = ({ imagenes, spotNombre, spotDireccion, onAbrirImagen }) => {
+const Lottie = LottieImport?.default ?? LottieImport;
+const GaleriaSpot = ({
+  imagenes,
+  spotNombre,
+  spotDireccion,
+  onAbrirImagen,
+}) => {
   const [errorImagen, setErrorImagen] = useState(false);
 
   const { scrollY } = useScroll();
-  const escalaImagen = useSpring(
-    useTransform(scrollY, [0, 900], [1, 1.08]),
-    { stiffness: 120, damping: 30 },
-  );
+  const escalaImagen = useSpring(useTransform(scrollY, [0, 900], [1, 1.08]), {
+    stiffness: 120,
+    damping: 30,
+  });
   const opacidadCaption = useTransform(scrollY, [0, 420], [1, 0]);
 
   const imagenPrincipal = imagenes[0];

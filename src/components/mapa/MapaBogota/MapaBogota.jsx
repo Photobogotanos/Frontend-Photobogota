@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   MapContainer,
   TileLayer,
   Marker,
   Popup,
+  LayersControl,
   useMapEvents,
   useMap,
 } from "react-leaflet";
@@ -13,6 +14,8 @@ import "leaflet/dist/leaflet.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
 import "react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
 import "leaflet.heat";
+import "@geoman-io/leaflet-geoman-free";
+import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import "./MapaBogota.css";
 import camaraIcon from "@/assets/images/icons/camara.webp";
 import localIcon from "@/assets/images/icons/local.webp";
@@ -25,7 +28,10 @@ import {
   FaCompress,
   FaFire,
   FaMapMarkerAlt,
+  FaMapPin,
+  FaTimes,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import SpotPreviewModal from "@/components/spots/SpotPreviewModal/SpotPreviewModal";
 import { obtenerSpots } from "@/services/spot.service";
 import { toast } from "react-hot-toast";
@@ -182,7 +188,18 @@ function BotonFullscreen({ wrapperRef }) {
 }
 
 function MapBounds() {
-  const map = useMapEvents({
+  const map = useMap();
+
+  useEffect(() => {
+    map.setMaxBounds([
+      [4.2, -74.6],
+      [5.1, -73.6],
+    ]);
+    map.setMinZoom(10);
+    map.setMaxZoom(18);
+  }, [map]);
+
+  useMapEvents({
     drag: () => {
       const bounds = L.latLngBounds(L.latLng(4.3, -74.4), L.latLng(5.0, -73.7));
       if (!bounds.contains(map.getCenter())) {
@@ -190,13 +207,6 @@ function MapBounds() {
       }
     },
   });
-
-  map.setMaxBounds([
-    [4.2, -74.6],
-    [5.1, -73.6],
-  ]);
-  map.setMinZoom(10);
-  map.setMaxZoom(18);
 
   return null;
 }
@@ -225,10 +235,6 @@ function FitBoundsToSpots({ spots }) {
   return null;
 }
 
-/**
- * Capa de calor con leaflet.heat.
- * Intensidad basada en totalResenas (fallback 1).
- */
 function HeatmapLayer({ spots, visible }) {
   const map = useMap();
 
@@ -242,7 +248,6 @@ function HeatmapLayer({ spots, visible }) {
 
     return spots.map((s) => {
       const [lat, lng] = s.coord;
-      // Intensidad alta de base para que se note con pocos puntos
       const intensidad = Math.min(
         1,
         0.65 + ((Number(s.totalResenas) || 1) / maxResenas) * 0.35,
@@ -254,8 +259,6 @@ function HeatmapLayer({ spots, visible }) {
   useEffect(() => {
     if (!visible || !heatPoints.length) return undefined;
 
-    // radius/blur altos = manchas visibles a nivel ciudad (zoom 11–14)
-    // minOpacity evita que se "apaguen" al alejar
     const layer = L.heatLayer(heatPoints, {
       radius: 55,
       blur: 40,
@@ -281,7 +284,45 @@ function HeatmapLayer({ spots, visible }) {
   return null;
 }
 
+function GeomanDraw({ activo, onPuntoCreado }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map.pm) return undefined;
+
+    if (!activo) {
+      map.pm.disableDraw();
+      map.pm.removeControls();
+      return undefined;
+    }
+
+    map.pm.setGlobalOptions({
+      snappable: false,
+      cursorMarker: true,
+    });
+
+    const onCreate = (e) => {
+      if (e.shape !== "Marker") return;
+      const { lat, lng } = e.layer.getLatLng();
+      map.removeLayer(e.layer);
+      onPuntoCreado?.({ lat, lng });
+    };
+
+    map.on("pm:create", onCreate);
+    map.pm.enableDraw("Marker");
+
+    return () => {
+      map.off("pm:create", onCreate);
+      map.pm.disableDraw();
+      map.pm.removeControls();
+    };
+  }, [map, activo, onPuntoCreado]);
+
+  return null;
+}
+
 const MapaBogota = ({ filtros = {} }) => {
+  const navigate = useNavigate();
   const [spots, setSpots] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [usandoMock, setUsandoMock] = useState(false);
@@ -289,6 +330,7 @@ const MapaBogota = ({ filtros = {} }) => {
   const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
   const [wrapperEl, setWrapperEl] = useState(null);
   const [modoCalor, setModoCalor] = useState(false);
+  const [modoPublicar, setModoPublicar] = useState(false);
 
   const filtrosSerializados = JSON.stringify(filtros);
 
@@ -297,18 +339,15 @@ const MapaBogota = ({ filtros = {} }) => {
 
     const cargar = async () => {
       setCargando(true);
-
       if (!activo) return;
 
       const resultado = await obtenerSpots(filtros);
-
       if (!activo || !resultado) return;
 
       if (resultado.exitoso) {
         const spotsValidos = resultado.datos.filter((spot) => {
           const lat = parseFloat(spot.latitud);
           const lng = parseFloat(spot.longitud);
-
           return (
             !isNaN(lat) &&
             !isNaN(lng) &&
@@ -362,34 +401,70 @@ const MapaBogota = ({ filtros = {} }) => {
   }, [filtrosSerializados]);
 
   const handleMarkerClick = (lugar) => {
+    if (modoPublicar) return;
     setLugarSeleccionado(lugar);
     setShowModal(true);
   };
 
+  const handlePuntoCreado = useCallback(
+    ({ lat, lng }) => {
+      setModoPublicar(false);
+      navigate("/crear-spot", {
+        state: { lat, lng, desdeMapa: true },
+      });
+    },
+    [navigate],
+  );
+
+  const togglePublicar = () => {
+    const nuevoModo = !modoPublicar;
+
+    if (nuevoModo) {
+      toast("Clic en el mapa para marcar la ubicación del spot", {
+        duration: 3500,
+      });
+    }
+
+    setModoPublicar(nuevoModo);
+  };
+
   return (
     <>
-      <div className="mapa-wrapper" ref={setWrapperEl}>
+      <div
+        className={`mapa-wrapper ${modoPublicar ? "modo-publicar" : ""}`}
+        ref={setWrapperEl}
+      >
         {cargando && (
           <div className="mapa-cargando">
             <span>Cargando spots...</span>
           </div>
         )}
 
-        <button
-          type="button"
-          className={`btn-heatmap ${modoCalor ? "activo" : ""}`}
-          onClick={() => setModoCalor((v) => !v)}
-          aria-pressed={modoCalor}
-          aria-label={
-            modoCalor ? "Mostrar marcadores" : "Mostrar mapa de calor"
-          }
-          title={modoCalor ? "Vista marcadores" : "Mapa de calor"}
-        >
-          {modoCalor ? <FaMapMarkerAlt /> : <FaFire />}
-          <span className="btn-heatmap-label">
-            {modoCalor ? "Marcadores" : "Calor"}
-          </span>
-        </button>
+        <div className="mapa-toolbar-left">
+          <button
+            type="button"
+            className={`btn-heatmap ${modoCalor ? "activo" : ""}`}
+            onClick={() => setModoCalor((v) => !v)}
+            aria-pressed={modoCalor}
+            title={modoCalor ? "Vista marcadores" : "Mapa de calor"}
+          >
+            {modoCalor ? <FaMapMarkerAlt /> : <FaFire />}
+            <span className="btn-heatmap-label">
+              {modoCalor ? "Marcadores" : "Calor"}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            className={`btn-tool btn-publicar-punto ${modoPublicar ? "activo" : ""}`}
+            onClick={togglePublicar}
+            aria-pressed={modoPublicar}
+            title="Marcar ubicación y crear spot"
+          >
+            {modoPublicar ? <FaTimes /> : <FaMapPin />}
+            <span>{modoPublicar ? "Cancelar" : "Marcar spot"}</span>
+          </button>
+        </div>
 
         <MapContainer
           center={[4.6529, -74.075]}
@@ -398,18 +473,40 @@ const MapaBogota = ({ filtros = {} }) => {
           className="mapa-bogota"
           zoomControl={false}
         >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-            attribution="&copy; OpenStreetMap contributors"
-          />
+          <LayersControl position="topright">
+            <LayersControl.BaseLayer checked name="OSM HOT">
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+                attribution="&copy; OpenStreetMap contributors"
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="Claro">
+              <TileLayer
+                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                attribution="&copy; OSM &copy; CARTO"
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="Oscuro">
+              <TileLayer
+                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                attribution="&copy; OSM &copy; CARTO"
+              />
+            </LayersControl.BaseLayer>
+            <LayersControl.BaseLayer name="Satélite">
+              <TileLayer
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                attribution="Tiles &copy; Esri"
+              />
+            </LayersControl.BaseLayer>
+          </LayersControl>
 
           <MapBounds />
           <FitBoundsToSpots spots={spots} />
           <BotonUbicacion />
           <ControlesZoom />
           {wrapperEl && <BotonFullscreen wrapperRef={{ current: wrapperEl }} />}
-
           <HeatmapLayer spots={spots} visible={modoCalor} />
+          <GeomanDraw activo={modoPublicar} onPuntoCreado={handlePuntoCreado} />
 
           {!modoCalor && (
             <MarkerClusterGroup

@@ -7,8 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 const basename = import.meta.env.BASE_URL.replace(/\/+$/, "") || "/";
 import AppRouter from "@/routes/AppRouter";
 import ScrollToTop from "@/components/common/ScrollToTop";
-
-import Lottie from "lottie-react";
+import LottieImport from "lottie-react";
 import SecurityAnimation from "@/assets/animations/SecurityLock.json";
 import { useRefreshLimit } from "@/hooks/useRefreshLimit";
 import "@/hooks/useRefreshLimit.css";
@@ -18,6 +17,8 @@ import { useAuth } from "@/context/AuthContext";
 import { MotionConfig } from "framer-motion";
 import CuentaInactivaPage from "@/pages/cuenta/CuentaInactivaPage/CuentaInactivaPage";
 import CuentaSancionadaPage from "@/pages/cuenta/CuentaSancionadaPage/CuentaSancionadaPage";
+
+const Lottie = LottieImport?.default ?? LottieImport;
 
 function App() {
   const { isBlocked, remainingCooldown } = useRefreshLimit();

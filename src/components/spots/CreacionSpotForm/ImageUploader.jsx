@@ -1,11 +1,13 @@
 import { useState, useRef } from "react";
-import Lottie from "lottie-react";
+import LottieImport from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
 import {
   FaChevronLeft,
   FaChevronRight,
   FaTrash,
 } from "react-icons/fa";
+
+const Lottie = LottieImport?.default ?? LottieImport;
 
 export default function ImageUploader({
   previews,
@@ -33,11 +35,11 @@ export default function ImageUploader({
   };
 
   const total = previews.length;
+  const LottieOk = typeof Lottie === "function";
 
   return (
     <div className="uploader-wrapper">
       {total === 0 ? (
-        // Estado sin imágenes - Zona de drop
         <div
           className={`drop-zone${isDragging ? " dragging" : ""}`}
           role="button"
@@ -57,20 +59,23 @@ export default function ImageUploader({
           }}
         >
           <div className="drop-zone-lottie">
-            <Lottie
-              animationData={uploadAnimation}
-              loop
-              style={{ width: 110, height: 110 }}
-            />
+            {LottieOk ? (
+              <Lottie
+                animationData={uploadAnimation}
+                loop
+                style={{ width: 110, height: 110 }}
+              />
+            ) : (
+              <span style={{ fontSize: 40, opacity: 0.4 }}>↑</span>
+            )}
           </div>
           <p className="drop-zone-title">Arrastra tus fotos aquí</p>
           <p className="drop-zone-sub">o haz clic para seleccionar</p>
           <span className="drop-zone-badge">JPG · PNG · WEBP · múltiples</span>
         </div>
       ) : (
-        // Estado con imágenes - Carrusel de previews
         <div className="uploader-con-imagenes">
-              {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, react-doctor/no-static-element-interactions */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, react-doctor/no-static-element-interactions */}
           <div
             className="preview-carousel"
             onClick={() => onNavigate("next")}
@@ -124,7 +129,6 @@ export default function ImageUploader({
             </button>
           </div>
 
-          {/* Miniaturas */}
           <div className="thumbnails-strip">
             {previews.map((src, idx) => (
               // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, react-doctor/no-static-element-interactions
@@ -148,7 +152,6 @@ export default function ImageUploader({
               </div>
             ))}
 
-            {/* Botón para agregar más imágenes */}
             <button
               type="button"
               className="thumbnail-add"

@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { FaStar, FaHeart, FaBookmark, FaRegBookmark } from "react-icons/fa6";
 import { FaFlag } from "react-icons/fa";
 import { toast } from "react-hot-toast";
-import Lottie from "lottie-react";
+import LottieImport from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
 import { useAuth } from "@/context/AuthContext";
 import { useGuardados } from "@/hooks/useGuardados";
 import ReportarModal from "@/components/spots/SpotContent/ReportarModal";
 import "./SpotCard.css";
+
+const Lottie = LottieImport?.default ?? LottieImport;
 
 function SpotImagen({ img, title }) {
   const [imgError, setImgError] = useState(false);

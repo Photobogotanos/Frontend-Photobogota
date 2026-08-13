@@ -1,4 +1,5 @@
 import { useReducer, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import "./CreacionSpotForm.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -13,13 +14,45 @@ import SpotDatosLocal from "./SpotDatosLocal";
 import SeccionImagenes from "./SeccionImagenes";
 import { spotFormReducer, initialState } from "./creacionSpotReducer";
 import { usePublicacionSpot } from "./usePublicacionSpot";
+import { toast } from "react-hot-toast";
 
-// ============================================================
-// COMPONENTE PRINCIPAL CrearSpot
-// ============================================================
+// Geocodificación inversa ligera (coordenadas -> dirección)
+const obtenerDireccionDesdeCoordenadas = async (lat, lng) => {
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=es`;
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Photobogota/1.0 (photobogota123@gmail.com)",
+      },
+    });
+    if (!response.ok) return "";
+    const data = await response.json();
+    const a = data?.address;
+    if (!a) return data?.display_name || "";
+
+    const partes = [];
+    if (a.road) {
+      partes.push(
+        `${a.house_number ? `${a.house_number} ` : ""}${a.road}`.trim(),
+      );
+    }
+    if (a.neighbourhood) partes.push(a.neighbourhood);
+    else if (a.suburb) partes.push(a.suburb);
+    else if (a.city_district) partes.push(a.city_district);
+    if (a.city || a.town || a.village || a.municipality) {
+      partes.push(a.city || a.town || a.village || a.municipality);
+    }
+    return partes.join(", ");
+  } catch {
+    return "";
+  }
+};
+
 export default function CrearSpot() {
+  const location = useLocation();
   const [state, dispatch] = useReducer(spotFormReducer, initialState);
   const previewsRef = useRef([]);
+  const coordsDesdeMapaAplicadas = useRef(false);
 
   useEffect(() => {
     previewsRef.current = state.previews;
@@ -32,10 +65,27 @@ export default function CrearSpot() {
     };
   }, []);
 
+  // Coordenadas venidas desde el mapa ("Marcar spot")
+  useEffect(() => {
+    if (coordsDesdeMapaAplicadas.current) return;
+    const { lat, lng, desdeMapa } = location.state || {};
+    if (!desdeMapa || lat == null || lng == null) return;
+
+    coordsDesdeMapaAplicadas.current = true;
+    dispatch({ type: "SET_LATITUD", payload: lat });
+    dispatch({ type: "SET_LONGITUD", payload: lng });
+
+    toast("Ubicación cargada desde el mapa", { duration: 2800 });
+
+    (async () => {
+      const dir = await obtenerDireccionDesdeCoordenadas(lat, lng);
+      if (dir) dispatch({ type: "SET_DIRECCION", payload: dir });
+    })();
+  }, [location.state]);
+
   const { usuario } = useAuth();
   const esSocio = usuario?.rol === "SOCIO";
 
-  // opcional: useEffect para fijar tipo
   useEffect(() => {
     dispatch({
       type: "SET_TIPO",
@@ -45,11 +95,7 @@ export default function CrearSpot() {
 
   const { handlePublicar } = usePublicacionSpot({ state, dispatch, esSocio });
 
-  // ============================================================
-  // HANDLERS DE IMÁGENES
-  // ============================================================
   const handleImagen = (files) => {
-    // oxlint-disable-next-line react-doctor/no-create-object-url-without-revoke -- se revoca en handleRemoveImagen y en unmount (previewsRef)
     const newPreviews = files.map((f) => URL.createObjectURL(f));
     dispatch({ type: "SET_IMAGENES", payload: [...state.imagenes, ...files] });
     dispatch({
@@ -67,7 +113,6 @@ export default function CrearSpot() {
     dispatch({ type: "SET_IMAGENES", payload: newImagenes });
     dispatch({ type: "SET_PREVIEWS", payload: newPreviews });
 
-    // Ajustar el índice actual
     const nuevoIdx = Math.min(state.indiceImagenActual, newPreviews.length - 1);
     dispatch({ type: "SET_INDICE_IMAGEN", payload: Math.max(0, nuevoIdx) });
   };
@@ -81,9 +126,6 @@ export default function CrearSpot() {
     dispatch({ type: "SET_INDICE_IMAGEN", payload: next });
   };
 
-  // ============================================================
-  // DATOS PARA EL MODAL DE PREVIEW
-  // ============================================================
   const spotData = {
     nombre: state.nombreLugar || "Nombre del lugar",
     direccion: state.direccion || "Dirección del lugar",
@@ -99,13 +141,10 @@ export default function CrearSpot() {
     resenas: [],
   };
 
-  // ============================================================
-  // RENDER
-  // ============================================================
   return (
     <div className="pb-5">
       <div className="formulario-contenedor">
-        <HeaderSpot />
+        <HeaderSpot esSocio={esSocio} />
 
         <Row className="g-4">
           <Col xs={12}>
@@ -120,7 +159,6 @@ export default function CrearSpot() {
               }
             />
 
-            {/* Información básica */}
             <SpotInformacionBasica
               nombreLugar={state.nombreLugar}
               direccion={state.direccion}
@@ -138,9 +176,9 @@ export default function CrearSpot() {
               onLongitudChange={(val) =>
                 dispatch({ type: "SET_LONGITUD", payload: val })
               }
+              esSocio={esSocio}
             />
 
-            {/* Categorización */}
             <SpotCategorizacion
               categoria={state.categoria}
               localidad={state.localidad}
@@ -152,7 +190,6 @@ export default function CrearSpot() {
               }
             />
 
-            {/* Datos en caso de ser socio */}
             {esSocio && (
               <SpotDatosLocal
                 telefono={state.telefono}
@@ -170,7 +207,6 @@ export default function CrearSpot() {
               />
             )}
 
-            {/* Descripción y detalles */}
             <SpotDescripcion
               descripcionImagen={state.descripcionImagen}
               recomendacion={state.recomendacion}
@@ -184,18 +220,17 @@ export default function CrearSpot() {
               onTipsFotoChange={(val) =>
                 dispatch({ type: "SET_TIPS_FOTO", payload: val })
               }
+              esSocio={esSocio}
             />
           </Col>
         </Row>
 
-        {/* Botones de acción */}
         <SpotBotones
           onPreview={() => dispatch({ type: "SET_SHOW_MODAL", payload: true })}
           onPublish={handlePublicar}
           cargando={state.cargando}
         />
 
-        {/* Modal de previsualización */}
         <SpotPreviewModal
           show={state.showModal}
           onHide={() => dispatch({ type: "SET_SHOW_MODAL", payload: false })}

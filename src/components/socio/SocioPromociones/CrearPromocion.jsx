@@ -1,5 +1,5 @@
 import { useReducer, useMemo, useState, useRef, useEffect } from "react";
-import Lottie from "lottie-react";
+import LottieImport from "lottie-react";
 import uploadAnimation from "@/assets/animations/Upload.json";
 import {
   FaCamera,
