@@ -25,6 +25,8 @@ import { subirImagenesSpot } from "@/services/imagen.service";
 
 import "./CrearPromocion.css";
 
+const Lottie = LottieImport?.default ?? LottieImport;
+
 const promoFormReducer = (state, action) => {
   switch (action.type) {
     case "SET_TITULO":
