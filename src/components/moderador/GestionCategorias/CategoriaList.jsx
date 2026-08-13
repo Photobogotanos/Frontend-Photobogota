@@ -273,7 +273,7 @@ const CategoriaList = () => {
               name="imagen"
               value={formData.imagen}
               onChange={handleChange}
-              placeholder="https://ejemplo.com/imagen.jpg"
+              placeholder="https://ejemplo.com/imagen.webp"
               className="form-control"
             />
           </div>

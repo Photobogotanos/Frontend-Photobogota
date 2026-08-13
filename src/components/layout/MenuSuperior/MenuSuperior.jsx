@@ -4,7 +4,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaBars, FaPlus } from "react-icons/fa";
 import MenuLateral from "@/components/layout/MenuLateral/MenuLateral";
 import "./MenuSuperior.css";
-import logo from "@/assets/images/logo.jpg";
+import logo from "@/assets/images/logo.webp";
 import Notificaciones from "@/components/notificaciones/Notificaciones/Notificaciones";
 import { useAuth } from "@/context/AuthContext";
 import { resetEstadoServidor } from "@/utils/serverStatus";
@@ -47,7 +47,8 @@ export default function MenuSuperior() {
 
     try {
       if (window.bootstrap?.Collapse) {
-        const collapseInstance = window.bootstrap.Collapse.getOrCreateInstance(collapseElement);
+        const collapseInstance =
+          window.bootstrap.Collapse.getOrCreateInstance(collapseElement);
         if (collapseInstance) {
           collapseInstance.hide();
           return;
@@ -70,8 +71,10 @@ export default function MenuSuperior() {
     cerrarMenuResponsive();
   }, [location.pathname]);
 
-  const abrirSidebar = () => dispatch({ type: "SET_MOSTRAR_SIDEBAR", payload: true });
-  const cerrarSidebar = () => dispatch({ type: "SET_MOSTRAR_SIDEBAR", payload: false });
+  const abrirSidebar = () =>
+    dispatch({ type: "SET_MOSTRAR_SIDEBAR", payload: true });
+  const cerrarSidebar = () =>
+    dispatch({ type: "SET_MOSTRAR_SIDEBAR", payload: false });
 
   const manejarCerrarSesion = async () => {
     resetEstadoServidor();
@@ -107,7 +110,13 @@ export default function MenuSuperior() {
             to={logueado ? "/mapa" : "/"}
             className="brand-wrapper d-flex align-items-center"
           >
-            <Image src={logo} alt="Logo PhotoBogotá" className="brand-logo" />
+            <Image
+              src={logo}
+              alt="Logo PhotoBogotá"
+              className="brand-logo"
+              width={42}
+              height={42}
+            />
             <span className="brand-title ms-2">Photo Bogotá</span>
           </Navbar.Brand>
 
@@ -115,10 +124,7 @@ export default function MenuSuperior() {
           {!logueado ? (
             <>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse
-                id="basic-navbar-nav"
-                ref={navbarCollapseRef}
-              >
+              <Navbar.Collapse id="basic-navbar-nav" ref={navbarCollapseRef}>
                 <Nav className="ms-auto menu-links">
                   <Nav.Link
                     as={Link}
@@ -152,13 +158,21 @@ export default function MenuSuperior() {
                 <Link
                   to="/crear-spot"
                   className={`btn-crear-publicacion ${pulsando ? "pulsing" : ""}`}
-                  onMouseEnter={() => dispatch({ type: "SET_PULSANDO", payload: false })}
+                  onMouseEnter={() =>
+                    dispatch({ type: "SET_PULSANDO", payload: false })
+                  }
                   onClick={cerrarMenuResponsive}
-                  aria-label={esSocio ? "Crear nuevo local" : "Crear nuevo spot"}
+                  aria-label={
+                    esSocio ? "Crear nuevo local" : "Crear nuevo spot"
+                  }
                 >
                   <FaPlus />
-                  <span className="texto-completo">{esSocio ? "Crear Local" : "Crear Spot"}</span>
-                  <span className="texto-corto">{esSocio ? "Local" : "Crear"}</span>
+                  <span className="texto-completo">
+                    {esSocio ? "Crear Local" : "Crear Spot"}
+                  </span>
+                  <span className="texto-corto">
+                    {esSocio ? "Local" : "Crear"}
+                  </span>
                 </Link>
               )}
 

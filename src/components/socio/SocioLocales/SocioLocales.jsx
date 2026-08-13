@@ -153,7 +153,7 @@ export default function SocioLocales() {
           const imagen =
             local.imagen ||
             local.imagenes?.[0] ||
-            "/images/spots/spot-demo.jpg";
+            "/images/spots/spot-demo.webp";
 
           return (
             <Col key={local.id} xs={12} md={6} lg={4}>

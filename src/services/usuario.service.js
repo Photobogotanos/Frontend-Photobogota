@@ -94,7 +94,7 @@ const obtenerPerfilDemo = (nombreUsuario = "demo_user") => {
       biografia:
         "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
       telefono: "3138529778",
-      fotoPerfil: "/images/user-pfp/default-avatar.jpg",
+      fotoPerfil: "/images/user-pfp/default-avatar.webp",
       rol: usuarioDemo.rol,
       nivel: usuarioDemo.nivel ?? null,
       totalSpots: SPOTS.filter((s) => s.creadorId === usuarioDemo.nombreUsuario)
@@ -113,7 +113,7 @@ const obtenerPerfilDemo = (nombreUsuario = "demo_user") => {
     biografia:
       "Descubre y comparte los mejores spots locales. ¡Sube tus lugares favoritos y explora nuevos destinos cercanos!",
     telefono: "3138529778",
-    fotoPerfil: "/images/user-pfp/default-avatar.jpg",
+    fotoPerfil: "/images/user-pfp/default-avatar.webp",
     rol: "MIEMBRO",
     nivel: 5,
     totalSpots: 5,

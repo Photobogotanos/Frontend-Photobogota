@@ -1,8 +1,8 @@
-import spotDemo1 from '/images/spots/spot-demo.jpg?url';
-import spotDemo2 from '/images/spots/spot-demo2.jpg?url';
-import spotDemo3 from '/images/spots/spot-demo3.jpg?url';
-import spotDemo4 from '/images/spots/spot-demo4.jpg?url';
-import spotDemo5 from '/images/spots/spot-demo5.jpg?url';
+import spotDemo1 from '/images/spots/spot-demo.webp?url';
+import spotDemo2 from '/images/spots/spot-demo2.webp?url';
+import spotDemo3 from '/images/spots/spot-demo3.webp?url';
+import spotDemo4 from '/images/spots/spot-demo4.webp?url';
+import spotDemo5 from '/images/spots/spot-demo5.webp?url';
 
 // === LUGARES FOTOGRÁFICOS DE BOGOTÁ ===
 export const SPOTS = [

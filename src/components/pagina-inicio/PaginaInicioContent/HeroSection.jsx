@@ -1,6 +1,6 @@
 import { LazyMotion, m, domAnimation } from "framer-motion";
 
-import paginaInicioMain from '/images/img-home/pagina-inicio-main.jpg?url';
+import paginaInicioMain from '/images/img-home/pagina-inicio-main.webp?url';
 
 const fotoPrincipal = paginaInicioMain;
 

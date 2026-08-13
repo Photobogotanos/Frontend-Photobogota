@@ -50,7 +50,7 @@ export default function FotoPerfil({
             <input
               type="file"
               id="upload-foto"
-              accept=".jpg,.jpeg,.png,.gif"
+              accept=".webp,.jpeg,.png,.gif"
               onChange={onFotoChange}
               className="d-none"
             />

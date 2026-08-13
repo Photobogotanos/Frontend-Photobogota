@@ -10,9 +10,9 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./MapaBogota.css";
-import camaraIcon from "@/assets/images/icons/camara.jpg";
-import localIcon from "@/assets/images/icons/local.jpg";
-import cuponIcon from "@/assets/images/icons/cupon.jpg";
+import camaraIcon from "@/assets/images/icons/camara.webp";
+import localIcon from "@/assets/images/icons/local.webp";
+import cuponIcon from "@/assets/images/icons/cupon.webp";
 import { FaPlus, FaMinus, FaLocationArrow } from "react-icons/fa";
 import SpotPreviewModal from "@/components/spots/SpotPreviewModal/SpotPreviewModal";
 import { obtenerSpots } from "@/services/spot.service";

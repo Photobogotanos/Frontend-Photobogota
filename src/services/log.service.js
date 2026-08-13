@@ -52,11 +52,11 @@ const generarLogAleatorio = () => {
       "Request rate limit: 95/100 requests por minuto",
     ],
     ERROR: [
-      "Error al intentar cargar imagen: photobogota_01.jpg - Timeout",
+      "Error al intentar cargar imagen: photobogota_01.webp - Timeout",
       "Spring Security: Acceso denegado para /api/admin/logs",
       "MongoDB: Conexión perdida - Reconectando...",
       "NullPointerException al procesar imagen sin metadatos",
-      "FileNotFoundException: /uploads/photobogota_02.jpg",
+      "FileNotFoundException: /uploads/photobogota_02.webp",
       "SQLException: Cannot get JDBC Connection",
       "JWT verification failed: Token expired",
       "IOException: Failed to write image to disk",

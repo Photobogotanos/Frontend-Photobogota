@@ -3,9 +3,9 @@ import Col from "react-bootstrap/Col";
 import { IoPin } from "react-icons/io5";
 import { LazyMotion, m, domAnimation } from "framer-motion";
 
-import FotoInspo1 from "/images/img-home/inspo1.jpg?url";
-import FotoInspo3 from "/images/img-home/inspo3.jpg?url";
-import FotoCentro from "/images/img-home/centro.jpg?url";
+import FotoInspo1 from "/images/img-home/inspo1.webp?url";
+import FotoInspo3 from "/images/img-home/inspo3.webp?url";
+import FotoCentro from "/images/img-home/centro.webp?url";
 
 const inspo1 = FotoInspo1;
 const inspo3 = FotoInspo3;

@@ -5,12 +5,12 @@ import Col from "react-bootstrap/Col";
 import TeamCard from "./TeamCard";
 import TeamCarousel from "./TeamCarousel.jsx";
 import "./NosotrosContent.css";
-import FotoNosotros2 from "/images/img-home/nosotros2.jpg?url";
-import FotoNosotros3 from "/images/img-home/nosotros3.jpg?url";
-import FotoSoto from "/images/img-home/soto.jpg?url";
-import FotoSebastian from "/images/img-home/sebastian.jpg?url";
-import FotoDanfel from "/images/img-home/danfel.jpg?url";
-import FotoYanpol from "/images/img-home/yanpol.jpg?url";
+import FotoNosotros2 from "/images/img-home/nosotros2.webp?url";
+import FotoNosotros3 from "/images/img-home/nosotros3.webp?url";
+import FotoSoto from "/images/img-home/soto.webp?url";
+import FotoSebastian from "/images/img-home/sebastian.webp?url";
+import FotoDanfel from "/images/img-home/danfel.webp?url";
+import FotoYanpol from "/images/img-home/yanpol.webp?url";
 
 import CancionSoto from '/songs/Daft-Punk-Instant-Crush.mp3?url';
 import CancionSebastian from '/songs/Entrega-Grupo-Niche.mp3?url';

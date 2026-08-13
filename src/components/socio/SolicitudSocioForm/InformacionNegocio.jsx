@@ -104,7 +104,7 @@ const InformacionNegocio = ({ formData, handleChange, categoriaOptions, setFormD
         <Form.Control
           id="rutDocumento"
           type="file"
-          accept=".pdf, .jpg, .jpeg, .png"
+          accept=".pdf, .webp, .jpeg, .png"
           name="rutDocumento"
           onChange={(e) =>
             setFormData({
