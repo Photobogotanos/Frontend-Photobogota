@@ -4,7 +4,6 @@ import "./FiltrosMapa.css";
 import { getCategoriasActivas } from "../../../api/categoriaApi";
 import { getLocalidadesActivas } from "../../../api/localidadApi";
 
-
 const FiltrosMapa = ({ onFiltrar }) => {
   const [categoria, setCategoria] = useState(null);
   const [localidad, setLocalidad] = useState(null);
@@ -18,8 +17,12 @@ const FiltrosMapa = ({ onFiltrar }) => {
 
   const aplicar = () => {
     onFiltrar({
-      ...(categoria && categoria.value !== "todas" ? { categoria: categoria.value } : {}),
-      ...(localidad && localidad.value !== "todas" ? { localidad: localidad.value } : {}),
+      ...(categoria && categoria.value !== "todas"
+        ? { categoria: categoria.value }
+        : {}),
+      ...(localidad && localidad.value !== "todas"
+        ? { localidad: localidad.value }
+        : {}),
     });
   };
 
@@ -40,6 +43,10 @@ const FiltrosMapa = ({ onFiltrar }) => {
           className="filtro-select"
           classNamePrefix="spot-select"
           isClearable
+          menuPortalTarget={document.body}
+          styles={{
+            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+          }}
         />
         <Select
           options={localidadOptions}
@@ -49,6 +56,10 @@ const FiltrosMapa = ({ onFiltrar }) => {
           className="filtro-select"
           classNamePrefix="spot-select"
           isClearable
+          menuPortalTarget={document.body}
+          styles={{
+            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+          }}
         />
       </div>
 

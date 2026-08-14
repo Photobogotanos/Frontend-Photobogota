@@ -20,7 +20,7 @@ export default function EasterEggs() {
 
   const triggerSixSeven = useCallback(() => {
     setShake(true);
-    const t = setTimeout(() => setShake(false), 1100);
+    const t = setTimeout(() => setShake(false), 1900);
     return () => clearTimeout(t);
   }, []);
 

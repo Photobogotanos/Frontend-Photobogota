@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -132,8 +132,17 @@ function BotonUbicacion() {
 
 function ControlesZoom() {
   const map = useMap();
+  const contenedorRef = useRef(null);
+
+  useEffect(() => {
+    const el = contenedorRef.current;
+    if (!el) return;
+    L.DomEvent.disableClickPropagation(el);
+    L.DomEvent.disableScrollPropagation(el);
+  }, []);
+
   return (
-    <div className="zoom-buttons">
+    <div className="zoom-buttons" ref={contenedorRef}>
       <button
         type="button"
         onClick={() => map.zoomIn()}
@@ -154,6 +163,8 @@ function ControlesZoom() {
 
 function BotonFullscreen({ wrapperRef }) {
   const [isFs, setIsFs] = useState(false);
+  const soportaFullscreenNativo =
+    typeof document !== "undefined" && document.fullscreenEnabled;
 
   useEffect(() => {
     const onChange = () => setIsFs(Boolean(document.fullscreenElement));
@@ -164,15 +175,22 @@ function BotonFullscreen({ wrapperRef }) {
   const toggle = async () => {
     const el = wrapperRef?.current;
     if (!el) return;
-    try {
-      if (!document.fullscreenElement) {
-        await el.requestFullscreen();
-      } else {
-        await document.exitFullscreen();
+
+    if (soportaFullscreenNativo) {
+      try {
+        if (!document.fullscreenElement) {
+          await el.requestFullscreen();
+        } else {
+          await document.exitFullscreen();
+        }
+      } catch {
+        toast.error("No se pudo activar pantalla completa.");
       }
-    } catch {
-      toast.error("No se pudo activar pantalla completa.");
+      return;
     }
+
+    el.classList.toggle("fs-fallback");
+    setIsFs((prev) => !prev);
   };
 
   return (

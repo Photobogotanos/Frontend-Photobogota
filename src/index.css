@@ -32,7 +32,8 @@
 
 @font-face {
   font-family: "SF Pro";
-  src: url("/src/assets/fonts/sfpro/SF-Pro-Display-Bold.woff2") format("opentype");
+  src: url("/src/assets/fonts/sfpro/SF-Pro-Display-Bold.woff2")
+    format("opentype");
   font-weight: 700;
   font-display: swap;
 }

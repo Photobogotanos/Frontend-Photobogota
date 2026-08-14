@@ -83,9 +83,29 @@ export default function MenuSuperior() {
     cerrarMenuResponsive();
   };
 
+  const navbarRef = useRef(null);
+
+  useEffect(() => {
+    const el = navbarRef.current;
+    if (!el) return;
+
+    const actualizarAltura = () => {
+      document.documentElement.style.setProperty(
+        "--navbar-height",
+        `${el.offsetHeight}px`,
+      );
+    };
+
+    actualizarAltura();
+    const observer = new ResizeObserver(actualizarAltura);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <>
       <Navbar
+        ref={navbarRef}
         expand="lg"
         fixed="top"
         className="navbar-custom shadow-sm py-2"

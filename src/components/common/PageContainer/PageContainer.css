@@ -5,8 +5,8 @@
   align-items: center;
   justify-content: flex-start;
   padding: 0;
-  margin-top: 68px;
-  min-height: calc(100vh - 68px);
+  margin-top: var(--navbar-height, 68px);
+  min-height: calc(100vh - var(--navbar-height, 68px));
 }
 
 .page-container .container,
