@@ -1,93 +1,273 @@
 .footer-principal {
-  background-color: var(--color-dark);
-  color: #e0e0e0;
-  padding: 4rem 0 2rem;
-  margin-top: auto; 
-  font-family: "SF Pro", sans-serif;
+  position: relative;
+  background: linear-gradient(180deg, #14141a 0%, #0c0c10 100%);
+  color: #d4d4d8;
+  padding: 3.5rem 0 1.75rem;
+  margin-top: auto;
+  font-family: "SF Pro", system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+/* Línea superior con gradiente de marca */
+.footer-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-primary, #806fbe) 20%,
+    #a294d0 50%,
+    var(--color-primary, #806fbe) 80%,
+    transparent 100%
+  );
 }
 
 .footer-container {
-  max-width: 1200px;
+  max-width: 1140px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Brand */
+.footer-brand-block {
+  max-width: 320px;
 }
 
 .footer-brand {
-  font-size: 2rem;
+  display: inline-block;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-primary);
-  margin: 0;
+  letter-spacing: -0.03em;
+  color: var(--color-primary, #806fbe);
+  text-decoration: none;
+  margin: 0 0 0.75rem;
+  transition: color 0.2s ease, opacity 0.2s ease;
 }
 
-.footer-copyright {
-  font-size: 0.95rem;
-  opacity: 0.8;
-  margin: 0;
+.footer-brand:hover {
+  color: #a294d0;
+  text-decoration: none;
 }
 
+.footer-tagline {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: rgba(228, 228, 231, 0.72);
+  margin: 0 0 1.35rem;
+}
+
+/* Social */
 .footer-social {
   display: flex;
-  gap: 20px;
-  justify-content: center;
-  justify-content: flex-start; 
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .footer-social-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: #fff;
-  transition: all 0.3s ease;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
 }
 
 .footer-social-link:hover {
-  background-color: var(--color-primary);
-  color: white;
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(128, 111, 190, 0.3);
+  background: var(--color-primary, #806fbe);
+  border-color: transparent;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(128, 111, 190, 0.35);
+  text-decoration: none;
 }
 
-.footer-credits-title {
-  font-size: 1rem;
-  font-weight: 500;
-  opacity: 0.9;
+/* Column titles */
+.footer-col-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-heart {
+  color: #e11d48;
+  font-size: 0.85rem;
+}
+
+/* Nav lists */
+.footer-nav-list {
+  list-style: none;
   margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
 }
 
+.footer-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(228, 228, 231, 0.78);
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-nav-link:hover {
+  color: var(--color-primary, #806fbe);
+  text-decoration: none;
+  transform: translateX(2px);
+}
+
+.footer-nav-icon {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.footer-nav-link:hover .footer-nav-icon {
+  opacity: 1;
+}
+
+/* Team chips */
 .footer-credits {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.2rem;
-  justify-content: center;
-  justify-content: flex-end; 
-  font-weight: 500;
-  font-size: 1.05rem;
-  color: var(--color-primary);
+  gap: 8px;
 }
 
-.footer-credits span {
-  position: relative;
+.footer-credit-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #e4e4e7;
+  background: rgba(128, 111, 190, 0.15);
+  border: 1px solid rgba(128, 111, 190, 0.28);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.footer-credits span:not(:last-child)::after {
-  content: "•";
-  margin-left: 1.2rem;
-  color: #777;
+.footer-credit-chip:hover {
+  background: rgba(128, 111, 190, 0.32);
+  border-color: var(--color-primary, #806fbe);
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {
+/* Divider + bottom */
+.footer-divider {
+  height: 1px;
+  margin: 2.25rem 0 1.25rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.1) 80%,
+    transparent
+  );
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.footer-copyright {
+  font-size: 0.85rem;
+  color: rgba(228, 228, 231, 0.55);
+  margin: 0;
+}
+
+.footer-bottom-note {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-primary, #806fbe);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .footer-brand-block {
+    max-width: 100%;
+    text-align: center;
+    margin: 0 auto;
+  }
+
   .footer-social {
     justify-content: center;
   }
-  
+
+  .footer-col-title {
+    justify-content: center;
+  }
+
+  .footer-nav-list {
+    align-items: center;
+  }
+
   .footer-credits {
     justify-content: center;
-    font-size: 1rem;
   }
-  
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-principal {
+    padding: 2.75rem 0 1.5rem;
+  }
+
   .footer-brand {
-    font-size: 1.7rem;
+    font-size: 1.5rem;
+  }
+
+  .footer-tagline {
+    font-size: 0.88rem;
+  }
+
+  .footer-social-link {
+    width: 40px;
+    height: 40px;
+  }
+
+  .footer-credit-chip {
+    font-size: 0.78rem;
+    padding: 5px 10px;
   }
 }

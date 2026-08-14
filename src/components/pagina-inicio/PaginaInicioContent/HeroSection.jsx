@@ -25,6 +25,14 @@ export default function HeroSection() {
             fetchPriority="high"
             className="pg-inicio-hero-img"
           />
+
+          {/* Capa transparente que bloquea la interacción directa con el <img> */}
+          <div className="pg-inicio-hero-protect" aria-hidden="true" />
+
+          {/* Badge de atribución */}
+          <div className="pg-inicio-hero-credits">
+            <span>Foto por <strong>Sebastián Sotomayor</strong></span>
+          </div>
         </m.div>
 
         <div className="pg-inicio-hero-overlay" aria-hidden="true" />
@@ -58,12 +66,7 @@ export default function HeroSection() {
             Un espacio para compartir miradas fotográficas y redescubrir Bogotá
             desde diferentes perspectivas
           </m.p>
-
         </m.div>
-
-        <div className="pg-inicio-hero-scroll" aria-hidden="true">
-          <span />
-        </div>
       </section>
     </LazyMotion>
   );

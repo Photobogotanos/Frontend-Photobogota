@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import HeroSection from "./HeroSection";
 import InspoSection from "./InspoSection";
 import ReviewsSection from "./ReviewsSection";
-import TopSpotsSection from "./TopSpotsSection";
 import GuiaMapaSection from "./GuiaMapaSection";
 import ImageModal from "./ImageModal";
 import LoginPromptModal from "./LoginPromptModal";
@@ -32,7 +31,6 @@ export default function PaginaInicioContent() {
       <div className="pg-inicio-body">
         <InspoSection onImageClick={handleImageClick} />
         <ReviewsSection />
-        <TopSpotsSection onImageClick={handleImageClick} />
         <GuiaMapaSection onMarkerClick={openLoginPrompt} />
       </div>
 

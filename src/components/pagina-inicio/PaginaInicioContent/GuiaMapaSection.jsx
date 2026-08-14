@@ -1,5 +1,5 @@
 import { LazyMotion, m, domAnimation } from "framer-motion";
-import { FaLock } from "react-icons/fa";
+import { FaLock, FaMapMarkedAlt, FaUnlockAlt, FaCamera } from "react-icons/fa";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -11,6 +11,30 @@ L.Icon.Default.mergeOptions({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
+
+const PASOS = [
+  {
+    icon: FaMapMarkedAlt,
+    titulo: "Mapa Interactivo (Versión Demostrativa)",
+    contenido: (
+      <>
+        Explora Bogotá con nuestro mapa lleno de spots marcados por la comunidad.{" "}
+        <strong>Haz clic en los marcadores para ver más información.</strong>
+      </>
+    ),
+  },
+  {
+    icon: FaUnlockAlt,
+    titulo: "Funcionalidades completas",
+    contenido:
+      "Al registrarte podrás: añadir nuevos spots, guardar tus favoritos, ver fotos detalladas, leer reseñas completas y acceder a información exclusiva.",
+  },
+  {
+    icon: FaCamera,
+    titulo: "Todo lo que necesitas saber",
+    contenido: "Fotos reales, tips de luz, horarios ideales y cómo llegar. Sin sorpresas.",
+  },
+];
 
 export default function GuiaMapaSection({ onMarkerClick }) {
   const spotsMapa = getSpots();
@@ -29,7 +53,12 @@ export default function GuiaMapaSection({ onMarkerClick }) {
   return (
     <LazyMotion features={domAnimation}>
       <section id="mapa-section" className="guia-container pb-5" aria-labelledby="guia-title">
+        <span className="guia-blob guia-blob-a" aria-hidden="true" />
+        <span className="guia-blob guia-blob-b" aria-hidden="true" />
+
         <div className="guia-text">
+          <span className="guia-eyebrow">Explora la ciudad</span>
+
           <m.h2
             id="guia-title"
             initial={{ x: -40, opacity: 0 }}
@@ -41,33 +70,38 @@ export default function GuiaMapaSection({ onMarkerClick }) {
             Descubre Bogotá con nuestro mapa interactivo
           </m.h2>
 
+          <div className="guia-steps">
+            {PASOS.map((paso, i) => (
+              <m.div
+                key={paso.titulo}
+                className="guia-step"
+                initial={{ x: -40, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.12 + i * 0.1, duration: 0.55 }}
+              >
+                <span className="guia-step-marker">
+                  <paso.icon aria-hidden="true" />
+                </span>
+                <div className="guia-step-body">
+                  <h3 className="guia-sub">{paso.titulo}</h3>
+                  <p>{paso.contenido}</p>
+                </div>
+              </m.div>
+            ))}
+          </div>
+
           <m.div
-            initial={{ x: -40, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
+            className="demo-note"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.12, duration: 0.55 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
           >
-            <h3 className="guia-sub">Mapa Interactivo (Versión Demostrativa)</h3>
-            <p>
-              Explora Bogotá con nuestro mapa lleno de spots marcados por la comunidad.{" "}
-              <strong>Haz clic en los marcadores para ver más información.</strong>
-            </p>
-
-            <h3 className="guia-sub">Funcionalidades completas</h3>
-            <p>
-              Al registrarte podrás: añadir nuevos spots, guardar tus favoritos, ver fotos
-              detalladas, leer reseñas completas y acceder a información exclusiva.
-            </p>
-
-            <h3 className="guia-sub">Todo lo que necesitas saber</h3>
-            <p>Fotos reales, tips de luz, horarios ideales y cómo llegar. Sin sorpresas.</p>
-
-            <div className="demo-note">
-              <FaLock className="demo-note-icon" aria-hidden="true" />
-              <div>
-                <strong>Nota:</strong> Esta es una versión demostrativa. Regístrate para
-                acceder a todas las funcionalidades.
-              </div>
+            <FaLock className="demo-note-icon" aria-hidden="true" />
+            <div>
+              <strong>Nota:</strong> Esta es una versión demostrativa. Regístrate para
+              acceder a todas las funcionalidades.
             </div>
           </m.div>
         </div>

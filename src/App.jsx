@@ -17,6 +17,7 @@ import { useAuth } from "@/context/AuthContext";
 import { MotionConfig } from "framer-motion";
 import CuentaInactivaPage from "@/pages/cuenta/CuentaInactivaPage/CuentaInactivaPage";
 import CuentaSancionadaPage from "@/pages/cuenta/CuentaSancionadaPage/CuentaSancionadaPage";
+import EasterEggs from "@/components/common/EasterEggs/EasterEggs";
 
 const Lottie = LottieImport?.default ?? LottieImport;
 
@@ -77,6 +78,7 @@ function App() {
     <MotionConfig reducedMotion="user">
       <BrowserRouter basename={basename}>
         <ScrollToTop />
+        <EasterEggs />
         <AppRouter />
       </BrowserRouter>
     </MotionConfig>
