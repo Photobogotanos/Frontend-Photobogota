@@ -5,18 +5,18 @@ import { LazyMotion, m, domAnimation } from "framer-motion";
 const RESENAS = [
   {
     id: "r1",
-    user: "@sxbxxs.r",
-    text: "La mejor app para descubrir spots fotográficos en Bogotá. ¡Insuperable!",
+    user: "@sebaas.jsx",
+    text: "Me encanta vivir en Bogotá, la percepción entre la vida y la muerte es casi imperceptible",
   },
   {
     id: "r2",
-    user: "@dieg.oamt",
-    text: "Gracias a PhotoBogotá encontré lugares que ni sabía que existían. 100% recomendada.",
+    user: "@void0bits",
+    text: "Parchese, QUE RIIICOO",
   },
   {
     id: "r3",
     user: "@danfel_fr",
-    text: "Ahora entiendo por qué Bogotá es tan fotogénica. Esta app me abrió los ojos.",
+    text: "Que bacanería de app para descubrir lugares pa parchar",
   },
 ];
 
@@ -27,9 +27,12 @@ const inicialUsuario = (user) => {
 
 export default function ReviewsSection() {
   return (
-    <section className="pg-section pg-section-reviews" aria-labelledby="reviews-title">
+    <section
+      className="pg-section pg-section-reviews"
+      aria-labelledby="reviews-title"
+    >
       <h2 id="reviews-title" className="section-title">
-        Esto dicen nuestros usuarios
+        Esto dicen los parceros
       </h2>
       <LazyMotion features={domAnimation}>
         <Row className="g-4">

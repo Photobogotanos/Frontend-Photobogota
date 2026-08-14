@@ -21,7 +21,7 @@ export default function InspoSection({ onImageClick }) {
   return (
     <section id="inspo-section" className="pg-section" aria-labelledby="inspo-title">
       <h2 id="inspo-title" className="section-title">
-        Inspiración del día
+        Inspiración
       </h2>
       <LazyMotion features={domAnimation}>
         <Row className="g-4">

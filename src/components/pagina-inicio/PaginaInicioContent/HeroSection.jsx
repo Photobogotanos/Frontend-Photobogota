@@ -59,19 +59,6 @@ export default function HeroSection() {
             desde diferentes perspectivas
           </m.p>
 
-          <m.div
-            className="pg-inicio-hero-cta"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.95, duration: 0.7 }}
-          >
-            <a href="#inspo-section" className="btn-hero-primary">
-              Explorar inspiración
-            </a>
-            <a href="#mapa-section" className="btn-hero-ghost">
-              Ver mapa
-            </a>
-          </m.div>
         </m.div>
 
         <div className="pg-inicio-hero-scroll" aria-hidden="true">
