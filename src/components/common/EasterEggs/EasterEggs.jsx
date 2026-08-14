@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useEffectEvent,
+} from "react";
 import { createPortal } from "react-dom";
 import "./EasterEggs.css";
 
@@ -18,18 +24,18 @@ export default function EasterEggs() {
     }
   }, []);
 
-  const triggerSixSeven = useCallback(() => {
+  const onSixSevenEvent = useEffectEvent(() => {
     setShake(true);
     const t = setTimeout(() => setShake(false), 1900);
     return () => clearTimeout(t);
-  }, []);
+  });
 
-  const triggerParchese = useCallback(() => {
+  const onParcheseEvent = useEffectEvent(() => {
     if (yanpol) return;
     setYanpol(true);
     const t = setTimeout(() => setYanpol(false), 4500);
     return () => clearTimeout(t);
-  }, [yanpol]);
+  });
 
   useEffect(() => {
     const onKey = (e) => {
@@ -59,13 +65,13 @@ export default function EasterEggs() {
         buf.endsWith("67")
       ) {
         resetBuffer();
-        triggerSixSeven();
+        onSixSevenEvent();
         return;
       }
 
       if (buf.includes("parchese")) {
         resetBuffer();
-        triggerParchese();
+        onParcheseEvent();
       }
     };
 
@@ -74,7 +80,7 @@ export default function EasterEggs() {
       window.removeEventListener("keydown", onKey);
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [resetBuffer, triggerSixSeven, triggerParchese]);
+  }, [resetBuffer]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -95,14 +101,12 @@ export default function EasterEggs() {
           <div className="ee-yanpol-card">
             <div className="ee-yanpol-badge">Easter egg</div>
             <p className="ee-yanpol-phrase">¿Parchese?</p>
-            <p className="ee-yanpol-sub">
-              Parchissss. -Yanpol 2026
-            </p>
+            <p className="ee-yanpol-sub">Parchissss. -Yanpol 2026</p>
             <div className="ee-yanpol-bar" />
           </div>
         </div>
       )}
     </>,
-    document.body
+    document.body,
   );
 }

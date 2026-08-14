@@ -1,4 +1,11 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+  useEffectEvent,
+} from "react";
 import {
   MapContainer,
   TileLayer,
@@ -305,6 +312,10 @@ function HeatmapLayer({ spots, visible }) {
 function GeomanDraw({ activo, onPuntoCreado }) {
   const map = useMap();
 
+  const handlePuntoCreadoEvent = useEffectEvent((coords) => {
+    onPuntoCreado?.(coords);
+  });
+
   useEffect(() => {
     if (!map.pm) return undefined;
 
@@ -323,7 +334,7 @@ function GeomanDraw({ activo, onPuntoCreado }) {
       if (e.shape !== "Marker") return;
       const { lat, lng } = e.layer.getLatLng();
       map.removeLayer(e.layer);
-      onPuntoCreado?.({ lat, lng });
+      handlePuntoCreadoEvent({ lat, lng });
     };
 
     map.on("pm:create", onCreate);
@@ -334,7 +345,7 @@ function GeomanDraw({ activo, onPuntoCreado }) {
       map.pm.disableDraw();
       map.pm.removeControls();
     };
-  }, [map, activo, onPuntoCreado]);
+  }, [map, activo]);
 
   return null;
 }

@@ -1,4 +1,4 @@
-import { useReducer, useRef, useEffect } from "react";
+import { useReducer, useRef, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import "./CreacionSpotForm.css";
 import Row from "react-bootstrap/Row";
@@ -17,10 +17,11 @@ import { usePublicacionSpot } from "./usePublicacionSpot";
 import { toast } from "react-hot-toast";
 
 // Geocodificación inversa ligera (coordenadas -> dirección)
-const obtenerDireccionDesdeCoordenadas = async (lat, lng) => {
+const obtenerDireccionDesdeCoordenadas = async (lat, lng, signal) => {
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=es`;
     const response = await fetch(url, {
+      signal,
       headers: {
         "User-Agent": "Photobogota/1.0 (photobogota123@gmail.com)",
       },
@@ -43,9 +44,17 @@ const obtenerDireccionDesdeCoordenadas = async (lat, lng) => {
       partes.push(a.city || a.town || a.village || a.municipality);
     }
     return partes.join(", ");
-  } catch {
+  } catch (error) {
+    if (error.name === "AbortError") return ""; // Petición cancelada intencionalmente
     return "";
   }
+};
+
+const esUrlSegura = (url) => {
+  return (
+    typeof url === "string" &&
+    (url.startsWith("blob:") || url.startsWith("data:image/"))
+  );
 };
 
 export default function CrearSpot() {
@@ -58,14 +67,18 @@ export default function CrearSpot() {
     previewsRef.current = state.previews;
   }, [state.previews]);
 
-  useEffect(() => {
-    return () => {
-      previewsRef.current.forEach((url) => URL.revokeObjectURL(url));
-      previewsRef.current = [];
-    };
+  const cargarDireccionUbicacion = useCallback((lat, lng, controller) => {
+    obtenerDireccionDesdeCoordenadas(lat, lng, controller.signal)
+      .then((dir) => {
+        if (dir) {
+          dispatch({ type: "SET_DIRECCION", payload: dir });
+        }
+      })
+      .catch(() => {
+        // Ignorar cancelaciones
+      });
   }, []);
 
-  // Coordenadas venidas desde el mapa ("Marcar spot")
   useEffect(() => {
     if (coordsDesdeMapaAplicadas.current) return;
     const { lat, lng, desdeMapa } = location.state || {};
@@ -77,11 +90,13 @@ export default function CrearSpot() {
 
     toast("Ubicación cargada desde el mapa", { duration: 2800 });
 
-    (async () => {
-      const dir = await obtenerDireccionDesdeCoordenadas(lat, lng);
-      if (dir) dispatch({ type: "SET_DIRECCION", payload: dir });
-    })();
-  }, [location.state]);
+    const controller = new AbortController();
+    cargarDireccionUbicacion(lat, lng, controller);
+
+    return () => {
+      controller.abort();
+    };
+  }, [location.state, cargarDireccionUbicacion]);
 
   const { usuario } = useAuth();
   const esSocio = usuario?.rol === "SOCIO";
@@ -96,24 +111,47 @@ export default function CrearSpot() {
   const { handlePublicar } = usePublicacionSpot({ state, dispatch, esSocio });
 
   const handleImagen = (files) => {
-    const newPreviews = files.map((f) => URL.createObjectURL(f));
     dispatch({ type: "SET_IMAGENES", payload: [...state.imagenes, ...files] });
-    dispatch({
-      type: "SET_PREVIEWS",
-      payload: [...state.previews, ...newPreviews],
-    });
     dispatch({ type: "SET_INDICE_IMAGEN", payload: 0 });
   };
 
-  const handleRemoveImagen = (idx) => {
-    const url = state.previews[idx];
-    if (url) URL.revokeObjectURL(url);
-    const newImagenes = state.imagenes.filter((_, i) => i !== idx);
-    const newPreviews = state.previews.filter((_, i) => i !== idx);
-    dispatch({ type: "SET_IMAGENES", payload: newImagenes });
-    dispatch({ type: "SET_PREVIEWS", payload: newPreviews });
+  useEffect(() => {
+    const urlsAnteriores = previewsRef.current || [];
 
-    const nuevoIdx = Math.min(state.indiceImagenActual, newPreviews.length - 1);
+    if (!state.imagenes || state.imagenes.length === 0) {
+      urlsAnteriores.forEach((url) => {
+        if (esUrlSegura(url) && url.startsWith("blob:")) {
+          URL.revokeObjectURL(url);
+        }
+      });
+      dispatch({ type: "SET_PREVIEWS", payload: [] });
+      return;
+    }
+
+    const objectUrls = state.imagenes.map((file) => URL.createObjectURL(file));
+
+    urlsAnteriores.forEach((url) => {
+      if (esUrlSegura(url) && url.startsWith("blob:")) {
+        URL.revokeObjectURL(url);
+      }
+    });
+
+    dispatch({ type: "SET_PREVIEWS", payload: objectUrls });
+
+    return () => {
+      objectUrls.forEach((url) => {
+        if (esUrlSegura(url) && url.startsWith("blob:")) {
+          URL.revokeObjectURL(url);
+        }
+      });
+    };
+  }, [state.imagenes]);
+
+  const handleRemoveImagen = (idx) => {
+    const newImagenes = state.imagenes.filter((_, i) => i !== idx);
+    dispatch({ type: "SET_IMAGENES", payload: newImagenes });
+
+    const nuevoIdx = Math.min(state.indiceImagenActual, newImagenes.length - 1);
     dispatch({ type: "SET_INDICE_IMAGEN", payload: Math.max(0, nuevoIdx) });
   };
 
