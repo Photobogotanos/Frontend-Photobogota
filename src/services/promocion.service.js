@@ -34,7 +34,11 @@ const requerirToken = () => {
 export const obtenerPromocionesMias = async () => {
   try {
     if (!requerirToken()) {
-      return { exitoso: false, datos: [], mensaje: "Debes iniciar sesión para ver tus promociones" };
+      return {
+        exitoso: false,
+        datos: [],
+        mensaje: "Debes iniciar sesión para ver tus promociones",
+      };
     }
     const response = await getPromocionesMias();
     return { exitoso: true, datos: response.data || [], mensaje: "" };
@@ -67,11 +71,22 @@ export const obtenerPromocionPorId = async (id) => {
  * Promoción vigente y activa de un local (página del local / "ir al local").
  * Es público; si no hay promoción activa devuelve exitoso:false sin datos.
  */
-export const obtenerPromocionActivaDeSpot = async (spotId) => {
+export const obtenerPromocionActivaDeSpot = async (spotId, options = {}) => {
   try {
-    const response = await getPromocionActivaDeSpot(spotId);
+    const response = await getPromocionActivaDeSpot(spotId, {
+      signal: options.signal,
+    });
     return { exitoso: true, datos: response.data || null, mensaje: "" };
   } catch (error) {
+    if (error.name === "AbortError") {
+      return {
+        exitoso: false,
+        datos: null,
+        mensaje: "Petición cancelada",
+        aborted: true,
+      };
+    }
+
     if (error.response?.status === 404) {
       return { exitoso: false, datos: null, mensaje: "" };
     }
@@ -90,7 +105,11 @@ export const obtenerPromocionActivaDeSpot = async (spotId) => {
 export const crearPromocion = async (body) => {
   try {
     if (!requerirToken()) {
-      return { exitoso: false, datos: null, mensaje: "Debes iniciar sesión para publicar una promoción" };
+      return {
+        exitoso: false,
+        datos: null,
+        mensaje: "Debes iniciar sesión para publicar una promoción",
+      };
     }
     const response = await postCrearPromocion(body);
     return {
@@ -121,7 +140,11 @@ export const crearPromocion = async (body) => {
 export const actualizarPromocion = async (id, body) => {
   try {
     if (!requerirToken()) {
-      return { exitoso: false, datos: null, mensaje: "Debes iniciar sesión para editar la promoción" };
+      return {
+        exitoso: false,
+        datos: null,
+        mensaje: "Debes iniciar sesión para editar la promoción",
+      };
     }
     const response = await putActualizarPromocion(id, body);
     return {
@@ -152,7 +175,11 @@ export const actualizarPromocion = async (id, body) => {
 export const desactivarPromocion = async (id) => {
   try {
     if (!requerirToken()) {
-      return { exitoso: false, datos: null, mensaje: "Debes iniciar sesión para gestionar tus promociones" };
+      return {
+        exitoso: false,
+        datos: null,
+        mensaje: "Debes iniciar sesión para gestionar tus promociones",
+      };
     }
     const response = await patchTogglePromocion(id);
     const estado = response.data?.estado;
@@ -177,7 +204,11 @@ export const desactivarPromocion = async (id) => {
 export const duplicarPromocion = async (id) => {
   try {
     if (!requerirToken()) {
-      return { exitoso: false, datos: null, mensaje: "Debes iniciar sesión para duplicar promociones" };
+      return {
+        exitoso: false,
+        datos: null,
+        mensaje: "Debes iniciar sesión para duplicar promociones",
+      };
     }
     const response = await postDuplicarPromocion(id);
     return {
@@ -200,7 +231,11 @@ export const duplicarPromocion = async (id) => {
 export const eliminarPromocion = async (id) => {
   try {
     if (!requerirToken()) {
-      return { exitoso: false, datos: null, mensaje: "Debes iniciar sesión para eliminar promociones" };
+      return {
+        exitoso: false,
+        datos: null,
+        mensaje: "Debes iniciar sesión para eliminar promociones",
+      };
     }
     await deletePromocion(id);
     return { exitoso: true, datos: null, mensaje: "Promoción eliminada" };

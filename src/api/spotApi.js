@@ -11,9 +11,9 @@ export const getSpots = (filtros = {}) => {
   return clienteApi.get("/spots", { params });
 };
 
-export const getSpotById = (id) =>
-  clienteApi.get(`/spots/${id}`);
+export const getSpotById = (id, options = {}) =>
+  clienteApi.get(`/spots/${id}`, {
+    signal: options.signal,
+  });
 
-export const postCrearSpot = (body) =>
-  clienteApi.post("/spots", body);
-
+export const postCrearSpot = (body) => clienteApi.post("/spots", body);

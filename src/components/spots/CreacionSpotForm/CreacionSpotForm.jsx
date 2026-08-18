@@ -115,35 +115,34 @@ export default function CrearSpot() {
     dispatch({ type: "SET_INDICE_IMAGEN", payload: 0 });
   };
 
-  useEffect(() => {
-    const urlsAnteriores = previewsRef.current || [];
+  const currentPreviewUrlsRef = useRef([]);
 
+  useEffect(() => {
     if (!state.imagenes || state.imagenes.length === 0) {
-      urlsAnteriores.forEach((url) => {
+      currentPreviewUrlsRef.current.forEach((url) => {
         if (esUrlSegura(url) && url.startsWith("blob:")) {
           URL.revokeObjectURL(url);
         }
       });
+      currentPreviewUrlsRef.current = [];
       dispatch({ type: "SET_PREVIEWS", payload: [] });
       return;
     }
 
-    const objectUrls = state.imagenes.map((file) => URL.createObjectURL(file));
-
-    urlsAnteriores.forEach((url) => {
-      if (esUrlSegura(url) && url.startsWith("blob:")) {
-        URL.revokeObjectURL(url);
-      }
-    });
-
+    const objectUrls = [];
+    for (const file of state.imagenes) {
+      objectUrls.push(URL.createObjectURL(file));
+    }
+    currentPreviewUrlsRef.current = objectUrls;
     dispatch({ type: "SET_PREVIEWS", payload: objectUrls });
 
     return () => {
-      objectUrls.forEach((url) => {
-        if (esUrlSegura(url) && url.startsWith("blob:")) {
-          URL.revokeObjectURL(url);
-        }
-      });
+      for (const url of objectUrls) {
+        URL.revokeObjectURL(url);
+      }
+      if (currentPreviewUrlsRef.current === objectUrls) {
+        currentPreviewUrlsRef.current = [];
+      }
     };
   }, [state.imagenes]);
 

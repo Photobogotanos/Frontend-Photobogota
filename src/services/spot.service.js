@@ -1,6 +1,9 @@
 import { getSpots, getSpotById, postCrearSpot } from "@/api/spotApi";
 import { obtenerAccessToken, obtenerSesion } from "@/utils/sessionHelper";
-import { getSpots as getMockSpots, getSpotById as getMockSpotById } from "@/mocks/spots.helpers";
+import {
+  getSpots as getMockSpots,
+  getSpotById as getMockSpotById,
+} from "@/mocks/spots.helpers";
 
 /**
  * Obtener todos los spots con filtros opcionales
@@ -9,11 +12,11 @@ import { getSpots as getMockSpots, getSpotById as getMockSpotById } from "@/mock
 export const obtenerSpots = async (filtros = {}) => {
   try {
     console.log("Obteniendo spots con filtros:", filtros);
-    
+
     const response = await getSpots(filtros);
-    
+
     console.log("Spots obtenidos del backend:", response.data?.length || 0);
-    
+
     return {
       exitoso: true,
       datos: response.data || [],
@@ -22,24 +25,26 @@ export const obtenerSpots = async (filtros = {}) => {
     };
   } catch (error) {
     console.warn("Error al obtener spots del backend, usando mocks:", error);
-    
+
     // Fallback a datos mock
     let spotsMock = getMockSpots();
-    
+
     // Aplicar filtros a los mocks
     if (filtros.categoria) {
-      spotsMock = spotsMock.filter(spot => 
-        spot.categoria?.toLowerCase() === filtros.categoria.toLowerCase()
+      spotsMock = spotsMock.filter(
+        (spot) =>
+          spot.categoria?.toLowerCase() === filtros.categoria.toLowerCase(),
       );
     }
     if (filtros.localidad) {
-      spotsMock = spotsMock.filter(spot => 
-        spot.localidad?.toLowerCase() === filtros.localidad.toLowerCase()
+      spotsMock = spotsMock.filter(
+        (spot) =>
+          spot.localidad?.toLowerCase() === filtros.localidad.toLowerCase(),
       );
     }
-    
+
     console.log("Spots obtenidos de mocks:", spotsMock.length);
-    
+
     return {
       exitoso: true,
       datos: spotsMock,
@@ -84,14 +89,14 @@ export const obtenerMisLocales = async () => {
  * Obtener un spot por su ID
  * Con fallback a mocks si el servidor no está disponible
  */
-export const obtenerSpotPorId = async (id) => {
+export const obtenerSpotPorId = async (id, options = {}) => {
   try {
     console.log("Obteniendo spot por ID:", id);
-    
-    const response = await getSpotById(id);
-    
+
+    const response = await getSpotById(id, { signal: options.signal });
+
     console.log("Spot obtenido del backend:", response.data?.nombre);
-    
+
     return {
       exitoso: true,
       datos: response.data || null,
@@ -99,11 +104,22 @@ export const obtenerSpotPorId = async (id) => {
       esMock: false,
     };
   } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Petición de spot cancelada:", id);
+      return {
+        exitoso: false,
+        datos: null,
+        mensaje: "Petición cancelada",
+        esMock: false,
+        aborted: true,
+      };
+    }
+
     console.warn("Error al obtener spot del backend, usando mocks:", error);
-    
+
     // Fallback a datos mock
     const spotMock = getMockSpotById(id);
-    
+
     if (spotMock) {
       console.log("Spot obtenido de mocks:", spotMock.nombre);
       return {
@@ -113,17 +129,18 @@ export const obtenerSpotPorId = async (id) => {
         esMock: true,
       };
     }
-    
+
     let mensaje = "Error al obtener el spot";
-    
+
     if (error.response?.status === 404) {
       mensaje = "El spot no existe";
     } else if (error.response) {
-      mensaje = error.response.data?.message || error.response.data?.mensaje || mensaje;
+      mensaje =
+        error.response.data?.message || error.response.data?.mensaje || mensaje;
     } else if (error.request) {
       mensaje = "No se pudo conectar con el servidor";
     }
-    
+
     return {
       exitoso: false,
       datos: null,
@@ -140,11 +157,11 @@ export const obtenerSpotPorId = async (id) => {
 export const crearSpot = async (spotData) => {
   try {
     const token = obtenerAccessToken();
-    
+
     if (!token) {
       const sesion = obtenerSesion();
       console.log("Sesión activa:", sesion ? `Sí (${sesion.username})` : "No");
-      
+
       if (!sesion) {
         return {
           exitoso: false,
@@ -152,11 +169,12 @@ export const crearSpot = async (spotData) => {
           mensaje: "No hay sesión activa. Por favor inicia sesión nuevamente.",
         };
       }
-      
+
       return {
         exitoso: false,
         datos: null,
-        mensaje: "No se encontró token de autenticación. Por favor inicia sesión nuevamente.",
+        mensaje:
+          "No se encontró token de autenticación. Por favor inicia sesión nuevamente.",
       };
     }
 
@@ -178,15 +196,22 @@ export const crearSpot = async (spotData) => {
     let mensaje = "Error al crear el spot";
 
     if (error.response) {
-      mensaje = error.response.data?.message || error.response.data?.mensaje || mensaje;
-      console.error("Error response:", error.response.status, error.response.data);
-      
+      mensaje =
+        error.response.data?.message || error.response.data?.mensaje || mensaje;
+      console.error(
+        "Error response:",
+        error.response.status,
+        error.response.data,
+      );
+
       if (error.response.status === 401) {
         mensaje = "Tu sesión ha expirado. Por favor inicia sesión nuevamente.";
       } else if (error.response.status === 403) {
         mensaje = "No tienes permiso para crear spots.";
       } else if (error.response.status === 400) {
-        mensaje = error.response.data?.message || "Datos inválidos. Verifica todos los campos.";
+        mensaje =
+          error.response.data?.message ||
+          "Datos inválidos. Verifica todos los campos.";
       }
     } else if (error.request) {
       mensaje = "No se pudo conectar con el servidor. Verifica tu conexión.";
