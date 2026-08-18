@@ -81,7 +81,7 @@ export default function Footer() {
                   className="footer-nav-link"
                 >
                   <FaEnvelope className="footer-nav-icon" aria-hidden="true" />
-                  Escribinos
+                  Escribenos
                 </a>
               </li>
               <li>

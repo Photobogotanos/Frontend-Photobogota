@@ -4,7 +4,7 @@
 }
 
 .terminos-link-solicitud {
-  color: #007bff;
+  color: var(--color-primary);
   text-decoration: underline;
   cursor: pointer;
   background: none;
@@ -14,7 +14,7 @@
 }
 
 .terminos-link-solicitud:hover {
-  color: #0056b3;
+  color: var(--color-hover);
 }
 
 @media (max-width: 576px) {
