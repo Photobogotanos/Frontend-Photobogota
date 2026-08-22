@@ -9,13 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "react:doctor": "react-doctor --verbose",
-    "check:unused": "cross-env KNIP_DISABLE_RAW_TRANSFER=1 knip --dependencies",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:headed": "playwright test --headed",
-    "test:e2e:debug": "playwright test --debug",
-    "test:e2e:report": "playwright show-report",
-    "test:e2e:codegen": "playwright codegen http://localhost:5173"
+    "check:unused": "cross-env KNIP_DISABLE_RAW_TRANSFER=1 knip --dependencies"
   },
   "dependencies": {
     "@geoman-io/leaflet-geoman-free": "^2.20.0",
