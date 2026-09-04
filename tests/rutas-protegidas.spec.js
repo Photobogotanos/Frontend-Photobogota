@@ -22,6 +22,9 @@ test.describe("Cierre de sesión", () => {
   test("un usuario logueado puede cerrar sesión y vuelve al estado público", async ({ page }) => {
     await iniciarSesion(page, "MIEMBRO");
 
+    // Espera para que el menú lateral esté completamente disponible tras el login
+    await page.waitForTimeout(5000);
+
     // Cerrar sesión desde el menú lateral
     await abrirMenuLateral(page);
     await page

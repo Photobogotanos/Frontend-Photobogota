@@ -6,11 +6,16 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   // Los tests E2E golpean un backend real compartido (photoapi.duckdns.org) y
-  // un único servidor Vite. Correr muchos workers en paralelo satura esos
-  // servicios y hace que los logins/páginas fallen por rate-limit o timing.
-  // Por eso limitamos workers: en CI uno solo, local hasta 4.
-  workers: process.env.CI ? 1 : 4,
-  retries: process.env.CI ? 2 : 0,
+  // un único servidor Vite. Correr varios workers en paralelo satura esos
+  // servicios y hace que los logins/páginas fallen por rate-limit o timing
+  // (toasts "Demasiadas solicitudes"). Por eso forzamos un único worker
+  // también en local: garantiza una suite verde estable contra el backend real.
+  workers: 1,
+  // Reintentos: el backend real compartido (photoapi.duckdns.org) aplica
+  // rate-limit ("Demasiadas solicitudes") y a veces responde lento, lo que
+  // produce fallos transitorios aunque el flujo sea correcto. Reintentamos
+  // también en local para que la suite sea estable contra ese backend.
+  retries: process.env.CI ? 2 : 1,
   // Tiempo generoso por test: el backend y las páginas pesadas (mapa,
   // recharts lazy) pueden tardar, sobre todo si hay varios tests seguidos.
   timeout: 90 * 1000,

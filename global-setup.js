@@ -12,7 +12,7 @@ async function globalSetup() {
 
   try {
     const response = await requestContext.get(backendUrl, {
-      timeout: 5000,
+      timeout: 15000,
     });
 
     if (!response.ok()) {
