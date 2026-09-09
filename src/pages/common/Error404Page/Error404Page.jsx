@@ -1,8 +1,10 @@
 import React from 'react';
-import Lottie from 'lottie-react';
+import * as LottieModule from 'lottie-react';
 import error404Animation from '@/assets/animations/Error 404.json';
 import { Link } from 'react-router-dom';
 import './Error404Page.css';
+
+const Lottie = LottieModule.default?.default ?? LottieModule.default ?? LottieModule;
 
 const Error404Page = () => {
   return (

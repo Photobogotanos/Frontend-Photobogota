@@ -2,8 +2,11 @@ import { useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { FaPhone, FaClock, FaGlobe } from "react-icons/fa";
-import DatePicker from "react-multi-date-picker";
-import TimePicker from "react-multi-date-picker/plugins/time_picker";
+import * as DatePickerModule from "react-multi-date-picker";
+import * as TimePickerModule from "react-multi-date-picker/plugins/time_picker";
+
+const DatePicker = DatePickerModule.default?.default ?? DatePickerModule.default;
+const TimePicker = TimePickerModule.default?.default ?? TimePickerModule.default;
 import RequiredMark from "@/components/common/RequiredMark/RequiredMark";
 
 // Días de la semana en orden (semana que inicia el lunes)
