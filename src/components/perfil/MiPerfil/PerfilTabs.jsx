@@ -6,6 +6,7 @@ import {
   FaBookmark,
   FaBullhorn,
   FaInfoCircle,
+  FaTicketAlt,
 } from "react-icons/fa";
 import {
   obtenerSpotsUsuario,
@@ -18,6 +19,7 @@ import TabGuardados from "./TabGuardados";
 import TabLocales from "./TabLocales";
 import TabPromociones from "./TabPromociones";
 import TabComercial from "./TabComercial";
+import TabMisCanjes from "./TabMisCanjes";
 
 const transformarSpotParaCard = (spot) => ({
   id: spot?.id,
@@ -33,6 +35,7 @@ const TABS_POR_ROL = {
     { id: "publicaciones", label: "Mis Spots", icon: <FaMapMarkerAlt /> },
     { id: "resenas", label: "Mis Reseñas", icon: <FaRegEdit /> },
     { id: "guardados", label: "Guardados", icon: <FaBookmark /> },
+    { id: "canjes", label: "Mis Canjes", icon: <FaTicketAlt /> },
   ],
   SOCIO: [
     { id: "locales", label: "Mis Locales", icon: <FaStore /> },
@@ -69,7 +72,7 @@ const PerfilTabs = ({
   const tabs =
     esPerfilPropio === false
       ? tabsBase.reduce((acum, t) => {
-          if (t.id === "guardados") return acum;
+          if (t.id === "guardados" || t.id === "canjes") return acum;
           acum.push({
             ...t,
             label:
@@ -259,6 +262,10 @@ const PerfilTabs = ({
               refetchGuardados={refetchGuardados}
             />
           )}
+
+        {esPerfilPropio && tabValida === "canjes" && esMiembro && (
+          <TabMisCanjes />
+        )}
 
         {tabValida === "locales" && esSocio && (
           <TabLocales

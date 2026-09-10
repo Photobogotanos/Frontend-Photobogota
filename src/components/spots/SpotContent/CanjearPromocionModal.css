@@ -1,0 +1,129 @@
+.canjear-modal .modal-header {
+  border-bottom: none !important;
+  padding-bottom: 0.5rem;
+}
+
+.canjear-modal .modal-title-top {
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+.canjear-modal .modal-title-icon {
+  color: var(--color-primary);
+  font-size: 0.95rem;
+}
+
+.canjear-modal .modal-body {
+  padding-top: 0;
+}
+
+.canjear-titulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin-bottom: 8px;
+}
+
+.canjear-detalles {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.canjear-descuento {
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.canjear-usos {
+  font-size: 12px;
+  color: #777;
+}
+
+.canjear-explica {
+  font-size: 13.5px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+.canjear-error {
+  background: #fdecea;
+  border: 1px solid #f5c6c0;
+  color: #b02a37;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.canjear-ok-text {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.canjear-ok-icon {
+  color: #2e7d32;
+  font-size: 1.1rem;
+  margin-top: 3px;
+}
+
+.canjear-codigo-caja {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #f5f2eb;
+  border: 1.5px dashed var(--color-primary);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-top: 14px;
+}
+
+.canjear-codigo-valor {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--color-primary);
+}
+
+.btn-canjear-copiar {
+  white-space: nowrap;
+}
+
+.canjear-vencimiento {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: #888;
+}
+
+.canjear-mis-canjes {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.canjear-enlace {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 13.5px;
+  text-decoration: none;
+}
+
+.canjear-enlace:hover {
+  text-decoration: underline;
+}

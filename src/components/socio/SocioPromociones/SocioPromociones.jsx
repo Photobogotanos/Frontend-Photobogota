@@ -15,6 +15,7 @@ import FiltrosPromociones from "./FiltrosPromociones";
 import PromocionStats from "./PromocionStats";
 import PromocionCard from "./PromocionCard";
 import PromocionesVacio from "./PromocionesVacio";
+import CanjesPromocionModal from "./CanjesPromocionModal";
 
 // Extrae la parte numérica de un descuento como "50%" -> 50
 const numeroDescuento = (descuento) => {
@@ -28,6 +29,13 @@ const SocioPromociones = () => {
   const [promociones, setPromociones] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [filtroEstado, setFiltroEstado] = useState("todas");
+  const [promocionCanjes, setPromocionCanjes] = useState(null);
+  const [sesionCanjes, setSesionCanjes] = useState(0);
+
+  const handleVerCanjes = (promocion) => {
+    setPromocionCanjes(promocion);
+    setSesionCanjes((s) => s + 1);
+  };
 
   const cargar = useCallback(async () => {
     setCargando(true);
@@ -154,6 +162,7 @@ const SocioPromociones = () => {
                   onDuplicar={handleDuplicar}
                   onToggle={handleToggle}
                   onEliminar={handleEliminar}
+                  onVerCanjes={handleVerCanjes}
                 />
               </Col>
             ))}
@@ -162,6 +171,13 @@ const SocioPromociones = () => {
           {promocionesFiltradas.length === 0 && <PromocionesVacio />}
         </>
       )}
+
+      <CanjesPromocionModal
+        key={sesionCanjes}
+        show={!!promocionCanjes}
+        onCerrar={() => setPromocionCanjes(null)}
+        promocion={promocionCanjes}
+      />
     </Container>
   );
 };

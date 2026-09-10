@@ -20,6 +20,13 @@ const PRIMERA_TAB_POR_ROL = {
   ADMIN: "resenas",
 };
 
+// Permite abrir el perfil en una pestaña concreta: /perfil?tab=canjes
+const obtenerTabInicial = (rol) => {
+  const tab = new URLSearchParams(window.location.search).get("tab");
+  if (tab) return tab;
+  return PRIMERA_TAB_POR_ROL[rol] ?? "publicaciones";
+};
+
 // ─── REDUCER ────────────────────────────────────────────────────────────────
 const perfilReducer = (state, action) => {
   switch (action.type) {
@@ -112,7 +119,7 @@ const perfilReducer = (state, action) => {
 // ESTADO INICIAL
 const crearEstadoInicial = () => {
   return {
-    tab: "publicaciones",
+    tab: new URLSearchParams(window.location.search).get("tab") || "publicaciones",
     mostrarEditarPerfil: false,
     mostrarFotoPerfil: false,
     mostrarNotificaciones: false,
@@ -260,7 +267,7 @@ export default function MiPerfil() {
           });
           dispatch({
             type: "SET_TAB",
-            payload: PRIMERA_TAB_POR_ROL[rol] ?? "publicaciones",
+            payload: obtenerTabInicial(rol),
           });
           dispatch({
             type: "SET_USANDO_MOCK",

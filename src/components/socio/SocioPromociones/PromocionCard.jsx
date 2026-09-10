@@ -1,6 +1,6 @@
 import { CiShoppingTag } from "react-icons/ci";
 import { Badge, Button, Card } from "react-bootstrap";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaTicketAlt } from "react-icons/fa";
 import { FaBan, FaTrash } from "react-icons/fa6";
 import { FiEdit3 } from "react-icons/fi";
 import { LuCopyPlus } from "react-icons/lu";
@@ -30,7 +30,7 @@ const formatFecha = (fecha) => {
   });
 };
 
-export default function PromocionCard({ promocion, onEditar, onDuplicar, onToggle, onEliminar }) {
+export default function PromocionCard({ promocion, onEditar, onDuplicar, onToggle, onEliminar, onVerCanjes }) {
   return (
     <Card className={`promocion-card ${(promocion.estado || "").toLowerCase()}`}>
       <div className="promocion-imagen-container">
@@ -156,6 +156,15 @@ export default function PromocionCard({ promocion, onEditar, onDuplicar, onToggl
               </Button>
             )
           )}
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            className="btn-canjes"
+            onClick={() => onVerCanjes(promocion)}
+            aria-label={`Ver canjes de ${promocion.titulo}`}
+          >
+            <FaTicketAlt /> Canjes
+          </Button>
           <Button
             variant="outline-danger"
             size="sm"

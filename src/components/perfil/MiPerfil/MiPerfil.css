@@ -538,3 +538,115 @@
     font-size: 1.5rem;
   }
 }
+
+/* ---- Tab "Mis Canjes" ---- */
+
+.mis-canjes-intro {
+  font-size: 13.5px;
+  color: #777;
+  margin-bottom: 18px;
+}
+
+.mis-canjes {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.canje-item {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: opacity 0.2s ease;
+}
+
+.canje-item.expirado {
+  opacity: 0.65;
+}
+
+.canje-item-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.canje-item-titulos {
+  min-width: 0;
+}
+
+.canje-item-titulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin: 0;
+}
+
+.canje-item-spot {
+  display: block;
+  font-size: 12.5px;
+  color: #888;
+  margin-top: 3px;
+}
+
+.canje-item-codigo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.canjear-label {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.canje-codigo-valor {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+}
+
+.btn-codigo-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: #666;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-codigo-toggle:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.canje-item-fechas {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #888;
+  margin-top: 10px;
+}
+
+.canje-item-aviso {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: #b02a37;
+  background: #fdecea;
+  border-radius: 8px;
+  padding: 8px 12px;
+}

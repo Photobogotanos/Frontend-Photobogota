@@ -620,6 +620,29 @@
   font-size: 12px;
 }
 
+.btn-canjear-promocion {
+  width: 100%;
+  margin-top: 16px;
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--color-primary);
+  border: none;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-canjear-promocion:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
 .lugar-acciones {
   display: flex;
   gap: 12px;

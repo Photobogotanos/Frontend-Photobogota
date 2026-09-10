@@ -69,6 +69,9 @@ const SpotInfo = ({
   guardandoSpot,
   handleGuardarSpot,
   abrirReporteSpot,
+  logueado,
+  rolUsuario,
+  onCanjear,
 }) => {
   const [imagenActiva, setImagenActiva] = useState(0);
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -294,6 +297,16 @@ const SpotInfo = ({
                     <span>Usos ilimitados</span>
                   )}
                 </div>
+
+                {logueado && rolUsuario === "MIEMBRO" && (
+                  <button
+                    type="button"
+                    className="btn-canjear-promocion"
+                    onClick={onCanjear}
+                  >
+                    <FaTicketAlt /> Canjear promoción
+                  </button>
+                )}
               </div>
             </div>
           )}

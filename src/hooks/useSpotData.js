@@ -86,5 +86,13 @@ export const useSpotData = (id) => {
     };
   }, [id]);
 
-  return { spot, cargandoSpot, promocion, setPromocion };
+  const recargarPromocion = async () => {
+    if (!id) return;
+    const promo = await obtenerPromocionActivaDeSpot(id);
+    if (promo.exitoso) {
+      setPromocion(promo.datos);
+    }
+  };
+
+  return { spot, cargandoSpot, promocion, recargarPromocion };
 };

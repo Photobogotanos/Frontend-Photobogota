@@ -9,6 +9,7 @@ import ReportarModal from "./ReportarModal";
 import SpotInfo from "./SpotInfo";
 import SpotReviewsSection from "./SpotReviewsSection";
 import MapaVista from "./MapaVista";
+import CanjearPromocionModal from "./CanjearPromocionModal";
 import "./SpotContent.css";
 
 const MapaContent = () => {
@@ -23,8 +24,12 @@ const MapaContent = () => {
   const [modalReporteAbierto, setModalReporteAbierto] = useState(false);
   const [contextoReporte, setContextoReporte] = useState(null);
 
+  // Modal de canje de promoción
+  const [modalCanjeAbierto, setModalCanjeAbierto] = useState(false);
+  const [sesionCanje, setSesionCanje] = useState(0);
+
   // Custom hooks
-  const { spot, cargandoSpot, promocion } = useSpotData(id);
+  const { spot, cargandoSpot, promocion, recargarPromocion } = useSpotData(id);
   const {
     calificaciones,
     cargandoCalificaciones,
@@ -80,6 +85,15 @@ const MapaContent = () => {
     setGuardandoSpot(false);
   };
 
+  const abrirCanje = () => {
+    if (!logueado) {
+      toast.error("Debes iniciar sesión para canjear promociones");
+      return;
+    }
+    setSesionCanje((s) => s + 1);
+    setModalCanjeAbierto(true);
+  };
+
   // Loading state
   if (cargandoSpot) {
     return (
@@ -102,6 +116,9 @@ const MapaContent = () => {
           guardandoSpot={guardandoSpot}
           handleGuardarSpot={handleGuardarSpot}
           abrirReporteSpot={abrirReporteSpot}
+          logueado={logueado}
+          rolUsuario={usuario?.rol}
+          onCanjear={abrirCanje}
         />
 
         <SpotReviewsSection
@@ -131,6 +148,15 @@ const MapaContent = () => {
           spotId={spot.id}
           resenaId={contextoReporte?.resenaId ?? null}
           nombreAutorResena={contextoReporte?.nombreAutorResena ?? null}
+        />
+
+        <CanjearPromocionModal
+          key={sesionCanje}
+          show={modalCanjeAbierto}
+          onCerrar={() => setModalCanjeAbierto(false)}
+          promocion={promocion}
+          spotNombre={spot.nombre}
+          onCanjeado={recargarPromocion}
         />
       </div>
     );
