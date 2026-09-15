@@ -8,7 +8,6 @@ import {
   FaChartBar,
   FaTachometerAlt,
   FaFileAlt,
-  FaUserCheck,
   FaTags,
   FaUserPlus,
   FaCreditCard,
@@ -103,27 +102,13 @@ export default function MenuItems({ rol, cerrar }) {
           />
           <SidebarLink
             icon={<FaFileAlt />}
-            texto="Revisar Solicitudes de Socios"
+            texto="Solicitudes Socio"
             to="/moderador/revision-solicitudes"
             onClick={cerrar}
             activo={
               esRutaActiva("/moderador/revision-solicitudes") ||
               esRutaActiva("/solicitudes-socios")
             }
-          />
-          <SidebarLink
-            icon={<FaFileAlt />}
-            texto="Gestionar Reportes"
-            to="/gestionar-reportes"
-            onClick={cerrar}
-            activo={esRutaActiva("/gestionar-reportes")}
-          />
-          <SidebarLink
-            icon={<FaUserCheck />}
-            texto="Cambiar Rol Miembro a Socio"
-            to="/cambiar-rol"
-            onClick={cerrar}
-            activo={esRutaActiva("/cambiar-rol")}
           />
           <SidebarLink
             icon={<FaTags />}
