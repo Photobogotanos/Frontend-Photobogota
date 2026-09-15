@@ -7,7 +7,6 @@ import { FaTicketAlt, FaCopy, FaCheckCircle } from "react-icons/fa";
 import {
   canjearPromocion,
   formatearFechaCanje,
-  DIAS_VIGENCIA_CANJE,
 } from "@/services/canje.service";
 import "./CanjearPromocionModal.css";
 
@@ -119,8 +118,7 @@ const CanjearPromocionModal = ({
             <p className="canjear-explica">
               Al canjear recibirás un <strong>código único</strong> que deberás
               presentar en {spotNombre} al momento de usar la promoción. El
-              código vence en hasta {DIAS_VIGENCIA_CANJE} días o cuando
-              termine la promoción, lo que ocurra primero.
+              código vence cuando termine la promoción.
             </p>
 
             {error && <div className="canjear-error">{error}</div>}

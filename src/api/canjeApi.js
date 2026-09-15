@@ -7,10 +7,10 @@ import { clienteApi } from "./axiosConfig";
 //   POST /canjes                          (MIEMBRO, auth)
 //     body: { promocionId }
 //     Crea el canje del miembro autenticado, genera el código alfanumérico
-//     (8 caracteres) y fija fechaExpiracion = min(promocion.fechaFin,
-//     hoy + 30 días). Valida: promoción ACTIVA y dentro de fechas, cupos
-//     disponibles (usos < usosMaximos) y que el miembro no la haya canjeado
-//     antes (409). Reserva el cupo (incrementa usos).
+//     (8 caracteres) y fija fechaExpiracion = promocion.fechaFin. Valida:
+//     promoción ACTIVA y dentro de fechas, cupos disponibles (usos <
+//     usosMaximos) y que el miembro no la haya canjeado antes (409). Reserva
+//     el cupo (incrementa usos).
 //     201 -> { id, codigo, estado, fechaCanje, fechaExpiracion, ... }
 //
 //   GET /canjes/mios                       (MIEMBRO, auth)

@@ -6,10 +6,6 @@ import {
 } from "@/api/canjeApi";
 import { obtenerAccessToken } from "@/utils/sessionHelper";
 
-// Vigencia por defecto de un canje (días tras el canje). El backend aplica el
-// menor entre este plazo y la fechaFin de la promoción correspondiente.
-export const DIAS_VIGENCIA_CANJE = 30;
-
 export const ESTADOS_CANJE = [
   { valor: "VIGENTE", etiqueta: "Vigente", variant: "success" },
   { valor: "USADO", etiqueta: "Usado", variant: "secondary" },
