@@ -88,6 +88,8 @@ export function usePublicacionSpot({ state, dispatch, esSocio }) {
     Swal.fire({
       title: "Subiendo imágenes...",
       allowOutsideClick: false,
+      showConfirmButton: false,
+      allowEscapeKey: false,
       didOpen: () => Swal.showLoading(),
     });
 

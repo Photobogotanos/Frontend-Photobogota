@@ -43,7 +43,7 @@ export default function ReviewCard({ title, rating, text, date, placeId, canResp
     console.log("Respuesta enviada:", respuesta);
     setMostrarRespuesta(false);
     setRespuesta("");
-    alert("¡Tu respuesta ha sido enviada!");
+    toast.success("¡Tu respuesta ha sido enviada!");
   };
 
   const handleVerSpot = (e) => {
