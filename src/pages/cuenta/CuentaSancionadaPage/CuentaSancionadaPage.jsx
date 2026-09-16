@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaUserSlash, FaClock, FaPaperPlane, FaSignOutAlt, FaRedo } from "react-icons/fa";
+import { toast } from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
 import {
   obtenerMiSancion,
@@ -68,7 +69,7 @@ export default function CuentaSancionadaPage() {
       setMotivo("");
     } else {
       setApelacionEnviada(false);
-      window.alert(resultado.mensaje);
+      toast.error(resultado.mensaje);
     }
   };
 

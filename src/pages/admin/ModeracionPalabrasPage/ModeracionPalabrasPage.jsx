@@ -64,7 +64,39 @@ const ModeracionPalabrasPage = () => {
   };
 
   const manejarEliminar = async (palabra) => {
-    if (!window.confirm(`¿Eliminar la regla "${palabra.texto}"?`)) return;
+    const confirmar = await new Promise((resolve) => {
+      toast(
+        (t) => (
+          <div className="d-flex flex-column gap-2" role="alertdialog" aria-label="Confirmar eliminación">
+            <span>¿Eliminar la regla "{palabra.texto}"?</span>
+            <div className="d-flex gap-2 justify-content-end">
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary"
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  resolve(false);
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-danger"
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  resolve(true);
+                }}
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ),
+        { duration: Infinity },
+      );
+    });
+    if (!confirmar) return;
     const resultado = await eliminarPalabraProhibida(palabra.id);
     if (resultado.exitoso) {
       toast.success(resultado.mensaje);
