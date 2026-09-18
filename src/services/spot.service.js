@@ -1,5 +1,12 @@
-import { getSpots, getSpotById, postCrearSpot } from "@/api/spotApi";
+import {
+  getSpots,
+  getSpotById,
+  postCrearSpot,
+  putActualizarSpot,
+  patchToggleSpot,
+} from "@/api/spotApi";
 import { obtenerAccessToken, obtenerSesion } from "@/utils/sessionHelper";
+import { esLocalDeshabilitado } from "@/utils/spot.util";
 import {
   getSpots as getMockSpots,
   getSpotById as getMockSpotById,
@@ -15,11 +22,17 @@ export const obtenerSpots = async (filtros = {}) => {
 
     const response = await getSpots(filtros);
 
+    // Defensa cliente: los locales deshabilitados por su socio no aparecen en
+    // el mapa ni en listados públicos hasta que se reactiven.
+    const datos = Array.isArray(response.data)
+      ? response.data.filter((spot) => !esLocalDeshabilitado(spot))
+      : [];
+
     console.log("Spots obtenidos del backend:", response.data?.length || 0);
 
     return {
       exitoso: true,
-      datos: response.data || [],
+      datos,
       mensaje: "Spots obtenidos exitosamente",
       esMock: false,
     };
@@ -27,7 +40,7 @@ export const obtenerSpots = async (filtros = {}) => {
     console.warn("Error al obtener spots del backend, usando mocks:", error);
 
     // Fallback a datos mock
-    let spotsMock = getMockSpots();
+    let spotsMock = getMockSpots().filter((spot) => !esLocalDeshabilitado(spot));
 
     // Aplicar filtros a los mocks
     if (filtros.categoria) {
@@ -220,6 +233,155 @@ export const crearSpot = async (spotData) => {
     return {
       exitoso: false,
       datos: null,
+      mensaje: mensaje,
+      esMock: false,
+    };
+  }
+};
+
+const requerirTokenValido = () => {
+  const token = obtenerAccessToken();
+  if (token) return { token };
+
+  const sesion = obtenerSesion();
+  return { sesion };
+};
+
+/**
+ * Actualiza los datos públicos de un local existente (contacto, horarios,
+ * descripción y fotografías). Solo el socio dueño del local puede hacerlo.
+ * Contrato con backend: PUT /spots/:id (autenticado).
+ */
+export const actualizarLocal = async (id, spotData) => {
+  try {
+    const valido = requerirTokenValido();
+
+    if (!valido.token) {
+      if (!valido.sesion) {
+        return {
+          exitoso: false,
+          datos: null,
+          mensaje: "No hay sesión activa. Por favor inicia sesión nuevamente.",
+        };
+      }
+      return {
+        exitoso: false,
+        datos: null,
+        mensaje:
+          "No se encontró token de autenticación. Por favor inicia sesión nuevamente.",
+      };
+    }
+
+    console.log("Actualizando local:", id, spotData);
+
+    const response = await putActualizarSpot(id, spotData);
+
+    return {
+      exitoso: true,
+      datos: response.data,
+      mensaje: "Local actualizado exitosamente",
+      esMock: false,
+    };
+  } catch (error) {
+    console.error("Error en actualizarLocal:", error);
+
+    let mensaje = "Error al actualizar el local";
+
+    if (error.response) {
+      mensaje =
+        error.response.data?.message || error.response.data?.mensaje || mensaje;
+
+      if (error.response.status === 401) {
+        mensaje = "Tu sesión ha expirado. Por favor inicia sesión nuevamente.";
+      } else if (error.response.status === 403) {
+        mensaje = "No tienes permiso para editar este local.";
+      } else if (error.response.status === 404) {
+        mensaje = "El local no existe.";
+      } else if (error.response.status === 400) {
+        mensaje =
+          error.response.data?.message ||
+          error.response.data?.mensaje ||
+          "Datos inválidos. Verifica todos los campos.";
+      }
+    } else if (error.request) {
+      mensaje = "No se pudo conectar con el servidor. Verifica tu conexión.";
+    }
+
+    return {
+      exitoso: false,
+      datos: null,
+      mensaje: mensaje,
+      esMock: false,
+    };
+  }
+};
+
+/**
+ * Alterna la visibilidad pública de un local del socio: deshabilitado deja de
+ * aparecer en el mapa y habilitado vuelve a mostrarse. Solo el mismo socio
+ * puede reactivar su local desde su apartado "Mis Locales".
+ * Contrato con backend: PATCH /spots/:id/toggle (autenticado).
+ */
+export const cambiarVisibilidadLocal = async (id) => {
+  try {
+    const valido = requerirTokenValido();
+
+    if (!valido.token) {
+      if (!valido.sesion) {
+        return {
+          exitoso: false,
+          datos: null,
+          mensaje: "No hay sesión activa. Por favor inicia sesión nuevamente.",
+        };
+      }
+      return {
+        exitoso: false,
+        datos: null,
+        mensaje:
+          "No se encontró token de autenticación. Por favor inicia sesión nuevamente.",
+      };
+    }
+
+    const response = await patchToggleSpot(id);
+
+    const deshabilitado =
+      response.data && response.data.activo !== undefined
+        ? !response.data.activo
+        : esLocalDeshabilitado(response.data);
+
+    return {
+      exitoso: true,
+      datos: response.data,
+      deshabilitado,
+      mensaje: deshabilitado
+        ? "Local deshabilitado. Ya no aparece en el mapa."
+        : "Local habilitado. Ya es visible en el mapa.",
+      esMock: false,
+    };
+  } catch (error) {
+    console.error("Error en cambiarVisibilidadLocal:", error);
+
+    let mensaje = "No se pudo cambiar la visibilidad del local";
+
+    if (error.response) {
+      mensaje =
+        error.response.data?.message || error.response.data?.mensaje || mensaje;
+
+      if (error.response.status === 401) {
+        mensaje = "Tu sesión ha expirado. Por favor inicia sesión nuevamente.";
+      } else if (error.response.status === 403) {
+        mensaje = "No tienes permiso para gestionar este local.";
+      } else if (error.response.status === 404) {
+        mensaje = "El local no existe.";
+      }
+    } else if (error.request) {
+      mensaje = "No se pudo conectar con el servidor. Verifica tu conexión.";
+    }
+
+    return {
+      exitoso: false,
+      datos: null,
+      deshabilitado: null,
       mensaje: mensaje,
       esMock: false,
     };

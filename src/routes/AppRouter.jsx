@@ -34,6 +34,7 @@ import ModeracionApelacionesPage from "@/pages/admin/ModeracionApelacionesPage/M
 import AdminPuntosPage from "@/pages/admin/AdminPuntosPage/AdminPuntosPage";
 import ProtectedRoute from "./ProtectedRoute";
 import SocioLocalesPage from "@/pages/socio/SocioLocalesPage/SocioLocalesPage.jsx";
+import EditarLocalPage from "@/pages/socio/EditarLocalPage/EditarLocalPage.jsx";
 import SocioReportesPage from "@/pages/socio/SocioReportesPage/SocioReportesPage.jsx";
 
 const AppRouter = () => {
@@ -114,6 +115,14 @@ const AppRouter = () => {
           element={
             <ProtectedRoute roles={["SOCIO"]}>
               <SocioLocalesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/editar-local/:id"
+          element={
+            <ProtectedRoute roles={["SOCIO"]}>
+              <EditarLocalPage />
             </ProtectedRoute>
           }
         />

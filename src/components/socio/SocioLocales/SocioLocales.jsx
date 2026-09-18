@@ -1,50 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Card, Button, Spinner } from "react-bootstrap";
-import { FaStore, FaPlus, FaMapMarkerAlt, FaPhone, FaClock } from "react-icons/fa";
-import { obtenerMisLocales } from "@/services/spot.service";
+import { FaStore, FaPlus, FaMapMarkerAlt, FaPhone, FaClock, FaPen, FaToggleOn, FaToggleOff } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
+import { obtenerMisLocales, cambiarVisibilidadLocal } from "@/services/spot.service";
+import { esLocalPropio, esLocalDeshabilitado } from "@/utils/spot.util";
 import { useAuth } from "@/context/AuthContext";
 import "./SocioLocales.css";
-
-// Red de seguridad cliente mientras el backend termina de implementar el
-// contrato (GET /spots?tipo=LOCAL&mios=true): nunca muestra locales que no
-// pertenezcan a la cuenta logueada.
-const esLocalPropio = (local, usuarioLogueado) => {
-  const tipo = (local.tipo || "").toUpperCase();
-  if (tipo !== "LOCAL") return false;
-
-  const identificadoresSpot = [
-    local.creador?.nombreUsuario,
-    local.creador?.username,
-    local.creadorId,
-    local.creadorUsername,
-    local.nombreUsuarioCreador,
-    local.usernameCreador,
-  ]
-    .filter((v) => v !== undefined && v !== null)
-    .map((v) => String(v).toLowerCase());
-
-  const identificadoresUsuario = [
-    usuarioLogueado?.id,
-    usuarioLogueado?.username?.replace(/^@/, ""),
-    usuarioLogueado?.nombreUsuario,
-    usuarioLogueado?.nombre,
-  ]
-    .filter((v) => v !== undefined && v !== null)
-    .map((v) => String(v).toLowerCase());
-
-  const identificadoresUsuarioSet = new Set(identificadoresUsuario);
-
-  // Sin identificador de creador ni de usuario activo: confiamos en el filtro
-  // mios del backend y no descartamos el local.
-  if (identificadoresSpot.length === 0 || identificadoresUsuario.length === 0) {
-    return true;
-  }
-
-  return identificadoresSpot.some((creador) =>
-    identificadoresUsuarioSet.has(creador),
-  );
-};
 
 export default function SocioLocales() {
   const { usuario } = useAuth();
@@ -84,6 +47,47 @@ export default function SocioLocales() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- solo se cargan al montar
   }, []);
+
+  const manejarVisibilidad = async (local) => {
+    const deshabilitado = esLocalDeshabilitado(local);
+
+    const confirmacion = await Swal.fire({
+      title: deshabilitado ? "¿Habilitar este local?" : "¿Deshabilitar este local?",
+      text: deshabilitado
+        ? "El local volverá a aparecer en el mapa para todos los usuarios."
+        : "El local dejará de aparecer en el mapa público. Podrás habilitarlo de nuevo desde aquí cuando quieras.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: deshabilitado ? "Sí, habilitar" : "Sí, deshabilitar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: deshabilitado ? "#28a745" : "#dc3545",
+      reverseButtons: true,
+    });
+
+    if (!confirmacion.isConfirmed) return;
+
+    const resultado = await cambiarVisibilidadLocal(local.id);
+
+    if (resultado.exitoso) {
+      setLocales((prev) =>
+        prev.map((l) =>
+          l.id === local.id
+            ? { ...l, deshabilitado: resultado.deshabilitado }
+            : l,
+        ),
+      );
+      toast.success(resultado.mensaje || "Visibilidad actualizada");
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          resultado.mensaje ||
+          "No se pudo cambiar la visibilidad del local.",
+        confirmButtonColor: "#806fbe",
+      });
+    }
+  };
 
   // ── Cargando ──────────────────────────────────────────────
   if (cargando) {
@@ -150,6 +154,7 @@ export default function SocioLocales() {
 
       <Row className="g-3">
         {locales.map((local) => {
+          const deshabilitado = esLocalDeshabilitado(local);
           const imagen =
             local.imagen ||
             local.imagenes?.[0] ||
@@ -157,13 +162,16 @@ export default function SocioLocales() {
 
           return (
             <Col key={local.id} xs={12} md={6} lg={4}>
-              <Card className="local-card h-100">
+              <Card className={`local-card h-100${deshabilitado ? " deshabilitado" : ""}`}>
                 <div className="local-card-img-wrap">
+                  {deshabilitado && (
+                    <span className="local-card-badge">Local deshabilitado</span>
+                  )}
                   <Card.Img
                     variant="top"
                     src={imagen}
                     alt={local.nombre}
-                    className="local-card-img"
+                    className={`local-card-img${deshabilitado ? " deshabilitada" : ""}`}
                   />
                 </div>
                 <Card.Body>
@@ -195,7 +203,7 @@ export default function SocioLocales() {
                     </div>
                   )}
 
-                  <div className="d-flex gap-2 mt-2">
+                  <div className="d-flex flex-wrap gap-2 mt-2">
                     <Button
                       as={Link}
                       to={`/spot/${local.id}`}
@@ -208,6 +216,50 @@ export default function SocioLocales() {
                       }}
                     >
                       Ver detalle
+                    </Button>
+                    <Button
+                      as={Link}
+                      to={`/editar-local/${local.id}`}
+                      variant="outline-secondary"
+                      size="sm"
+                      style={{
+                        background: "#fff",
+                        color: "#3b3f45",
+                        border: "1px solid #ced4da",
+                      }}
+                    >
+                      <FaPen className="me-1" />
+                      Editar
+                    </Button>
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => manejarVisibilidad(local)}
+                      style={
+                        deshabilitado
+                          ? {
+                              background: "#28a745",
+                              color: "#fff",
+                              border: "none",
+                            }
+                          : {
+                              background: "#fff3cd",
+                              color: "#8a6d1a",
+                              border: "1px solid #ffe08a",
+                            }
+                      }
+                    >
+                      {deshabilitado ? (
+                        <>
+                          <FaToggleOn className="me-1" />
+                          Habilitar
+                        </>
+                      ) : (
+                        <>
+                          <FaToggleOff className="me-1" />
+                          Deshabilitar
+                        </>
+                      )}
                     </Button>
                     <Button
                       as={Link}

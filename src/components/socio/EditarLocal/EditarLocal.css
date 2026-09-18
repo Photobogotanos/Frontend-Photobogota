@@ -1,0 +1,23 @@
+.editar-local-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.editar-local-estado {
+  width: 100%;
+}
+
+.editar-local-avisodeshab {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #fff3cd;
+  border: 1px solid #ffe08a;
+  color: #8a6d1a;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}

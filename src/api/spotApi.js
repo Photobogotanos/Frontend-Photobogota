@@ -17,3 +17,11 @@ export const getSpotById = (id, options = {}) =>
   });
 
 export const postCrearSpot = (body) => clienteApi.post("/spots", body);
+
+// Actualiza un spot/local existente. body: mismos campos que POST /spots.
+export const putActualizarSpot = (id, body) =>
+  clienteApi.put(`/spots/${id}`, body);
+
+// Alterna la visibilidad pública de un local del socio (habilitar/deshabilitar):
+// deshabilitado no aparece en el mapa hasta que su dueño lo reactive.
+export const patchToggleSpot = (id) => clienteApi.patch(`/spots/${id}/toggle`);
