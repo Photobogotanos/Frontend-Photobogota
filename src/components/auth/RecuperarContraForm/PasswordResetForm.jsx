@@ -83,7 +83,7 @@ export default function PasswordResetForm() {
     }
 
     if (
-      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(state.password)
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(state.password)
     ) {
       return Swal.fire({
         icon: "error",
