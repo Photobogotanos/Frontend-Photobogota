@@ -1,46 +1,10 @@
 import { Card } from "react-bootstrap";
-import { FaStar, FaExternalLinkAlt } from "react-icons/fa";
+import { FaStar, FaExternalLinkAlt, FaInbox } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const lugaresPopulares = [
-  {
-    id: "1",
-    nombre: "Estación Aguas",
-    visitas: 850,
-    rating: 4.8,
-    imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo.webp`,
-  },
-  {
-    id: "2",
-    nombre: "Monserrate",
-    visitas: 720,
-    rating: 4.6,
-    imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo2.webp`,
-  },
-  {
-    id: "3",
-    nombre: "Parque El Jazmín",
-    visitas: 580,
-    rating: 4.5,
-    imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo3.webp`,
-  },
-  {
-    id: "4",
-    nombre: "Parque Timiza",
-    visitas: 450,
-    rating: 4.7,
-    imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo4.webp`,
-  },
-  {
-    id: "5",
-    nombre: "Estación Minuto de Dios",
-    visitas: 380,
-    rating: 4.9,
-    imagen: `${import.meta.env.BASE_URL}images/spots/spot-demo5.webp`,
-  },
-];
+const imagenPorDefecto = `${import.meta.env.BASE_URL}images/spots/spot-demo.webp`;
 
-const LugaresPopulares = () => {
+const LugaresPopulares = ({ lugares }) => {
   const navigate = useNavigate();
 
   const handleLugarClick = (lugarId) => {
@@ -54,34 +18,41 @@ const LugaresPopulares = () => {
         <span className="grafico-subtitle">Ranking por rating y visitas</span>
       </Card.Header>
       <Card.Body>
-        <div className="lugares-lista">
-          {lugaresPopulares.map((lugar, index) => (
-            <div 
-              key={lugar.id} 
-              className="lugar-item"
-              onClick={() => handleLugarClick(lugar.id)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleLugarClick(lugar.id);
-                }
-              }}
-            >
-              <span className="lugar-ranking">#{index + 1}</span>
-              <img src={lugar.imagen} alt={lugar.nombre} className="lugar-imagen" />
-              <div className="lugar-info">
-                <span className="lugar-nombre">{lugar.nombre}</span>
-                <div className="lugar-rating">
-                  <FaStar className="star-icon" />
-                  <span>{lugar.rating}</span>
-                  <span className="lugar-visitas">{lugar.visitas} visitas</span>
+        {lugares.length === 0 ? (
+          <div className="text-center py-4">
+            <FaInbox className="mb-2" style={{ color: "#bbb", fontSize: "2rem" }} />
+            <p className="text-muted mb-0">Aún no hay visitas registradas en tus locales.</p>
+          </div>
+        ) : (
+          <div className="lugares-lista">
+            {lugares.map((lugar, index) => (
+              <div 
+                key={lugar.id} 
+                className="lugar-item"
+                onClick={() => handleLugarClick(lugar.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    handleLugarClick(lugar.id);
+                  }
+                }}
+              >
+                <span className="lugar-ranking">#{index + 1}</span>
+                <img src={lugar.imagen || imagenPorDefecto} alt={lugar.nombre} className="lugar-imagen" />
+                <div className="lugar-info">
+                  <span className="lugar-nombre">{lugar.nombre}</span>
+                  <div className="lugar-rating">
+                    <FaStar className="star-icon" />
+                    <span>{Number(lugar.rating) || 0}</span>
+                    <span className="lugar-visitas">{Number(lugar.visitas) || 0} visitas</span>
+                  </div>
                 </div>
+                <FaExternalLinkAlt className="lugar-arrow" />
               </div>
-              <FaExternalLinkAlt className="lugar-arrow" />
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </Card.Body>
     </Card>
   );

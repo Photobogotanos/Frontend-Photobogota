@@ -2,105 +2,35 @@ import { lazy, Suspense } from "react";
 
 const GraficosRecharts = lazy(() => import("./GraficosRecharts"));
 
-const GraficosEstadisticos = ({ periodo }) => {
-  // Datos que cambian según el período seleccionado
-  const getDataByPeriodo = () => {
-    switch (periodo) {
-      case "semana":
-        return {
-          datosVisitas: [
-            { name: "Lun", visitas: 280 },
-            { name: "Mar", visitas: 350 },
-            { name: "Mié", visitas: 320 },
-            { name: "Jue", visitas: 410 },
-            { name: "Vie", visitas: 380 },
-            { name: "Sáb", visitas: 290 },
-            { name: "Dom", visitas: 117 },
-          ],
-          datosResenas: [
-            { name: "5 Estrellas", value: 52 },
-            { name: "4 Estrellas", value: 38 },
-            { name: "3 Estrellas", value: 18 },
-            { name: "2 Estrellas", value: 12 },
-            { name: "1 Estrella", value: 7 },
-          ],
-          datosLugares: [
-            { name: "Parque Central", visitas: 145 },
-            { name: "Plaza Mayor", visitas: 120 },
-            { name: "Mercado Local", visitas: 98 },
-            { name: "Mirador Norte", visitas: 76 },
-            { name: "Jardín Botánico", visitas: 62 },
-          ],
-        };
-      case "ano":
-        return {
-          datosVisitas: [
-            { name: "Ene", visitas: 5200 },
-            { name: "Feb", visitas: 5800 },
-            { name: "Mar", visitas: 6100 },
-            { name: "Abr", visitas: 6500 },
-            { name: "May", visitas: 7200 },
-            { name: "Jun", visitas: 7800 },
-            { name: "Jul", visitas: 8500 },
-            { name: "Ago", visitas: 8200 },
-            { name: "Sep", visitas: 7600 },
-            { name: "Oct", visitas: 7100 },
-            { name: "Nov", visitas: 6800 },
-            { name: "Dic", visitas: 8632 },
-          ],
-          datosResenas: [
-            { name: "5 Estrellas", value: 2100 },
-            { name: "4 Estrellas", value: 1520 },
-            { name: "3 Estrellas", value: 520 },
-            { name: "2 Estrellas", value: 251 },
-            { name: "1 Estrella", value: 130 },
-          ],
-          datosLugares: [
-            { name: "Estación Aguas", visitas: 12500 },
-            { name: "Monserrate", visitas: 10200 },
-            { name: "Parque El Jazmín", visitas: 8900 },
-            { name: "Parque Timiza", visitas: 7200 },
-            { name: "Estación Minuto de Dios", visitas: 6100 },
-          ],
-        };
-      case "mes":
-      default:
-        return {
-          datosVisitas: [
-            { name: "Ene", visitas: 1200 },
-            { name: "Feb", visitas: 1900 },
-            { name: "Mar", visitas: 1500 },
-            { name: "Abr", visitas: 2500 },
-            { name: "May", visitas: 2200 },
-            { name: "Jun", visitas: 3200 },
-          ],
-          datosResenas: [
-            { name: "5 Estrellas", value: 420 },
-            { name: "4 Estrellas", value: 280 },
-            { name: "3 Estrellas", value: 85 },
-            { name: "2 Estrellas", value: 42 },
-            { name: "1 Estrella", value: 20 },
-          ],
-          datosLugares: [
-            { name: "Parque Central", visitas: 850 },
-            { name: "Plaza Mayor", visitas: 720 },
-            { name: "Mercado Local", visitas: 580 },
-            { name: "Mirador Norte", visitas: 450 },
-            { name: "Jardín Botánico", visitas: 380 },
-          ],
-        };
-    }
-  };
+const GraficosEstadisticos = ({ periodo, datos }) => {
+  const seriesVisitas = (datos?.seriesVisitas || []).map((punto) => ({
+    name: punto.etiqueta,
+    visitas: punto.valor,
+  }));
 
-  const data = getDataByPeriodo();
+  const datosResenas = (datos?.distribucionResenas || []).map((dist) => ({
+    name: `${dist.estrellas} ${dist.estrellas === 1 ? "Estrella" : "Estrellas"}`,
+    value: dist.cantidad,
+  }));
+
+  const datosLugares = (datos?.lugaresPopulares || [])
+    .slice(0, 5)
+    .map((lugar) => ({ name: lugar.nombre, visitas: lugar.visitas }));
+
+  const datosUsos = (datos?.seriesUsosPromociones || []).map((punto) => ({
+    name: punto.etiqueta,
+    usos: punto.valor,
+  }));
 
   return (
-    <Suspense fallback={<div className="graficos-loading">Cargando gráficos...</div>}>
+    <Suspense fallback={<div className="text-center text-muted py-4">Cargando gráficos...</div>}>
       <GraficosRecharts
         periodo={periodo}
-        datosVisitas={data.datosVisitas}
-        datosResenas={data.datosResenas}
-        datosLugares={data.datosLugares}
+        hayPromociones={Boolean(datos?.hayPromociones)}
+        datosVisitas={seriesVisitas}
+        datosResenas={datosResenas}
+        datosLugares={datosLugares}
+        datosUsos={datosUsos}
       />
     </Suspense>
   );

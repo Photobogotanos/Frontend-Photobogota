@@ -15,7 +15,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { FaChartLine, FaStar, FaMapMarkerAlt, FaUsers } from "react-icons/fa";
+import { FaChartLine, FaStar, FaMapMarkerAlt, FaTicketAlt } from "react-icons/fa";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -68,20 +68,12 @@ const CustomTooltipPie = ({ active, payload }) => {
 // Colores para el gráfico de reseñas
 const COLORS_RESENAS = ["#27ae60", "#2ecc71", "#f39c12", "#e67e22", "#e74c3c"];
 
-// Datos demográficos
-const datosDemografia = [
-  { name: "18-24", hombres: 120, mujeres: 150 },
-  { name: "25-34", hombres: 280, mujeres: 320 },
-  { name: "35-44", hombres: 180, mujeres: 210 },
-  { name: "45-54", hombres: 90, mujeres: 110 },
-  { name: "55+", hombres: 40, mujeres: 50 },
-];
-
 const GraficosRecharts = ({
   periodo,
   datosVisitas,
   datosResenas,
   datosLugares,
+  datosUsos,
 }) => {
   return (
     <>
@@ -91,7 +83,7 @@ const GraficosRecharts = ({
           <Card className="grafico-card">
             <Card.Header className="grafico-header">
               <h3><FaChartLine className="card-icon" /> Tendencia de Visitas</h3>
-              <span className="grafico-subtitle">{periodo === 'semana' ? 'Visitas en los últimos 7 días' : periodo === 'mes' ? 'Visitas en los últimos 6 meses' : 'Visitas en el último año'}</span>
+              <span className="grafico-subtitle">{periodo === 'semana' ? 'Visitas en los últimos 7 días' : periodo === 'mes' ? 'Visitas del mes' : 'Visitas del último año'}</span>
             </Card.Header>
             <Card.Body className="grafico-body">
               <div className="grafico-linea-container">
@@ -204,13 +196,13 @@ const GraficosRecharts = ({
         <Col xs={12} lg={6}>
           <Card className="grafico-card">
             <Card.Header className="grafico-header">
-              <h3><FaUsers className="card-icon" /> Distribución por Edad</h3>
-              <span className="grafico-subtitle">Audiencia segmentada por género</span>
+              <h3><FaTicketAlt className="card-icon" /> Uso de Promociones</h3>
+              <span className="grafico-subtitle">Canjes de tus promociones por período</span>
             </Card.Header>
             <Card.Body className="grafico-body">
               <div className="grafico-barras-container">
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={datosDemografia}>
+                  <BarChart data={datosUsos}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 0, 0, 0.05)" />
                     <XAxis
                       dataKey="name"
@@ -222,15 +214,11 @@ const GraficosRecharts = ({
                       axisLine={{ stroke: "#ddd" }}
                     />
                     <Tooltip content={<CustomTooltip />} />
-                    <Legend
-                      verticalAlign="top"
-                      height={36}
-                      formatter={(value) => (
-                        <span style={{ color: "#444", fontSize: "12px" }}>{value}</span>
-                      )}
+                    <Bar
+                      dataKey="usos"
+                      fill="#3498db"
+                      radius={[4, 4, 0, 0]}
                     />
-                    <Bar dataKey="hombres" fill="rgba(128, 111, 190, 0.8)" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="mujeres" fill="rgba(200, 180, 240, 0.8)" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
