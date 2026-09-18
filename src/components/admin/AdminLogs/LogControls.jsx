@@ -33,9 +33,7 @@ const LogControls = ({
   onRecargar,
   onLimpiarFiltros,
   onCopiar,
-  onDescargar,
-  expandido,
-  onToggleExpandir,
+  onDescargar
 }) => {
   return (
     <div className="log-controls">
@@ -60,7 +58,9 @@ const LogControls = ({
           <label htmlFor="lineas-select">Líneas:</label>
           <Select
             inputId="lineas-select"
-            value={OPCIONES_LINES.find((o) => o.value === filtros.lines) || null}
+            value={
+              OPCIONES_LINES.find((o) => o.value === filtros.lines) || null
+            }
             onChange={(opcion) =>
               setFiltros({ ...filtros, lines: opcion ? opcion.value : 100 })
             }
@@ -137,9 +137,7 @@ const LogControls = ({
             placeholder="Filtrar por logger..."
             aria-label="Filtrar por logger"
             value={filtros.logger}
-            onChange={(e) =>
-              setFiltros({ ...filtros, logger: e.target.value })
-            }
+            onChange={(e) => setFiltros({ ...filtros, logger: e.target.value })}
             className="logger-input"
           />
         </div>
@@ -150,15 +148,6 @@ const LogControls = ({
 
         <button type="button" className="control-btn" onClick={onDescargar}>
           <FaDownload /> Descargar
-        </button>
-
-        <button
-          type="button"
-          className="control-btn"
-          onClick={onToggleExpandir}
-          aria-label={expandido ? "Comprimir vista" : "Expandir vista"}
-        >
-          {expandido ? <FaCompress /> : <FaExpand />}
         </button>
       </div>
     </div>

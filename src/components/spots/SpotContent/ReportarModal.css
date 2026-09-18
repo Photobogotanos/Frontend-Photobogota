@@ -1,61 +1,175 @@
-.reportar-modal .modal-header .btn-close {
-  border: 2px solid #dee2e6;
-  border-radius: 8px;
-  padding: 0.5rem;
-  opacity: 1;
-  background-size: 0.8rem;
-  transition: all 0.2s ease-in-out;
-  border-color: transparent;
+/* ═══════════════════════════════════════════════════════════════
+   MODAL REPORTAR (spot / reseña / perfil)
+   Tema de alerta: header en degradado rojo, cuerpo en bloques
+   blancos sobre el fondo cálido de la app.
+   ═══════════════════════════════════════════════════════════════ */
+.reportar-modal .modal-dialog {
+  max-width: 560px;
 }
 
-.reportar-modal .modal-header {
-  border-bottom: none !important;
-  padding-bottom: 0.5rem;
-  color: #dc3545;
+.reportar-modal .modal-content {
+  border: none;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--color-bg);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18);
 }
 
-.reportar-modal .modal-title-top {
-  font-size: 1.15rem;
-  font-weight: 700;
+/* ── HEADER ──────────────────────────────────────────────── */
+.reportar-header {
+  background: linear-gradient(135deg, #ef4444 0%, #c0392b 100%);
+  color: white;
+  border: none;
+  padding: 15px 22px;
+  align-items: center;
+}
+
+.reportar-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: transparent !important;
-  border-bottom: none !important;
+  gap: 11px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
-.modal-title-icon {
-  color: #dc3545;
-  font-size: 0.95rem;
-}
-
-.reportar-modal{
-  border-radius: 70%;
-}
-
-.reportar-modal .modal-footer {
-  border-top: 1px solid #dee2e6;
-  gap: 0.5rem;
-}
-
-.reportar-contexto {
-  background: #f5f2eb;
-  border: 1px solid var(--border);
+.reportar-title-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
   border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #444;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 0.9rem;
+}
+
+.reportar-modal .reportar-header .btn-close {
+  filter: invert(1);
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.reportar-modal .reportar-header .btn-close:hover {
+  opacity: 1;
+}
+
+/* ── BODY ────────────────────────────────────────────────── */
+.reportar-body {
+  padding: 0;
+  max-height: 74vh;
+  overflow-y: auto;
+  background: var(--color-bg);
+}
+
+.reportar-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.reportar-body::-webkit-scrollbar-thumb {
+  background: rgba(192, 57, 43, 0.24);
+  border-radius: 5px;
+}
+
+/* ── CONTEXTO (reseña / perfil) ──────────────────────────── */
+.reportar-contexto {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 24px 0;
+  padding: 12px 14px;
+  font-size: 0.85rem;
+  color: #7a2020;
+  background: color-mix(in srgb, #dc3545 8%, white);
+  border: 1px solid color-mix(in srgb, #dc3545 20%, white);
+  border-left: 4px solid #dc3545;
+  border-radius: 12px;
+}
+
+.reportar-contexto-icono {
+  flex-shrink: 0;
+  color: #dc3545;
+}
+
+/* ── BLOQUES ─────────────────────────────────────────────── */
+.reportar-block {
+  padding: 22px 24px;
+  background: white;
+}
+
+.reportar-sep {
+  height: 12px;
+  background: var(--color-bg);
+}
+
+.reportar-block-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
   margin-bottom: 16px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #c0392b;
+  background: color-mix(in srgb, #dc3545 9%, white);
+  border: 1px solid color-mix(in srgb, #dc3545 22%, white);
+  border-radius: 50px;
+}
+
+.reportar-block-heading svg {
+  flex-shrink: 0;
+  font-size: 0.76rem;
+}
+
+/* ── CAMPOS ──────────────────────────────────────────────── */
+.reportar-label {
+  margin-bottom: 7px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #5a5a5a;
+}
+
+.reportar-input {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 0.9rem;
+  color: #1a1a2e;
+  background: #fbf9f5;
+  border: 1.5px solid #e6e2da;
+  border-radius: 12px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.reportar-input:focus {
+  outline: none !important;
+  border-color: #dc3545 !important;
+  background: white !important;
+  box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.14) !important;
+}
+
+.reportar-input::placeholder {
+  color: #c5c0b8;
+}
+
+.reportar-textarea {
+  line-height: 1.55;
+  resize: none;
 }
 
 .descripcion-contador {
   display: block;
+  margin-top: 5px;
+  font-size: 0.71rem;
+  color: #b8b0a5;
   text-align: right;
-  font-size: 11px;
-  color: #999;
-  margin-top: 4px;
 }
 
+/* ── EVIDENCIA ───────────────────────────────────────────── */
 .evidencia-uploader {
   display: flex;
   align-items: center;
@@ -64,23 +178,24 @@
 }
 
 .btn-adjuntar-evidencia {
-  background: transparent;
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s ease;
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #c0392b;
+  background: #fbf9f5;
+  border: 1.5px dashed color-mix(in srgb, #dc3545 42%, white);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.22s ease;
 }
 
 .btn-adjuntar-evidencia:hover:not(:disabled) {
-  background: var(--color-primary);
-  color: white;
+  background: rgba(220, 53, 69, 0.06);
+  border-color: #dc3545;
+  transform: translateY(-1px);
 }
 
 .btn-adjuntar-evidencia:disabled {
@@ -89,24 +204,25 @@
 }
 
 .evidencia-hint {
-  font-size: 11px;
-  color: #888;
+  font-size: 0.74rem;
+  color: #b0a89d;
 }
 
 .evidencia-previews {
   display: flex;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 12px;
   flex-wrap: wrap;
+  margin-top: 14px;
 }
 
 .evidencia-preview {
   position: relative;
-  width: 72px;
-  height: 72px;
-  border-radius: 10px;
+  width: 84px;
+  height: 84px;
+  border: 2px solid white;
+  border-radius: 14px;
   overflow: hidden;
-  border: 1px solid var(--border);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .evidencia-preview img {
@@ -117,34 +233,119 @@
 
 .btn-quitar-evidencia {
   position: absolute;
-  top: 3px;
-  right: 3px;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  top: 5px;
+  right: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 22px;
+  height: 22px;
   font-size: 10px;
+  color: white;
+  background: rgba(0, 0, 0, 0.65);
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
+  backdrop-filter: blur(2px);
+  transition: background 0.2s ease;
 }
 
-/* Vista de confirmación con el ticket */
+.btn-quitar-evidencia:hover {
+  background: #dc3545;
+}
+
+/* ── ACCIONES ────────────────────────────────────────────── */
+.reportar-modal .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0;
+  padding: 16px 24px 20px;
+  background: white;
+  border-top: 1px solid #ece9e1;
+}
+
+.btn-reportar-cancelar {
+  padding: 10px 24px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #666;
+  background: white;
+  border: 1.5px solid #e0ddd8;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.btn-reportar-cancelar:hover {
+  color: #c0392b;
+  background: #fff5f5;
+  border-color: #ccc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+.btn-reportar-enviar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 26px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: white;
+  background: linear-gradient(135deg, #ef4444 0%, #c0392b 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(220, 53, 69, 0.28);
+  transition: all 0.22s ease;
+}
+
+.btn-reportar-enviar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(220, 53, 69, 0.4);
+}
+
+.btn-reportar-enviar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Botón "Cerrar" de la confirmación de ticket */
+.reportar-modal .modal-footer .btn-secondary {
+  padding: 10px 24px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #666;
+  background: white;
+  border: 1.5px solid #e0ddd8;
+  border-radius: 12px;
+  transition: all 0.22s ease;
+}
+
+.reportar-modal .modal-footer .btn-secondary:hover {
+  color: #c0392b;
+  background: #fff5f5;
+  border-color: #ccc;
+  transform: translateY(-2px);
+}
+
+/* ── VISTA DE CONFIRMACIÓN CON EL TICKET ─────────────────── */
 .reportar-confirmacion {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 20px 24px 8px;
+  padding: 28px 24px 8px;
+  background: white;
 }
 
 .confirmacion-icono {
-  font-size: 40px;
-  color: #2e7d32;
-  margin-bottom: 12px;
+  font-size: 46px;
+  color: #10b981;
+  margin-bottom: 14px;
 }
 
 .confirmacion-texto {
@@ -154,10 +355,10 @@
 }
 
 .ticket-box {
-  background: #f5f2eb;
-  border: 1px dashed var(--color-primary);
-  border-radius: 12px;
-  padding: 12px 20px;
+  background: #fbf9f5;
+  border: 1.5px dashed var(--color-primary);
+  border-radius: 14px;
+  padding: 14px 20px;
   width: 100%;
 }
 
@@ -209,7 +410,32 @@
   margin-top: 12px;
 }
 
-/* Ícono/botón de reportar, ubicado junto a cada reseña */
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 576px) {
+  .reportar-block {
+    padding: 20px 18px;
+  }
+
+  .reportar-contexto {
+    margin: 16px 18px 0;
+  }
+
+  .reportar-modal .modal-footer {
+    padding: 14px 18px 18px;
+  }
+
+  .btn-reportar-cancelar,
+  .btn-reportar-enviar {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .reportar-modal .modal-footer .btn-secondary {
+    width: 100%;
+  }
+}
+
+/* ── Ícono/botón de reportar, ubicado junto a cada reseña ── */
 .btn-reportar-resena {
   background: transparent;
   border: none;

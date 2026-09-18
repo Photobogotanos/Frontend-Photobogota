@@ -46,28 +46,41 @@ const ListaUsuarios = () => {
   const cargarUsuarios = useCallback(async () => {
     setCargando(true);
     try {
-      const resultado = await listarUsuariosAdmin(
-        paginacion.pagina,
-        paginacion.porPagina,
-      );
+      // Cargar todas las páginas para que la tabla muestre todos los usuarios
+      const todosLosUsuarios = [];
+      let pagina = 0;
+      let totalPaginas = 0;
+      let esDemo = false;
 
-      if (resultado.exitoso) {
-        modoDemo.current = resultado.esDemo;
+      do {
+        const resultado = await listarUsuariosAdmin(pagina, 100);
+
+        if (!resultado.exitoso) {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: resultado.mensaje || "No se pudieron cargar los usuarios",
+          });
+          return;
+        }
+
+        esDemo = resultado.esDemo;
         const data = resultado.data;
         // Sincronización con la estructura de Page de Spring Boot o Mock
-        setUsuarios(data.content || []);
-        setPaginacion((prev) => ({
-          ...prev,
-          totalPaginas: data.totalPages || 0,
-          totalElementos: data.totalElements || 0,
-        }));
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: resultado.mensaje || "No se pudieron cargar los usuarios",
-        });
-      }
+        const usuariosPagina = Array.isArray(data) ? data : data?.content || [];
+        todosLosUsuarios.push(...usuariosPagina);
+        totalPaginas = data.totalPages || 0;
+        pagina += 1;
+      } while (pagina < totalPaginas);
+
+      modoDemo.current = esDemo;
+      setUsuarios(todosLosUsuarios);
+      setPaginacion((prev) => ({
+        ...prev,
+        pagina: 0,
+        totalPaginas: 1,
+        totalElementos: todosLosUsuarios.length,
+      }));
     } catch (error) {
       console.error("Error cargando usuarios:", error);
       Swal.fire({
@@ -78,7 +91,7 @@ const ListaUsuarios = () => {
     } finally {
       setCargando(false);
     }
-  }, [paginacion.pagina, paginacion.porPagina]);
+  }, []);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch inicial al montar, patrón válido

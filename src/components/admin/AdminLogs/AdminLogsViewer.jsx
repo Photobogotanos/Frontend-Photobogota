@@ -79,7 +79,6 @@ const AdminLogsViewer = () => {
     logger: "",
   });
   const [autoRefresh, setAutoRefresh] = useState(false);
-  const [expandido, setExpandido] = useState(false);
   const [logSeleccionado, setLogSeleccionado] = useState(null);
 
   const containerRef = useRef(null);
@@ -242,7 +241,7 @@ const AdminLogsViewer = () => {
 
   // ── JSX ────────────────────────────────────────────────────────────────────
   return (
-    <div className={`log-viewer-container ${expandido ? "expandido" : ""}`}>
+    <div className={`log-viewer-container`}>
       <LogHeader
         modoDemo={modoDemo}
         logsFiltrados={logsFiltrados}
@@ -261,8 +260,6 @@ const AdminLogsViewer = () => {
         onLimpiarFiltros={limpiarFiltros}
         onCopiar={copiarLogs}
         onDescargar={descargarLogs}
-        expandido={expandido}
-        onToggleExpandir={() => setExpandido(!expandido)}
       />
 
       <LogsView
