@@ -24,6 +24,7 @@ import {
 } from "@/mocks/usuario.mock";
 import { SPOTS } from "@/mocks/spots.mock";
 import { obtenerEstadoServidor } from "@/utils/serverStatus";
+import { detectarCampoEnUso } from "@/utils/detectarCampoEnUso";
 import {
   guardarTokens,
   guardarSesion,
@@ -85,6 +86,14 @@ const obtenerPerfilDemo = (nombreUsuario = "demo_user") => {
   );
 
   if (usuarioDemo) {
+    const spotsDemo = SPOTS.filter(
+      (s) => s.creadorId === usuarioDemo.nombreUsuario,
+    );
+    const resenasEnSpotsDemo = spotsDemo.reduce(
+      (acc, s) => acc + (s.resenas?.length || 0),
+      0,
+    );
+
     return {
       id: usuarioDemo.id,
       nombresCompletos:
@@ -97,11 +106,12 @@ const obtenerPerfilDemo = (nombreUsuario = "demo_user") => {
       fotoPerfil: "/images/user-pfp/default-avatar.webp",
       rol: usuarioDemo.rol,
       nivel: usuarioDemo.nivel ?? null,
-      totalSpots: SPOTS.filter((s) => s.creadorId === usuarioDemo.nombreUsuario)
-        .length,
-      totalResenas: SPOTS.filter((s) => s.creadorId === usuarioDemo.nombreUsuario)
-        .reduce((acc, s) => acc + (s.resenas?.length || 0), 0),
+      totalSpots: spotsDemo.length,
+      totalResenas: resenasEnSpotsDemo,
       totalGuardados: 0,
+      totalCanjes: 3,
+      totalResenasRecibidas: resenasEnSpotsDemo,
+      totalPromocionesActivas: usuarioDemo.rol === "SOCIO" ? 2 : 0,
     };
   }
 
@@ -119,6 +129,9 @@ const obtenerPerfilDemo = (nombreUsuario = "demo_user") => {
     totalSpots: 5,
     totalResenas: 6,
     totalGuardados: 12,
+    totalCanjes: 3,
+    totalResenasRecibidas: 0,
+    totalPromocionesActivas: 0,
   };
 };
 
@@ -228,11 +241,30 @@ export const registrarUsuario = async (datos) => {
     const respuesta = await postRegistrarUsuario(body);
     return { exitoso: true, esDemo: false, datos: respuesta.data };
   } catch (error) {
+    const status = error.response?.status;
+    const mensajeServidor =
+      error.response?.data?.mensaje ||
+      error.response?.data?.message ||
+      "";
+
+    if (status === 409) {
+      return {
+        exitoso: false,
+        esDemo: false,
+        campoEnUso: detectarCampoEnUso(mensajeServidor, {
+          email: datos.email,
+          nombreUsuario: datos.nombreUsuario,
+        }),
+        mensaje:
+          mensajeServidor || "El correo o nombre de usuario ya está en uso.",
+      };
+    }
+
     return {
       exitoso: false,
       esDemo: false,
       mensaje:
-        error.response?.data?.mensaje || "Error al conectar con el servidor.",
+        mensajeServidor || "Error al conectar con el servidor.",
     };
   }
 };
@@ -249,6 +281,9 @@ export const obtenerPerfil = async (nombreUsuario) => {
       totalSpots: data.totalSpots ?? 0,
       totalResenas: data.totalResenas ?? 0,
       totalGuardados: data.totalGuardados ?? 0,
+      totalCanjes: data.totalCanjes ?? 0,
+      totalResenasRecibidas: data.totalResenasRecibidas ?? 0,
+      totalPromocionesActivas: data.totalPromocionesActivas ?? 0,
       puntosTotales: data.puntos ?? data.puntosTotales ?? 0,
       puntosParaSiguienteNivel: data.puntosParaSiguienteNivel ?? 0,
       puntosHoy: data.puntosHoy ?? 0,

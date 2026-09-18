@@ -16,6 +16,7 @@ import {
   eliminarUsuarioDemo,
   listarUsuariosDemo,
 } from "@/mocks/admin.mock";
+import { detectarCampoEnUso } from "@/utils/detectarCampoEnUso";
 
 /**
  * Crear usuario (admin)
@@ -56,6 +57,7 @@ export const crearUsuarioAdmin = async (datos) => {
       mensaje = error.response?.data?.message || "Datos inválidos";
     } else if (status === 409) {
       mensaje =
+        error.response?.data?.mensaje ||
         error.response?.data?.message ||
         "El email o nombre de usuario ya existe";
     } else if (status === 403) {
@@ -66,6 +68,13 @@ export const crearUsuarioAdmin = async (datos) => {
       exitoso: false,
       esDemo: false,
       mensaje,
+      campoEnUso:
+        status === 409
+          ? detectarCampoEnUso(mensaje, {
+              email: datos.email,
+              nombreUsuario: datos.nombreUsuario,
+            })
+          : null,
     };
   }
 };

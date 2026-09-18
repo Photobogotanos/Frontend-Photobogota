@@ -137,7 +137,7 @@ function BotonUbicacion() {
   );
 }
 
-function ControlesZoom() {
+function ControlesZoom({ children }) {
   const map = useMap();
   const contenedorRef = useRef(null);
 
@@ -164,6 +164,7 @@ function ControlesZoom() {
       >
         <FaMinus />
       </button>
+      {children}
     </div>
   );
 }
@@ -531,9 +532,10 @@ const MapaBogota = ({ filtros = {} }) => {
 
           <MapBounds />
           <FitBoundsToSpots spots={spots} />
-          <BotonUbicacion />
-          <ControlesZoom />
-          {wrapperEl && <BotonFullscreen wrapperRef={{ current: wrapperEl }} />}
+          <ControlesZoom>
+            {wrapperEl && <BotonFullscreen wrapperRef={{ current: wrapperEl }} />}
+            <BotonUbicacion />
+          </ControlesZoom>
           <HeatmapLayer spots={spots} visible={modoCalor} />
           <GeomanDraw activo={modoPublicar} onPuntoCreado={handlePuntoCreado} />
 

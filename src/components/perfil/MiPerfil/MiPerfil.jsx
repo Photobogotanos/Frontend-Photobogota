@@ -74,7 +74,7 @@ const perfilReducer = (state, action) => {
     case "RECONCILIAR_CONTEOS": {
       // Si el backend reportó 0 en un contador pero sí cargamos datos reales
       // para esa lista, preferimos el conteo real (evita stats en 0 falsos).
-      const { totalSpots, totalResenas, totalGuardados } = action.payload;
+      const { totalSpots, totalResenas, totalGuardados, totalCanjes, totalResenasRecibidas, totalPromocionesActivas } = action.payload;
       return {
         ...state,
         perfilData: {
@@ -91,6 +91,19 @@ const perfilReducer = (state, action) => {
             state.perfilData.totalGuardados > 0
               ? state.perfilData.totalGuardados
               : (totalGuardados ?? state.perfilData.totalGuardados),
+          totalCanjes:
+            state.perfilData.totalCanjes > 0
+              ? state.perfilData.totalCanjes
+              : (totalCanjes ?? state.perfilData.totalCanjes),
+          totalResenasRecibidas:
+            state.perfilData.totalResenasRecibidas > 0
+              ? state.perfilData.totalResenasRecibidas
+              : (totalResenasRecibidas ?? state.perfilData.totalResenasRecibidas),
+          totalPromocionesActivas:
+            state.perfilData.totalPromocionesActivas > 0
+              ? state.perfilData.totalPromocionesActivas
+              : (totalPromocionesActivas ??
+                state.perfilData.totalPromocionesActivas),
         },
       };
     }
@@ -147,6 +160,9 @@ const crearEstadoInicial = () => {
       totalSpots: 0,
       totalResenas: 0,
       totalGuardados: 0,
+      totalCanjes: 0,
+      totalResenasRecibidas: 0,
+      totalPromocionesActivas: 0,
       puntosTotales: 0,
       puntosParaSiguienteNivel: 0,
       puntosHoy: 0,
@@ -259,6 +275,9 @@ export default function MiPerfil() {
               totalSpots: data.totalSpots ?? 0,
               totalResenas: data.totalResenas ?? 0,
               totalGuardados: data.totalGuardados ?? 0,
+              totalCanjes: data.totalCanjes ?? 0,
+              totalResenasRecibidas: data.totalResenasRecibidas ?? 0,
+              totalPromocionesActivas: data.totalPromocionesActivas ?? 0,
               puntosTotales: data.puntosTotales ?? 0,
               puntosParaSiguienteNivel: data.puntosParaSiguienteNivel ?? 0,
               puntosHoy: data.puntosHoy ?? 0,
@@ -361,6 +380,9 @@ export default function MiPerfil() {
     totalSpots: state.perfilData.totalSpots,
     totalResenas: state.perfilData.totalResenas,
     totalGuardados: state.perfilData.totalGuardados,
+    totalCanjes: state.perfilData.totalCanjes,
+    totalResenasRecibidas: state.perfilData.totalResenasRecibidas,
+    totalPromocionesActivas: state.perfilData.totalPromocionesActivas,
   };
 
   const esPerfilPropio = true;

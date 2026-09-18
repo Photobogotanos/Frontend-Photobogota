@@ -273,6 +273,7 @@ export default function CrearSpot() {
           onHide={() => dispatch({ type: "SET_SHOW_MODAL", payload: false })}
           spotData={spotData}
           previews={state.previews}
+          esPrevisualizacion
         />
       </div>
     </div>

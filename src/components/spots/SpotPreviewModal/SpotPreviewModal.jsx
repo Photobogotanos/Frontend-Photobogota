@@ -12,6 +12,7 @@ import {
   FaCamera,
   FaFlag,
   FaClock,
+  FaEye,
 } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
@@ -21,7 +22,7 @@ import "./SpotPreviewModal.css";
 const Lottie = LottieImport?.default ?? LottieImport;
 const ReportarModal = ReportarModalImport?.default ?? ReportarModalImport;
 
-const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
+const SpotPreviewModal = ({ show, onHide, spotData, lugar, esPrevisualizacion = false }) => {
   const navigate = useNavigate();
   const { logueado } = useAuth();
   const [modalReporteAbierto, setModalReporteAbierto] = useState(false);
@@ -51,6 +52,12 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
   return (
     <Modal show={show} onHide={onHide} centered className="lugar-preview-modal">
       <Modal.Body className="p-0">
+        {esPrevisualizacion && (
+          <div className="preview-aviso" role="status">
+            <FaEye className="preview-aviso-icon" />
+            Vista previa: así se verá tu spot cuando lo publiques
+          </div>
+        )}
         <div className="preview-image-container">
           {data.imagen ? (
             <img
@@ -141,22 +148,26 @@ const SpotPreviewModal = ({ show, onHide, spotData, lugar }) => {
       </Modal.Body>
 
       <Modal.Footer>
-        <Button
-          variant="outline-danger"
-          className="btn-reportar-preview"
-          onClick={handleReportar}
-        >
-          <FaFlag className="btn-icon" /> Reportar
-        </Button>
+        {!esPrevisualizacion && (
+          <Button
+            variant="outline-danger"
+            className="btn-reportar-preview"
+            onClick={handleReportar}
+          >
+            <FaFlag className="btn-icon" /> Reportar
+          </Button>
+        )}
         <Button variant="secondary" onClick={onHide}>
           Cerrar
         </Button>
-        <Button variant="primary" className="btn-ir-spot" onClick={handleIr}>
-          Ir al spot
-        </Button>
+        {!esPrevisualizacion && (
+          <Button variant="primary" className="btn-ir-spot" onClick={handleIr}>
+            Ir al spot
+          </Button>
+        )}
       </Modal.Footer>
 
-      {ReportarOk && (
+      {!esPrevisualizacion && ReportarOk && (
         <ReportarModal
           show={modalReporteAbierto}
           onCerrar={() => setModalReporteAbierto(false)}

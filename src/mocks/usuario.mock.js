@@ -80,12 +80,12 @@ export const registrarUsuarioDemo = async (datos) => {
 
   const correoExiste = USUARIOS_DEMO.some((u) => u.correo === email);
   if (correoExiste) {
-    return { exitoso: false, mensaje: "Ya existe una cuenta con ese correo en modo demo." };
+    return { exitoso: false, mensaje: "Ya existe una cuenta con ese correo en modo demo.", campoEnUso: "email" };
   }
 
   const usuarioExiste = USUARIOS_DEMO.some((u) => u.nombreUsuario === nombreUsuario);
   if (usuarioExiste) {
-    return { exitoso: false, mensaje: "Ese nombre de usuario ya está en uso en modo demo." };
+    return { exitoso: false, mensaje: "Ese nombre de usuario ya está en uso en modo demo.", campoEnUso: "nombreUsuario" };
   }
 
   const contrasenaHash = await hashearContrasena(contrasena);

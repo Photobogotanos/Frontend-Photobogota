@@ -180,10 +180,21 @@ function AdminCreacionDeCuentaForm() {
                     }
                 });
             } else {
+                const enUso = {
+                    email: {
+                        titulo: "Correo en uso",
+                        texto: `El correo "${state.email}" ya está registrado. Intenta con otro.`,
+                    },
+                    nombreUsuario: {
+                        titulo: "Nombre de usuario en uso",
+                        texto: `El nombre de usuario "${state.nombreUsuario}" ya está en uso. Prueba con otro.`,
+                    },
+                }[resultado.campoEnUso];
+
                 Swal.fire({
                     icon: "error",
-                    title: "Error",
-                    text: resultado.mensaje || "No se pudo crear el usuario"
+                    title: enUso?.titulo || "Error",
+                    text: enUso?.texto || resultado.mensaje || "No se pudo crear el usuario"
                 });
             }
         } catch (error) {

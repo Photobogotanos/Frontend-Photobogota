@@ -131,7 +131,22 @@ function FormularioCreacion() {
           text: resultado.esDemo ? resultado.mensaje : "Tu cuenta ha sido creada correctamente.",
         }).then(() => navegar("/login"));
       } else {
-        Swal.fire({ icon: "error", title: "Error en el registro", text: resultado.mensaje || "No se pudo crear la cuenta. Por favor intenta de nuevo." });
+        const enUso = {
+          email: {
+            titulo: "Correo en uso",
+            texto: `El correo "${state.email}" ya está registrado. Intenta con otro o inicia sesión.`,
+          },
+          nombreUsuario: {
+            titulo: "Nombre de usuario en uso",
+            texto: `El nombre de usuario "${state.nombreUsuario}" ya está en uso. Prueba con otro.`,
+          },
+        }[resultado.campoEnUso];
+
+        Swal.fire({
+          icon: "error",
+          title: enUso?.titulo || "Error en el registro",
+          text: enUso?.texto || resultado.mensaje || "No se pudo crear la cuenta. Por favor intenta de nuevo.",
+        });
       }
     } catch {
       Swal.fire({ icon: "error", title: "Error", text: "Ocurrió un error inesperado. Por favor intenta de nuevo." });
