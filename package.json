@@ -20,7 +20,7 @@
     "js-cookie": "^3.0.8",
     "leaflet": "^1.9.4",
     "leaflet.heat": "^0.2.0",
-    "lottie-react": "^2.4.2",
+    "lottie-react": "^3.1.2",
     "react": "^19.3.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.3.0",
