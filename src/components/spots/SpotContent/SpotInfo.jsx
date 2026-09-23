@@ -123,7 +123,7 @@ const SpotInfo = ({
               {imagenes.length > 1 && (
                 <button
                   type="button"
-                  className="spot-image-modal-nav"
+                  className="spot-image-modal-nav spot-image-modal-nav-prev"
                   onClick={irAImagenAnterior}
                   aria-label="Ver imagen anterior"
                 >
@@ -139,7 +139,7 @@ const SpotInfo = ({
               {imagenes.length > 1 && (
                 <button
                   type="button"
-                  className="spot-image-modal-nav"
+                  className="spot-image-modal-nav spot-image-modal-nav-next"
                   onClick={irAImagenSiguiente}
                   aria-label="Ver imagen siguiente"
                 >

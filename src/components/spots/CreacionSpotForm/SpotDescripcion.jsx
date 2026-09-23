@@ -33,7 +33,7 @@ export default function SpotDescripcion({
   return (
     <>
       <TextAreaField
-        label={esSocio ? "Descripción de la imagen" : "Descripción del establecimiento"}
+        label={esSocio ? "Descripción del establecimiento" : "Descripción del spot"}
         htmlFor="descripcion-imagen"
         required
         value={descripcionImagen}
@@ -43,7 +43,7 @@ export default function SpotDescripcion({
       />
 
       <TextAreaField
-        label={esSocio ? "¿Por qué recomiendas este lugar?" : "¿Por qué recomiendas este establecimiento?"}
+        label={esSocio ? "¿Por qué recomiendas este establecimiento?" : "¿Por qué recomiendas este lugar?"}
         htmlFor="recomendacion-lugar"
         required
         icon={<FaHeart />}
